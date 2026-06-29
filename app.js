@@ -1,5 +1,5 @@
 // app.js — 主应用逻辑
-// 全栈面试宝典 v2.5 — 数据分离 + IndexedDB 编辑层 + 密码认证 + 编辑模式开关 + More Menu + detail折叠
+// 全栈面试宝典 v2.5 — 数据分离 + IndexedDB 编辑层 + 密码认证 + 编辑模式开关 + More Menu + detail展开按钮优化
 
 (function() {
 'use strict';
@@ -100,7 +100,7 @@ function renderFromData(modules, filter, tagFilter) {
             if (dItem.tag && dItem.desc) {
               detailHtml += '<div class="detail-item has-sub' + hiddenCls + '" onclick="evSubDetail(event,this)">' + highlight(keyword, filter) + '<span class="sub-arrow"></span><div class="sub-detail">' + highlight(subDetail, filter) + '</div></div>';
             } else {
-              detailHtml += '<div class="detail-item' + hiddenCls + '" onclick="evDetail(event,this)">' + highlight(keyword, filter) + '</div>';
+              detailHtml += '<div class="detail-item' + hiddenCls + '">' + highlight(keyword, filter) + '</div>';
             }
           }
           if (needsToggle) {
@@ -109,7 +109,8 @@ function renderFromData(modules, filter, tagFilter) {
           detailHtml += '</div></div>';
         }
 
-        var expandIcon = hasDetail ? '<span class="expand-hint"></span>' : '';
+        var detailCount = hasDetail ? pt.details.length : 0;
+        var expandIcon = hasDetail ? '<span class="expand-hint">' + detailCount + ' 条</span>' : '';
         var cls = 'point' + (hasDetail ? ' has-detail' : '');
         var clickAttr = hasDetail ? ' onclick="evPt(event,this)"' : '';
         var ptEditBtn = '<span class="edit-btn-group">' +
@@ -182,11 +183,6 @@ window.evPt = function(e, el) {
     var list = el.querySelector('.detail-list');
     if (list) { list.classList.remove('expanded'); var tg = list.querySelector('.detail-toggle'); if (tg) { var tc = list.querySelectorAll('.detail-item').length; tg.innerHTML = '<span class="toggle-icon">▾</span>展开全部 ' + tc + ' 条详情'; } }
   }
-};
-
-window.evDetail = function(e, el) {
-  e.stopPropagation();
-  el.classList.toggle('open');
 };
 
 window.evSubDetail = function(e, el) {
