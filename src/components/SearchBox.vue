@@ -62,7 +62,7 @@ function onClear() {
   box-shadow: 0 4px 20px rgba(13,148,136,.18);
 }
 .search-box.mobile {
-  width: 100%; max-width: 100%;
+  width: 100%; max-width: 100%; margin: 6px auto 0;
 }
 .search-box.mobile:focus-within {
   width: 100%; box-shadow: none;
@@ -77,7 +77,7 @@ function onClear() {
   min-height: 38px; transition: all .25s ease; color: #1a1a1a;
 }
 .search-box.mobile input {
-  border-radius: 20px; padding: 6px 12px 6px 30px; font-size: 14px; min-height: 32px;
+  border-radius: 20px; padding: 5px 28px 5px 28px; font-size: 14px; min-height: 30px;
   background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.3);
 }
 .search-box.mobile input::placeholder { color: rgba(255,255,255,.6) }
@@ -89,5 +89,6 @@ function onClear() {
 .search-box.mobile .search-icon { font-size: 12px; left: 10px }
 .count { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 11px; color: #aaa; background: #f0f0f0; padding: 3px 8px; border-radius: 12px }
 .search-box.has-value .count { right: 70px }
-.search-clear { position: absolute; right: 44px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; border-radius: 50%; background: var(--border); color: var(--text3); cursor: pointer; font-size: .65em; display: flex; align-items: center; justify-content: center; border: none; z-index: 2 }
+.search-clear { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; border-radius: 50%; background: rgba(255,255,255,.2); color: var(--text3); cursor: pointer; font-size: .65em; display: flex; align-items: center; justify-content: center; border: none; z-index: 2 }
+.search-box.mobile .search-clear { background: rgba(255,255,255,.2); color: #fff; right: 8px }
 </style>
