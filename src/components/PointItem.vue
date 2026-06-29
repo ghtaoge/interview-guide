@@ -1,18 +1,12 @@
 <template>
-  <!-- 移动端: van-cell -->
-  <van-cell v-if="isMobile" clickable @click="togglePoint">
-    <template #title>
-      <span v-html="highlightHtml(pt.tag, keyword)"></span>
-    </template>
-    <template #label>
-      <span v-if="pt.open" v-html="highlightHtml(pt.desc, keyword)"></span>
-    </template>
-    <template #right-icon>
-      <van-tag v-if="pt.details && pt.details.length" type="primary" size="small" round>
-        {{ pt.details.length }} 条
-      </van-tag>
-    </template>
-  </van-cell>
+  <!-- 移动端: 自定义卡片（不用van-cell） -->
+  <div v-if="isMobile" class="mobile-point" :class="{ open: pt.open, 'has-detail': pt.details && pt.details.length }" @click="togglePoint">
+    <div class="mobile-point-row">
+      <span class="mobile-tag" v-html="highlightHtml(pt.tag, keyword)"></span>
+      <span class="mobile-desc" v-html="highlightHtml(pt.desc, keyword)"></span>
+      <span class="mobile-hint" v-if="pt.details && pt.details.length">{{ pt.details.length }} 条</span>
+    </div>
+  </div>
   <!-- 展开的详情列表(移动端) -->
   <div v-if="isMobile && pt.open && pt.details && pt.details.length" class="mobile-details">
     <DetailItem v-for="(d, i) in pt.details" :key="d.id" :detail="d" :index="i" :keyword="keyword" :color-index="colorIndex" />
@@ -52,7 +46,6 @@ const { highlightHtml } = useSearch()
 
 const pt = reactive({ ...props.point, open: false })
 
-// 通过 inject 接收 HomeView 的展开/折叠命令
 const expandCommand = inject('expandCommand', ref('none'))
 watch(expandCommand, (cmd) => {
   if (cmd === 'expand') pt.open = true
@@ -65,6 +58,27 @@ function togglePoint() {
 </script>
 
 <style scoped>
+/* 移动端知识点 */
+.mobile-point {
+  padding: 10px 14px; margin: 4px 0; background: var(--card);
+  border-radius: 10px; border-left: 3px solid var(--border);
+  font-size: .85em; cursor: pointer; transition: all .2s;
+}
+.mobile-point.has-detail { border-left-color: var(--accent); font-weight: 500 }
+.mobile-point.open { border-left-color: var(--accent); background: var(--bg); box-shadow: 0 2px 8px rgba(0,0,0,.06) }
+.mobile-point-row { display: flex; gap: 8px; align-items: center }
+.mobile-tag { flex-shrink: 0; font-weight: 600; color: var(--text); border-right: 2px solid var(--border); padding-right: 4px }
+.mobile-point.open .mobile-tag { border-right-color: var(--accent) }
+.mobile-desc { color: var(--text2); flex: 1; line-height: 1.6; word-break: break-word }
+.mobile-hint {
+  flex-shrink: 0; padding: 2px 8px; border-radius: 10px;
+  background: rgba(13,148,136,.1); color: var(--accent);
+  font-size: .7em; font-weight: 600;
+}
+.mobile-point.open .mobile-hint { background: var(--accent); color: #fff }
+.mobile-details { padding: 4px 0 4px 16px }
+
+/* PC端 */
 .point {
   padding: 11px 14px; margin: 6px 0; background: var(--card);
   border-radius: 10px; border-left: 3px solid transparent;
@@ -84,5 +98,5 @@ function togglePoint() {
 }
 .point.open .expand-hint { background: var(--accent); color: #fff; border-color: var(--accent) }
 .detail-wrap { margin-top: 14px }
-.mobile-details { padding: 8px 16px }
+.detail-list { padding: 12px }
 </style>

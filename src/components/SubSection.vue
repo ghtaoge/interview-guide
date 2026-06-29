@@ -55,9 +55,8 @@ const { matchText } = useSearch()
 
 const activeNames = ref([])
 const isOpen = ref(false)
-
-// 通过 inject 接收 HomeView 的展开/折叠命令
 const expandCommand = inject('expandCommand', ref('none'))
+
 watch(expandCommand, (cmd) => {
   if (cmd === 'expand') {
     isOpen.value = true
@@ -79,6 +78,7 @@ const filteredPoints = computed(() => {
 </script>
 
 <style scoped>
+/* PC端 */
 .sub-section { background: var(--card); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow) }
 .sub-head {
   padding: 12px 22px 12px 28px; font-size: .9em; font-weight: 600;
@@ -92,4 +92,9 @@ const filteredPoints = computed(() => {
 .sub-head .arrow { margin-left: auto; font-size: .65em; color: var(--text3); transition: transform .25s }
 .sub-section.open .arrow { transform: rotate(90deg) }
 .points { padding: 4px 22px 14px }
+
+/* 移动端van-collapse样式增强 */
+:deep(.van-collapse-item) { margin-bottom: 6px; border-radius: 12px; overflow: hidden }
+:deep(.van-collapse-item__title) { font-weight: 600; font-size: .88em }
+:deep(.van-collapse-item__content) { padding: 8px 12px }
 </style>

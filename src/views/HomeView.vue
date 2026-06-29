@@ -35,6 +35,7 @@
 
 <script setup>
 import { computed, ref, provide } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useModulesStore } from '../stores/modules.js'
 import { useFilterStore } from '../stores/filter.js'
 import ModuleCard from '../components/ModuleCard.vue'
@@ -42,25 +43,14 @@ import SubSection from '../components/SubSection.vue'
 
 const modulesStore = useModulesStore()
 const filterStore = useFilterStore()
+const { expandCommand } = storeToRefs(filterStore)
 
 const loading = computed(() => modulesStore.moduleIndex.length === 0)
 const expandedId = ref(null)
 const moduleLoading = ref(false)
 const moduleData = ref(null)
 
-// 全部展开/折叠命令：子组件inject后watch
-const expandCommand = ref('none')
-
-function expandAll() {
-  expandCommand.value = 'expand'
-  // 下一tick重置，避免重复触发
-  setTimeout(() => { expandCommand.value = 'none' }, 50)
-}
-function collapseAll() {
-  expandCommand.value = 'collapse'
-  setTimeout(() => { expandCommand.value = 'none' }, 50)
-}
-
+// 必须传 ref 本身，否则 Pinia 会 unwrap 成静态字符串导致响应式断链
 provide('expandCommand', expandCommand)
 
 const displayedModules = computed(() => {
@@ -101,15 +91,6 @@ async function toggleModule(id) {
 .module-content {
   padding: 12px 0 4px;
 }
-.expand-bar {
-  display: flex; gap: 8px; margin-bottom: 12px;
-}
-.expand-btn {
-  padding: 6px 14px; border-radius: 20px; font-size: .82em;
-  background: var(--card); color: var(--text2); border: 1px solid var(--border);
-  cursor: pointer; transition: all .2s;
-}
-.expand-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent) }
 .no-result { text-align: center; color: var(--text3); padding: 40px; font-size: 1em }
 .skeleton-card { margin-bottom: 16px; padding: 16px; background: var(--card); border-radius: var(--radius) }
 </style>

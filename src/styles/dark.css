@@ -56,3 +56,21 @@
 
 /* 骨架屏深色 */
 .dark .skeleton-card { background: #1e293b }
+
+/* 移动端自定义组件深色 */
+.dark .mobile-card { box-shadow: 0 2px 12px rgba(0,0,0,.3) }
+.dark .mobile-point { background: #1e293b }
+.dark .mobile-point.open { background: #263548 }
+.dark .mobile-detail { background: #1e293b }
+.dark .mobile-detail.has-sub.open { background: #263548 }
+.dark .mobile-sub { background: #263548; border-left-color: #065f46; color: #e2e8f0 }
+
+/* 搜索框深色 */
+.dark .search-box input { background: rgba(30,41,59,.9); box-shadow: 0 2px 12px rgba(0,0,0,.2); color: #e2e8f0; border-color: #475569 }
+.dark .search-box input:focus { background: #1e293b; border-color: #0d9488 }
+.dark .search-box .search-icon { opacity: .6 }
+.dark .search-box .search-clear { background: #475569; color: #94a3b8 }
+
+/* HomeView展开按钮深色 */
+.dark .expand-btn { background: #263548; color: #94a3b8; border-color: #475569 }
+.dark .expand-btn:hover { background: #0d9488; color: #fff; border-color: #0d9488 }

@@ -1,19 +1,15 @@
 <template>
-  <!-- 移动端: van-cell -->
-  <van-cell v-if="isMobile" clickable @click="toggleSub">
-    <template #title>
-      <span v-html="highlightHtml(labelText, keyword)"></span>
-    </template>
-    <template #right-icon>
-      <van-icon v-if="hasSub" name="arrow" :class="{ rotated: open }" />
-    </template>
-  </van-cell>
-  <!-- sub-detail展开(移动端) -->
-  <div v-if="isMobile && open && hasSub" class="mobile-sub-detail" v-html="highlightHtml(detail.desc, keyword)"></div>
+  <!-- 移动端: 自定义详情条目 -->
+  <div v-if="isMobile" class="mobile-detail" :class="{ 'has-sub': hasSub, open }" @click="hasSub ? toggleSub() : null">
+    <span class="mobile-num">{{ index + 1 }}</span>
+    <span class="mobile-label" v-html="highlightHtml(labelText, keyword)"></span>
+    <span v-if="hasSub" class="mobile-sub-arrow" :class="{ open }">▶</span>
+    <div v-if="open && hasSub" class="mobile-sub" v-html="highlightHtml(detail.desc, keyword)"></div>
+  </div>
 
   <!-- PC端: 自定义编号卡片 -->
   <div v-else class="detail-item" :class="{ 'has-sub': hasSub, open }"
-    @click.stop="hasSub ? toggleSub() : null"
+    @click="hasSub ? toggleSub() : null"
   >
     <span class="detail-number">{{ index + 1 }}</span>
     <span class="detail-tag" v-html="highlightHtml(labelText, keyword)"></span>
@@ -39,12 +35,9 @@ const { highlightHtml } = useSearch()
 
 const open = ref(false)
 
-// hasSub: 同时有 tag 和 desc 且两者不同时才可展开
-const hasSub = computed(() => {
-  const tag = (props.detail.tag || '').trim()
-  const desc = (props.detail.desc || '').trim()
-  return !!tag && !!desc && tag !== desc
-})
+const hasSub = computed(() =>
+  (props.detail.tag || '').trim() && (props.detail.desc || '').trim() && props.detail.tag !== props.detail.desc
+)
 
 const labelText = computed(() => {
   let t = (props.detail.tag || '').trim() || (props.detail.desc || '').trim()
@@ -52,7 +45,6 @@ const labelText = computed(() => {
   return t
 })
 
-// 通过 inject 接收 HomeView 的展开/折叠命令
 const expandCommand = inject('expandCommand', ref('none'))
 watch(expandCommand, (cmd) => {
   if (cmd === 'expand' && hasSub.value) open.value = true
@@ -63,6 +55,35 @@ function toggleSub() { open.value = !open.value }
 </script>
 
 <style scoped>
+/* 移动端详情 */
+.mobile-detail {
+  padding: 10px 14px 10px 34px; margin: 4px 0; font-size: .84em;
+  line-height: 1.7; color: var(--text2); position: relative;
+  background: var(--card); border-radius: 10px;
+}
+.mobile-detail.has-sub { cursor: pointer; font-weight: 600; color: var(--text) }
+.mobile-detail.has-sub.open { background: var(--bg); border-left: 2px solid var(--accent) }
+.mobile-num {
+  position: absolute; left: 10px; top: 10px;
+  width: 18px; height: 18px; border-radius: 50%; color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .6em; font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), #a78bfa);
+}
+.mobile-label { display: inline }
+.mobile-sub-arrow {
+  float: right; font-size: .55em; color: var(--text3);
+  padding: 2px 0; transition: transform .2s;
+}
+.mobile-sub-arrow.open { transform: rotate(90deg); color: var(--accent) }
+.mobile-sub {
+  margin: 8px 0 2px; padding: 10px 12px;
+  background: var(--bg); border-radius: 8px; font-size: .82em;
+  color: var(--text2); border-left: 2px solid var(--accent); line-height: 1.7;
+  font-weight: 400;
+}
+
+/* PC端 */
 .detail-item {
   padding: 14px 18px 14px 48px; margin: 10px 0; font-size: .95em;
   line-height: 1.8; color: var(--text2); position: relative; transition: all .2s;
@@ -84,7 +105,7 @@ function toggleSub() { open.value = !open.value }
   background: rgba(99,102,241,.08); color: var(--text3);
   border: 1.5px solid rgba(99,102,241,.12);
   display: flex; align-items: center; justify-content: center;
-  transition: all .28s;
+  cursor: pointer; transition: all .28s;
 }
 .sub-arrow::after { content: '▶'; font-size: .6em }
 .sub-arrow.open { transform: rotate(90deg); background: var(--accent); color: #fff; border-color: var(--accent) }
@@ -94,10 +115,4 @@ function toggleSub() { open.value = !open.value }
   color: var(--text2); border-left: 3px solid var(--accent);
   line-height: 1.8;
 }
-.mobile-sub-detail {
-  padding: 10px 16px; font-size: .84em; color: var(--text2);
-  background: var(--card); border-radius: 8px; margin: 4px 16px;
-  border-left: 3px solid var(--accent); line-height: 1.8;
-}
-.rotated { transform: rotate(90deg) }
 </style>
