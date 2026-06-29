@@ -1659,6 +1659,48 @@ window.__MODULES__['spring'] = {
               "desc": "批量注册自定义方法到所有Mapper"
             }
           ]
+        },
+        {
+          "id": "saas系统与多租户架构深入-9-10-6",
+          "tag": "SaaS系统与多租户架构深入",
+          "desc": "SaaS(Software as a Service)多租户系统核心挑战:数据隔离(共享数据库+租户字段隔离/共享数据库+独立Schema/独立数据库三级模型)、租户定制(功能开关+配置差异化+UI主题)、计费与配额(订阅模型+用量计费+资源限额)、租户生命周期(注册→配置→使用→升级→降级→注销数据回收)",
+          "details": [
+            {
+              "id": "saas系统与多租户架构深入-9-10-6-d0",
+              "tag": "SaaS多租户隔离模型",
+              "desc": "三级隔离:①独立数据库(每个租户一个DB,隔离最强成本最高,适合金融/医疗合规要求);②共享数据库独立Schema(同一DB不同Schema,PostgreSQL/MySQL逻辑库,中等隔离中等成本);③共享数据库共享表(所有租户同一表用tenant_id字段区分,MP TenantLineInterceptor自动注入,成本最低灵活性最高但需防止租户数据泄漏)"
+            },
+            {
+              "id": "saas系统与多租户架构深入-9-10-6-d1",
+              "tag": "MyBatis-Plus多租户实战",
+              "desc": "TenantLineInnerInterceptor拦截所有SQL自动拼接tenant_id条件;实现TenantLineHandler接口:getTenantId()从上下文获取当前租户ID,getTableName()返回需隔离的表名,ignoreTable()排除公共表(如sys_config/sys_dict);多租户+分页Interceptor注册顺序:MultiTenant→Pagination→OptimisticLocker;新增数据自动填充tenant_id(TenantLineHandler.getTenantId())"
+            },
+            {
+              "id": "saas系统与多租户架构深入-9-10-6-d2",
+              "tag": "租户定制与功能开关",
+              "desc": "①功能开关(Feature Flag):租户订阅不同功能包(基础版/专业版/旗舰版),sys_tenant_feature表存储{tenantId→featureCode→enabled},Service层查开关决定是否执行;②配置差异化:sys_tenant_config存储租户级配置覆盖默认值(Logo/主题色/字段映射);③UI定制:租户级CSS+自定义字段+报表模板"
+            },
+            {
+              "id": "saas系统与多租户架构深入-9-10-6-d3",
+              "tag": "计费与配额管理",
+              "desc": "①订阅模型:月/年订阅+功能包(基础/专业/旗舰),sys_subscription表管理到期时间+自动续费;②用量计费:API调用次数/存储空间/用户数等按量计费,用量数据通过拦截器/日志采集;③资源配额:每个租户设置用户数上限/存储配额/并发限制,超配额自动限流+提醒升级;④账单:月度自动生成账单+对账+发票"
+            },
+            {
+              "id": "saas系统与多租户架构深入-9-10-6-d4",
+              "tag": "租户生命周期管理",
+              "desc": "①注册→试用:自动创建租户数据(初始化Schema/配置/默认管理员),提供试用期(14/30天);②试用→付费:升级功能包+数据保留无缝过渡;③降级:禁用高级功能但保留数据(只读/限制),提示重新订阅;④注销:软删除租户数据保留30天→到期硬删除+物理清理(数据库/缓存/OSS);⑤迁移:租户数据导出/导入支持从一个实例迁移到另一个"
+            },
+            {
+              "id": "saas系统与多租户架构深入-9-10-6-d5",
+              "tag": "租户数据安全与合规",
+              "desc": "①防租户数据泄漏:SQL层TenantInterceptor强制隔离+代码层Service校验tenantId匹配;②数据加密:敏感字段(手机号/身份证)AES加密存储+租户独立加密密钥;③审计日志:记录租户级操作日志(sys_audit_log含tenantId)支持合规审计;④数据备份:独立数据库模式按租户备份,共享模式按时间全量备份+增量按tenantId恢复;⑤GDPR/隐私:租户数据导出/删除请求合规处理"
+            },
+            {
+              "id": "saas系统与多租户架构深入-9-10-6-d6",
+              "tag": "SaaS架构演进与微服务",
+              "desc": "①单体SaaS→微服务拆分:租户管理/认证/计费/核心业务独立服务;②服务间租户上下文传递:HTTP Header(x-tenant-id)+JWT Claims(tenantId)在网关/拦截器中注入;③共享基础设施:Redis缓存租户级Namespace隔离,DB连接池按租户分组,OSS按租户分桶;④扩展性:热租户(大客户)可独立部署实例冷租户共享资源池;⑤Zero-Downtime升级:租户级灰度发布+功能开关渐进式上线"
+            }
+          ]
         }
       ]
     },
@@ -2740,6 +2782,133 @@ window.__MODULES__['spring'] = {
               "id": "springcloudbus-9-19-1-d4",
               "tag": "Nacos自带推送不需Bus/Spring Cloud Config需要Bus刷新",
               "desc": "Nacos Config长连接监听配置变更自动推送至客户端无需额外Bus组件;Spring Cloud Config需配合Bus+MQ(RabbitMQ/Kafka)广播/actuator/bus-refresh才能实现多节点配置动态刷新"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "9-21-spring-security与认证授权-9-20",
+      "title": "9.21 Spring Security与认证授权",
+      "points": [
+        {
+          "id": "springsecurity核心架构-9-20-0",
+          "tag": "Spring Security核心架构",
+          "desc": "Spring Security基于过滤器链(FilterChain)实现认证+授权,核心组件:SecurityFilterChain注册多个Filter按顺序执行(UsernamePasswordAuthenticationFilter→SecurityContextFilter→AuthorizationFilter),AuthenticationManager委托AuthenticationProvider认证(常用DaoAuthenticationProvider查UserDetailsService),SecurityContext持有认证信息供后续授权使用",
+          "details": [
+            {
+              "id": "springsecurity核心架构-9-20-0-d0",
+              "tag": "FilterChain机制",
+              "desc": "DelegatingFilterProxy桥接Servlet Filter与Spring Bean;SecurityFilterChain由多个Filter组成按优先级排序(FilterOrderRegistration定义顺序);自定义Filter插入指定位置(FilterOrderRegistration.ORDER);SecurityContextPersistenceFilter加载/清理SecurityContext;每个Filter处理特定职责(认证/授权/CORS/CSRF/异常)"
+            },
+            {
+              "id": "springsecurity核心架构-9-20-0-d1",
+              "tag": "Authentication认证流程",
+              "desc": "AuthenticationManager.authenticate()→委托Provider链;DaoAuthenticationProvider调用UserDetailsService.loadUserByUsername()查DB获取UserDetails→PasswordEncoder.matches()验证密码→成功创建UsernamePasswordAuthenticationToken放入SecurityContext;失败抛AuthenticationException→AuthenticationEntryPoint处理(401/跳转登录页)"
+            },
+            {
+              "id": "springsecurity核心架构-9-20-0-d2",
+              "tag": "Authorization授权机制",
+              "desc": "AuthorizationManager检查已认证用户是否有权限:①FilterBasedAuthorizationManager(AuthorizationFilter)拦截请求;②@PreAuthorize/@PostAuthorize注解方法级授权(Spel表达式);③hasRole/hasAuthority基于角色/权限;④自定义AuthorizationManager实现复杂规则(数据权限/租户隔离);5AccessDeniedException→AccessDeniedHandler处理(403)"
+            },
+            {
+              "id": "springsecurity核心架构-9-20-0-d3",
+              "tag": "SecurityContext与上下文传递",
+              "desc": "SecurityContextStrategy决定存储策略:MODE_THREADLOCAL(默认,线程隔离)/MODE_INHERITABLETHREADLOCAL(子线程继承)/MODE_GLOBAL(全局共享);SecurityContext通过SecurityContextHolder.getContext()获取;异步场景(@Async/CompletableFuture)需DelegatingSecurityContextRunnable/Callable传递上下文;Reactive用ReactiveSecurityContextHolder"
+            },
+            {
+              "id": "springsecurity核心架构-9-20-0-d4",
+              "tag": "自定义认证扩展",
+              "desc": "①自定义UserDetailsService:实现loadUserByUsername()查DB/Redis/LDAP返回UserDetails;②自定义AuthenticationProvider:短信验证码/第三方OAuth/指纹等多因素认证;③自定义Filter:JwtAuthenticationFilter解析Token→构建Authentication→放入Context;④自定义SuccessHandler/FailureHandler:登录成功返回JWT/失败返回错误码;⑤SecurityConfig.httpSecurity配置过滤器链"
+            },
+            {
+              "id": "springsecurity核心架构-9-20-0-d5",
+              "tag": "JWT与Token认证",
+              "desc": "①JWT(JSON Web Token):Header(Payload+Signature算法)→Payload(userId/tenantId/roles/exp)→Signature(HMAC-SHA256/RS256签名);②签发:登录成功JwtUtil.generateToken(userDetails)返回JWT;③验证:JwtAuthenticationFilter解析Token→验签→查Redis缓存(防伪造+过期)→构建Authentication;④刷新:双Token机制(accessToken短有效期+refreshToken长有效期);⑤无状态:JWT不依赖Session但需Redis做黑名单(强制登出/密码修改后旧Token失效)"
+            },
+            {
+              "id": "springsecurity核心架构-9-20-0-d6",
+              "tag": "密码安全与CSRF",
+              "desc": "①PasswordEncoder:BCrypt(默认自适应salt+10轮迭代)/SCrypt/PBKDF2,不可逆哈希存储;②DelegatingPasswordEncoder支持多编码格式迁移({bcrypt}前缀标识);③CSRF防护:CsrfFilter生成Token→前端表单隐藏字段/Cookie双提交,CORS跨域请求排除CSRF;④REST API通常禁用CSRF(无状态JWT不需要);⑤密码迁移:旧SHA→新BCrypt,DelegatingPasswordEncoder自动识别旧格式+下次登录升级编码"
+            }
+          ]
+        },
+        {
+          "id": "oauth2与oidc协议-9-20-1",
+          "tag": "OAuth2与OIDC协议",
+          "desc": "OAuth2授权框架让用户授权第三方应用访问其资源(不暴露密码),4种授权模式:Authorization Code(最安全,服务端应用),PKCE增强Authorization Code(移动端/SPA),Client Credentials(服务间调用),Resource Owner Password Credentials(已弃用);OIDC(OAuth2扩展)在AccessToken基础上增加IDToken(JWT格式含用户身份信息)实现认证",
+          "details": [
+            {
+              "id": "oauth2与oidc协议-9-20-1-d0",
+              "tag": "Authorization Code流程",
+              "desc": "①客户端重定向用户到授权服务器(/oauth2/authorize);②用户登录+同意授权;③授权服务器回调客户端(/oauth2/code)携带authorization_code;④客户端用code+client_secret换取access_token(/oauth2/token);⑤access_token访问资源API;PKCE增强:code_verifier(S256哈希)+code_challenge防code截获替换"
+            },
+            {
+              "id": "oauth2与oidc协议-9-20-1-d1",
+              "tag": "Token类型与生命周期",
+              "desc": "①Access Token:短期有效期(1-24h),Bearer类型Authorization:Bearer xxx;②Refresh Token:长期有效期(30-90d),仅一次使用换取新AccessToken+新RefreshToken(Rotation防止重放);③ID Token(OIDC):JWT格式含sub/name/email/aud/iss/exp,标识用户身份;④Token过期:access过期→用refresh换新;refresh过期→重新授权流程"
+            },
+            {
+              "id": "oauth2与oidc协议-9-20-1-d2",
+              "tag": "Spring Authorization Server",
+              "desc": "Spring官方OAuth2授权服务器(替代Spring Security OAuth已废弃);配置:RegisteredClient定义客户端(clientId/secret/redirectUri/scopes/grantTypes);AuthorizationServerSettings端点路径;TokenSettings定义token有效期/刷新策略;JWKSource签名密钥(RS256);OAuth2Authorization存储授权状态;支持Authorization Code+PKCE+Client Credentials+Refresh Token"
+            },
+            {
+              "id": "oauth2与oidc协议-9-20-1-d3",
+              "tag": "OIDC与身份认证",
+              "desc": "OIDC=OAuth2+身份认证层;ID Token(JWT):sub(用户唯一标识)/aud(客户端ID)/iss(授权服务器)/exp(过期)/iat(签发)/nonce(防重放);UserInfo端点:GET /userinfo返回用户详细信息;Scope:openid必须+profile/email/address可选;Claims Request:客户端指定需要的用户属性;验证ID Token:验签+验iss+验aud+验exp+验nonce"
+            },
+            {
+              "id": "oauth2与oidc协议-9-20-1-d4",
+              "tag": "资源服务器配置",
+              "desc": "ResourceServer配置验证Access Token:①JWT验证:本地验签(JWK Set公钥)无需调用授权服务器;②Introspection验证:调用授权服务器/oauth2/introspect端点校验Token(Opaque Token);③Spring Security oauth2ResourceServer().jwt()配置JWT验证;④权限映射:jwtAuthenticationConverter将JWT claims→GrantedAuthority;⑤scope权限:SCOPE_read/SCOPE_write映射为角色"
+            },
+            {
+              "id": "oauth2与oidc协议-9-20-1-d5",
+              "tag": "OAuth2安全最佳实践",
+              "desc": "①client_secret仅服务端使用,SPA/移动端用PKCE替代;②Redirect URI精确匹配防止开放重定向;③state参数防CSRF(随机值+回调验证);④Access Token短有效期+Refresh Token Rotation防泄漏;⑤Token不通过URL传递(用Authorization Header);⑥Scope最小权限原则;7PKCE的code_challenge_method=S256(SHA256哈希)而非plain"
+            }
+          ]
+        },
+        {
+          "id": "sso单点登录实现-9-20-2",
+          "tag": "SSO单点登录实现",
+          "desc": "SSO(Single Sign-On)一次登录多系统通行,核心机制:认证中心(CAS/OAuth2授权服务器)统一认证→颁发Token/Cookie→子系统验证Token有效性;退出时认证中心广播 logout 通知所有子系统清除Session;SSO协议:CAS(SAML-based票据模型)/OAuth2+OIDC(现代授权框架)/SAML2.0(XML企业级)/Cookie共享(同根域简化方案)",
+          "details": [
+            {
+              "id": "sso单点登录实现-9-20-2-d0",
+              "tag": "CAS协议流程",
+              "desc": "①用户访问子系统app1→未登录重定向到CAS认证中心(/login?service=app1_url);②CAS中心展示登录页→用户认证成功→生成Service Ticket(ST);③重定向回app1?ticket=ST-xxx;④app1后台用ST向CAS验证(/serviceValidate)→CAS确认ST有效返回用户信息;⑤app1创建本地Session;⑥用户访问app2→同样重定向CAS→CAS发现已有TGT(全局Session)→直接生成新ST→无需再次登录"
+            },
+            {
+              "id": "sso单点登录实现-9-20-2-d1",
+              "tag": "OAuth2/OIDC实现SSO",
+              "desc": "①用户访问子系统→未登录重定向OAuth2授权服务器;②授权服务器登录→颁发Authorization Code;③子系统用Code换Access Token+ID Token(OIDC);④ID Token含用户身份→子系统创建本地Session;⑤其他子系统→同样重定向→授权服务器发现已有全局Session→直接颁发新Code→无需再次登录;⑥优势:标准化+现代框架(Spring Authorization Server)支持"
+            },
+            {
+              "id": "sso单点登录实现-9-20-2-d2",
+              "tag": "SAML2.0企业级SSO",
+              "desc": "SAML=Security Assertion Markup Language(XML协议);①IdP(Identity Provider)统一认证中心;②SP(Service Provider)各子系统;③用户访问SP→SP生成SAML AuthnRequest→重定向IdP;④IdP认证→返回SAML Response(数字签名XML含用户属性);⑤SP验证签名+断言→创建本地Session;⑥SAML优势:企业AD/LDAP集成强+数字签名安全+属性丰富;缺点:XML复杂+配置难+移动端不友好"
+            },
+            {
+              "id": "sso单点登录实现-9-20-2-d3",
+              "tag": "同根域Cookie共享方案",
+              "desc": "最简SSO方案(适用于同一根域名如a.company.com+b.company.com):①认证中心登录成功→设置Cookie domain=.company.com(跨子域共享);②Cookie值=加密Token(JWT或sessionId);③子系统读取Cookie→验证Token有效性→创建本地Session;④退出:认证中心删除Cookie+调用子系统logout接口;⑤限制:仅同根域有效,跨域需CAS/OAuth2/SAML;⑥安全:Cookie HttpOnly+Secure+SameSite=None(跨域需HTTPS)"
+            },
+            {
+              "id": "sso单点登录实现-9-20-2-d4",
+              "tag": "SSO退出与Session同步",
+              "desc": "①单点退出(SLO):认证中心logout→广播通知所有子系统(回调URL/消息队列/前端轮询)清除Session;②CAS Single Logout:认证中心发送POST logout请求到所有注册子系统;③OAuth2退出:授权服务器delete Token+子系统delete Session;④部分退出:仅退出当前子系统不清除全局Session(用户仍可免登访问其他系统);⑤前端方案:共享localStorage Token→一个系统退出→前端广播清除所有Tab的Token"
+            },
+            {
+              "id": "sso单点登录实现-9-20-2-d5",
+              "tag": "Spring Security SSO实战",
+              "desc": "①OAuth2 Client集成:spring-security-oauth2-client依赖;②SecurityConfig.oauth2Login()配置授权服务器端点;③application.yml注册OAuth2 Client(clientId/secret/redirectUri/issuer-uri);④OAuth2UserService自定义用户映射(OIDC claims→本地UserDetails);⑤多Client多授权服务器:注册多个Client配置;⑥前端SPA:后端/oauth2/authorize重定向→授权→回调→获取Token→前端存储Token+API请求带Authorization Header"
+            },
+            {
+              "id": "sso单点登录实现-9-20-2-d6",
+              "tag": "SSO安全与常见问题",
+              "desc": "①Token/ST一次性使用防重放攻击(CAS ST验证后立即失效);②重定向URI白名单防开放重定向漏洞;③CSRF防护:state参数(OAuth2)/SAML RelayState;④时钟同步:JWT/SAML签名验证需时钟同步(允许±30s偏差);⑤跨域Cookie:SameSite=None+HTTPS+前端代理;⑥Session固定攻击:登录后重新生成sessionId;⑦降级策略:认证中心宕机→子系统本地Token缓存短期可用+告警通知"
             }
           ]
         }

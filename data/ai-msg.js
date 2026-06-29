@@ -395,6 +395,53 @@ window.__MODULES__['ai-framework'] = {
               "desc": "长任务中断后恢复能力将Agent状态(已完成步骤中间结果)持久化存储支持断点续执行"
             }
           ]
+        },
+        {
+          "id": "ai-coding-agent实战技巧-32-1-4",
+          "tag": "AI Coding Agent实战技巧",
+          "desc": "AI编程Agent(Claude Code/Codex/Cursor/Copilot)是LLM驱动的代码生成与编辑工具,理解自然语言指令→定位代码→生成修改→验证结果。核心能力:上下文感知(读取项目文件/理解架构),工具调用(文件读写/终端执行/Git操作/搜索),多步推理(规划→执行→验证循环),权限模型(自动/建议/手动审批层级)",
+          "details": [
+            {
+              "id": "ai-coding-agent实战技巧-32-1-4-d0",
+              "tag": "Claude Code",
+              "desc": "Anthropic官方CLI,支持自然语言→代码编辑/终端执行/Git操作/搜索;核心命令:claude(启动对话),claude code(编程模式),/compact(压缩上下文),/clear(清除历史);权限模式:auto(自动执行)/plan(先规划再执行)/suggest(建议模式);MCP协议接入外部工具(GitHub/Jira/数据库);Agent SDK构建自定义Agent流程"
+            },
+            {
+              "id": "ai-coding-agent实战技巧-32-1-4-d1",
+              "tag": "Codex",
+              "desc": "OpenAI CLI编程Agent,codex --approval-mode suggest/auto/full控制执行权限;基于Codex模型(代码专项优化),沙箱环境执行命令隔离风险;支持多文件编辑+终端命令+代码搜索;任务驱动:描述需求→Agent自动规划步骤→逐步执行→验证结果"
+            },
+            {
+              "id": "ai-coding-agent实战技巧-32-1-4-d2",
+              "tag": "Cursor",
+              "desc": "VSCode分支IDE,Tab补全(inline suggestion按Tab接受),Chat面板(自然语言对话生成代码),Cmd+K内联编辑(选中代码→描述修改→直接替换);Composer模式(多文件协同编辑自动关联依赖);.cursorrules项目级配置文件约束AI行为规范;Agent模式(自动搜索文件+执行命令+多步推理)"
+            },
+            {
+              "id": "ai-coding-agent实战技巧-32-1-4-d3",
+              "tag": "GitHub Copilot",
+              "desc": "VSCode/JetBrains插件,Tab补全(单行/多行/整个函数),Copilot Chat(对话生成+解释+调试),Copilot Edits(多文件编辑预览),Copilot Agent(自动任务执行);@workspace引用项目上下文,#file引用特定文件;企业版支持知识库+政策控制+IP保护"
+            },
+            {
+              "id": "ai-coding-agent实战技巧-32-1-4-d4",
+              "tag": "使用技巧",
+              "desc": "①描述具体而非模糊:'将OrderService的getAll方法改为分页查询'比'修改查询'好;②分步指令:复杂任务拆为多轮对话而非一次性大请求;③提供上下文:指明文件名/类名/方法名减少Agent搜索开销;④审查输出:Agent可能引入微妙bug/安全漏洞,必须Review+测试;⑤CLAUDE.md/.cursorrules:项目级配置约束Agent遵循团队规范"
+            },
+            {
+              "id": "ai-coding-agent实战技巧-32-1-4-d5",
+              "tag": "Agent工作模式",
+              "desc": "Plan→Execute→Verify循环:①Agent理解需求→搜索相关文件→规划修改步骤(Plan);②逐步执行修改(创建/编辑/删除文件,运行命令)(Execute);③验证结果(读文件确认/运行测试/检查错误)(Verify);失败时回退或调整策略重新尝试;权限控制:危险操作(删除/推送/生产部署)需人工审批"
+            },
+            {
+              "id": "ai-coding-agent实战技巧-32-1-4-d6",
+              "tag": "MCP协议与Agent扩展",
+              "desc": "MCP(Model Context Protocol)标准协议让Agent接入外部工具:GitHub(读PR/创建Issue/搜索代码),数据库(查询数据/分析表结构),Jira(读任务/更新状态),浏览器(搜索文档/获取API说明);Claude Code通过MCP Server连接,Agent SDK构建自定义MCP工具;Cursor/Codex也支持类似扩展机制"
+            },
+            {
+              "id": "ai-coding-agent实战技巧-32-1-4-d7",
+              "tag": "常见踩坑与最佳实践",
+              "desc": "①上下文溢出:项目太大时Agent遗漏关键文件→用CLAUDE.md/.cursorrules标注重点路径;②幻觉代码:Agent引用不存在API/库→必须编译验证+测试覆盖;③盲目修改:Agent理解偏差→用plan模式先看步骤再确认执行;④安全风险:Agent可能引入SQL注入/XSS→人工Review安全敏感代码;⑤版本冲突:多Agent同时编辑→Git分支隔离+及时合并"
+            }
+          ]
         }
       ]
     },

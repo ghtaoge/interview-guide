@@ -2470,6 +2470,48 @@ window.__MODULES__['scene'] = {
               "desc": "admin角色dataScope=ALL→Interceptor跳过过滤→可看全部数据"
             }
           ]
+        },
+        {
+          "id": "文件分片上传断点续传秒传-16-1-54",
+          "tag": "文件分片上传/断点续传/秒传",
+          "desc": "大文件上传三大核心机制:①分片上传(Chunked Upload)将大文件按固定大小(如5MB)切片并行上传提升速度+降低超时风险;②断点续传(Resumable Upload)记录已上传分片状态,中断后从断点继续而非从头重传;③秒传(Instant Upload)计算文件MD5/SHA256哈希,服务端比对已有文件哈希匹配则直接返回成功无需实际传输",
+          "details": [
+            {
+              "id": "文件分片上传断点续传秒传-16-1-54-d0",
+              "tag": "分片上传原理",
+              "desc": "前端用Blob.slice()将文件按chunkSize(2-5MB)切割为N个分片,每个分片独立HTTP请求上传(可并行3-5路);服务端按{fileHash+chunkIndex}存储分片到临时目录,全部上传完成后触发merge接口合并分片为完整文件;优势:单请求失败仅重传该分片,并行上传加速,避免大文件单请求超时"
+            },
+            {
+              "id": "文件分片上传断点续传秒传-16-1-54-d1",
+              "tag": "断点续传实现",
+              "desc": "①上传前先请求服务端已上传分片列表(verify接口);②前端跳过已上传分片只传缺失的;③服务端用Redis/DB记录{fileHash→已上传chunkIndex列表};④每片上传成功后更新已上传记录;⑤中断恢复时重新调用verify获取断点继续;⑥合并前检查所有分片完整性(数量+大小校验)"
+            },
+            {
+              "id": "文件分片上传断点续传秒传-16-1-54-d2",
+              "tag": "秒传原理",
+              "desc": "前端计算文件整体MD5/SHA-256(spark-md5库分片增量计算避免内存溢出),上传前将fileHash发送至服务端;服务端比对已有文件hash(DB/缓存存储fileHash→filePath映射),匹配则直接返回success+filePath无需传输任何分片;大文件秒传命中率可达60-70%(重复文件/模板/镜像)"
+            },
+            {
+              "id": "文件分片上传断点续传秒传-16-1-54-d3",
+              "tag": "文件哈希计算",
+              "desc": "小文件(<100MB)可直接MD5;大文件用增量哈希:将文件分片逐块送入MD5/SHA-256计算器(spark-md5/WebCrypto),避免一次性读入内存溢出;浏览器端计算耗时可用Web Worker避免阻塞UI;同时可抽样哈希(取首中尾若干块计算)作为快速秒传预判,匹配后再全量校验"
+            },
+            {
+              "id": "文件分片上传断点续传秒传-16-1-54-d4",
+              "tag": "分片合并策略",
+              "desc": "服务端合并:①按chunkIndex顺序读取分片→追加写入目标文件(fs.appendFile/流式合并);②合并完校验文件总大小+整体MD5与前端传来的fileHash对比;③合并成功删除临时分片目录;④大文件合并耗时长用异步流式合并避免阻塞;⑤OSS/Minio可直接拼接分片无需本地合并(Compose Object API)"
+            },
+            {
+              "id": "文件分片上传断点续传秒传-16-1-54-d5",
+              "tag": "并发控制与错误重试",
+              "desc": "前端并发池控制:同时最多3-5路并行上传,用Promise池/p-limit库管理;单分片失败自动重试3次(指数退避:1s→2s→4s);服务端幂等:同一{fileHash+chunkIndex}重复上传不报错(分片已存在则跳过);超时策略:单分片上传timeout 30s,3次失败后整体暂停提示用户;网络恢复后自动从断点继续"
+            },
+            {
+              "id": "文件分片上传断点续传秒传-16-1-54-d6",
+              "tag": "OSS/Minio分片上传",
+              "desc": "对象存储原生支持Multipart Upload:①InitiateMultipartUpload获取uploadId;②UploadPart按uploadId+partNumber上传分片,OSS自动存储;③CompleteMultipartUpload按partNumber顺序提交合并;④AbortMultipartUpload取消清理;⑤优势:服务端无需自建分片存储,OSS直接管理分片生命周期;⑥Minio/S3/Huawei OBS均兼容此协议"
+            }
+          ]
         }
       ]
     },
