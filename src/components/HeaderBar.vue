@@ -1,7 +1,7 @@
 <template>
   <header class="header" :class="{ compact: isCompact }">
     <div class="header-top">
-      <h1>📖 {{ config.ui.title }} <small style="font-size:.5em;opacity:.5">v{{ config.ui.version }}</small></h1>
+      <h1>🧠 {{ config.ui.title }} <small style="font-size:.5em;opacity:.5">v{{ config.ui.version }}</small></h1>
       <ThemeToggle />
     </div>
     <p class="header-desc">共 {{ modulesStore.totalModules }} 大模块 · {{ modulesStore.totalPoints }} 个知识点</p>
