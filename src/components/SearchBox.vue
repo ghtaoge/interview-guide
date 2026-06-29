@@ -67,6 +67,9 @@ function onClear() {
 .search-box.mobile:focus-within {
   width: 100%; box-shadow: none;
 }
+.search-box.mobile input:focus {
+  background: rgba(255,255,255,.25); border-color: rgba(255,255,255,.5); color: #fff;
+}
 .search-box input {
   width: 100%; padding: 10px 16px 10px 38px; border: 2px solid transparent;
   border-radius: 24px; font-size: 14px; outline: none;
@@ -75,8 +78,9 @@ function onClear() {
 }
 .search-box.mobile input {
   border-radius: 20px; padding: 6px 12px 6px 30px; font-size: 14px; min-height: 32px;
-  background: rgba(255,255,255,.96); color: #1a1a1a;
+  background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.3);
 }
+.search-box.mobile input::placeholder { color: rgba(255,255,255,.6) }
 .search-box input:focus {
   box-shadow: 0 2px 16px rgba(52,112,255,.25); background: #fff; border-color: #3470ff; color: #1a1a1a;
 }
