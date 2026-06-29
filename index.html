@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>全栈面试宝典 v2.6</title>
+<title>全栈面试宝典 v2.7</title>
 <style>
 
 :root{--c0:#6366f1;--c1:#ef4444;--c2:#f59e0b;--c3:#10b981;--c4:#3b82f6;--c5:#a855f7;--c6:#f97316;--c7:#14b8a6;--c8:#dc2626;--c9:#059669;--c10:#2563eb;--c11:#ea580c;--c12:#0ea5e9;--c13:#d946ef;--c14:#f472b6;--c15:#8b5cf6;--c16:#e11d48;--c17:#22d3ee;--c18:#c084fc;--c19:#8b5cf6;--c20:#0ea5e9;--c21:#dc2626;--c22:#7c3aed;--c23:#f97316;--c24:#059669;--c25:#6366f1;--c26:#3b82f6;--c27:#ef4444;--c28:#10b981;--c29:#f59e0b;--c30:#a855f7;--c31:#f97316;--c32:#ef4444;--bg:#f0f4f8;--card:#fff;--text:#1a202c;--text2:#4a5568;--text3:#94a3b8;--border:#e2e8f0;--accent:#0d9488;--accent2:#e8833a;--radius:16px;--radius-sm:10px;--shadow:0 2px 12px rgba(0,0,0,.06);--c33:#f59e0b;--c34:#14b8a6;--c35:#ef4444;--c36:#059669;--c37:#3b82f6;--c38:#8b5cf6;--c39:#0ea5e9;--c40:#a855f7}
@@ -151,7 +151,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .dark .back-top{background:#065f46}
 /* Quick Nav Panel */
 .quick-nav{position:fixed;top:50%;right:8px;transform:translateY(-50%);z-index:99;display:flex;flex-direction:column;gap:5px;opacity:.7;transition:opacity .2s}
-.quick-nav:hover{opacity:1}
+.quick-nav:hover{opacity: 1}
 .quick-nav a{width:10px;height:10px;border-radius:50%;background:var(--border);transition:all .25s;display:block;position:relative;cursor:pointer}
 .quick-nav a.active{transform:scale(1.6);box-shadow:0 0 6px rgba(0,0,0,.2)}
 .quick-nav a:hover{transform:scale(1.8);box-shadow:0 0 8px rgba(52,112,255,.4)}
@@ -272,42 +272,76 @@ body.edit-mode .edit-mode-tip{display:block}
 .dark .menu-item:hover{background:#263548;color:#6ee7b7}
 .dark .menu-item.danger:hover{background:rgba(239,68,68,.12);color:#ef4444}
 
+/* ===== 移动端全面优化 v2.7 ===== */
 @media(max-width:600px){
-.header{padding:24px 16px 20px}
-.header h1{font-size:1.4em}
-.search-box input{font-size:12px;padding:6px 12px 6px 32px}
-.toolbar button{padding:4px 10px;font-size:10px}
+/* — Header 重构 — */
+.header{padding:20px 12px 16px;position:relative}
+.header h1{font-size:1.25em;margin-bottom:4px;letter-spacing:1px}
+.header p{font-size:.72em;opacity:.7}
+.header-dark-toggle{right:8px;top:8px;width:26px;height:26px;font-size:.72em}
+/* — 搜索框放大重构 — */
+.search-box{max-width:100%;margin:8px auto 0}
+.search-box input{font-size:15px;padding:10px 14px 10px 40px;border-radius:24px;background:rgba(255,255,255,.94);box-shadow:0 2px 12px rgba(0,0,0,.1);min-height:42px}
+.search-box::before{left:14px;font-size:14px;top:50%}
+.search-box .count{font-size:10px;right:14px;padding:3px 8px;border-radius:8px}
+.search-box.has-value .count{right:52px}
+.search-clear{right:36px;width:22px;height:22px;font-size:.7em}
+/* — Toolbar 重构：两行布局 — */
+.toolbar{max-width:100%;margin:10px 0 0;gap:5px;flex-wrap:wrap;justify-content:center;align-items:center}
+.toolbar button{padding:6px 12px;font-size:11px;border-radius:20px;min-height:32px;font-weight:500;letter-spacing:.3px}
+#tag-select{font-size:12px;padding:6px 10px;border-radius:20px;min-height:32px;max-width:120px}
+/* — More Menu 触控友好 — */
+.more-btn{width:32px;height:32px;font-size:1em;border-radius:50%}
+.more-menu{min-width:150px;right:-6px;top:calc(100% + 8px)}
+.menu-item{padding:12px 16px;font-size:14px;border-radius:10px}
+/* — Container — */
 .container{padding:0 10px 60px}
-.module-head{font-size:.95em;padding:13px 16px}
-.module-head .badge{font-size:.65em;padding:1px 7px}
-.sub-head{padding:10px 16px 10px 20px;font-size:.85em}
-.sub-head .count{font-size:.65em;padding:1px 8px}
-.points{padding:4px 12px 10px}
-/* 移动端 point 行精简：has-detail 只显示 tag + expand-hint，desc 隐藏 */
-.point{font-size:.85em;padding:8px 10px}
-.point-row{gap:6px;align-items:center}
+/* — Module Cards — */
+.module{margin-bottom:14px;border-radius:12px}
+.module-head{font-size:.92em;padding:12px 14px}
+.module-head .badge{font-size:.62em;padding:1px 6px;border-radius:6px}
+.module-head .icon{font-size:.9em}
+.module-head .arrow{font-size:.65em}
+.module-head .edit-btn-group{right:36px}
+/* — Sub-head — */
+.sub-head{padding:9px 14px 9px 18px;font-size:.82em}
+.sub-head .count{font-size:.62em;padding:1px 8px}
+.sub-head .arrow{font-size:.6em}
+/* — Points — */
+.points{padding:3px 10px 8px}
+.point{font-size:.84em;padding:7px 10px;margin:4px 0;border-radius:8px}
+.point-row{gap:4px;align-items:center}
 .point .tag{border-right:none;padding-right:0;margin-right:0;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .point.has-detail:not(.open) .desc{display:none}
-.point.has-detail.open .desc{display:block;margin-top:4px;font-size:.85em;line-height:1.6}
-.point.has-detail .expand-hint{font-size:.6em;padding:2px 7px;margin-left:4px}
+.point.has-detail.open .desc{display:block;margin-top:3px;font-size:.84em;line-height:1.55}
+.point.has-detail .expand-hint{font-size:.58em;padding:2px 6px;margin-left:2px;border-radius:8px}
 .point.has-detail .desc{padding-right:0}
 /* 非 has-detail 的 point: desc 截断一行 */
 .point:not(.has-detail) .tag{flex-shrink:0;min-width:fit-content}
 .point:not(.has-detail) .desc{max-height:1.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;-webkit-line-clamp:1}
-.header-dark-toggle{right:8px;top:8px;width:24px;height:24px;font-size:.7em}
-.cat-btn{padding:6px 14px;font-size:12px}
-.cat-menu{min-width:140px;left:0;transform:translateX(0) scale(.95)}
-.cat-menu.open{transform:translateX(0) scale(1)}
+/* — Detail Items — */
+.detail-list{padding:4px}
+.detail-item{font-size:.86em;padding:9px 10px 9px 36px;margin:3px 0;border-radius:8px}
+.detail-item::before{left:8px;width:16px;height:16px;font-size:.6em}
+.detail-item.has-sub{padding-right:30px;padding:8px 30px 8px 36px}
+.detail-item .sub-arrow{right:8px;width:16px;height:16px}
+.detail-item .sub-detail{margin:8px 0 2px -6px;padding:8px 12px;font-size:.82em;border-radius:6px}
+.detail-toggle{font-size:.76em;padding:6px 0}
+/* — Header Compact — */
+.header.compact{padding:10px 12px 8px}
+.header.compact h1{font-size:1em;margin-bottom:0}
+.header.compact .header-dark-toggle{width:22px;height:22px;font-size:.6em}
+.header.compact .search-box input{padding:8px 12px 8px 36px;min-height:36px;font-size:14px}
+.header.compact .toolbar{margin:6px 0 0}
+/* — Others — */
+.back-top{bottom:16px;right:16px;width:38px;height:38px;font-size:1em;border-radius:50%}
 .quick-nav{display:none}
-.back-top{bottom:16px;right:16px;width:38px;height:38px}
-.detail-item{font-size:.88em;padding:10px 12px 10px 40px;margin:4px 0}
-.detail-list{padding:6px}
-.detail-toggle{font-size:.78em;padding:8px 0}
-.progress-stats{font-size:.55em;left:8px}
-.edit-btn-group{opacity:.6}
-.module-head .edit-btn-group{right:40px}
-.more-btn{width:28px;height:28px;font-size:.9em}
-.toolbar{gap:4px}
+.progress-stats{font-size:.52em;left:6px;bottom:4px}
+.cat-btn{padding:6px 14px;font-size:12px;border-radius:20px;min-height:32px}
+.cat-menu{min-width:150px;left:0;transform:translateX(0) scale(.95);max-height:280px;border-radius:12px}
+.cat-menu.open{transform:translateX(0) scale(1)}
+.edit-btn-group{opacity:.5}
+.edit-modal-box{padding:16px;border-radius:12px}
 }
 
 </style>
@@ -330,7 +364,7 @@ body.edit-mode .edit-mode-tip{display:block}
 <div id="main-content" style="display:none;">
   <div class="header">
     <button class="header-dark-toggle" id="header-dark-btn" onclick="toggleDark()" title="切换暗黑模式 (Ctrl+D)">🌙</button>
-    <h1>📖 全栈面试宝典 <small style="font-size:.5em;opacity:.5">v2.6</small></h1>
+    <h1>📖 全栈面试宝典 <small style="font-size:.5em;opacity:.5">v2.7</small></h1>
     <p id="header-desc"></p>
     <div class="search-box">
       <input type="text" id="search" placeholder="搜索知识点... 如 HashMap / CAS / GC / Redis...">
@@ -360,7 +394,7 @@ body.edit-mode .edit-mode-tip{display:block}
           <option value="分布式系统">🚀 分布式系统</option>
           <option value="高性能">⚡ 高性能</option>
           <option value="高可用">🛡️ 高可用</option>
-          <option value="面试准备">📋 面试准备</option>
+          <option value="面试准备">📋 靟试准备</option>
           <option value="ElasticSearch">🔍 ElasticSearch</option>
           <option value="MongoDB">🍃 MongoDB</option>
           <option value="PostgreSQL">🐘 PostgreSQL</option>
