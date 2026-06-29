@@ -48,7 +48,9 @@ window.__MODULE_CONFIG__ = {
     { id: "easyexcel", file: "data/tools-spec.js", order: 38, tag: "EasyExcel" },
     { id: "coding-standards", file: "data/tools-spec.js", order: 39, tag: "编程规范" },
     { id: "performance-optimization", file: "data/tools-spec.js", order: 40, tag: "性能优化" },
-    { id: "data-structures", file: "data/tools-spec.js", order: 41, tag: "数据结构" }
+    { id: "data-structures", file: "data/tools-spec.js", order: 41, tag: "数据结构" },
+    { id: "git", file: "data/devops.js", order: 42, tag: "Git" },
+    { id: "cicd", file: "data/devops.js", order: 43, tag: "CI/CD" }
   ],
   admin: {
     // 替换下方哈希值为你的实际密码哈希
@@ -59,6 +61,6 @@ window.__MODULE_CONFIG__ = {
   },
   ui: {
     title: "全栈面试宝典",
-    version: "2.2"
+    version: "2.8"
   }
 };
