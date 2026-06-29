@@ -2150,3 +2150,282 @@ window.__MODULES__['nginx'] = {
     }
   ]
 };
+
+window.__MODULES__['git'] = {
+  "id": "git",
+  "title": "四十二、Git 版本控制",
+  "tag": "Git",
+  "order": 42,
+  "icon": "🔧",
+  "cssIndex": 41,
+  "subs": [
+    {
+      "id": "42-1-git基础概念与命令-42-0",
+      "title": "42.1 Git 基础概念与命令",
+      "points": [
+        {
+          "id": "git核心概念-42-0-0",
+          "tag": "Git 核心概念",
+          "desc": "工作区(Working Directory)→暂存区(Staging Area/Index)→版本库(Repository/.git)→远程库(Remote)。git add将工作区修改存入暂存区,git commit将暂存区快照存入版本库,git push推送到远程库,git pull从远程拉取合并。每次提交用SHA-1哈希(40位)唯一标识,HEAD指向当前分支最新提交。",
+          "details": [
+            { "id": "git核心概念-42-0-0-d0", "tag": "工作区与暂存区", "desc": "工作区是项目目录,暂存区(.git/index)记录即将提交的文件快照,版本库(.git/objects)存储所有提交历史和对象" },
+            { "id": "git核心概念-42-0-0-d1", "tag": "Git对象模型", "desc": "blob(文件内容),tree(目录结构),commit(提交信息+父提交),tag(标签指向commit),所有对象用SHA-1哈希标识不可变" },
+            { "id": "git核心概念-42-0-0-d2", "tag": "基本流程", "desc": "git add→git commit→git push三步提交流程,git pull=git fetch+git merge拉取并合并,git clone克隆远程仓库" },
+            { "id": "git核心概念-42-0-0-d3", "tag": "HEAD与分支", "desc": "HEAD指向当前分支最新commit,切换分支时HEAD移动到目标分支, detached HEAD指向具体commit而非分支" },
+            { "id": "git核心概念-42-0-0-d4", "tag": "远程仓库", "desc": "origin默认远程仓库别名,git remote -v查看远程地址,git remote add添加新远程,支持多个远程仓库(如origin+upstream)" }
+          ]
+        },
+        {
+          "id": "git常用命令详解-42-0-1",
+          "tag": "Git 常用命令详解",
+          "desc": "git status查看工作区/暂存区状态,git diff对比差异(工作区vs暂存区/暂存区vs版本库/两个commit间),git log查看提交历史(--oneline精简/--graph分支图/--author按人),git reset回退版本(--soft保留暂存/--mixed重置暂存/--hard彻底回退),git revert生成新commit撤销指定提交。",
+          "details": [
+            { "id": "git常用命令详解-42-0-1-d0", "tag": "git status", "desc": "查看工作区和暂存区文件状态,Untracked(未跟踪)/Modified(已修改未暂存)/Staged(已暂存未提交)/Unmodified(已提交未修改)" },
+            { "id": "git常用命令详解-42-0-1-d1", "tag": "git diff", "desc": "git diff工作区vs暂存区,git diff --staged暂存区vs版本库,git diff commit1 commit2两个提交间对比" },
+            { "id": "git常用命令详解-42-0-1-d2", "tag": "git log", "desc": "--oneline一行精简,--graph分支拓扑图,--author按作者过滤,--since/--until按时间范围,--grep搜索提交消息" },
+            { "id": "git常用命令详解-42-0-1-d3", "tag": "git reset --soft", "desc": "回退HEAD到指定commit但保留暂存区和工作区修改,相当于撤销commit不撤销add" },
+            { "id": "git常用命令详解-42-0-1-d4", "tag": "git reset --mixed", "desc": "回退HEAD+重置暂存区但保留工作区修改(默认模式),相当于撤销commit+撤销add" },
+            { "id": "git常用命令详解-42-0-1-d5", "tag": "git reset --hard", "desc": "彻底回退HEAD+暂存区+工作区到指定commit,所有修改丢弃不可恢复(除非用reflog找回)" },
+            { "id": "git常用命令详解-42-0-1-d6", "tag": "git revert", "desc": "生成新commit撤销指定commit的修改,不修改历史(安全用于公共分支),多次revert按时间倒序执行" },
+            { "id": "git常用命令详解-42-0-1-d7", "tag": "git blame", "desc": "逐行显示文件每行最后修改的commit+作者+时间,定位问题代码引入者和时间点" }
+          ]
+        },
+        {
+          "id": "git分支管理-42-0-2",
+          "tag": "分支管理",
+          "desc": "git branch创建/列出/删除分支,git switch/checkout切换分支,git merge合并分支(fast-forward快进合并/三方合并+冲突解决)。rebase变基使提交历史线性化(不产生合并commit)vs merge保留分支历史(有合并commit)。git cherry-pick拣选特定commit到当前分支。",
+          "details": [
+            { "id": "git分支管理-42-0-2-d0", "tag": "fast-forward合并", "desc": "当被合并分支没有新提交时,HEAD直接快进到目标分支的最新commit,不产生合并commit(可--no-ff禁止)" },
+            { "id": "git分支管理-42-0-2-d1", "tag": "三方合并", "desc": "两个分支各有新提交时,找到共同祖先commit做三方合并生成合并commit,可能产生冲突需手动解决" },
+            { "id": "git分支管理-42-0-2-d2", "tag": "冲突解决", "desc": "冲突文件标记<<<<<<< HEAD / ======= / >>>>>>> branch,手动编辑选择保留内容后git add+git commit完成合并" },
+            { "id": "git分支管理-42-0-2-d3", "tag": "rebase变基", "desc": "将当前分支的commit重新应用到目标分支之上使历史线性化,避免合并commit但改写历史不可用于已推送的公共分支" },
+            { "id": "git分支管理-42-0-2-d4", "tag": "merge vs rebase", "desc": "merge保留完整分支历史(适合公共分支),rebase产生线性历史(适合本地分支整理),黄金法则:已推送的分支不要rebase" },
+            { "id": "git分支管理-42-0-2-d5", "tag": "cherry-pick", "desc": "git cherry-pick commit-hash将指定commit应用到当前分支,用于紧急hotfix拣选或跨分支选择性合并" },
+            { "id": "git分支管理-42-0-2-d6", "tag": "分支策略", "desc": "长期分支(main/develop)持续存在,短期分支(feature/hotfix)完成任务后删除,保护分支(main)禁止直接push只能PR合并" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "42-2-git进阶与协作-42-1",
+      "title": "42.2 Git 进阶与协作",
+      "points": [
+        {
+          "id": "git工作流-42-1-0",
+          "tag": "Git 工作流",
+          "desc": "Git Flow(master/develop/feature/release/hotfix五分支模型,适合有计划发布周期项目)。GitHub Flow(main+feature分支+PR简洁模型,适合持续部署项目)。Trunk Based Development主干开发+短期特性分支(每天合并主干,适合CI/CD成熟团队)。",
+          "details": [
+            { "id": "git工作流-42-1-0-d0", "tag": "Git Flow", "desc": "master生产分支+develop开发分支+feature功能分支+release预发布分支+hotfix紧急修复分支,有计划发布周期适合传统项目" },
+            { "id": "git工作流-42-1-0-d1", "tag": "GitHub Flow", "desc": "main分支随时可部署+feature分支开发+Pull Request代码审查+合并后自动部署,简洁适合持续部署Web项目" },
+            { "id": "git工作流-42-1-0-d2", "tag": "Trunk Based", "desc": "所有人在main/trunk上开发或极短期feature分支(不超过1天),每天至少合并一次主干,适合CI/CD成熟+自动化测试完备的团队" },
+            { "id": "git工作流-42-1-0-d3", "tag": "选择策略", "desc": "小型团队→GitHub Flow简洁高效,中型团队→Git Flow有秩序,大型成熟团队→Trunk Based快速迭代,核心看发布频率和自动化程度" }
+          ]
+        },
+        {
+          "id": "远程协作-42-1-1",
+          "tag": "远程协作",
+          "desc": "git remote管理远程仓库(origin默认/upstream上游)。git fetch拉取远程更新不合并(安全查看),git pull=fetch+merge拉取并合并(可能冲突)。Pull Request/MR代码审查流程(创建→讨论→修改→合并→删除分支)。SSH密钥认证vs HTTPS认证。",
+          "details": [
+            { "id": "远程协作-42-1-1-d0", "tag": "git remote", "desc": "origin默认远程仓库别名,git remote -v查看地址,git remote add upstream添加上游仓库,fork+upstream模式协作" },
+            { "id": "远程协作-42-1-1-d1", "tag": "fetch vs pull", "desc": "git fetch只拉取远程更新到本地远程分支不合并(安全查看变更),git pull=fetch+merge直接合并到当前分支(可能冲突)" },
+            { "id": "远程协作-42-1-1-d2", "tag": "Pull Request", "desc": "GitHub PR流程:fork→clone→branch→commit→push→创建PR→代码审查→修改→合并→删除feature分支" },
+            { "id": "远程协作-42-1-1-d3", "tag": "SSH vs HTTPS", "desc": "SSH免密码推送(ssh-keygen生成密钥+添加到GitHub),HTTPS每次推送需输入密码(或用credential helper缓存),企业多用SSH" },
+            { "id": "远程协作-42-1-1-d4", "tag": "代码审查", "desc": "PR审查要点:代码风格/逻辑正确性/边界条件/安全风险/性能影响,用CODEOWNERS指定必须审查人,CI检查通过后才允许合并" }
+          ]
+        },
+        {
+          "id": "git撤销与回退-42-1-2",
+          "tag": "撤销与回退",
+          "desc": "git stash暂存未提交修改(多个stash可命名管理)。git checkout撤销工作区单个文件修改。git reset --soft/--mixed/--hard三种回退强度。git reflog记录所有HEAD移动历史可找回丢失的commit。",
+          "details": [
+            { "id": "git撤销与回退-42-1-2-d0", "tag": "git stash", "desc": "暂存工作区+暂存区修改(stash栈),git stash pop恢复并删除,git stash list查看所有stash,git stash apply恢复不删除" },
+            { "id": "git撤销与回退-42-1-2-d1", "tag": "撤销工作区修改", "desc": "git checkout -- file撤销单个文件工作区修改(不可恢复),git checkout HEAD -- file恢复到最新commit版本" },
+            { "id": "git撤销与回退-42-1-2-d2", "tag": "撤销暂存区", "desc": "git reset HEAD file将文件从暂存区撤回工作区(Unstage),等同于git restore --staged file" },
+            { "id": "git撤销与回退-42-1-2-d3", "tag": "git reflog", "desc": "记录所有HEAD移动历史(默认90天),git reflog查看+git reset/reflog找回误删commit或--hard回退前的状态" },
+            { "id": "git撤销与回退-42-1-2-d4", "tag": "撤销已推送commit", "desc": "公共分支用git revert(安全不改历史),私有分支可用git reset --hard+force push(改写历史有风险)" },
+            { "id": "git撤销与回退-42-1-2-d5", "tag": "恢复删除分支", "desc": "git branch -d删除分支后可通过git reflog找到最后commit+git branch branch-name commit-hash恢复" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "42-3-git钩子与高级特性-42-2",
+      "title": "42.3 Git 钩子与高级特性",
+      "points": [
+        {
+          "id": "git-hooks-42-2-0",
+          "tag": "Git Hooks",
+          "desc": "pre-commit钩子拦截提交做代码检查(ESLint/PMD),commit-msg钩子校验提交消息格式(conventional commits),pre-push钩子在推送前运行测试,post-merge钩子合并后自动构建。husky+lint-staged工具简化钩子配置。",
+          "details": [
+            { "id": "git-hooks-42-2-0-d0", "tag": "pre-commit", "desc": "提交前触发,常用于代码格式化(prettier)/静态检查(eslint)/类型检查(tsc),拦截不合格代码阻止提交" },
+            { "id": "git-hooks-42-2-0-d1", "tag": "commit-msg", "desc": "校验提交消息格式,conventional commits规范(type(scope):subject),如feat/fix/docs/refactor/test/chore" },
+            { "id": "git-hooks-42-2-0-d2", "tag": "pre-push", "desc": "推送前触发,常用于运行完整测试套件防止测试失败代码推到远程,CI前的本地质量保障" },
+            { "id": "git-hooks-42-2-0-d3", "tag": "post-merge", "desc": "合并后触发,常用于自动安装依赖(npm install)/重新构建/更新配置,确保本地环境同步" },
+            { "id": "git-hooks-42-2-0-d4", "tag": "husky+lint-staged", "desc": "husky简化Git Hooks安装配置(.husky/目录),lint-staged只对暂存区文件运行检查(不检查全项目),组合实现高效提交检查" }
+          ]
+        },
+        {
+          "id": "gitignore与配置-42-2-1",
+          "tag": ".gitignore与配置",
+          "desc": ".gitignore忽略规则(*通配/?单字/!反排除/目录/注释),git config三层级(system/global/local)。gitignore模板针对不同语言框架(Node/Java/Python等)。Git LFS大文件存储解决二进制资产体积问题。",
+          "details": [
+            { "id": "gitignore与配置-42-2-1-d0", "tag": ".gitignore规则", "desc": "*匹配任意字符,?匹配单字符,[abc]匹配字符集,!反排除,dir/忽略整个目录,#注释,优先级:本地>全局>系统" },
+            { "id": "gitignore与配置-42-2-1-d1", "tag": "git config层级", "desc": "--system(/etc/gitconfig所有用户),--global(~/.gitconfig当前用户所有仓库),--local(.git/config当前仓库),local优先级最高" },
+            { "id": "gitignore与配置-42-2-1-d2", "tag": "gitignore模板", "desc": "github.com/github/gitignore提供各语言框架模板(Node/Java/Python/Go/C++等),组合使用Global+项目级gitignore" },
+            { "id": "gitignore与配置-42-2-1-d3", "tag": "Git LFS", "desc": "大文件存储(Large File Storage),用指针文件替代大文件入库(.gitattributes跟踪),实际文件存LFS服务器,解决二进制(图片/视频/模型)导致仓库膨胀" },
+            { "id": "gitignore与配置-42-2-1-d4", "tag": "已跟踪文件忽略", "desc": "已commit的文件后续加入gitignore不生效,需git rm --cached从版本库移除后重新commit才生效" }
+          ]
+        },
+        {
+          "id": "git子模块与monorepo-42-2-2",
+          "tag": "Git 子模块与Monorepo",
+          "desc": "git submodule管理独立仓库依赖(嵌套Git仓库+版本锁定),git subtree合并子项目到主仓库(无嵌套更简单)。Monorepo单仓库管理多项目+工具链(Turborepo/Nx/Lerna)。Git Worktree同时多分支工作目录。",
+          "details": [
+            { "id": "git子模块与monorepo-42-2-2-d0", "tag": "git submodule", "desc": "嵌套Git仓库作为子目录,.gitmodules记录映射,clone时需--recursive初始化,更新用git submodule update --remote" },
+            { "id": "git子模块与monorepo-42-2-2-d1", "tag": "git subtree", "desc": "将子仓库历史合并到主仓库子目录(无嵌套.git),add/merge/pull操作更简单,但合并历史可能复杂" },
+            { "id": "git子模块与monorepo-42-2-2-d2", "tag": "Monorepo", "desc": "单仓库管理多个相关项目,共享依赖/工具链/CI配置,Turborepo(缓存+并行)/Nx(依赖图+增量构建)/Lerna(多包发布)" },
+            { "id": "git子模块与monorepo-42-2-2-d3", "tag": "Git Worktree", "desc": "git worktree add为分支创建独立工作目录,可同时在多个分支工作无需stash切换,工作目录可独立打开IDE" },
+            { "id": "git子模块与monorepo-42-2-2-d4", "tag": "submodule vs subtree vs monorepo", "desc": "submodule适合独立维护的第三方库,subtree适合紧密关联但需独立历史的子项目,monorepo适合统一管理的多包项目" }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+window.__MODULES__['cicd'] = {
+  "id": "cicd",
+  "title": "四十三、CI/CD 持续集成与交付",
+  "tag": "CI/CD",
+  "order": 43,
+  "icon": "🔄",
+  "cssIndex": 42,
+  "subs": [
+    {
+      "id": "43-1-cicd核心概念-43-0",
+      "title": "43.1 CI/CD 核心概念",
+      "points": [
+        {
+          "id": "cicd概念与流程-43-0-0",
+          "tag": "CI/CD 概念与流程",
+          "desc": "Continuous Integration持续集成:频繁提交代码+自动化构建测试确保每次提交不破坏现有功能。Continuous Delivery持续交付:自动化部署到预生产环境但需人工审批才能上线。Continuous Deployment持续部署:全自动部署到生产无需人工干预。CI→CD→CD渐进成熟度。",
+          "details": [
+            { "id": "cicd概念与流程-43-0-0-d0", "tag": "持续集成CI", "desc": "开发人员频繁(每天多次)提交代码到共享分支,每次提交触发自动化构建+测试,快速发现集成问题不积累" },
+            { "id": "cicd概念与流程-43-0-0-d1", "tag": "持续交付CD", "desc": "CI通过后自动化部署到预生产(staging)环境,随时可手动点击按钮上线,确保任何版本都可安全发布" },
+            { "id": "cicd概念与流程-43-0-0-d2", "tag": "持续部署CDeployment", "desc": "CI+CD通过后全自动部署到生产环境无需人工审批,要求极高自动化测试覆盖率和监控告警成熟度" },
+            { "id": "cicd概念与流程-43-0-0-d3", "tag": "成熟度演进", "desc": "Level1:手动构建部署→Level2:自动化构建+手动部署→Level3:自动化构建+一键部署→Level4:全自动CI/CD+监控反馈" }
+          ]
+        },
+        {
+          "id": "流水线设计-43-0-1",
+          "tag": "流水线设计",
+          "desc": "Pipeline阶段化设计(Build→Test→Deploy),Stage/Job/Step层级组织。Artifact产物管理(构建输出传递给部署)。缓存策略加速构建(依赖/镜像/工具链)。参数化流水线支持多环境(dev/fat/uat/prod)。",
+          "details": [
+            { "id": "流水线设计-43-0-1-d0", "tag": "Pipeline阶段", "desc": "典型阶段:Checkout→Build→Test→SecurityScan→Deploy,每个阶段可设置条件(仅main分支/仅特定tag触发)" },
+            { "id": "流水线设计-43-0-1-d1", "tag": "Stage/Job/Step", "desc": "Stage(阶段)包含多个Job(任务),Job内多个Step(步骤),Job可并行执行加速,Stage间串行依赖顺序执行" },
+            { "id": "流水线设计-43-0-1-d2", "tag": "Artifact", "desc": "构建产物(JAR/Docker镜像/静态文件),Job间通过Artifact传递数据,部署Job消费构建Job的Artifact产物" },
+            { "id": "流水线设计-43-0-1-d3", "tag": "缓存策略", "desc": "缓存依赖目录(node_modules/.m2/pip缓存),Docker层缓存加速镜像构建,工具链缓存(编译器/SDK),CI缓存命中率影响构建速度" },
+            { "id": "流水线设计-43-0-1-d4", "tag": "参数化", "desc": "环境参数(dev/fat/uat/prod),分支参数(feature/main),版本号参数,手动触发时可选择参数组合" }
+          ]
+        },
+        {
+          "id": "构建与测试自动化-43-0-2",
+          "tag": "构建与测试自动化",
+          "desc": "自动化编译打包(maven/gradle/npm build)。单元测试+集成测试+端到端测试分层(金字塔模型)。代码覆盖率(JaCoCo/Istanbul/Coverage)。静态代码分析(SonarQube/ESLint/PMD)。安全扫描(SAST静态/DAST动态)。",
+          "details": [
+            { "id": "构建与测试自动化-43-0-2-d0", "tag": "自动化构建", "desc": "Java:maven/gradle打包JAR/WAR,前端:npm build/vite build打包静态资源,Go:go build,多语言项目可用Makefile统一入口" },
+            { "id": "构建与测试自动化-43-0-2-d1", "tag": "测试金字塔", "desc": "底层大量单元测试(快速低成本),中层适量集成测试(验证模块交互),顶层少量E2E测试(验证完整流程但慢且脆弱)" },
+            { "id": "构建与测试自动化-43-0-2-d2", "tag": "代码覆盖率", "desc": "JaCoCo(Java行/分支覆盖率),Istanbul(nyc/JavaScript),Coverage(Python),覆盖率阈值70-80%作为质量门禁" },
+            { "id": "构建与测试自动化-43-0-2-d3", "tag": "静态分析", "desc": "SonarQube(多语言代码质量+Bugs+漏洞+重复率),ESLint(JavaScript风格+错误),PMD(Java代码规范),CI集成自动扫描" },
+            { "id": "构建与测试自动化-43-0-2-d4", "tag": "安全扫描", "desc": "SAST(静态应用安全测试/源码扫描找漏洞如SQL注入/XSS),DAST(动态应用安全测试/运行时黑盒扫描),Dependency-Check(依赖漏洞CVE扫描)" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "43-2-cicd工具与实践-43-1",
+      "title": "43.2 CI/CD 工具与实践",
+      "points": [
+        {
+          "id": "jenkins-43-1-0",
+          "tag": "Jenkins",
+          "desc": "Master-Agent分布式构建(Master调度+Agent执行减轻Master负载)。Pipeline as Code(Jenkinsfile声明式/脚本式定义流水线)。Shared Library共享库复用流水线逻辑。Plugin生态(Git/Docker/Kubernetes/Pipeline等1800+插件)。Credentials管理密钥证书。",
+          "details": [
+            { "id": "jenkins-43-1-0-d0", "tag": "Master-Agent", "desc": "Master负责调度+Web UI+配置管理,Agent/Node执行构建任务,多Agent并行加速,动态Agent(Kubernetes Pod)按需创建销毁" },
+            { "id": "jenkins-43-1-0-d1", "tag": "Pipeline as Code", "desc": "Jenkinsfile定义流水线存入Git版本管理,声明式pipeline{stages{}}结构清晰,脚本式灵活编程逻辑,两者可混合使用" },
+            { "id": "jenkins-43-1-0-d2", "tag": "Shared Library", "desc": "vars/目录定义共享函数,多个Pipeline复用通用逻辑(构建/部署/通知),减少重复Jenkinsfile维护成本" },
+            { "id": "jenkins-43-1-0-d3", "tag": "Plugin生态", "desc": "1800+插件覆盖Git/Docker/K8s/Pipeline/Maven/Gradle/NodeJS/SonarQube/Slack等,按需安装扩展功能" },
+            { "id": "jenkins-43-1-0-d4", "tag": "Credentials", "desc": "管理SSH密钥/密码/API Token/Kubernetes配置,Jenkins凭据安全存储不暴露在Pipeline脚本中,绑定到Agent运行时注入" }
+          ]
+        },
+        {
+          "id": "github-actions-43-1-1",
+          "tag": "GitHub Actions",
+          "desc": "YAML工作流定义(.github/workflows/)。runner类型(GitHub-hostedubuntu/windows/mac/self-hosted私有)。Action生态市场复用(actions/checkout/setup-java/cache等)。Matrix策略多版本并行测试(Java8/11/17)。Environment/Secrets环境隔离与密钥管理。",
+          "details": [
+            { "id": "github-actions-43-1-1-d0", "tag": "工作流定义", "desc": ".github/workflows/*.yaml定义,on:push/pull_request触发,runs-on指定runner类型,steps定义步骤序列,uses引用Action" },
+            { "id": "github-actions-43-1-1-d1", "tag": "Runner类型", "desc": "GitHub-hosted(ubuntu-latest/windows-latest/macOS-latest免费2000分钟/月),self-hosted(私有服务器注册runner无时间限制)" },
+            { "id": "github-actions-43-1-1-d2", "tag": "Action市场", "desc": "actions/checkout克隆代码,actions/setup-java/setup-node配置环境,actions/cache缓存依赖,第三方Action可复用无需自己写" },
+            { "id": "github-actions-43-1-1-d3", "tag": "Matrix策略", "desc": "strategy.matrix定义多维度并行(Java:[8,11,17]+OS:[ubuntu,mac]),每种组合独立Job并行运行加速测试覆盖" },
+            { "id": "github-actions-43-1-1-d4", "tag": "Secrets与Environment", "desc": "Secrets存储密钥(API Key/密码)不暴露在日志,Environment(prod/staging)配置部署环境+审批流程+保护规则" },
+            { "id": "github-actions-43-1-1-d5", "tag": "GitHub Pages", "desc": "actions/deploy-pages自动部署静态站点到GitHub Pages,常见于文档/博客/前端项目,推送main分支自动触发部署" }
+          ]
+        },
+        {
+          "id": "gitlab-ci-43-1-2",
+          "tag": "GitLab CI/CD",
+          "desc": ".gitlab-ci.yml定义流水线(与代码同仓库管理)。Runner类型(shared共享/specific指定/group组级)。Environment环境部署(prod需人工审批)。Auto DevOps自动检测项目配置流水线。Review App预览部署(MR临时环境)。",
+          "details": [
+            { "id": "gitlab-ci-43-1-2-d0", "tag": ".gitlab-ci.yml", "desc": "YAML定义stages/jobs/script/rules,include引用共享模板,extends继承配置,variables定义环境变量,与代码同仓库版本管理" },
+            { "id": "gitlab-ci-43-1-2-d1", "tag": "Runner类型", "desc": "Shared Runner(GitLab提供共享所有项目),Specific Runner(指定项目),Group Runner(组级共享),Docker Runner隔离环境" },
+            { "id": "gitlab-ci-43-1-2-d2", "tag": "Environment", "desc": "定义部署环境(staging/production),production可配置protected(需Maintainer审批)和manual(手动触发部署按钮)" },
+            { "id": "gitlab-ci-43-1-2-d3", "tag": "Auto DevOps", "desc": "自动检测项目语言+框架配置默认流水线(Build/Test/CodeQuality/Deploy),开箱即用减少手动配置,适合标准化项目" },
+            { "id": "gitlab-ci-43-1-2-d4", "tag": "Review App", "desc": "每个Merge Request创建临时预览部署环境,代码审查时可直接查看运行效果,MR关闭后自动销毁环境" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "43-3-部署与监控-43-2",
+      "title": "43.3 部署与监控",
+      "points": [
+        {
+          "id": "部署策略-43-2-0",
+          "tag": "部署策略",
+          "desc": "蓝绿部署Blue-Green两套完整环境切换零停机。滚动部署Rolling Update逐批替换旧版本。金丝雀发布Canary小比例用户验证后逐步扩大。Feature Flag功能开关灰度发布渐进式。回滚策略快速回退到上一版本。",
+          "details": [
+            { "id": "部署策略-43-2-0-d0", "tag": "蓝绿部署", "desc": "两套完整环境(Blue当前生产+Green新版本),部署到Green→验证→切换流量到Green→Blue变为备用可快速回滚" },
+            { "id": "部署策略-43-2-0-d1", "tag": "滚动部署", "desc": "逐个/逐批替换旧实例为新版本(K8s Deployment默认策略),maxUnavailable+maxSurge控制替换速度,有短暂混合版本窗口" },
+            { "id": "部署策略-43-2-0-d2", "tag": "金丝雀发布", "desc": "新版本先部署给1-5%用户验证,监控指标正常逐步扩大比例(10%→50%→100%),异常则自动回滚,风险最小化" },
+            { "id": "部署策略-43-2-0-d3", "tag": "Feature Flag", "desc": "功能开关控制新功能对哪些用户可见(LaunchDarkly/Unleash),无需重新部署即可灰度发布/紧急关闭功能,解耦部署与发布" },
+            { "id": "部署策略-43-2-0-d4", "tag": "回滚策略", "desc": "K8s:kubectl rollout undo回滚Deployment,Docker:重新运行旧版本镜像,数据库:需向前兼容schema变更(可回滚代码但无法回滚数据)" }
+          ]
+        },
+        {
+          "id": "容器化cicd-43-2-1",
+          "tag": "容器化CI/CD",
+          "desc": "Docker镜像构建+多阶段构建减小镜像体积。Docker Compose编排测试环境。Kubernetes部署+Helm Chart管理应用。容器镜像仓库(Harbor私有/ECR AWS/GCR Google)。镜像标签策略(tag/sha/digest)。",
+          "details": [
+            { "id": "容器化cicd-43-2-1-d0", "tag": "Docker多阶段构建", "desc": "FROM builder AS build→编译打包→FROM runtime→COPY产物,最终镜像只含运行依赖不含编译工具,Java镜像从500MB→100MB,Node从1GB→50MB" },
+            { "id": "容器化cicd-43-2-1-d1", "tag": "Docker Compose测试", "desc": "docker-compose up -d一键启动应用+数据库+缓存测试环境,测试完成后docker-compose down销毁,CI中集成测试用" },
+            { "id": "容器化cicd-43-2-1-d2", "tag": "K8s+Helm", "desc": "kubectl apply部署YAML,Helm Chart模板化+版本化管理复杂应用(Values.yaml配置覆盖),helm upgrade滚动更新" },
+            { "id": "容器化cicd-43-2-1-d3", "tag": "镜像仓库", "desc": "Harbor(私有企业级+RBAC+漏洞扫描),ECR(AWS托管),GCR(Google托管),ACR(Azure托管),镜像推送CI步骤:build→tag→push→deploy" },
+            { "id": "容器化cicd-43-2-1-d4", "tag": "镜像标签策略", "desc": "tag标签(可覆盖不唯一如latest/v1.2),SHA摘要(不可变唯一标识),生产环境应使用SHA digest而非tag防止镜像被覆盖替换" }
+          ]
+        },
+        {
+          "id": "监控与反馈-43-2-2",
+          "tag": "监控与反馈",
+          "desc": "构建状态可视化(Badge/Dashboard)。部署通知(Slack/钉钉/邮件/Webhook)。日志收集(ELK/Loki)。指标监控(Prometheus/Grafana)。告警规则(构建失败/部署超时/健康检查)。质量门禁(Sonar Quality Gate)。",
+          "details": [
+            { "id": "监控与反馈-43-2-2-d0", "tag": "构建状态可视化", "desc": "README Badge显示构建状态(passing/failing),Pipeline Dashboard展示流水线历史+耗时+成功率趋势,团队看板一目了然" },
+            { "id": "监控与反馈-43-2-2-d1", "tag": "部署通知", "desc": "Slack/钉钉/飞书/邮件通知部署结果(成功/失败+版本号+环境),Webhook集成自定义通知渠道,关键部署需多人确认" },
+            { "id": "监控与反馈-43-2-2-d2", "tag": "日志收集", "desc": "ELK(Elasticsearch+Logstash+Kibana)全文检索日志,Loki(Grafana轻量日志)+Promtail采集,CI日志集中存储可追溯" },
+            { "id": "监控与反馈-43-2-2-d3", "tag": "指标监控", "desc": "Prometheus采集部署指标(成功率/耗时/频率/错误率),Grafana可视化Dashboard+告警,CI/CD健康度持续监控" },
+            { "id": "监控与反馈-43-2-2-d4", "tag": "质量门禁", "desc": "SonarQube Quality Gate(覆盖率>80%/零新Bug/零新漏洞),门禁失败阻止部署到下一阶段,CI自动执行无需人工判断" }
+          ]
+        }
+      ]
+    }
+  ]
+};
