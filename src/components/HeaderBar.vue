@@ -4,32 +4,24 @@
       <h1>📖 {{ config.ui.title }} <small style="font-size:.5em;opacity:.5">v{{ config.ui.version }}</small></h1>
       <ThemeToggle />
     </div>
-    <!-- 仅首页显示统计描述 -->
-    <p v-if="isHomePage" class="header-desc">共 {{ modulesStore.totalModules }} 大模块 · {{ modulesStore.totalPoints }} 个知识点</p>
-    <!-- 仅首页显示搜索和分类 -->
-    <template v-if="isHomePage">
-      <SearchBox />
-      <div class="toolbar">
-        <CategorySelect />
-      </div>
-    </template>
+    <p class="header-desc">共 {{ modulesStore.totalModules }} 大模块 · {{ modulesStore.totalPoints }} 个知识点</p>
+    <SearchBox />
+    <div class="toolbar">
+      <CategorySelect />
+    </div>
   </header>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { moduleConfig as config } from '../config.js'
 import { useModulesStore } from '../stores/modules.js'
 import ThemeToggle from './ThemeToggle.vue'
 import SearchBox from './SearchBox.vue'
 import CategorySelect from './CategorySelect.vue'
 
-const route = useRoute()
 const modulesStore = useModulesStore()
 const isCompact = ref(false)
-
-const isHomePage = computed(() => route.path === '/')
 
 function onScroll() {
   isCompact.value = window.scrollY > 280
@@ -58,7 +50,6 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 .header-desc { font-size: .78em; opacity: .7; font-weight: 300 }
 .toolbar { max-width: 960px; margin: 12px auto; text-align: center; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; align-items: center }
 
-/* 移动端 */
 @media (max-width: 600px) {
   .header { padding: 20px 12px 16px }
   .header h1 { font-size: 1.25em; margin-bottom: 4px }

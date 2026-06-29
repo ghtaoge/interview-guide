@@ -1,8 +1,6 @@
-// src/router/index.js
+// src/router/index.js — 单页面，只有一个路由
 import HomeView from '../views/HomeView.vue'
-import ModuleView from '../views/ModuleView.vue'
 
 export const routes = [
-  { path: '/', name: 'home', component: HomeView },
-  { path: '/module/:id', name: 'module', component: ModuleView }
+  { path: '/', name: 'home', component: HomeView }
 ]
