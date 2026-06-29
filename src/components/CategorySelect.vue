@@ -2,11 +2,10 @@
   <!-- 移动端: 快捷tag + 底部弹出抽屉 -->
   <div v-if="isMobile" class="mobile-category">
     <div class="quick-tags">
-      <button class="tag-chip" :class="{ active: selectedTag === '' }" @click="onTagChange('')">全部</button>
       <button
         v-for="q in quickItems" :key="q.value"
         class="tag-chip" :class="{ active: selectedTag === q.value }"
-        @click="onTagChange(q.value)"
+        @click="onTagChange(selectedTag === q.value ? '' : q.value)"
       >{{ q.emoji }} {{ q.text }}</button>
       <button class="tag-chip more-btn" :class="{ active: drawerOpen }" @click="drawerOpen = true">更多▼</button>
     </div>
@@ -20,8 +19,6 @@
             <button class="drawer-close" @click="drawerOpen = false">✕</button>
           </div>
           <div class="drawer-body">
-            <!-- 全部选项 -->
-            <button class="drawer-item all-item" :class="{ active: selectedTag === '' }" @click="pickTag('')">✨ 全部模块</button>
             <!-- 分组 -->
             <div v-for="group in categoryGroups" :key="group.label" class="drawer-group">
               <div class="group-label">{{ group.label }}</div>
@@ -41,7 +38,6 @@
 
   <!-- PC端: 下拉select -->
   <select v-else id="tag-select" v-model="selectedTag" @change="onSelectChange">
-    <option value="">✨ 全部模块</option>
     <optgroup label="☕ 后端">
       <option value="Java 基础">☕ Java基础</option>
       <option value="集合">📚 集合</option>
@@ -186,8 +182,8 @@ function onSelectChange() {
 }
 
 function pickTag(val) {
-  selectedTag.value = val
-  filterStore.setTagFilter(val)
+  selectedTag.value = selectedTag.value === val ? '' : val
+  filterStore.setTagFilter(selectedTag.value)
   drawerOpen.value = false
 }
 </script>
@@ -244,17 +240,6 @@ function pickTag(val) {
 }
 .drawer-close:hover { background: rgba(0,0,0,.12); color: var(--text) }
 .drawer-body { padding: 8px 16px 24px }
-
-.all-item {
-  display: flex; align-items: center; justify-content: center;
-  padding: 10px 16px; margin-bottom: 12px; border-radius: 12px;
-  background: var(--bg); font-size: .9em; font-weight: 600;
-  color: var(--text2); border: 1px solid var(--border);
-  cursor: pointer; transition: all .18s; width: 100%;
-}
-.all-item.active {
-  background: #0d9488; color: #fff; border-color: #0d9488;
-}
 
 .drawer-group { margin-bottom: 8px }
 .group-label {
