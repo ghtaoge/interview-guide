@@ -41,8 +41,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .header{background:linear-gradient(135deg,#0d9488 0%,#2563eb 50%,#e8833a 100%);color:#fff;padding:24px 20px 20px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 8px 32px rgba(13,148,136,.25);transition:padding .3s ease}
 .header h1{font-size:1.45em;margin-bottom:6px;letter-spacing:2px;text-shadow:0 2px 8px rgba(0,0,0,.12)}
 .header p{font-size:.78em;opacity:.7;font-weight:300}
-.search-box{margin:10px auto 0;max-width:420px;position:relative;transition:max-width .35s ease,transform .35s ease}
-.search-box:focus-within{max-width:500px;transform:scaleY(1.02)}
+.search-box{margin:10px auto 0;width:420px;position:relative;transition:width .3s cubic-bezier(.4,0,.2,1),box-shadow .3s ease}
+.search-box:focus-within{width:560px;box-shadow:0 4px 20px rgba(13,148,136,.18)}
 .search-box input{width:100%;padding:10px 16px 10px 38px;border:2px solid transparent;border-radius:24px;font-size:14px;outline:none;background:rgba(255,255,255,.94);box-shadow:0 2px 12px rgba(0,0,0,.08);transition:all .25s ease;min-height:38px}
 .search-box input:focus{box-shadow:0 2px 16px rgba(52,112,255,.25);background:#fff;border-color:#3470ff}
 .search-box::before{content:'🔍';position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:14px;z-index:1}
@@ -281,7 +281,7 @@ body.edit-mode .edit-mode-tip{display:block}
 .header h1{font-size:1.25em;margin-bottom:4px;letter-spacing:1px}
 .header p{font-size:.72em;opacity:.7}
 .header-dark-toggle{right:8px;top:8px;width:26px;height:26px;font-size:.72em}
-.search-box{max-width:100%;margin:8px auto 0}
+.search-box{width:100%;margin:8px auto 0}
 .search-box input{font-size:15px;padding:10px 14px 10px 40px;border-radius:24px;background:rgba(255,255,255,.94);box-shadow:0 2px 12px rgba(0,0,0,.1);min-height:42px}
 .search-box::before{left:14px;font-size:14px}
 .search-box .count{font-size:10px;right:14px;padding:3px 8px;border-radius:8px}
@@ -308,11 +308,10 @@ body.edit-mode .edit-mode-tip{display:block}
 .point{font-size:.84em;padding:7px 10px;margin:4px 0;border-radius:8px}
 .point-row{gap:4px;align-items:center}
 .point .tag{border-right:none;padding-right:0;margin-right:0;flex-shrink:0;min-width:fit-content}
-.point:not(.open) .desc{display:none}
-.point.open .desc{display:block;margin-top:3px;font-size:.84em;line-height:1.55}
+.point:not(.open) .desc{display:none !important}
+.point.open .desc{display:block !important;margin-top:3px;font-size:.84em;line-height:1.55}
 .point .desc{padding-right:0}
-.point:not(.has-detail) .tag{flex-shrink:0;min-width:fit-content}
-.point:not(.has-detail) .desc{max-height:1.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;-webkit-line-clamp:1}
+.point.has-detail .expand-hint{font-size:.58em;padding:2px 6px;margin-left:2px;border-radius:8px}
 .detail-list{padding:4px}
 .detail-item{font-size:.86em;padding:9px 10px 9px 36px;margin:3px 0;border-radius:8px}
 .detail-item::before{left:8px;width:16px;height:16px;font-size:.6em}
