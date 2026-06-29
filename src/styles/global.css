@@ -17,4 +17,9 @@ body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft
 
 /* Vant全局样式微调 */
 .van-cell-group { background: transparent }
+.van-cell { border: none !important }
 .van-cell__value { color: var(--text3) }
+.van-collapse { border: none }
+.van-collapse-item { border: none }
+.van-hairline--top-bottom::after { display: none }
+.van-hairline--top::after { display: none }
