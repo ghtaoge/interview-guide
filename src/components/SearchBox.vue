@@ -47,20 +47,20 @@ function onClear() {
 
 <style scoped>
 .search-box {
-  width: 280px; margin: 8px auto 0; position: relative;
+  width: 380px; margin: 8px auto 0; position: relative;
 }
 .search-box.mobile {
   width: 85%; max-width: 360px; margin: 6px auto 0;
 }
 .search-box input {
-  width: 100%; padding: 5px 28px 5px 28px; border-radius: 20px; font-size: 14px;
-  outline: none; min-height: 30px; color: #fff;
-  background: rgba(0,0,0,.15); border: 1px solid rgba(255,255,255,.3);
+  width: 100%; padding: 6px 30px 6px 30px; border-radius: 20px; font-size: 14px;
+  outline: none; min-height: 32px; color: #fff;
+  background: rgba(0,0,0,.3); border: 1px solid rgba(255,255,255,.3);
   transition: all .2s ease;
 }
 .search-box input::placeholder { color: rgba(255,255,255,.55) }
 .search-box input:focus {
-  background: rgba(0,0,0,.25); border-color: rgba(255,255,255,.5); color: #fff;
+  background: rgba(0,0,0,.4); border-color: rgba(255,255,255,.5); color: #fff;
 }
 .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; z-index: 1 }
 .search-clear {

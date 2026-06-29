@@ -1,6 +1,6 @@
 @media (min-width: 601px) {
   /* 搜索框统一风格 */
-  .search-box { width: 280px }
+  .search-box { width: 380px }
   .search-box input { border-radius: 20px; font-size: 14px; min-height: 30px }
 
   /* 详情条目更大圆角 */
