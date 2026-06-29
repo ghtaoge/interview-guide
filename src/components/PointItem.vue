@@ -35,7 +35,7 @@
 </template>
 
 <script setup>
-import { reactive, inject, watch } from 'vue'
+import { reactive, ref, inject, watch } from 'vue'
 import { useDevice } from '../composables/useDevice.js'
 import { useSearch } from '../composables/useSearch.js'
 import DetailItem from './DetailItem.vue'
