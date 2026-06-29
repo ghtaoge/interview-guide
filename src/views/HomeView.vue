@@ -7,12 +7,6 @@
 
     <!-- 模块列表 -->
     <template v-else>
-      <!-- 全部展开/折叠按钮（始终显示在模块列表前） -->
-      <div class="expand-bar">
-        <button class="expand-btn" @click="expandAll">📂 全部展开</button>
-        <button class="expand-btn" @click="collapseAll">📁 全部折叠</button>
-      </div>
-
       <div class="module-list">
         <div v-for="mod in displayedModules" :key="mod.id" class="module-wrapper">
           <ModuleCard :mod="mod" :expanded="expandedId === mod.id" @toggle="toggleModule(mod.id)" />

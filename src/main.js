@@ -11,7 +11,7 @@ import './styles/dark.css'
 
 const pinia = createPinia()
 const router = createRouter({
-  history: createWebHistory(),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes
 })
 
