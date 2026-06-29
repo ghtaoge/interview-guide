@@ -162,10 +162,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .search-clear{position:absolute;right:44px;top:50%;transform:translateY(-50%);width:20px;height:20px;border-radius:50%;background:#e2e8f0;color:#64748b;cursor:pointer;font-size:.6em;display:none;align-items:center;justify-content:center;border:none;transition:all .15s;z-index:2}
 .search-clear:hover{background:#cbd5e1;color:#475568}
 .dark .search-clear{background:#475569;color:#e2e8f0}
-.tag-clear{width:26px;height:26px;border-radius:50%;background:#e2e8f0;color:#64748b;cursor:pointer;font-size:.7em;display:none;align-items:center;justify-content:center;border:none;transition:all .15s;margin-left:4px;flex-shrink:0}
-.tag-clear:hover{background:var(--accent);color:#fff}
-.dark .tag-clear{background:#475569;color:#e2e8f0}
-.dark .tag-clear:hover{background:var(--accent);color:#fff}
 /* Progress Stats */
 .progress-stats{position:absolute;left:16px;bottom:8px;display:flex;gap:8px;font-size:.65em;opacity:.7}
 .progress-stats span{padding:2px 8px;border-radius:8px;background:rgba(255,255,255,.2)}
@@ -257,11 +253,23 @@ body.edit-mode .edit-mode-tip{display:block}
 .edit-save{border:none;background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff}
 .edit-save:hover{opacity:.9}
 
-/* ===== 管理工具栏 ===== */
-#admin-toolbar{max-width:960px;margin:8px auto;text-align:center}
-#admin-toolbar button{padding:5px 14px;border:1px solid var(--border);border-radius:6px;background:var(--card);color:var(--text2);cursor:pointer;font-size:11px;margin-right:4px;transition:all .15s}
-#admin-toolbar button:hover{background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border-color:transparent}
-#admin-toolbar button.danger:hover{background:#ef4444;border-color:#ef4444}
+
+/* ===== 更多菜单 ===== */
+.more-wrapper{position:relative;display:inline-block}
+.more-btn{width:32px;height:32px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--text3);cursor:pointer;font-size:1.1em;display:flex;align-items:center;justify-content:center;transition:all .18s;padding:0;flex-shrink:0}
+.more-btn:hover{background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border-color:transparent;box-shadow:0 3px 10px rgba(13,148,136,.25)}
+.more-btn.active{background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;border-color:transparent;box-shadow:0 2px 8px rgba(13,148,136,.25)}
+.more-menu{position:absolute;top:calc(100% + 6px);right:0;opacity:0;pointer-events:none;background:var(--card);border-radius:12px;border:1px solid var(--border);box-shadow:0 8px 30px rgba(0,0,0,.12);padding:4px;min-width:140px;z-index:200;transition:all .2s ease}
+.more-menu.open{opacity:1;pointer-events:auto}
+.menu-item{padding:10px 14px;cursor:pointer;font-size:13px;color:var(--text2);border-radius:8px;transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:8px}
+.menu-item:hover{background:rgba(99,102,241,.08);color:var(--accent)}
+.menu-item.edit-active{background:linear-gradient(135deg,var(--accent),#2563eb);color:#fff;font-weight:600}
+.menu-item.danger:hover{background:rgba(239,68,68,.08);color:#ef4444}
+.dark .more-btn{background:#1e293b;color:#94a3b8;border-color:#475569}
+.dark .more-menu{background:#1e293b;border-color:#475569;box-shadow:0 8px 30px rgba(0,0,0,.4)}
+.dark .menu-item{color:#94a3b8}
+.dark .menu-item:hover{background:#263548;color:#6ee7b7}
+.dark .menu-item.danger:hover{background:rgba(239,68,68,.12);color:#ef4444}
 
 @media(max-width:600px){
 .header{padding:24px 16px 20px}
@@ -289,6 +297,8 @@ body.edit-mode .edit-mode-tip{display:block}
 .progress-stats{font-size:.55em;left:8px}
 .edit-btn-group{opacity:.6}
 .module-head .edit-btn-group{right:40px}
+.more-btn{width:28px;height:28px;font-size:.9em}
+.toolbar{gap:4px}
 }
 
 </style>
@@ -322,7 +332,6 @@ body.edit-mode .edit-mode-tip{display:block}
     <div class="toolbar">
       <button onclick="exAll(true)">📂 全部展开</button>
       <button onclick="exAll(false)">📁 全部折叠</button>
-      <button id="edit-mode-btn" onclick="toggleEditMode()">✏️ 编辑</button>
       <select id="tag-select" onchange="onTagSelect(this.value)" class="tag-select">
         <option value="">✨ 全部模块</option>
         <optgroup label="☕ 后端">
@@ -379,11 +388,14 @@ body.edit-mode .edit-mode-tip{display:block}
           <option value="HR面试">💼 HR面试</option>
         </optgroup>
       </select>
-      <button class="tag-clear" id="tag-clear" onclick="clearTagSelect()" title="清除模块筛选" style="display:none">✕</button>
-    </div>
-    <div id="admin-toolbar">
-      <button onclick="exportModules()">📤 导出模块</button>
-      <button class="danger" onclick="confirmClearEdits()">🔄 清除编辑</button>
+      <div class="more-wrapper">
+        <button class="more-btn" id="more-btn" onclick="toggleMoreMenu(event)">⋯</button>
+        <div class="more-menu" id="more-menu">
+          <div class="menu-item" id="edit-mode-item" onclick="toggleEditMode()">✏️ 编辑模式</div>
+          <div class="menu-item" onclick="exportModules();closeMoreMenu()">📤 导出模块</div>
+          <div class="menu-item danger" onclick="confirmClearEdits();closeMoreMenu()">🔄 清除编辑</div>
+        </div>
+      </div>
     </div>
   </div>
   <div class="scroll-progress" id="scroll-progress"></div>
