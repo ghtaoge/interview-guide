@@ -1,7 +1,25 @@
 <template>
-  <van-dropdown-menu v-if="isMobile" :close-on-click-outside="true">
-    <van-dropdown-item v-model="selectedTag" :options="tagOptions" @change="onTagChange" />
-  </van-dropdown-menu>
+  <!-- 移动端: 横向滚动tag标签条 -->
+  <div v-if="isMobile" class="mobile-tags">
+    <button class="tag-chip" :class="{ active: selectedTag === '' }" @click="onTagChange('')">全部</button>
+    <button class="tag-chip" :class="{ active: selectedTag === 'Java 基础' }" @click="onTagChange('Java 基础')">☕</button>
+    <button class="tag-chip" :class="{ active: selectedTag === '集合' }" @click="onTagChange('集合')">📚</button>
+    <button class="tag-chip" :class="{ active: selectedTag === '并发' }" @click="onTagChange('并发')">⚡</button>
+    <button class="tag-chip" :class="{ active: selectedTag === 'JVM' }" @click="onTagChange('JVM')">🧩</button>
+    <button class="tag-chip" :class="{ active: selectedTag === 'MySQL' }" @click="onTagChange('MySQL')">🗄️</button>
+    <button class="tag-chip" :class="{ active: selectedTag === 'Redis' }" @click="onTagChange('Redis')">📐</button>
+    <button class="tag-chip" :class="{ active: selectedTag === 'Spring' }" @click="onTagChange('Spring')">🌐</button>
+    <button class="tag-chip" :class="{ active: selectedTag === '分布式系统' }" @click="onTagChange('分布式系统')">🚀</button>
+    <button class="tag-chip" :class="{ active: selectedTag === 'JavaScript' }" @click="onTagChange('JavaScript')">🟨</button>
+    <button class="tag-chip" :class="{ active: selectedTag === 'Vue3' }" @click="onTagChange('Vue3')">💚</button>
+    <button class="tag-chip" :class="{ active: selectedTag === 'Docker' }" @click="onTagChange('Docker')">🐳</button>
+    <button class="tag-chip" :class="{ active: selectedTag === 'Git' }" @click="onTagChange('Git')">🔧</button>
+    <button class="tag-chip" :class="{ active: selectedTag === 'CI/CD' }" @click="onTagChange('CI/CD')">🔄</button>
+    <button class="tag-chip" :class="{ active: selectedTag === '消息队列' }" @click="onTagChange('消息队列')">📨</button>
+    <button class="tag-chip" :class="{ active: selectedTag === 'AI与Agent' }" @click="onTagChange('AI与Agent')">🤖</button>
+  </div>
+
+  <!-- PC端: 下拉select -->
   <select v-else id="tag-select" v-model="selectedTag" @change="onTagChange">
     <option value="">✨ 全部模块</option>
     <optgroup label="☕ 后端">
@@ -59,85 +77,37 @@ const filterStore = useFilterStore()
 const { isMobile } = useDevice()
 const selectedTag = ref(filterStore.tagFilter)
 
-const tagOptions = [
-  { text: '✨ 全部模块', value: '' },
-  { text: '☕ Java基础', value: 'Java 基础' },
-  { text: '📚 集合', value: '集合' },
-  { text: '⚡ 并发', value: '并发' },
-  { text: '🧩 JVM', value: 'JVM' },
-  { text: '🔄 IO', value: 'IO' },
-  { text: '💻 计算机基础', value: '计算机基础' },
-  { text: '🗄️ MySQL', value: 'MySQL' },
-  { text: '📐 Redis', value: 'Redis' },
-  { text: '🌐 Spring', value: 'Spring' },
-  { text: '🚀 分布式系统', value: '分布式系统' },
-  { text: '⚡ 高性能', value: '高性能' },
-  { text: '🛡️ 高可用', value: '高可用' },
-  { text: '🔍 ElasticSearch', value: 'ElasticSearch' },
-  { text: '🍃 MongoDB', value: 'MongoDB' },
-  { text: '🐘 PostgreSQL', value: 'PostgreSQL' },
-  { text: '🟨 JavaScript', value: 'JavaScript' },
-  { text: '💚 Vue2', value: 'Vue2' },
-  { text: '💚 Vue3', value: 'Vue3' },
-  { text: '🔷 TypeScript', value: 'TypeScript' },
-  { text: '🎨 HTML/CSS', value: 'HTML与CSS' },
-  { text: '🎯 场景题', value: '场景题' },
-  { text: '🐳 Docker', value: 'Docker' },
-  { text: '☸️ K8s', value: 'Kubernetes' },
-  { text: '🟢 Nginx', value: 'Nginx' },
-  { text: '🔧 Git', value: 'Git' },
-  { text: '🔄 CI/CD', value: 'CI/CD' },
-  { text: '📨 消息队列', value: '消息队列' },
-  { text: '🛡️ Nacos/Sentinel', value: 'Nacos/Sentinel' },
-  { text: '🔗 Dubbo', value: 'Dubbo' },
-  { text: '🤖 AI与Agent', value: 'AI与Agent' },
-  { text: '💼 HR面试', value: 'HR面试' },
-  { text: '📐 分布式', value: '分布式' },
-  { text: '🌐 计算机网络', value: '计算机网络' },
-  { text: '📦 Webpack', value: 'Webpack' },
-  { text: '🔧 Maven', value: 'Maven' },
-  { text: '📦 Minio', value: 'Minio' },
-  { text: '⚡ Netty', value: 'Netty' },
-  { text: '🔬 诊断工具', value: '诊断工具' },
-  { text: '📊 EasyExcel', value: 'EasyExcel' },
-  { text: '📝 编程规范', value: '编程规范' },
-  { text: '⚡ 性能优化', value: '性能优化' },
-  { text: '🗂️ 数据结构', value: '数据结构' },
-  { text: '📋 面试准备', value: '面试准备' },
-]
-
 function onTagChange(val) {
+  selectedTag.value = val
   filterStore.setTagFilter(val)
 }
 </script>
 
 <style scoped>
+/* 移动端: 横向滚动tag条 */
+.mobile-tags {
+  display: flex; gap: 6px; overflow-x: auto; padding: 6px 0;
+  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+}
+.mobile-tags::-webkit-scrollbar { display: none }
+.tag-chip {
+  padding: 5px 10px; border-radius: 16px; font-size: .82em;
+  background: rgba(255,255,255,.12); color: #fff;
+  border: 1px solid rgba(255,255,255,.2);
+  cursor: pointer; transition: all .18s; white-space: nowrap;
+  flex-shrink: 0; line-height: 1.2;
+}
+.tag-chip.active {
+  background: #fff; color: #0d9488;
+  border-color: #fff; font-weight: 600;
+}
+
+/* PC端: 下拉select */
 #tag-select {
   font-size: 12px; padding: 7px 12px; border-radius: 20px;
-  border: 1px solid var(--border); background: var(--card);
-  color: var(--text2); min-height: 30px; cursor: pointer; outline: none;
+  border: 1px solid rgba(255,255,255,.3); background: rgba(255,255,255,.15);
+  color: #fff; min-height: 30px; cursor: pointer; outline: none;
   max-width: 140px; transition: all .2s;
 }
-#tag-select:focus { border-color: var(--accent) }
-
-/* 移动端 van-dropdown-menu 样式修复 */
-:deep(.van-dropdown-menu) {
-  background: transparent !important;
-  box-shadow: none;
-}
-:deep(.van-dropdown-menu__bar) {
-  background: rgba(255,255,255,.15) !important;
-  box-shadow: none !important;
-  height: auto !important;
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,.3);
-}
-:deep(.van-dropdown-menu__title) {
-  color: #fff !important;
-  font-size: 13px;
-  padding: 0 12px;
-}
-:deep(.van-dropdown-menu__title::after) {
-  border-color: #fff transparent transparent;
-}
+#tag-select:focus { border-color: rgba(255,255,255,.5) }
 </style>
