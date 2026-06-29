@@ -1,17 +1,11 @@
 <template>
-  <header class="header" :class="{ compact: isCompact, mobile: isMobile }">
+  <header class="header" :class="{ compact: isCompact }">
     <div class="header-top">
       <h1>📖 {{ config.ui.title }} <small style="font-size:.5em;opacity:.5">v{{ config.ui.version }}</small></h1>
       <ThemeToggle />
     </div>
     <p class="header-desc">共 {{ modulesStore.totalModules }} 大模块 · {{ modulesStore.totalPoints }} 个知识点</p>
-    <!-- 移动端: 搜索框 + 分类按钮同行 -->
-    <div v-if="isMobile" class="mobile-search-row">
-      <SearchBox />
-      <CategorySelect />
-    </div>
-    <!-- PC端: 只有搜索框 -->
-    <SearchBox v-else />
+    <SearchBox />
   </header>
 </template>
 
@@ -19,13 +13,10 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { moduleConfig as config } from '../config.js'
 import { useModulesStore } from '../stores/modules.js'
-import { useDevice } from '../composables/useDevice.js'
 import ThemeToggle from './ThemeToggle.vue'
 import SearchBox from './SearchBox.vue'
-import CategorySelect from './CategorySelect.vue'
 
 const modulesStore = useModulesStore()
-const { isMobile } = useDevice()
 const isCompact = ref(false)
 
 function onScroll() {
@@ -53,13 +44,6 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 .header-top .theme-toggle { position: absolute; right: 0 }
 .header h1 { font-size: 1.45em; margin-bottom: 6px; letter-spacing: 2px; text-shadow: 0 2px 8px rgba(0,0,0,.12) }
 .header-desc { font-size: .78em; opacity: .7; font-weight: 300 }
-
-/* 移动端搜索行 */
-.mobile-search-row {
-  display: flex; align-items: center; gap: 8px;
-  max-width: 960px; margin: 6px auto 0; padding: 0 2px;
-}
-.mobile-search-row .search-box { flex: 1; width: auto; min-width: 0 }
 
 @media (max-width: 600px) {
   .header { padding: 20px 12px 16px }
