@@ -1548,6 +1548,48 @@ window.__MODULES__['mysql'] = {
               "desc": "CREATE ROLE定义角色批量赋权再GRANT角色给用户,简化权限管理避免逐用户赋权"
             }
           ]
+        },
+        {
+          "id": "explainanalyze深入-7-6-4",
+          "tag": "EXPLAIN ANALYZE 与 ANALYZE TABLE",
+          "desc": "EXPLAIN ANALYZE(MySQL8.0.18+)输出实际执行时间与行数而非估算,是验证优化器预估准确性的关键工具;ANALYZE TABLE更新表统计信息(Cardinality等)使优化器索引选择更准确,大表数据大量变更后应执行",
+          "details": [
+            {
+              "id": "explainanalyze深入-7-6-4-d0",
+              "tag": "EXPLAIN ANALYZE",
+              "desc": "MySQL8.0.18+在EXPLAIN基础上增加实际执行时间和行数,输出迭代器树结构含cost/rows/actual时间/actual行数,验证优化器预估准确性定位真实瓶颈"
+            },
+            {
+              "id": "explainanalyze深入-7-6-4-d1",
+              "tag": "EXPLAIN vs EXPLAIN ANALYZE",
+              "desc": "EXPLAIN仅显示优化器预估rows/cost,EXPLAIN ANALYZE额外显示实际执行结果(actual time/actual rows),可对比发现优化器误判场景(如预估扫描100行实际扫描10万行)"
+            },
+            {
+              "id": "explainanalyze深入-7-6-4-d2",
+              "tag": "输出格式",
+              "desc": "EXPLAIN ANALYZE输出迭代器树格式,每个节点显示estimated cost/estimated rows/actual time(ms)/actual rows/actual loops,子节点嵌套显示可看清执行层次和耗时分布"
+            },
+            {
+              "id": "explainanalyze深入-7-6-4-d3",
+              "tag": "ANALYZE TABLE",
+              "desc": "更新表/索引的统计信息(Cardinality/Avg_row_length/Data_length等),让优化器基于真实数据做索引选择和执行计划决策,数据大量变更(批量INSERT/DELETE/UPDATE)后建议执行"
+            },
+            {
+              "id": "explainanalyze深入-7-6-4-d4",
+              "tag": "ANALYZE TABLE 语法与锁",
+              "desc": "ANALYZE TABLE tbl_name[,tbl_name...]执行期间对表加读锁(MDL),不阻塞SELECT但阻塞DML,大表InnoDB通过8个随机页采样估算Cardinality,不遍历全表速度快但统计可能不精确"
+            },
+            {
+              "id": "explainanalyze深入-7-6-4-d5",
+              "tag": "EXPLAIN FORMAT=JSON/TREE",
+              "desc": "FORMAT=JSON提供结构化cost信息含queried_cost/total_cost,FORMAT=TREE(MySQL8.0)以树形结构直观展示迭代器层次,EXPLAIN ANALYZE结合TREE+实际数据最全面"
+            },
+            {
+              "id": "explainanalyze深入-7-6-4-d6",
+              "tag": "实战组合策略",
+              "desc": "先EXPLAIN看预估执行计划找可疑点→再EXPLAIN ANALYZE对比实际与预估差距→必要时ANALYZE TABLE刷新统计后重新EXPLAIN→用optimizer_trace追踪优化器决策过程定位索引选择错误根因"
+            }
+          ]
         }
       ]
     }
