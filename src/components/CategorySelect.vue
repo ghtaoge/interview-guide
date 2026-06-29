@@ -7,7 +7,7 @@
         v-for="q in quickItems" :key="q.value"
         class="tag-chip" :class="{ active: selectedTag === q.value }"
         @click="onTagChange(q.value)"
-      >{{ q.emoji }}</button>
+      >{{ q.emoji }} {{ q.text }}</button>
       <button class="tag-chip more-btn" :class="{ active: drawerOpen }" @click="drawerOpen = true">更多▼</button>
     </div>
 
@@ -100,15 +100,15 @@ const drawerOpen = ref(false)
 
 // 快捷tag：最常用的几个
 const quickItems = [
-  { value: 'Java 基础', emoji: '☕' },
-  { value: '集合', emoji: '📚' },
-  { value: '并发', emoji: '⚡' },
-  { value: 'MySQL', emoji: '🗄️' },
-  { value: 'Redis', emoji: '📐' },
-  { value: 'Spring', emoji: '🌐' },
-  { value: '分布式系统', emoji: '🚀' },
-  { value: 'Vue3', emoji: '💚' },
-  { value: 'AI与Agent', emoji: '🤖' },
+  { value: 'Java 基础', emoji: '☕', text: 'Java' },
+  { value: '集合', emoji: '📚', text: '集合' },
+  { value: '并发', emoji: '⚡', text: '并发' },
+  { value: 'MySQL', emoji: '🗄️', text: 'MySQL' },
+  { value: 'Redis', emoji: '📐', text: 'Redis' },
+  { value: 'Spring', emoji: '🌐', text: 'Spring' },
+  { value: '分布式系统', emoji: '🚀', text: '分布式' },
+  { value: 'Vue3', emoji: '💚', text: 'Vue3' },
+  { value: 'AI与Agent', emoji: '🤖', text: 'AI' },
 ]
 
 // 全部分类分组数据
