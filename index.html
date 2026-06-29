@@ -72,7 +72,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .sub-head{padding:12px 22px 12px 28px;font-size:.9em;font-weight:600;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:8px;background:var(--bg);transition:background .15s}
 .sub-head:hover{background:#f5f7fa}
 .sub-head .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.sub-head .count{font-size:.7em;padding:3px 10px;border-radius:999px;font-weight:600;margin-left:8px;background:rgba(99,102,241,.07);color:var(--accent);border:1px solid rgba(99,102,241,.12);white-space:nowrap;letter-spacing:.3px;transition:all .15s ease}
+.sub-head .sub-title{flex:1;min-width:0;line-height:1.4}
+.sub-head .count{font-size:.7em;padding:3px 10px;border-radius:999px;font-weight:600;margin-left:4px;background:rgba(99,102,241,.07);color:var(--accent);border:1px solid rgba(99,102,241,.12);white-space:nowrap;letter-spacing:.3px;transition:all .15s ease;flex-shrink:0}
 .sub-head:hover .count{background:rgba(99,102,241,.14);border-color:rgba(99,102,241,.2)}
 .sub-head .arrow{margin-left:auto;transition:transform .25s ease;font-size:.65em;color:var(--text3)}
 .sub.open .arrow{transform:rotate(90deg)}
@@ -300,8 +301,9 @@ body.edit-mode .edit-mode-tip{display:block}
 .module-head .arrow{font-size:.65em}
 .module-head .edit-btn-group{right:36px}
 .sub-head{padding:9px 14px 9px 18px;font-size:.82em}
-.sub-head .count{font-size:.62em;padding:1px 8px}
-.sub-head .arrow{font-size:.6em}
+.sub-head .sub-title{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sub-head .count{font-size:.62em;padding:1px 8px;flex-shrink:0}
+.sub-head .arrow{font-size:.6em;flex-shrink:0}
 .points{padding:3px 10px 8px}
 .point{font-size:.84em;padding:7px 10px;margin:4px 0;border-radius:8px}
 .point-row{gap:4px;align-items:center}

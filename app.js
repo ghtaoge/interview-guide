@@ -123,7 +123,7 @@ function renderFromData(modules, filter, tagFilter) {
 
       if (subCount === 0) continue;
       modCount += subCount;
-      modHtml += '<div class="sub" onclick="evSub(event,this)"><div class="sub-head"><span class="dot" style="background:var(--c' + ci + ')"></span>' + highlight(sub.title, filter) + '<span class="count">' + subCount + '</span>' + subEditBtn + '<span class="arrow">&#9654;</span></div><div class="points">' + pointsHtml + '</div></div>';
+      modHtml += '<div class="sub" onclick="evSub(event,this)"><div class="sub-head"><span class="dot" style="background:var(--c' + ci + ')"></span><span class="sub-title">' + highlight(sub.title, filter) + '</span><span class="count">' + subCount + '</span>' + subEditBtn + '<span class="arrow">&#9654;</span></div><div class="points">' + pointsHtml + '</div></div>';
     }
 
     if (modCount === 0 && filter) continue;
