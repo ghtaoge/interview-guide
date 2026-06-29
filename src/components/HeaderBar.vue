@@ -10,11 +10,8 @@
       <SearchBox />
       <CategorySelect />
     </div>
-    <!-- PC端: 搜索框 + 下拉分开 -->
-    <template v-else>
-      <SearchBox />
-      <CategorySelect />
-    </template>
+    <!-- PC端: 只有搜索框 -->
+    <SearchBox v-else />
   </header>
 </template>
 
