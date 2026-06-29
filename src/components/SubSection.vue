@@ -36,7 +36,7 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useDevice } from '../composables/useDevice.js'
 import { useFilterStore } from '../stores/filter.js'
 import { useSearch } from '../composables/useSearch.js'
@@ -55,17 +55,6 @@ const { matchText } = useSearch()
 
 const activeNames = ref([])
 const isOpen = ref(false)
-const expandCommand = inject('expandCommand', ref('none'))
-
-watch(expandCommand, (cmd) => {
-  if (cmd === 'expand') {
-    isOpen.value = true
-    activeNames.value = [props.sub.id]
-  } else if (cmd === 'collapse') {
-    isOpen.value = false
-    activeNames.value = []
-  }
-})
 
 function toggle() { isOpen.value = !isOpen.value }
 

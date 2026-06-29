@@ -34,8 +34,7 @@
 </template>
 
 <script setup>
-import { computed, ref, provide } from 'vue'
-import { storeToRefs } from 'pinia'
+import { computed, ref } from 'vue'
 import { useModulesStore } from '../stores/modules.js'
 import { useFilterStore } from '../stores/filter.js'
 import ModuleCard from '../components/ModuleCard.vue'
@@ -43,15 +42,11 @@ import SubSection from '../components/SubSection.vue'
 
 const modulesStore = useModulesStore()
 const filterStore = useFilterStore()
-const { expandCommand } = storeToRefs(filterStore)
 
 const loading = computed(() => modulesStore.moduleIndex.length === 0)
 const expandedId = ref(null)
 const moduleLoading = ref(false)
 const moduleData = ref(null)
-
-// 必须传 ref 本身，否则 Pinia 会 unwrap 成静态字符串导致响应式断链
-provide('expandCommand', expandCommand)
 
 const displayedModules = computed(() => {
   const index = modulesStore.sortedIndex

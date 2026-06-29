@@ -119,4 +119,25 @@ function onTagChange(val) {
   max-width: 140px; transition: all .2s;
 }
 #tag-select:focus { border-color: var(--accent) }
+
+/* 移动端 van-dropdown-menu 样式修复 */
+:deep(.van-dropdown-menu) {
+  background: transparent !important;
+  box-shadow: none;
+}
+:deep(.van-dropdown-menu__bar) {
+  background: rgba(255,255,255,.15) !important;
+  box-shadow: none !important;
+  height: auto !important;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.3);
+}
+:deep(.van-dropdown-menu__title) {
+  color: #fff !important;
+  font-size: 13px;
+  padding: 0 12px;
+}
+:deep(.van-dropdown-menu__title::after) {
+  border-color: #fff transparent transparent;
+}
 </style>

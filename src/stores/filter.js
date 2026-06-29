@@ -4,7 +4,6 @@ import { defineStore } from 'pinia'
 export const useFilterStore = defineStore('filter', () => {
   const keyword = ref('')
   const tagFilter = ref('')
-  const expandCommand = ref('none')
 
   function setKeyword(val) {
     keyword.value = val
@@ -21,16 +20,6 @@ export const useFilterStore = defineStore('filter', () => {
     tagFilter.value = ''
   }
 
-  // 全部展开/折叠命令（供 HeaderBar 按钮触发）
-  function expandAll() {
-    expandCommand.value = 'expand'
-    setTimeout(() => { expandCommand.value = 'none' }, 80)
-  }
-  function collapseAll() {
-    expandCommand.value = 'collapse'
-    setTimeout(() => { expandCommand.value = 'none' }, 80)
-  }
-
   function matchText(text) {
     if (!keyword.value) return true
     return text.toLowerCase().includes(keyword.value.toLowerCase())
@@ -41,5 +30,5 @@ export const useFilterStore = defineStore('filter', () => {
     return tag === tagFilter.value
   }
 
-  return { keyword, tagFilter, expandCommand, setKeyword, setTagFilter, clearAll, matchText, matchTag, expandAll, collapseAll }
+  return { keyword, tagFilter, setKeyword, setTagFilter, clearAll, matchText, matchTag }
 })

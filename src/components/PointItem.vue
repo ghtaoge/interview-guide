@@ -30,7 +30,7 @@
 </template>
 
 <script setup>
-import { reactive, ref, inject, watch } from 'vue'
+import { reactive } from 'vue'
 import { useDevice } from '../composables/useDevice.js'
 import { useSearch } from '../composables/useSearch.js'
 import DetailItem from './DetailItem.vue'
@@ -45,12 +45,6 @@ const { isMobile } = useDevice()
 const { highlightHtml } = useSearch()
 
 const pt = reactive({ ...props.point, open: false })
-
-const expandCommand = inject('expandCommand', ref('none'))
-watch(expandCommand, (cmd) => {
-  if (cmd === 'expand') pt.open = true
-  else if (cmd === 'collapse') pt.open = false
-})
 
 function togglePoint() {
   pt.open = !pt.open

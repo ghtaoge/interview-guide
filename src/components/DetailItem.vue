@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { ref, computed, inject, watch } from 'vue'
+import { ref, computed } from 'vue'
 import { useDevice } from '../composables/useDevice.js'
 import { useSearch } from '../composables/useSearch.js'
 
@@ -43,12 +43,6 @@ const labelText = computed(() => {
   let t = (props.detail.tag || '').trim() || (props.detail.desc || '').trim()
   t = t.replace(/^第\d+[、.]\s*/, '').replace(/^\d+[.、)]\s*/, '').replace(/^[①②③④⑤⑥⑦⑧⑨⑩]/, '')
   return t
-})
-
-const expandCommand = inject('expandCommand', ref('none'))
-watch(expandCommand, (cmd) => {
-  if (cmd === 'expand' && hasSub.value) open.value = true
-  else if (cmd === 'collapse') open.value = false
 })
 
 function toggleSub() { open.value = !open.value }

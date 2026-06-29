@@ -7,6 +7,8 @@
     <p class="header-desc">共 {{ modulesStore.totalModules }} 大模块 · {{ modulesStore.totalPoints }} 个知识点</p>
     <SearchBox />
     <div class="toolbar">
+      <button class="toolbar-action-btn" @click="filterStore.expandAll">📂</button>
+      <button class="toolbar-action-btn" @click="filterStore.collapseAll">📁</button>
       <CategorySelect />
     </div>
   </header>
@@ -16,11 +18,13 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { moduleConfig as config } from '../config.js'
 import { useModulesStore } from '../stores/modules.js'
+import { useFilterStore } from '../stores/filter.js'
 import ThemeToggle from './ThemeToggle.vue'
 import SearchBox from './SearchBox.vue'
 import CategorySelect from './CategorySelect.vue'
 
 const modulesStore = useModulesStore()
+const filterStore = useFilterStore()
 const isCompact = ref(false)
 
 function onScroll() {
@@ -49,6 +53,14 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 .header h1 { font-size: 1.45em; margin-bottom: 6px; letter-spacing: 2px; text-shadow: 0 2px 8px rgba(0,0,0,.12) }
 .header-desc { font-size: .78em; opacity: .7; font-weight: 300 }
 .toolbar { max-width: 960px; margin: 12px auto; text-align: center; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; align-items: center }
+.toolbar-action-btn {
+  padding: 7px 12px; border-radius: 20px; min-width: auto;
+  background: rgba(255,255,255,.18); color: #fff;
+  border: 1px solid rgba(255,255,255,.3);
+  cursor: pointer; font-size: 1.05em;
+  transition: all .18s; white-space: nowrap; line-height: 1;
+}
+.toolbar-action-btn:hover, .toolbar-action-btn:active { background: rgba(255,255,255,.35); border-color: rgba(255,255,255,.5) }
 
 @media (max-width: 600px) {
   .header { padding: 20px 12px 16px }
