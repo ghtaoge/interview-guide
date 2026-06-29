@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>全栈面试宝典 v2.5</title>
+<title>全栈面试宝典 v2.6</title>
 <style>
 
 :root{--c0:#6366f1;--c1:#ef4444;--c2:#f59e0b;--c3:#10b981;--c4:#3b82f6;--c5:#a855f7;--c6:#f97316;--c7:#14b8a6;--c8:#dc2626;--c9:#059669;--c10:#2563eb;--c11:#ea580c;--c12:#0ea5e9;--c13:#d946ef;--c14:#f472b6;--c15:#8b5cf6;--c16:#e11d48;--c17:#22d3ee;--c18:#c084fc;--c19:#8b5cf6;--c20:#0ea5e9;--c21:#dc2626;--c22:#7c3aed;--c23:#f97316;--c24:#059669;--c25:#6366f1;--c26:#3b82f6;--c27:#ef4444;--c28:#10b981;--c29:#f59e0b;--c30:#a855f7;--c31:#f97316;--c32:#ef4444;--bg:#f0f4f8;--card:#fff;--text:#1a202c;--text2:#4a5568;--text3:#94a3b8;--border:#e2e8f0;--accent:#0d9488;--accent2:#e8833a;--radius:16px;--radius-sm:10px;--shadow:0 2px 12px rgba(0,0,0,.06);--c33:#f59e0b;--c34:#14b8a6;--c35:#ef4444;--c36:#059669;--c37:#3b82f6;--c38:#8b5cf6;--c39:#0ea5e9;--c40:#a855f7}
@@ -282,18 +282,26 @@ body.edit-mode .edit-mode-tip{display:block}
 .module-head .badge{font-size:.65em;padding:1px 7px}
 .sub-head{padding:10px 16px 10px 20px;font-size:.85em}
 .sub-head .count{font-size:.65em;padding:1px 8px}
-.points{padding:4px 16px 12px}
-.point{font-size:.85em;padding:6px 0 6px 12px}
-.point.has-detail .expand-hint{font-size:.65em;padding:2px 8px}
-.point.has-detail .desc{padding-right:6px}
+.points{padding:4px 12px 10px}
+/* 移动端 point 行精简：has-detail 只显示 tag + expand-hint，desc 隐藏 */
+.point{font-size:.85em;padding:8px 10px}
+.point-row{gap:6px;align-items:center}
+.point .tag{border-right:none;padding-right:0;margin-right:0;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.point.has-detail:not(.open) .desc{display:none}
+.point.has-detail.open .desc{display:block;margin-top:4px;font-size:.85em;line-height:1.6}
+.point.has-detail .expand-hint{font-size:.6em;padding:2px 7px;margin-left:4px}
+.point.has-detail .desc{padding-right:0}
+/* 非 has-detail 的 point: desc 截断一行 */
+.point:not(.has-detail) .tag{flex-shrink:0;min-width:fit-content}
+.point:not(.has-detail) .desc{max-height:1.5em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;-webkit-line-clamp:1}
 .header-dark-toggle{right:8px;top:8px;width:24px;height:24px;font-size:.7em}
 .cat-btn{padding:6px 14px;font-size:12px}
 .cat-menu{min-width:140px;left:0;transform:translateX(0) scale(.95)}
 .cat-menu.open{transform:translateX(0) scale(1)}
 .quick-nav{display:none}
 .back-top{bottom:16px;right:16px;width:38px;height:38px}
-.detail-item{font-size:.94em;padding:10px 12px 10px 46px;margin:6px 0}
-.detail-list{padding:8px}
+.detail-item{font-size:.88em;padding:10px 12px 10px 40px;margin:4px 0}
+.detail-list{padding:6px}
 .detail-toggle{font-size:.78em;padding:8px 0}
 .progress-stats{font-size:.55em;left:8px}
 .edit-btn-group{opacity:.6}
@@ -322,7 +330,7 @@ body.edit-mode .edit-mode-tip{display:block}
 <div id="main-content" style="display:none;">
   <div class="header">
     <button class="header-dark-toggle" id="header-dark-btn" onclick="toggleDark()" title="切换暗黑模式 (Ctrl+D)">🌙</button>
-    <h1>📖 全栈面试宝典 <small style="font-size:.5em;opacity:.5">v2.5</small></h1>
+    <h1>📖 全栈面试宝典 <small style="font-size:.5em;opacity:.5">v2.6</small></h1>
     <p id="header-desc"></p>
     <div class="search-box">
       <input type="text" id="search" placeholder="搜索知识点... 如 HashMap / CAS / GC / Redis...">
