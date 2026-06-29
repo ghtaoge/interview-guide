@@ -110,9 +110,9 @@ function renderFromData(modules, filter, tagFilter) {
         }
 
         var detailCount = hasDetail ? pt.details.length : 0;
-        var expandIcon = hasDetail ? '<span class="expand-hint">' + detailCount + ' 条</span>' : '';
-        var cls = 'point' + (hasDetail ? ' has-detail' : '');
-        var clickAttr = hasDetail ? ' onclick="evPt(event,this)"' : '';
+        var expandIcon = '<span class="expand-hint">' + (detailCount > 0 ? detailCount + ' 条' : '▼') + '</span>';
+        var cls = 'point has-detail';
+        var clickAttr = ' onclick="evPt(event,this)"';
         var ptEditBtn = '<span class="edit-btn-group">' +
           '<button class="edit-btn" onclick="editPoint(event,\'' + mod.id + '\',\'' + sub.id + '\',\'' + pt.id + '\')" title="编辑">✏️</button>' +
           '<button class="edit-btn delete-btn" onclick="deletePoint(event,\'' + mod.id + '\',\'' + sub.id + '\',\'' + pt.id + '\')" title="删除">🗑️</button>' +
