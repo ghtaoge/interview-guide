@@ -1,8 +1,8 @@
 <template>
   <header class="header" :class="{ compact: isCompact }">
     <div class="header-top">
-      <ThemeToggle />
       <h1>📖 {{ config.ui.title }} <small style="font-size:.5em;opacity:.5">v{{ config.ui.version }}</small></h1>
+      <ThemeToggle />
     </div>
     <!-- 仅首页显示统计描述 -->
     <p v-if="isHomePage" class="header-desc">共 {{ modulesStore.totalModules }} 大模块 · {{ modulesStore.totalPoints }} 个知识点</p>
@@ -49,7 +49,11 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 .header.compact { padding: 10px 20px 8px }
 .header.compact h1 { font-size: 1.1em; margin-bottom: 2px }
 .header.compact .header-desc { display: none }
-.header-top { display: flex; align-items: center; justify-content: center; gap: 8px; position: relative }
+.header-top {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  position: relative; max-width: 960px; margin: 0 auto;
+}
+.header-top .theme-toggle { position: absolute; right: 0 }
 .header h1 { font-size: 1.45em; margin-bottom: 6px; letter-spacing: 2px; text-shadow: 0 2px 8px rgba(0,0,0,.12) }
 .header-desc { font-size: .78em; opacity: .7; font-weight: 300 }
 .toolbar { max-width: 960px; margin: 12px auto; text-align: center; display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; align-items: center }
@@ -58,5 +62,6 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 @media (max-width: 600px) {
   .header { padding: 20px 12px 16px }
   .header h1 { font-size: 1.25em; margin-bottom: 4px }
+  .header-top .theme-toggle { position: absolute; right: 4px }
 }
 </style>

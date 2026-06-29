@@ -47,10 +47,7 @@ const displayedModules = computed(() => {
   max-width: 960px; margin: 0 auto; padding: 0 16px 60px;
 }
 .module-grid {
-  display: grid; grid-template-columns: 1fr; gap: 16px;
-}
-@media (min-width: 601px) {
-  .module-grid { grid-template-columns: repeat(2, 1fr) }
+  display: flex; flex-direction: column; gap: 16px;
 }
 .no-result { text-align: center; color: var(--text3); padding: 40px; font-size: 1em }
 .skeleton-card { margin-bottom: 16px; padding: 16px; background: var(--card); border-radius: var(--radius) }
