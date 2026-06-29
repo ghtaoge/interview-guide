@@ -1,14 +1,7 @@
 <template>
-  <!-- 移动端: 快捷tag + 底部弹出抽屉 -->
+  <!-- 移动端: 小图标按钮触发底部抽屉 -->
   <div v-if="isMobile" class="mobile-category">
-    <div class="quick-tags">
-      <button
-        v-for="q in quickItems" :key="q.value"
-        class="tag-chip" :class="{ active: selectedTag === q.value }"
-        @click="onTagChange(selectedTag === q.value ? '' : q.value)"
-      >{{ q.emoji }} {{ q.text }}</button>
-      <button class="tag-chip more-btn" :class="{ active: drawerOpen }" @click="drawerOpen = true">更多▼</button>
-    </div>
+    <button class="filter-btn" @click="drawerOpen = true">📂</button>
 
     <!-- 底部弹出抽屉 -->
     <Transition name="drawer">
@@ -94,20 +87,6 @@ const { isMobile } = useDevice()
 const selectedTag = ref(filterStore.tagFilter)
 const drawerOpen = ref(false)
 
-// 快捷tag：最常用的几个
-const quickItems = [
-  { value: 'Java 基础', emoji: '☕', text: 'Java' },
-  { value: '集合', emoji: '📚', text: '集合' },
-  { value: '并发', emoji: '⚡', text: '并发' },
-  { value: 'MySQL', emoji: '🗄️', text: 'MySQL' },
-  { value: 'Redis', emoji: '📐', text: 'Redis' },
-  { value: 'Spring', emoji: '🌐', text: 'Spring' },
-  { value: '分布式系统', emoji: '🚀', text: '分布式' },
-  { value: 'Vue3', emoji: '💚', text: 'Vue3' },
-  { value: 'AI与Agent', emoji: '🤖', text: 'AI' },
-]
-
-// 全部分类分组数据
 const categoryGroups = [
   {
     label: '☕ 后端',
@@ -172,11 +151,6 @@ const categoryGroups = [
   },
 ]
 
-function onTagChange(val) {
-  selectedTag.value = val
-  filterStore.setTagFilter(val)
-}
-
 function onSelectChange() {
   filterStore.setTagFilter(selectedTag.value)
 }
@@ -189,30 +163,15 @@ function pickTag(val) {
 </script>
 
 <style scoped>
-/* 移动端快捷tag条 */
-.quick-tags {
-  display: flex; gap: 6px; overflow-x: auto; padding: 6px 0;
-  -webkit-overflow-scrolling: touch; scrollbar-width: none;
+/* 移动端: 小图标按钮 */
+.filter-btn {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25);
+  color: #fff; font-size: .9em; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .18s; flex-shrink: 0;
 }
-.quick-tags::-webkit-scrollbar { display: none }
-.tag-chip {
-  padding: 5px 10px; border-radius: 16px; font-size: .82em;
-  background: rgba(255,255,255,.12); color: #fff;
-  border: 1px solid rgba(255,255,255,.2);
-  cursor: pointer; transition: all .18s; white-space: nowrap;
-  flex-shrink: 0; line-height: 1.2;
-}
-.tag-chip.active {
-  background: #fff; color: #0d9488;
-  border-color: #fff; font-weight: 600;
-}
-.more-btn {
-  background: rgba(255,255,255,.18); border-color: rgba(255,255,255,.35);
-  font-weight: 500;
-}
-.more-btn.active {
-  background: rgba(255,255,255,.35);
-}
+.filter-btn:hover { background: rgba(255,255,255,.25) }
 
 /* 底部弹出抽屉 */
 .drawer-overlay {

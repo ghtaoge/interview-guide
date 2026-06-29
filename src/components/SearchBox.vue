@@ -57,10 +57,9 @@ function onClear() {
 <style scoped>
 .search-box {
   width: 420px; margin: 10px auto 0; position: relative;
-  transition: width .3s cubic-bezier(.4,0,.2,1);
 }
 .search-box:focus-within {
-  width: 560px; box-shadow: 0 4px 20px rgba(13,148,136,.18);
+  box-shadow: 0 4px 20px rgba(13,148,136,.18);
 }
 .search-box.mobile {
   width: 100%; max-width: 100%;
