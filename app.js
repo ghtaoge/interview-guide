@@ -14,7 +14,6 @@ var DB_NAME = 'javaguide-editor';
 var DB_VERSION = 1;
 var currentEditContext = null;
 var isEditMode = false;
-var appReady = false;
 
 // ===== 数据加载 =====
 function loadAllModules() {
@@ -38,82 +37,6 @@ function highlight(text, keyword) {
   return safe.replace(re, '<span class="hl">$1</span>');
 }
 
-// ===== 移动端胶囊模式辅助 =====
-var moduleColorRgbCache = {};
-function getModuleColorRgb(ci) {
-  if (moduleColorRgbCache[ci]) return moduleColorRgbCache[ci];
-  var hex = '';
-  try { hex = getComputedStyle(document.documentElement).getPropertyValue('--c' + ci).trim(); } catch (e) {}
-  if (!hex) { moduleColorRgbCache[ci] = '99,102,241'; return moduleColorRgbCache[ci]; }
-  hex = hex.replace('#', '');
-  if (hex.length === 3) hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-  var r = parseInt(hex.substring(0, 2), 16);
-  var g = parseInt(hex.substring(2, 4), 16);
-  var b = parseInt(hex.substring(4, 6), 16);
-  moduleColorRgbCache[ci] = r + ',' + g + ',' + b;
-  return moduleColorRgbCache[ci];
-}
-
-function capsuleText(pt) {
-  var t = (pt.tag || '').trim();
-  if (!t) t = (pt.desc || '').trim().substring(0, 8);
-  if (t.length > 12) t = t.substring(0, 12) + '…';
-  return t;
-}
-
-function buildPointCard(pt, mod, sub, filter, forceOpen) {
-  var hasDetail = pt.details && pt.details.length > 0;
-  var detailHtml = '';
-  if (hasDetail) {
-    var previewCount = 5;
-    var needsToggle = pt.details.length > previewCount;
-    detailHtml = '<div class="detail-wrap"><div class="detail-list">';
-    for (var di = 0; di < pt.details.length; di++) {
-      var dItem = pt.details[di];
-      var keyword = (dItem.tag || '').trim() || (dItem.desc || '').trim();
-      keyword = keyword.replace(/^第\d+[、.]\s*/, '').replace(/^\d+[.、)]\s*/, '').replace(/^[①②③④⑤⑥⑦⑧⑨⑩]/, '');
-      var subDetail = dItem.desc || '';
-      var hiddenCls = needsToggle && di >= previewCount ? ' detail-hidden' : '';
-      if (dItem.tag && dItem.desc) {
-        detailHtml += '<div class="detail-item has-sub' + hiddenCls + '" onclick="evSubDetail(event,this)">' + highlight(keyword, filter) + '<span class="sub-arrow"></span><div class="sub-detail">' + highlight(subDetail, filter) + '</div></div>';
-      } else {
-        detailHtml += '<div class="detail-item' + hiddenCls + '">' + highlight(keyword, filter) + '</div>';
-      }
-    }
-    if (needsToggle) {
-      detailHtml += '<div class="detail-toggle" onclick="evDetailToggle(event,this)"><span class="toggle-icon">▾</span>展开全部 ' + pt.details.length + ' 条详情</div>';
-    }
-    detailHtml += '</div></div>';
-  }
-
-  var detailCount = hasDetail ? pt.details.length : 0;
-  var expandIcon = hasDetail ? '<span class="expand-hint">' + detailCount + ' 条</span>' : '';
-  var cls = 'point' + (hasDetail ? ' has-detail' : '') + (forceOpen ? ' open' : '');
-  var clickAttr = hasDetail ? ' onclick="evPt(event,this)"' : '';
-  var ptEditBtn = '<span class="edit-btn-group">' +
-    '<button class="edit-btn" onclick="editPoint(event,\'' + mod.id + '\',\'' + sub.id + '\',\'' + pt.id + '\')" title="编辑">✏️</button>' +
-    '<button class="edit-btn delete-btn" onclick="deletePoint(event,\'' + mod.id + '\',\'' + sub.id + '\',\'' + pt.id + '\')" title="删除">🗑️</button>' +
-    '</span>';
-  return '<div class="' + cls + '"' + clickAttr + '><div class="point-row"><span class="tag">' + highlight(pt.tag, filter) + '</span><span class="desc">' + highlight(pt.desc, filter) + '</span>' + expandIcon + ptEditBtn + '</div>' + detailHtml + '</div>';
-}
-
-function buildMobileCapsulePoints(sub, mod, filter) {
-  var ci = mod.cssIndex;
-  var rgb = getModuleColorRgb(ci);
-  var capsulesHtml = '<div class="mobile-capsules">';
-  var expandedHtml = '';
-  for (var pi = 0; pi < sub.points.length; pi++) {
-    var pt = sub.points[pi];
-    var hasDetail = pt.details && pt.details.length > 0;
-    var capCls = 'capsule' + (hasDetail ? ' has-detail' : '');
-    var styleStr = '--cap-rgb:' + rgb + ';--cap-c:var(--c' + ci + ')';
-    capsulesHtml += '<span class="' + capCls + '" style="' + styleStr + '" onclick="evCapsule(event,this)" data-idx="' + pi + '">' + highlight(capsuleText(pt), filter) + '</span>';
-    expandedHtml += '<div class="mobile-point-expanded" data-idx="' + pi + '" style="display:none">' + buildPointCard(pt, mod, sub, filter, true) + '</div>';
-  }
-  capsulesHtml += '</div>';
-  return capsulesHtml + expandedHtml;
-}
-
 // ===== 渲染核心 =====
 function renderModules(filter, tagFilter) {
   var baseModules = loadAllModules();
@@ -127,8 +50,6 @@ function renderFromData(modules, filter, tagFilter) {
   var total = 0;
   var fl = (filter || '').toLowerCase();
   var isTagFilter = tagFilter && tagFilter !== '';
-  var isMobile = window.innerWidth <= 600;
-  var isSearchActive = (fl !== '' || isTagFilter);
 
   for (var mi = 0; mi < modules.length; mi++) {
     var mod = modules[mi];
@@ -157,20 +78,47 @@ function renderFromData(modules, filter, tagFilter) {
         '<button class="edit-btn add-btn" onclick="addPoint(event,\'' + mod.id + '\',\'' + sub.id + '\')" title="新增知识点">➕</button>' +
         '</span>';
 
-      if (isMobile && !isSearchActive) {
-        // 移动端胶囊模式：所有 point 渲染为紧凑标签按钮，点击展开完整卡片
-        pointsHtml = buildMobileCapsulePoints(sub, mod, filter);
-        subCount = sub.points.length;
-        total += sub.points.length;
-      } else {
-        for (var pi = 0; pi < sub.points.length; pi++) {
-          var pt = sub.points[pi];
-          var ptText = pt.tag + ' ' + pt.desc;
-          var ptMatch = subMatch || matchFilter(ptText, filter);
-          if (!ptMatch) continue;
-          pointsHtml += buildPointCard(pt, mod, sub, filter);
-          subCount++; total++;
+      for (var pi = 0; pi < sub.points.length; pi++) {
+        var pt = sub.points[pi];
+        var ptText = pt.tag + ' ' + pt.desc;
+        var ptMatch = subMatch || matchFilter(ptText, filter);
+        if (!ptMatch) continue;
+
+        // 构建 detail HTML
+        var hasDetail = pt.details && pt.details.length > 0;
+        var detailHtml = '';
+        if (hasDetail) {
+          var previewCount = 5;
+          var needsToggle = pt.details.length > previewCount;
+          detailHtml = '<div class="detail-wrap"><div class="detail-list">';
+          for (var di = 0; di < pt.details.length; di++) {
+            var dItem = pt.details[di];
+            var keyword = (dItem.tag || '').trim() || (dItem.desc || '').trim();
+            keyword = keyword.replace(/^第\d+[、.]\s*/, '').replace(/^\d+[.、)]\s*/, '').replace(/^[①②③④⑤⑥⑦⑧⑨⑩]/, '');
+            var subDetail = dItem.desc || '';
+            var hiddenCls = needsToggle && di >= previewCount ? ' detail-hidden' : '';
+            if (dItem.tag && dItem.desc) {
+              detailHtml += '<div class="detail-item has-sub' + hiddenCls + '" onclick="evSubDetail(event,this)">' + highlight(keyword, filter) + '<span class="sub-arrow"></span><div class="sub-detail">' + highlight(subDetail, filter) + '</div></div>';
+            } else {
+              detailHtml += '<div class="detail-item' + hiddenCls + '">' + highlight(keyword, filter) + '</div>';
+            }
+          }
+          if (needsToggle) {
+            detailHtml += '<div class="detail-toggle" onclick="evDetailToggle(event,this)"><span class="toggle-icon">▾</span>展开全部 ' + pt.details.length + ' 条详情</div>';
+          }
+          detailHtml += '</div></div>';
         }
+
+        var detailCount = hasDetail ? pt.details.length : 0;
+        var expandIcon = hasDetail ? '<span class="expand-hint">' + detailCount + ' 条</span>' : '';
+        var cls = 'point' + (hasDetail ? ' has-detail' : '');
+        var clickAttr = hasDetail ? ' onclick="evPt(event,this)"' : '';
+        var ptEditBtn = '<span class="edit-btn-group">' +
+          '<button class="edit-btn" onclick="editPoint(event,\'' + mod.id + '\',\'' + sub.id + '\',\'' + pt.id + '\')" title="编辑">✏️</button>' +
+          '<button class="edit-btn delete-btn" onclick="deletePoint(event,\'' + mod.id + '\',\'' + sub.id + '\',\'' + pt.id + '\')" title="删除">🗑️</button>' +
+          '</span>';
+        pointsHtml += '<div class="' + cls + '"' + clickAttr + '><div class="point-row"><span class="tag">' + highlight(pt.tag, filter) + '</span><span class="desc">' + highlight(pt.desc, filter) + '</span>' + expandIcon + ptEditBtn + '</div>' + detailHtml + '</div>';
+        subCount++; total++;
       }
 
       if (subCount === 0) continue;
@@ -214,10 +162,6 @@ window.evMod = function(e, el) {
     for (var j = 0; j < pts.length; j++) pts[j].classList.remove('open');
     var lists = el.querySelectorAll('.detail-list');
     for (var k = 0; k < lists.length; k++) { lists[k].classList.remove('expanded'); var tg = lists[k].querySelector('.detail-toggle'); if (tg) { var tc = lists[k].querySelectorAll('.detail-item').length; tg.innerHTML = '<span class="toggle-icon">▾</span>展开全部 ' + tc + ' 条详情'; } }
-    var mCaps = el.querySelectorAll('.capsule.expanded');
-    for (var mc = 0; mc < mCaps.length; mc++) mCaps[mc].classList.remove('expanded');
-    var mExp = el.querySelectorAll('.mobile-point-expanded');
-    for (var mx = 0; mx < mExp.length; mx++) mExp[mx].style.display = 'none';
   }
 };
 
@@ -229,10 +173,6 @@ window.evSub = function(e, el) {
     for (var i = 0; i < pts.length; i++) pts[i].classList.remove('open');
     var lists = el.querySelectorAll('.detail-list');
     for (var j = 0; j < lists.length; j++) { lists[j].classList.remove('expanded'); var tg = lists[j].querySelector('.detail-toggle'); if (tg) { var tc = lists[j].querySelectorAll('.detail-item').length; tg.innerHTML = '<span class="toggle-icon">▾</span>展开全部 ' + tc + ' 条详情'; } }
-    var sCaps = el.querySelectorAll('.capsule.expanded');
-    for (var sc = 0; sc < sCaps.length; sc++) sCaps[sc].classList.remove('expanded');
-    var sExp = el.querySelectorAll('.mobile-point-expanded');
-    for (var sx = 0; sx < sExp.length; sx++) sExp[sx].style.display = 'none';
   }
 };
 
@@ -259,36 +199,6 @@ window.evDetailToggle = function(e, el) {
     el.innerHTML = '<span class="toggle-icon">▾</span>收起详情';
   } else {
     el.innerHTML = '<span class="toggle-icon">▾</span>展开全部 ' + tc + ' 条详情';
-  }
-};
-
-window.evCapsule = function(e, el) {
-  e.stopPropagation();
-  var container = el.parentElement;
-  var pointsWrap = container.parentElement;
-  var idx = el.getAttribute('data-idx');
-  // 折叠其他已展开的胶囊
-  var capsules = container.querySelectorAll('.capsule');
-  for (var i = 0; i < capsules.length; i++) {
-    if (capsules[i] !== el) capsules[i].classList.remove('expanded');
-  }
-  // 隐藏其他已展开的完整卡片
-  var cards = pointsWrap.querySelectorAll('.mobile-point-expanded');
-  var target = null;
-  for (var j = 0; j < cards.length; j++) {
-    if (cards[j].getAttribute('data-idx') === idx) {
-      target = cards[j];
-    } else {
-      cards[j].style.display = 'none';
-    }
-  }
-  // 切换当前胶囊
-  if (el.classList.contains('expanded')) {
-    el.classList.remove('expanded');
-    if (target) target.style.display = 'none';
-  } else {
-    el.classList.add('expanded');
-    if (target) target.style.display = 'block';
   }
 };
 
@@ -374,20 +284,6 @@ window.clearTagSelect = function() {
   currentFilterTag = '';
   renderModules('', '');
 };
-
-// ===== 视口尺寸切换：跨越 600px 时重新渲染，切换胶囊/卡片模式 =====
-var prevIsMobile = window.innerWidth <= 600;
-var resizeTimer = null;
-window.addEventListener('resize', function() {
-  if (resizeTimer) clearTimeout(resizeTimer);
-  resizeTimer = setTimeout(function() {
-    var nowMobile = window.innerWidth <= 600;
-    if (nowMobile !== prevIsMobile) {
-      prevIsMobile = nowMobile;
-      if (appReady) renderModules(searchInput.value.trim(), currentFilterTag);
-    }
-  }, 200);
-});
 
 // ===== 暗黑模式 =====
 window.toggleDark = function() {
@@ -633,7 +529,6 @@ function onAuthSuccess() {
 
     initDarkMode();
     renderModules('', '');
-    appReady = true;
     buildQuickNav(modules);
     initScrollListeners();
 
@@ -654,7 +549,6 @@ function onAuthSuccess() {
     if (descEl) descEl.textContent = '共 ' + modules.length + ' 大模块 · ' + totalPoints + ' 个知识点 (只读模式 — 浏览器不支持本地编辑)';
     initDarkMode();
     renderModules('', '');
-    appReady = true;
     buildQuickNav(modules);
     initScrollListeners();
     var toolbar = document.getElementById('admin-toolbar');
