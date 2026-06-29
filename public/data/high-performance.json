@@ -1,0 +1,278 @@
+{
+  "id": "high-performance",
+  "title": "二十三、高性能",
+  "tag": "高性能",
+  "order": 23,
+  "icon": "💠",
+  "cssIndex": 22,
+  "subs": [
+    {
+      "id": "23-1-数据库优化-23-0",
+      "title": "23.1 数据库优化",
+      "points": [
+        {
+          "id": "读写分离-23-0-0",
+          "tag": "读写分离",
+          "desc": "主库写从库读，减轻主库压力。Master 写 binlog→Slave 同步。中间件：ShardingSphere-JDBC(客户端)/MyCat(Proxy)/ProxySQL。注意主从延迟(异步复制)，写后立即读需走主库(强制路由)",
+          "details": [
+            {
+              "id": "读写分离-23-0-0-d0",
+              "tag": "主库写从库读",
+              "desc": "减轻主库压力提升读并发能力（主库写从库读的详细说明：读写分离中关于主库写从库读的内容）"
+            },
+            {
+              "id": "读写分离-23-0-0-d1",
+              "tag": "同步方式",
+              "desc": "Master写binlog→Dump Thread→Slave IO Thread→SQL Thread"
+            },
+            {
+              "id": "读写分离-23-0-0-d2",
+              "tag": "中间件",
+              "desc": "ShardingSphere-JDBC(客户端)/MyCat(Proxy)/ProxySQL"
+            },
+            {
+              "id": "读写分离-23-0-0-d3",
+              "tag": "主从延迟",
+              "desc": "异步复制写后立即读可能读到旧数据需强制路由走主库"
+            },
+            {
+              "id": "读写分离-23-0-0-d4",
+              "tag": "强制路由",
+              "desc": "ShardingSphere HintManager指定走主库解决写后读一致性"
+            }
+          ]
+        },
+        {
+          "id": "深度分页优化-23-0-1",
+          "tag": "深度分页优化",
+          "desc": "`LIMIT 1000000,10` 很慢(扫描 100 万行)。优化：1.子查询 `WHERE id>(SELECT id FROM t LIMIT 1000000,1) LIMIT 10` 2.延迟关联 JOIN(先查 id 再 JOIN) 3.记录上一页最大 id `WHERE id>last_max_id LIMIT 10`(要求 id 递增连续)",
+          "details": [
+            {
+              "id": "深度分页优化-23-0-1-d0",
+              "tag": "LIMIT 1000000,10扫描100万行丢弃前999990行极慢",
+              "desc": "MySQL深分页需先扫描并排序全部前N行再丢弃，offset越大越慢；本质是全表扫描+排序开销，非索引覆盖时甚至回表百万次"
+            },
+            {
+              "id": "深度分页优化-23-0-1-d1",
+              "tag": "子查询优化",
+              "desc": "WHERE id>(SELECT id FROM t LIMIT 1000000,1) LIMIT 10利用索引"
+            },
+            {
+              "id": "深度分页优化-23-0-1-d2",
+              "tag": "延迟关联",
+              "desc": "先查id(SELECT id FROM t LIMIT 1000000,10)再JOIN获取完整数据"
+            },
+            {
+              "id": "深度分页优化-23-0-1-d3",
+              "tag": "记录last_id",
+              "desc": "WHERE id>last_max_id LIMIT 10要求id递增连续最高效"
+            },
+            {
+              "id": "深度分页优化-23-0-1-d4",
+              "tag": "禁止SELECT *",
+              "desc": "只查需要的列减少数据传输量配合覆盖索引避免回表"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "23-2-消息队列-23-1",
+      "title": "23.2 消息队列",
+      "points": [
+        {
+          "id": "为什么用mq-23-1-0",
+          "tag": "为什么用MQ",
+          "desc": "解耦(生产者消费者通过 MQ 间接通信)/异步(非核心链路异步处理提升响应时间)/削峰填谷(高并发请求先入队列，消费者按能力平稳消费保护 DB)。代价：系统复杂性增加/可用性降低/一致性问题",
+          "details": [
+            {
+              "id": "为什么用mq-23-1-0-d0",
+              "tag": "解耦",
+              "desc": "生产者消费者通过MQ间接通信无需直接依赖"
+            },
+            {
+              "id": "为什么用mq-23-1-0-d1",
+              "tag": "异步",
+              "desc": "非核心链路异步处理提升响应时间(如发短信/记日志)"
+            },
+            {
+              "id": "为什么用mq-23-1-0-d2",
+              "tag": "削峰填谷",
+              "desc": "高并发请求先入队列消费者按能力平稳消费保护DB"
+            },
+            {
+              "id": "为什么用mq-23-1-0-d3",
+              "tag": "代价",
+              "desc": "系统复杂性增加/可用性降低(MQ宕机)/一致性问题(消息丢失重复)"
+            },
+            {
+              "id": "为什么用mq-23-1-0-d4",
+              "tag": "选型",
+              "desc": "Kafka大数据/日志,RocketMQ电商/金融,RabbitMQ中小项目"
+            }
+          ]
+        },
+        {
+          "id": "kafka-23-1-1",
+          "tag": "Kafka",
+          "desc": "LinkedIn 开源(Apache 顶级)。高吞吐百万 TPS。Partition+Replica+ISR(In-Sync Replicas)。零拷贝 sendfile+顺序写磁盘+PageCache+批量发送+压缩。EOS 精确一次(enable.idempotence+transactional.id)。适合大数据/日志/流处理",
+          "details": [
+            {
+              "id": "kafka-23-1-1-d0",
+              "tag": "高吞吐百万TPS",
+              "desc": "Partition并行+顺序写磁盘+PageCache+零拷贝"
+            },
+            {
+              "id": "kafka-23-1-1-d1",
+              "tag": "Partition+Replica+ISR",
+              "desc": "分区并行+副本冗余+ISR同步副本保证可靠"
+            },
+            {
+              "id": "kafka-23-1-1-d2",
+              "tag": "零拷贝sendfile+顺序写磁盘+PageCache+批量发送+压缩极致性能",
+              "desc": "sendfile内核直传避免用户态拷贝；顺序写磁盘利用磁头连续写入避免寻道；PageCache利用OS缓存减少磁盘IO；批量+压缩降低网络开销"
+            },
+            {
+              "id": "kafka-23-1-1-d3",
+              "tag": "EOS精确一次",
+              "desc": "enable.idempotence+transactional.id幂等+事务"
+            },
+            {
+              "id": "kafka-23-1-1-d4",
+              "tag": "适用",
+              "desc": "大数据/日志/流处理/事件驱动不适合少量复杂业务消息"
+            }
+          ]
+        },
+        {
+          "id": "rocketmq-23-1-2",
+          "tag": "RocketMQ",
+          "desc": "阿里开源(Apache 顶级)。事务消息(半消息+本地事务+回查+Commit/Rollback)。延迟消息(18 个固定等级,5.0 Timer 任意精度)。消息轨迹(Trace Topic+Console 可视化)。顺序消息(MessageQueueSelector 按 ShardingKey 选 Queue)。适合电商金融",
+          "details": [
+            {
+              "id": "rocketmq-23-1-2-d0",
+              "tag": "事务消息",
+              "desc": "半消息+本地事务+回查(最多15次)+Commit/Rollback分布式事务核心"
+            },
+            {
+              "id": "rocketmq-23-1-2-d1",
+              "tag": "延迟消息",
+              "desc": "18个固定等级(1s/5s/10s/30s...2h)+5.0 Timer任意精度定时任务"
+            },
+            {
+              "id": "rocketmq-23-1-2-d2",
+              "tag": "消息轨迹",
+              "desc": "Trace Topic+Console可视化排查消息丢失重复延迟"
+            },
+            {
+              "id": "rocketmq-23-1-2-d3",
+              "tag": "顺序消息",
+              "desc": "MessageQueueSelector按ShardingKey选Queue保证同Key有序"
+            },
+            {
+              "id": "rocketmq-23-1-2-d4",
+              "tag": "适用",
+              "desc": "电商/金融/订单/支付需要事务消息和顺序消息的业务场景"
+            }
+          ]
+        },
+        {
+          "id": "rabbitmq-23-1-3",
+          "tag": "RabbitMQ",
+          "desc": "Pivotal 开源(Erlang)。Exchange(Direct 粁确/Fanout 广播/Topic 模式匹配/Headers)+Queue+Binding。Publisher Confirms(发送确认)+Consumer Manual Ack(消费确认)。死信队列 DLQ(x-dead-letter-exchange)。延迟队列(TTL+DLX 或 3.12+ delayed-plugin)",
+          "details": [
+            {
+              "id": "rabbitmq-23-1-3-d0",
+              "tag": "Exchange+Queue+Binding",
+              "desc": "路由模型Direct精确/Fanout广播/Topic模式匹配"
+            },
+            {
+              "id": "rabbitmq-23-1-3-d1",
+              "tag": "Publisher Confirms",
+              "desc": "发送确认保证消息到达Broker"
+            },
+            {
+              "id": "rabbitmq-23-1-3-d2",
+              "tag": "Consumer Manual Ack",
+              "desc": "消费确认保证消息被正确处理（Consumer Manual Ack的详细说明：RabbitMQ中关于Consumer Manual Ack的内容）"
+            },
+            {
+              "id": "rabbitmq-23-1-3-d3",
+              "tag": "死信队列DLQ",
+              "desc": "x-dead-letter-exchange处理消费失败/过期/超限消息"
+            },
+            {
+              "id": "rabbitmq-23-1-3-d4",
+              "tag": "延迟队列",
+              "desc": "TTL+DLX或3.12+delayed-message-plugin原生延迟消息"
+            }
+          ]
+        },
+        {
+          "id": "消息可靠性-23-1-4",
+          "tag": "消息可靠性",
+          "desc": "At Most Once(最多一次,可能丢)/At Least Once(至少一次,可能重复,需消费端幂等)/Exactly Once(精确一次,Kafka EOS/RocketMQ 事务消息)。消息不丢失：Producer 确认+Broker 持久化+Consumer 手动 Ack。消息不重复：消费端幂等(唯一 ID 去重/唯一约束/Redis SETNX/状态机)",
+          "details": [
+            {
+              "id": "消息可靠性-23-1-4-d0",
+              "tag": "At Most Once",
+              "desc": "最多一次可能丢消息简单但不可靠"
+            },
+            {
+              "id": "消息可靠性-23-1-4-d1",
+              "tag": "At Least Once",
+              "desc": "至少一次可能重复需消费端幂等处理最常用"
+            },
+            {
+              "id": "消息可靠性-23-1-4-d2",
+              "tag": "Exactly Once",
+              "desc": "精确一次Kafka EOS/RocketMQ事务消息理想但复杂"
+            },
+            {
+              "id": "消息可靠性-23-1-4-d3",
+              "tag": "消息不丢失三段",
+              "desc": "Producer确认+Broker持久化+Consumer手动Ack"
+            },
+            {
+              "id": "消息可靠性-23-1-4-d4",
+              "tag": "消息不重复",
+              "desc": "消费端幂等唯一ID去重/唯一约束/Redis SETNX/状态机"
+            }
+          ]
+        },
+        {
+          "id": "消息顺序性-23-1-5",
+          "tag": "消息顺序性",
+          "desc": "全局顺序(单 Partition 单 Consumer,性能差)。分区有序(同 Key 消息发同 Partition,同 Partition 单 Consumer 消费)。RocketMQ：MessageQueueSelector 按 ShardingKey 选 Queue。Kafka：同 Key 路由到同 Partition",
+          "details": [
+            {
+              "id": "消息顺序性-23-1-5-d0",
+              "tag": "全局顺序",
+              "desc": "单Partition单Consumer性能极差不推荐"
+            },
+            {
+              "id": "消息顺序性-23-1-5-d1",
+              "tag": "分区有序",
+              "desc": "同Key消息发同Partition+同Partition单Consumer消费"
+            },
+            {
+              "id": "消息顺序性-23-1-5-d2",
+              "tag": "RocketMQ",
+              "desc": "MessageQueueSelector按ShardingKey选Queue保证同业务Key有序"
+            },
+            {
+              "id": "消息顺序性-23-1-5-d3",
+              "tag": "Kafka",
+              "desc": "同Key路由到同Partition+单Consumer按序消费"
+            },
+            {
+              "id": "消息顺序性-23-1-5-d4",
+              "tag": "注意",
+              "desc": "Consumer数量≤Partition数量否则有空闲Consumer;Consumer变更可能乱序"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

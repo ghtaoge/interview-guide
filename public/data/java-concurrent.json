@@ -1,0 +1,1208 @@
+{
+  "id": "java-concurrent",
+  "title": "三、Java 并发编程",
+  "tag": "并发",
+  "order": 3,
+  "icon": "💠",
+  "cssIndex": 2,
+  "subs": [
+    {
+      "id": "3-1-线程基础-3-0",
+      "title": "3.1 线程基础",
+      "points": [
+        {
+          "id": "6种状态-3-0-0",
+          "tag": "6 种状态",
+          "desc": "NEW(创建未 start)→RUNNABLE(可运行含就绪+运行)→BLOCKED(等待 synchronized 锁)→WAITING(wait/join 无超时)→TIMED_WAITING(sleep/wait/join 带超时)→TERMINATED(执行完毕)",
+          "details": [
+            {
+              "id": "6种状态-3-0-0-d0",
+              "tag": "NEW",
+              "desc": "new 了但没 start()"
+            },
+            {
+              "id": "6种状态-3-0-0-d1",
+              "tag": "RUNNABLE",
+              "desc": "可运行（含就绪和运行，Java 不区分）"
+            },
+            {
+              "id": "6种状态-3-0-0-d2",
+              "tag": "BLOCKED",
+              "desc": "等待 synchronized 锁"
+            },
+            {
+              "id": "6种状态-3-0-0-d3",
+              "tag": "WAITING",
+              "desc": "wait()/join() 无超时"
+            },
+            {
+              "id": "6种状态-3-0-0-d4",
+              "tag": "TIMED_WAITING",
+              "desc": "sleep()/wait(time)/join(time)"
+            },
+            {
+              "id": "6种状态-3-0-0-d5",
+              "tag": "TERMINATED",
+              "desc": "run() 执行完毕（TERMINATED的详细说明：6 种状态中关于TERMINATED的内容）"
+            }
+          ]
+        },
+        {
+          "id": "创建方式-3-0-1",
+          "tag": "创建方式",
+          "desc": "1.继承 Thread 重写 run() 2.实现 Runnable 传 Thread 3.Callable+FutureTask（有返回值）4.线程池 ExecutorService（推荐）。推荐线程池避免频繁创建销毁，统一管理",
+          "details": [
+            {
+              "id": "创建方式-3-0-1-d0",
+              "tag": "继承Thread",
+              "desc": "重写run方法直接start启动简单直观但Java单继承限制"
+            },
+            {
+              "id": "创建方式-3-0-1-d1",
+              "tag": "实现Runnable",
+              "desc": "更推荐解耦任务与线程可共享Runnable实例灵活"
+            },
+            {
+              "id": "创建方式-3-0-1-d2",
+              "tag": "Callable+Future",
+              "desc": "有返回值可抛异常配合FutureTask获取异步结果"
+            },
+            {
+              "id": "创建方式-3-0-1-d3",
+              "tag": "线程池",
+              "desc": "ExecutorService提交Runnable/Callable最优方式统一管理"
+            },
+            {
+              "id": "创建方式-3-0-1-d4",
+              "tag": "实际本质",
+              "desc": "只有Thread代表线程其他只是任务载体Runnable/Callable不创建线程"
+            }
+          ]
+        },
+        {
+          "id": "sleepvswait-3-0-2",
+          "tag": "sleep vs wait",
+          "desc": "sleep()是 Thread 静态方法不释放锁，时间到自动唤醒；wait()是 Object 方法释放锁，需 notify/notifyAll 唤醒，必须在 synchronized 块中调用。wait/notify 必须在同一对象的锁上",
+          "details": [
+            {
+              "id": "sleepvswait-3-0-2-d0",
+              "tag": "sleep",
+              "desc": "sleep 是 Thread 静态方法，wait 是 Object 方法"
+            },
+            {
+              "id": "sleepvswait-3-0-2-d1",
+              "tag": "sleep 不释放锁，wait 释放锁",
+              "desc": "sleep()是Thread静态方法休眠期间持锁不释放，wait()是Object实例方法进入等待时释放锁允许其他线程获取"
+            },
+            {
+              "id": "sleepvswait-3-0-2-d2",
+              "tag": "sleep 时间到自动唤醒，wait 需 notify/notifyAll 唤醒",
+              "desc": "sleep()指定毫秒后自动恢复运行，wait()进入WAITING状态需其他线程调用notify()或notifyAll()主动唤醒"
+            },
+            {
+              "id": "sleepvswait-3-0-2-d3",
+              "tag": "wait 必须在 synchronized 块中调用",
+              "desc": "wait()调用前必须获取该对象的监视器锁（synchronized），否则抛IllegalMonitorStateException异常"
+            },
+            {
+              "id": "sleepvswait-3-0-2-d4",
+              "tag": "wait/notify 必须在同一个对象的锁上调用",
+              "desc": "wait()和notify()/notifyAll()必须在同一对象监视器上配对使用，否则线程无法正确唤醒等待方"
+            }
+          ]
+        },
+        {
+          "id": "startvsrun-3-0-3",
+          "tag": "start vs run",
+          "desc": "start()创建新线程并调用 run()；直接调 run()只是普通方法调用在当前线程执行。一个 Thread 只能 start()一次（IllegalThreadStateException）",
+          "details": [
+            {
+              "id": "startvsrun-3-0-3-d0",
+              "tag": "start()",
+              "desc": "调用native start0()创建新OS线程异步执行run方法体"
+            },
+            {
+              "id": "startvsrun-3-0-3-d1",
+              "tag": "run()",
+              "desc": "直接调用在当前线程同步执行不创建新线程只是普通方法调用"
+            },
+            {
+              "id": "startvsrun-3-0-3-d2",
+              "tag": "重复start",
+              "desc": "同一Thread对象start两次抛IllegalThreadStateException"
+            },
+            {
+              "id": "startvsrun-3-0-3-d3",
+              "tag": "调用顺序",
+              "desc": "start→新线程→run方法体内容异步执行"
+            },
+            {
+              "id": "startvsrun-3-0-3-d4",
+              "tag": "常见错误",
+              "desc": "直接调用run()以为创建了新线程实际未创建仍在主线程执行"
+            }
+          ]
+        },
+        {
+          "id": "守护线程-3-0-4",
+          "tag": "守护线程",
+          "desc": "setDaemon(true)必须在 start()前设置。所有非守护线程结束 JVM 退出，守护线程直接终止。典型：GC 线程。注意：守护线程中 finally 不一定执行",
+          "details": [
+            {
+              "id": "守护线程-3-0-4-d0",
+              "tag": "setDaemon",
+              "desc": "必须在start前设置否则抛IllegalThreadStateException"
+            },
+            {
+              "id": "守护线程-3-0-4-d1",
+              "tag": "服务角色",
+              "desc": "为用户线程提供后台支持如GC线程就是JVM内置守护线程"
+            },
+            {
+              "id": "守护线程-3-0-4-d2",
+              "tag": "退出机制",
+              "desc": "所有用户线程结束JVM立即退出守护线程被强制终止"
+            },
+            {
+              "id": "守护线程-3-0-4-d3",
+              "tag": "finally风险",
+              "desc": "守护线程finally块可能不执行资源可能泄漏需注意"
+            },
+            {
+              "id": "守护线程-3-0-4-d4",
+              "tag": "典型用途",
+              "desc": "心跳检测日志清理监控统计等后台辅助任务不阻JVM退出"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3-2-synchronized-与-volatile-3-1",
+      "title": "3.2 synchronized 与 volatile",
+      "points": [
+        {
+          "id": "synchronized原理-3-1-0",
+          "tag": "synchronized 原理",
+          "desc": "同步代码块：monitorenter/monitorexit + Monitor 对象；同步方法：ACC_SYNCHRONIZED 标志。锁升级：无锁→偏向锁（单线程 CAS 记录线程 ID）→轻量级锁（CAS 自旋）→重量级锁（OS 互斥量）。JDK6 后引入锁优化",
+          "details": [
+            {
+              "id": "synchronized原理-3-1-0-d0",
+              "tag": "同步代码块",
+              "desc": "monitorenter/monitorexit 指令操作 Monitor 对象"
+            },
+            {
+              "id": "synchronized原理-3-1-0-d1",
+              "tag": "同步方法",
+              "desc": "方法表 ACC_SYNCHRONIZED 标志"
+            },
+            {
+              "id": "synchronized原理-3-1-0-d2",
+              "tag": "锁升级",
+              "desc": "无锁 → 偏向锁（CAS 记录线程 ID）"
+            },
+            {
+              "id": "synchronized原理-3-1-0-d3",
+              "tag": "",
+              "desc": "→ 轕量级锁（CAS 自旋适应）"
+            },
+            {
+              "id": "synchronized原理-3-1-0-d4",
+              "tag": "",
+              "desc": "→ 重量级锁（OS 互斥量 Mutex）"
+            },
+            {
+              "id": "synchronized原理-3-1-0-d5",
+              "tag": "JDK6 后引入锁升级优化",
+              "desc": "JDK6引入偏向锁→轻量级锁→重量级锁三级升级，从无竞争CAS到自旋到OS互斥量，减少不必要的重量级锁开销"
+            }
+          ]
+        },
+        {
+          "id": "synchronizedvsreentrantlock-3-1-1",
+          "tag": "synchronized vs ReentrantLock",
+          "desc": "sync：关键字 JVM 层面、自动释放锁、不可中断、非公平；RL：API 层面、手动 unlock(finally)、可中断 lockInterruptibly()、可公平/非公平、可绑定多个 Condition",
+          "details": [
+            {
+              "id": "synchronizedvsreentrantlock-3-1-1-d0",
+              "tag": "实现层面",
+              "desc": "synchronized JVM内置关键字ReentrantLock API类层面"
+            },
+            {
+              "id": "synchronizedvsreentrantlock-3-1-1-d1",
+              "tag": "公平性",
+              "desc": "synchronized非公平ReentrantLock可选公平锁(fair=true)"
+            },
+            {
+              "id": "synchronizedvsreentrantlock-3-1-1-d2",
+              "tag": "可中断",
+              "desc": "synchronized不可响应中断ReentrantLock可lockInterruptibly"
+            },
+            {
+              "id": "synchronizedvsreentrantlock-3-1-1-d3",
+              "tag": "超时获取",
+              "desc": "synchronized无超时ReentrantLock支持tryLock带时间参数"
+            },
+            {
+              "id": "synchronizedvsreentrantlock-3-1-1-d4",
+              "tag": "Condition",
+              "desc": "synchronized单wait/notifyReentrantLock多Condition精准唤醒"
+            }
+          ]
+        },
+        {
+          "id": "volatile可见性-3-1-2",
+          "tag": "volatile 可见性",
+          "desc": "volatile 写立即刷新主内存，读从主内存读取（非工作内存/CPU 缓存）。保证所有线程看到的值一致。但不能保证 i++ 原子性（读-改-写三步），需配合 AtomicInteger 或 synchronized",
+          "details": [
+            {
+              "id": "volatile可见性-3-1-2-d0",
+              "tag": "volatile 写操作立即刷新到主内存",
+              "desc": "volatile变量写后JMM强制将工作内存值刷新到主内存，其他线程读时可见最新值而非CPU缓存旧值"
+            },
+            {
+              "id": "volatile可见性-3-1-2-d1",
+              "tag": "volatile 读操作从主内存读取（非工作内存/CPU 缓存）",
+              "desc": "volatile变量读时JMM强制从主内存加载而非CPU缓存，保证读到的是其他线程最新写入的值"
+            },
+            {
+              "id": "volatile可见性-3-1-2-d2",
+              "tag": "保证所有线程看到的值一致",
+              "desc": "volatile通过强制读写主内存实现可见性，所有线程对volatile变量的读取都看到最新写入值保证一致性"
+            },
+            {
+              "id": "volatile可见性-3-1-2-d3",
+              "tag": "但不",
+              "desc": "但不能保证 i++ 原子性（读-改-写三步非原子）"
+            },
+            {
+              "id": "volatile可见性-3-1-2-d4",
+              "tag": "需配合 AtomicInteger 或 synchronized 保证原子性",
+              "desc": "volatile仅保证可见性和有序性不保证原子性，i++复合操作需AtomicInteger(CAS)或synchronized(加锁)保证原子"
+            }
+          ]
+        },
+        {
+          "id": "volatile有序性-3-1-3",
+          "tag": "volatile 有序性",
+          "desc": "通过内存屏障禁止指令重排序。volatile 写前 StoreStore（前序写完成），写后 StoreLoad；读前 LoadLoad，读后 LoadStore。经典应用：双重检查锁定 DCL 单例 volatile 修饰实例",
+          "details": [
+            {
+              "id": "volatile有序性-3-1-3-d0",
+              "tag": "通过插入内存屏障禁止指令重排序",
+              "desc": "JMM在volatile读写前后插入4种内存屏障(StoreStore/StoreLoad/LoadLoad/LoadStore)，阻止编译器和CPU重排序"
+            },
+            {
+              "id": "volatile有序性-3-1-3-d1",
+              "tag": "volatile 写前插入 StoreStore 屏障（前面写操作先完成）",
+              "desc": "StoreStore屏障确保volatile写之前所有普通写操作已刷新到主内存，防止前面写被重排到volatile写之后"
+            },
+            {
+              "id": "volatile有序性-3-1-3-d2",
+              "tag": "volatile 写后插入 StoreLoad 屏障",
+              "desc": "StoreLoad屏障是4种屏障中开销最大的，确保volatile写后的读操作不会看到重排序后其他线程的旧数据"
+            },
+            {
+              "id": "volatile有序性-3-1-3-d3",
+              "tag": "volatile 读前插入 LoadLoad 屏障",
+              "desc": "LoadLoad屏障确保volatile读之前的所有读操作已完成，防止volatile读被重排到前面读操作之前导致读到旧值"
+            },
+            {
+              "id": "volatile有序性-3-1-3-d4",
+              "tag": "volatile 读后插入 LoadStore 屏障",
+              "desc": "LoadStore屏障确保volatile读之后的所有写操作不会重排到读之前，保证读到的值不会被后续写覆盖干扰"
+            },
+            {
+              "id": "volatile有序性-3-1-3-d5",
+              "tag": "经典应用",
+              "desc": "DCL 单例 volatile 修饰实例"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3-3-cas-与-atomic-3-2",
+      "title": "3.3 CAS 与 Atomic",
+      "points": [
+        {
+          "id": "cas原理-3-2-0",
+          "tag": "CAS 原理",
+          "desc": "Compare And Swap：内存位置 V、预期值 A、新值 B。V==A 则更新为 B 返回 true，否则返回 false。CPU 指令 cmpxchg 保证原子性。Java 通过 Unsafe.compareAndSwapInt() 调用。自旋 CAS 直到成功",
+          "details": [
+            {
+              "id": "cas原理-3-2-0-d0",
+              "tag": "Compare And Swap",
+              "desc": "Compare And Swap 比较并交换"
+            },
+            {
+              "id": "cas原理-3-2-0-d1",
+              "tag": "三个操作数",
+              "desc": "内存位置 V、预期值 A、新值 B"
+            },
+            {
+              "id": "cas原理-3-2-0-d2",
+              "tag": "当 V",
+              "desc": "=A 时将 V 更新为 B，返回 true"
+            },
+            {
+              "id": "cas原理-3-2-0-d3",
+              "tag": "V!=A 则不操作返回 false",
+              "desc": "CAS比较内存值V与预期值A，若V!=A说明已被其他线程修改则放弃更新返回false，自旋重试直到V==A时更新为B"
+            },
+            {
+              "id": "cas原理-3-2-0-d4",
+              "tag": "CPU 指令 cmpxchg",
+              "desc": "CPU 指令 cmpxchg 保证原子性"
+            },
+            {
+              "id": "cas原理-3-2-0-d5",
+              "tag": "自旋 CAS 直到成功（可",
+              "desc": "自旋 CAS 直到成功（可能消耗 CPU）"
+            }
+          ]
+        },
+        {
+          "id": "aba问题-3-2-1",
+          "tag": "ABA 问题",
+          "desc": "值 A→B→A，CAS 认为没变。解决方案：AtomicStampedReference（加 int 版本号）或 AtomicMarkableReference（加 boolean 标记）。数据库乐观锁也类似（version 字段）",
+          "details": [
+            {
+              "id": "aba问题-3-2-1-d0",
+              "tag": "值从 A→B→A，CAS 认为没被",
+              "desc": "值从 A→B→A，CAS 认为没被修改过"
+            },
+            {
+              "id": "aba问题-3-2-1-d1",
+              "tag": "AtomicStampedReference",
+              "desc": "加 int 版本号（AtomicStampedReference的详细说明：ABA 问题中关于AtomicStampedReference的内容）"
+            },
+            {
+              "id": "aba问题-3-2-1-d2",
+              "tag": "AtomicMarkableReference",
+              "desc": "加 boolean 标记（AtomicMarkableReference的详细说明：ABA 问题中关于AtomicMarkableReference的内容）"
+            },
+            {
+              "id": "aba问题-3-2-1-d3",
+              "tag": "数据库乐观锁也类似（version 字段每次更新+1）",
+              "desc": "乐观锁用version字段每次UPDATE时version=version+1并校验版本号，与AtomicStampedReference加版本号思路一致"
+            }
+          ]
+        },
+        {
+          "id": "atomic类-3-2-2",
+          "tag": "Atomic 类",
+          "desc": "基本：AtomicInteger/AtomicLong/AtomicBoolean；引用：AtomicReference/AtomicStampedReference；数组：AtomicIntegerArray；字段：AtomicIntegerFieldUpdater；高并发累加：LongAdder（分段 CAS 优于 AtomicLong）",
+          "details": [
+            {
+              "id": "atomic类-3-2-2-d0",
+              "tag": "AtomicInteger",
+              "desc": "CAS无锁更新整数比synchronized更轻量高并发性能提升"
+            },
+            {
+              "id": "atomic类-3-2-2-d1",
+              "tag": "AtomicLong",
+              "desc": "同理Long类型原子操作底层Unsafe.compareAndSwapLong"
+            },
+            {
+              "id": "atomic类-3-2-2-d2",
+              "tag": "AtomicReference",
+              "desc": "CAS更新对象引用保证引用原子切换不可中断"
+            },
+            {
+              "id": "atomic类-3-2-2-d3",
+              "tag": "底层原理",
+              "desc": "Unsafe.compareAndSwapInt基于CPU原子指令无锁并发"
+            },
+            {
+              "id": "atomic类-3-2-2-d4",
+              "tag": "ABA问题",
+              "desc": "CAS检测值不变但可能被改过再改回用AtomicStampedReference解决"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3-4-threadlocal-3-3",
+      "title": "3.4 ThreadLocal",
+      "points": [
+        {
+          "id": "原理-3-3-0",
+          "tag": "原理",
+          "desc": "每个 Thread 维护 ThreadLocalMap。key=ThreadLocal 对象（弱引用 WeakReference），value=变量副本（强引用）。set() 以当前 ThreadLocal 为 key 存入当前线程的 ThreadLocalMap，get() 同理取出",
+          "details": [
+            {
+              "id": "原理-3-3-0-d0",
+              "tag": "写后屏障",
+              "desc": "StoreStore+StoreLoad保证写操作对其他线程可见不重排序"
+            },
+            {
+              "id": "原理-3-3-0-d1",
+              "tag": "读前屏障",
+              "desc": "LoadLoad+LoadStore保证读操作读到最新写入值"
+            },
+            {
+              "id": "原理-3-3-0-d2",
+              "tag": "禁止重排",
+              "desc": "写操作不与后续任何操作重排序读操作不与前面重排序"
+            },
+            {
+              "id": "原理-3-3-0-d3",
+              "tag": "实现差异",
+              "desc": "不同JVM实现不同x86只需StoreLoad其他平台更强"
+            },
+            {
+              "id": "原理-3-3-0-d4",
+              "tag": "不保证原子",
+              "desc": "volatile++非原子操作仍需AtomicInteger保证复合操作原子性"
+            }
+          ]
+        },
+        {
+          "id": "内存泄漏-3-3-1",
+          "tag": "内存泄漏",
+          "desc": "key 弱引用 GC 后变 null，但 value 强引用无法回收。线程池中线程长期存活→value 泄漏。解决方案：使用后 try-finally 中 `remove()` 清除。InheritableThreadLocal 可被子线程继承",
+          "details": [
+            {
+              "id": "内存泄漏-3-3-1-d0",
+              "tag": "key",
+              "desc": "key 是弱引用，GC 后 key 变为 null"
+            },
+            {
+              "id": "内存泄漏-3-3-1-d1",
+              "tag": "但 value",
+              "desc": "但 value 是强引用无法被回收"
+            },
+            {
+              "id": "内存泄漏-3-3-1-d2",
+              "tag": "线程池中线程长期存活",
+              "desc": "线程池中线程长期存活 → value 一直无法回收 → 泄漏"
+            },
+            {
+              "id": "内存泄漏-3-3-1-d3",
+              "tag": "解决方案",
+              "desc": "使用后 try-finally 中 remove() 清除"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3-5-jmm-3-4",
+      "title": "3.5 JMM",
+      "points": [
+        {
+          "id": "主-工作内存-3-4-0",
+          "tag": "主/工作内存",
+          "desc": "所有共享变量存主内存，每线程有工作内存（对应 CPU 缓存/寄存器）。线程对变量的操作在工作内存中进行，不能直接读写主内存。8 种操作：read/load/use/assign/store/write/lock/unlock",
+          "details": [
+            {
+              "id": "主-工作内存-3-4-0-d0",
+              "tag": "主内存",
+              "desc": "所有线程共享存储变量原始值堆中共享数据区域"
+            },
+            {
+              "id": "主-工作内存-3-4-0-d1",
+              "tag": "工作内存",
+              "desc": "每线程私有存储变量副本线程间不可直接访问需通过主内存"
+            },
+            {
+              "id": "主-工作内存-3-4-0-d2",
+              "tag": "8种操作",
+              "desc": "lock/read/load/use/assign/store/write/unlock原子操作规范"
+            },
+            {
+              "id": "主-工作内存-3-4-0-d3",
+              "tag": "可见性规则",
+              "desc": "线程修改必须store→write回主内存其他线程read→load获取"
+            },
+            {
+              "id": "主-工作内存-3-4-0-d4",
+              "tag": "volatile特殊",
+              "desc": "volatile写立即write回主内存读立即从主内存load保证可见"
+            }
+          ]
+        },
+        {
+          "id": "happens-before-3-4-1",
+          "tag": "happens-before",
+          "desc": "1.程序次序(单线程内代码顺序) 2.管程锁定(unlock 先于后续 lock) 3.volatile(写先于后续读) 4.线程启动(start 先于线程内动作) 5.线程终止 6.线程中断 7.对象终结 8.传递性(A→B 且 B→C 则 A→C)",
+          "details": [
+            {
+              "id": "happens-before-3-4-1-d0",
+              "tag": "1. 程序次序规则（单线程内代码",
+              "desc": "1. 程序次序规则（单线程内代码执行顺序）"
+            },
+            {
+              "id": "happens-before-3-4-1-d1",
+              "tag": "2. 管程锁定规则（unlock 先于后续 lock）",
+              "desc": "同一个监视器锁上，unlock操作happens-before后续对该锁的lock操作，保证锁释放后其他线程可见修改"
+            },
+            {
+              "id": "happens-before-3-4-1-d2",
+              "tag": "3. volatile 变量规则（写先于后续读）",
+              "desc": "对volatile变量的写操作happens-before后续对该变量的读操作，确保volatile写后的新值对所有后续读线程可见"
+            },
+            {
+              "id": "happens-before-3-4-1-d3",
+              "tag": "4. 线程启动规则（start() 先于线程内操作）",
+              "desc": "Thread.start()调用happens-before该线程内的所有操作，保证主线程启动子线程前的修改对子线程可见"
+            },
+            {
+              "id": "happens-before-3-4-1-d4",
+              "tag": "5. 线程终止规则（线程内操作先于 terminate()）",
+              "desc": "线程内所有操作happens-before对该线程的Thread.join()返回，保证子线程修改在join后对主线程可见"
+            },
+            {
+              "id": "happens-before-3-4-1-d5",
+              "tag": "6. 线程中断规则",
+              "desc": "对线程的interrupt()调用happens-before被中断线程检测到中断(isInterrupted()或InterruptedException)"
+            },
+            {
+              "id": "happens-before-3-4-1-d6",
+              "tag": "7. 对象终结规则",
+              "desc": "对象的初始化完成(构造函数执行完)happens-before它的finalize()方法开始执行，保证finalize时对象状态完整"
+            },
+            {
+              "id": "happens-before-3-4-1-d7",
+              "tag": "8. 传递性（A",
+              "desc": "8. 传递性（A→B 且 B→C 则 A→C）"
+            }
+          ]
+        },
+        {
+          "id": "内存屏障-3-4-2",
+          "tag": "内存屏障",
+          "desc": "LoadLoad(读 1→读 2)、StoreStore(写 1→写 2)、LoadStore(读→写)、StoreLoad(写→读，开销最大)。volatile 写前 StoreStore 写后 StoreLoad，读前 LoadLoad 读后 LoadStore",
+          "details": [
+            {
+              "id": "内存屏障-3-4-2-d0",
+              "tag": "LoadLoad",
+              "desc": "前面load不会与后面load重排序保证读取顺序"
+            },
+            {
+              "id": "内存屏障-3-4-2-d1",
+              "tag": "StoreStore",
+              "desc": "前面store不会与后面store重排序保证写入顺序"
+            },
+            {
+              "id": "内存屏障-3-4-2-d2",
+              "tag": "LoadStore",
+              "desc": "前面load不会与后面store重排序保证读后写顺序"
+            },
+            {
+              "id": "内存屏障-3-4-2-d3",
+              "tag": "StoreLoad",
+              "desc": "前面store不会与后面load重排序最costly最重要保证写后读"
+            },
+            {
+              "id": "内存屏障-3-4-2-d4",
+              "tag": "volatile实现",
+              "desc": "写插入StoreStore+StoreLoad读插入LoadLoad+LoadStore四屏障"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3-6-线程池重点-3-5",
+      "title": "3.6 线程池（重点）",
+      "points": [
+        {
+          "id": "七大参数-3-5-0",
+          "tag": "七大参数",
+          "desc": "corePoolSize 核心线程数/maximumPoolSize 最大线程数/keepAliveTime 空闲存活时间/unit 时间单位/workQueue 任务队列/threadFactory 线程工厂/handler 拒绝策略。推荐手动 new ThreadPoolExecutor 配置",
+          "details": [
+            {
+              "id": "七大参数-3-5-0-d0",
+              "tag": "corePoolSize",
+              "desc": "核心线程数（不会被回收）（corePoolSize的详细说明：七大参数中关于corePoolSize的内容）"
+            },
+            {
+              "id": "七大参数-3-5-0-d1",
+              "tag": "maximumPoolSize",
+              "desc": "最大线程数（maximumPoolSize的详细说明：七大参数中关于maximumPoolSize的内容）"
+            },
+            {
+              "id": "七大参数-3-5-0-d2",
+              "tag": "keepAliveTime",
+              "desc": "非核心线程空闲存活时间（keepAliveTime的详细说明：七大参数中关于keepAliveTime的内容）"
+            },
+            {
+              "id": "七大参数-3-5-0-d3",
+              "tag": "unit",
+              "desc": "时间单位（unit的详细说明：七大参数中关于unit的内容）"
+            },
+            {
+              "id": "七大参数-3-5-0-d4",
+              "tag": "workQueue",
+              "desc": "任务队列（workQueue的详细说明：七大参数中关于workQueue的内容）"
+            },
+            {
+              "id": "七大参数-3-5-0-d5",
+              "tag": "threadFactory",
+              "desc": "线程工厂（threadFactory的详细说明：七大参数中关于threadFactory的内容）"
+            },
+            {
+              "id": "七大参数-3-5-0-d6",
+              "tag": "handler",
+              "desc": "拒绝策略（handler的详细说明：七大参数中关于handler的内容）"
+            }
+          ]
+        },
+        {
+          "id": "工作流程-3-5-1",
+          "tag": "工作流程",
+          "desc": "1.线程数<corePoolSize→创建核心线程 2.核心满→任务入 workQueue 3.队列满且线程数<maximumPoolSize→创建非核心线程 4.达最大→执行拒绝策略。注意：队列不满不创建非核心线程",
+          "details": [
+            {
+              "id": "工作流程-3-5-1-d0",
+              "tag": "1. 线程数 < corePoolSize",
+              "desc": "1. 线程数 < corePoolSize → 创建核心线程"
+            },
+            {
+              "id": "工作流程-3-5-1-d1",
+              "tag": "2. 核心线程满",
+              "desc": "2. 核心线程满 → 任务入 workQueue"
+            },
+            {
+              "id": "工作流程-3-5-1-d2",
+              "tag": "3. 队列满且线程数 < maximumPoolSize",
+              "desc": "3. 队列满且线程数 < maximumPoolSize → 创建非核心线程"
+            },
+            {
+              "id": "工作流程-3-5-1-d3",
+              "tag": "4. 线程数达 maximumPoolSize",
+              "desc": "4. 线程数达 maximumPoolSize → 执行拒绝策略"
+            },
+            {
+              "id": "工作流程-3-5-1-d4",
+              "tag": "注意",
+              "desc": "队列不满不创建非核心线程！（注意的详细说明：工作流程中关于注意的内容）"
+            }
+          ]
+        },
+        {
+          "id": "四种拒绝策略-3-5-2",
+          "tag": "四种拒绝策略",
+          "desc": "AbortPolicy(抛 RejectedExecutionException 默认)/CallerRunsPolicy(调用线程执行任务，降低提交速度)/DiscardPolicy(静默丢弃)/DiscardOldestPolicy(丢弃队列最旧任务再提交)",
+          "details": [
+            {
+              "id": "四种拒绝策略-3-5-2-d0",
+              "tag": "AbortPolicy",
+              "desc": "抛 RejectedExecutionException（默认）"
+            },
+            {
+              "id": "四种拒绝策略-3-5-2-d1",
+              "tag": "CallerRunsPolicy",
+              "desc": "由提交线程执行任务（降速）（CallerRunsPolicy的详细说明：四种拒绝策略中关于CallerRunsPolicy的内容）"
+            },
+            {
+              "id": "四种拒绝策略-3-5-2-d2",
+              "tag": "DiscardPolicy",
+              "desc": "静默丢弃（DiscardPolicy的详细说明：四种拒绝策略中关于DiscardPolicy的内容）"
+            },
+            {
+              "id": "四种拒绝策略-3-5-2-d3",
+              "tag": "DiscardOldestPolicy",
+              "desc": "丢弃最旧任务再尝试（DiscardOldestPolicy的详细说明：四种拒绝策略中关于DiscardOldestPolicy的内容）"
+            }
+          ]
+        },
+        {
+          "id": "executors四种池-3-5-3",
+          "tag": "Executors 四种池",
+          "desc": "FixedThreadPool(固定线程,无界 LinkedBlockingQueue)/SingleThreadExecutor(单线程,无界队列)/CachedThreadPool(0 核心 MAX 最大,SynchronousQueue)/ScheduledThreadPool(定时,DelayedWorkQueue)",
+          "details": [
+            {
+              "id": "executors四种池-3-5-3-d0",
+              "tag": "FixedThreadPool",
+              "desc": "固定线程数核心=最大无界LinkedBlockingQueue可能OOM"
+            },
+            {
+              "id": "executors四种池-3-5-3-d1",
+              "tag": "SingleThreadExecutor",
+              "desc": "核心=最大=1单线程顺序执行无界队列可能OOM"
+            },
+            {
+              "id": "executors四种池-3-5-3-d2",
+              "tag": "CachedThreadPool",
+              "desc": "核心=0最大=MAX短任务即时创建60s空闲回收线程数无限"
+            },
+            {
+              "id": "executors四种池-3-5-3-d3",
+              "tag": "ScheduledThreadPool",
+              "desc": "定时/周期执行DelayedWorkQueue调度队列"
+            },
+            {
+              "id": "executors四种池-3-5-3-d4",
+              "tag": "共同问题",
+              "desc": "Fixed/Single用无界队列Cached线程数无上限皆有OOM风险需手动创建"
+            }
+          ]
+        },
+        {
+          "id": "不推荐executors-3-5-4",
+          "tag": "不推荐 Executors",
+          "desc": "Fixed 和 Single 用无界队列 LinkedBlockingQueue→任务堆积 OOM；Cached 最大线程 Integer.MAX_VALUE→创建大量线程 OOM。阿里规范要求手动创建 ThreadPoolExecutor",
+          "details": [
+            {
+              "id": "不推荐executors-3-5-4-d0",
+              "tag": "Fixed/Single风险",
+              "desc": "LinkedBlockingQueue无界任务堆积导致OOM内存溢出"
+            },
+            {
+              "id": "不推荐executors-3-5-4-d1",
+              "tag": "Cached风险",
+              "desc": "最大线程Integer.MAX_VALUE高并发创建大量线程崩溃系统"
+            },
+            {
+              "id": "不推荐executors-3-5-4-d2",
+              "tag": "阿里规范",
+              "desc": "禁止用Executors创建线程池必须手动ThreadPoolExecutor可控"
+            },
+            {
+              "id": "不推荐executors-3-5-4-d3",
+              "tag": "推荐方式",
+              "desc": "自定义核心数最大数队列容量拒绝策略可控可监控可调优"
+            },
+            {
+              "id": "不推荐executors-3-5-4-d4",
+              "tag": "拒绝策略",
+              "desc": "AbortPolicy抛异常+CallerRunsPolicy调用者执行+Discard丢弃+DiscardOldest丢弃最老"
+            }
+          ]
+        },
+        {
+          "id": "线程数设置-3-5-5",
+          "tag": "线程数设置",
+          "desc": "CPU 密集型：线程数=CPU 核数+1（减少上下文切换）；IO 密集型：线程数=CPU 核数×2 或 N/(1-阻塞系数)。混合型：拆分 CPU 密集和 IO 密集任务分别用不同线程池",
+          "details": [
+            {
+              "id": "线程数设置-3-5-5-d0",
+              "tag": "CPU密集型",
+              "desc": "线程数N+1避免过多线程争抢CPU上下文切换开销"
+            },
+            {
+              "id": "线程数设置-3-5-5-d1",
+              "tag": "IO密集型",
+              "desc": "线程数2N或N*(1+W/C)W等待时间C计算时间"
+            },
+            {
+              "id": "线程数设置-3-5-5-d2",
+              "tag": "N指CPU核数",
+              "desc": "Runtime.getRuntime().availableProcessors()获取"
+            },
+            {
+              "id": "线程数设置-3-5-5-d3",
+              "tag": "经验公式",
+              "desc": "线程数=(CPU核数*目标利用率*(1+等待时间/计算时间))"
+            },
+            {
+              "id": "线程数设置-3-5-5-d4",
+              "tag": "实际调整",
+              "desc": "先按公式设置再通过监控压测逐步调优找到最佳配置"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3-7-aqs-3-6",
+      "title": "3.7 AQS",
+      "points": [
+        {
+          "id": "核心思想-3-6-0",
+          "tag": "核心思想",
+          "desc": "AbstractQueuedSynchronizer。资源空闲→当前线程获取；占用→入等待队列阻塞，资源释放后唤醒队首。volatile int state 表示同步状态（CAS 修改）。子类重写 tryAcquire/tryRelease 等模板方法",
+          "details": [
+            {
+              "id": "核心思想-3-6-0-d0",
+              "tag": "核心state",
+              "desc": "volatile int state表示锁状态0未锁>0重入计数+CLH队列"
+            },
+            {
+              "id": "核心思想-3-6-0-d1",
+              "tag": "CLH队列",
+              "desc": "双向链表排队等待获取锁的线程节点FIFO公平排队"
+            },
+            {
+              "id": "核心思想-3-6-0-d2",
+              "tag": "模板方法",
+              "desc": "tryAcquire/tryRelease子类自定义获取释放逻辑不重复实现"
+            },
+            {
+              "id": "核心思想-3-6-0-d3",
+              "tag": "独占模式",
+              "desc": "同一时刻只有一个线程获取锁如ReentrantLockstate=1"
+            },
+            {
+              "id": "核心思想-3-6-0-d4",
+              "tag": "共享模式",
+              "desc": "多线程可同时获取如Semaphore/CountDownLatchstate>0"
+            }
+          ]
+        },
+        {
+          "id": "clh队列-3-6-1",
+          "tag": "CLH 队列",
+          "desc": "CLH(Craig Landin Hagersten)变体 FIFO 双向链表。Node 含：waitStatus/prev/next/thread/nextWaiter。head 哑节点，tail 尾插。前驱节点释放后唤醒后继节点",
+          "details": [
+            {
+              "id": "clh队列-3-6-1-d0",
+              "tag": "双向链表",
+              "desc": "Node含prev/next/thread/waitStatus前驱后继线程引用"
+            },
+            {
+              "id": "clh队列-3-6-1-d1",
+              "tag": "head节点",
+              "desc": "指向当前持有锁的线程节点或哨兵空节点不存储有效数据"
+            },
+            {
+              "id": "clh队列-3-6-1-d2",
+              "tag": "tail指针",
+              "desc": "指向队列最后加入的等待节点新节点CAS入队尾保证并发安全"
+            },
+            {
+              "id": "clh队列-3-6-1-d3",
+              "tag": "入队操作",
+              "desc": "CAS设置tail.next保证并发安全无锁入队避免竞争"
+            },
+            {
+              "id": "clh队列-3-6-1-d4",
+              "tag": "出队操作",
+              "desc": "持锁线程释放后唤醒后继节点设置新head传递锁所有权"
+            }
+          ]
+        },
+        {
+          "id": "独占vs共享-3-6-2",
+          "tag": "独占 vs 共享",
+          "desc": "独占：同一时刻一个线程执行（ReentrantLock），tryAcquire/tryRelease。共享：多线程可同时执行（Semaphore/CountDownLatch），tryAcquireShared 返回>=0 表示成功",
+          "details": [
+            {
+              "id": "独占vs共享-3-6-2-d0",
+              "tag": "独占模式",
+              "desc": "state=1表示持有锁可重入state递增如ReentrantLock"
+            },
+            {
+              "id": "独占vs共享-3-6-2-d1",
+              "tag": "共享模式",
+              "desc": "state>0表示获取许可数如Semaphore acquire/release"
+            },
+            {
+              "id": "独占vs共享-3-6-2-d2",
+              "tag": "读写锁",
+              "desc": "读锁共享state高位读计数低位写计数读写分离"
+            },
+            {
+              "id": "独占vs共享-3-6-2-d3",
+              "tag": "tryAcquireShared",
+              "desc": "返回>=0表示获取成功可传播唤醒后续共享节点"
+            },
+            {
+              "id": "独占vs共享-3-6-2-d4",
+              "tag": "CountDownLatch",
+              "desc": "countDown递减stateawait检查state==0释放所有等待线程"
+            }
+          ]
+        },
+        {
+          "id": "waitstatus-3-6-3",
+          "tag": "waitStatus",
+          "desc": "CANCELLED(1)线程已取消/SIGNAL(-1)后继节点需被唤醒/CONDITION(-2)在 Condition 队列等待/PROPAGATE(-3)共享模式向后传播/INITIAL(0)初始",
+          "details": [
+            {
+              "id": "waitstatus-3-6-3-d0",
+              "tag": "CANCELLED(1)",
+              "desc": "线程取消获取锁超时或中断不再排队可安全移除"
+            },
+            {
+              "id": "waitstatus-3-6-3-d1",
+              "tag": "SIGNAL(-1)",
+              "desc": "后继节点需被唤醒释放锁时必须unpark后继保证传递"
+            },
+            {
+              "id": "waitstatus-3-6-3-d2",
+              "tag": "CONDITION(-2)",
+              "desc": "等待Condition信号从CLH队列转移到Condition队列等待"
+            },
+            {
+              "id": "waitstatus-3-6-3-d3",
+              "tag": "PROPAGATE(-3)",
+              "desc": "共享模式传播唤醒确保后续共享节点也被唤醒不遗漏"
+            },
+            {
+              "id": "waitstatus-3-6-3-d4",
+              "tag": "INITIAL(0)",
+              "desc": "新节点初始状态尚未设置等待状态刚入队默认值"
+            }
+          ]
+        },
+        {
+          "id": "基于aqs的同步器-3-6-4",
+          "tag": "基于 AQS 的同步器",
+          "desc": "ReentrantLock(独占)/ReentrantReadWriteLock(读共享写独占)/Semaphore(共享)/CountDownLatch(共享)/CyclicBarrier(基于 ReentrantLock+Condition)/ThreadPoolExecutor.Worker(独占)",
+          "details": [
+            {
+              "id": "基于aqs的同步器-3-6-4-d0",
+              "tag": "ReentrantLock",
+              "desc": "独占锁可重入公平/非公平两种模式state递增递减"
+            },
+            {
+              "id": "基于aqs的同步器-3-6-4-d1",
+              "tag": "Semaphore",
+              "desc": "共享锁控制并发访问线程数acquire/release许可数"
+            },
+            {
+              "id": "基于aqs的同步器-3-6-4-d2",
+              "tag": "CountDownLatch",
+              "desc": "共享同步器countDown减计数await等归零一次使用"
+            },
+            {
+              "id": "基于aqs的同步器-3-6-4-d3",
+              "tag": "ReentrantReadWriteLock",
+              "desc": "读共享写独占写锁可降级读锁不可升级"
+            },
+            {
+              "id": "基于aqs的同步器-3-6-4-d4",
+              "tag": "CyclicBarrier",
+              "desc": "所有线程await到达屏障后继续可循环重用reset重置"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3-8-并发工具-3-7",
+      "title": "3.8 并发工具",
+      "points": [
+        {
+          "id": "countdownlatch-3-7-0",
+          "tag": "CountDownLatch",
+          "desc": "倒计时器，一/多线程等待其他线程完成。countDown()减 1，await()等到 0。不可重用。应用：主线程等待多个子任务完成后汇总",
+          "details": [
+            {
+              "id": "countdownlatch-3-7-0-d0",
+              "tag": "一次使用",
+              "desc": "countDown到0后不可重置不可再次await只能用一次"
+            },
+            {
+              "id": "countdownlatch-3-7-0-d1",
+              "tag": "countDown",
+              "desc": "计数减1不阻塞调用线程继续执行异步减计数"
+            },
+            {
+              "id": "countdownlatch-3-7-0-d2",
+              "tag": "await",
+              "desc": "阻塞当前线程直到计数归零才释放等待其他线程完成"
+            },
+            {
+              "id": "countdownlatch-3-7-0-d3",
+              "tag": "一等多",
+              "desc": "主线程await等N个子线程都countDown完成汇合"
+            },
+            {
+              "id": "countdownlatch-3-7-0-d4",
+              "tag": "多等一",
+              "desc": "N个线程同时await等某个条件满足(计数归零)同时释放"
+            }
+          ]
+        },
+        {
+          "id": "cyclicbarrier-3-7-1",
+          "tag": "CyclicBarrier",
+          "desc": "循环屏障，一组线程到达屏障阻塞，最后一个到达后全部继续。await()等待。可重用(reset)。可指定 barrierAction。应用：多线程分段计算后汇总",
+          "details": [
+            {
+              "id": "cyclicbarrier-3-7-1-d0",
+              "tag": "循环使用",
+              "desc": "所有线程到达后自动重置可反复使用不像CountDownLatch一次性"
+            },
+            {
+              "id": "cyclicbarrier-3-7-1-d1",
+              "tag": "await",
+              "desc": "线程到达屏障位置阻塞等待其他线程全部到达"
+            },
+            {
+              "id": "cyclicbarrier-3-7-1-d2",
+              "tag": "barrierAction",
+              "desc": "所有线程到达后优先执行的动作回调函数先执行再释放"
+            },
+            {
+              "id": "cyclicbarrier-3-7-1-d3",
+              "tag": "reset",
+              "desc": "手动重置屏障回到初始状态中断等待线程重新开始"
+            },
+            {
+              "id": "cyclicbarrier-3-7-1-d4",
+              "tag": "与CountDownLatch对比",
+              "desc": "CyclicBarrier可重用parties可指定await回调CountDownLatch不可"
+            }
+          ]
+        },
+        {
+          "id": "semaphore-3-7-2",
+          "tag": "Semaphore",
+          "desc": "信号量，控制同时访问资源的线程数（限流）。acquire()获取许可（阻塞），release()释放。公平（排队）/非公平（抢占）",
+          "details": [
+            {
+              "id": "semaphore-3-7-2-d0",
+              "tag": "acquire",
+              "desc": "获取一个许可许可不足则阻塞等待直到有许可释放"
+            },
+            {
+              "id": "semaphore-3-7-2-d1",
+              "tag": "release",
+              "desc": "释放一个许可归还许可供其他线程获取增加可用许可数"
+            },
+            {
+              "id": "semaphore-3-7-2-d2",
+              "tag": "限流控制",
+              "desc": "限制同时访问某资源的线程数量控制并发度"
+            },
+            {
+              "id": "semaphore-3-7-2-d3",
+              "tag": "公平模式",
+              "desc": "fair=true按等待顺序获取许可FIFO避免饥饿保证公平"
+            },
+            {
+              "id": "semaphore-3-7-2-d4",
+              "tag": "典型场景",
+              "desc": "数据库连接池限流接口限并发访问数控制防止过载"
+            }
+          ]
+        },
+        {
+          "id": "reentrantreadwritelock-3-7-3",
+          "tag": "ReentrantReadWriteLock",
+          "desc": "读锁共享（多线程同时读），写锁独占（单线程写）。适合读多写少。支持锁降级（写→读），不支持锁升级（死锁风险）",
+          "details": [
+            {
+              "id": "reentrantreadwritelock-3-7-3-d0",
+              "tag": "读锁共享",
+              "desc": "多线程可同时持有读锁并发读取无阻塞提高读吞吐"
+            },
+            {
+              "id": "reentrantreadwritelock-3-7-3-d1",
+              "tag": "写锁独占",
+              "desc": "持有写锁时排斥所有读锁和写锁保证写操作一致性"
+            },
+            {
+              "id": "reentrantreadwritelock-3-7-3-d2",
+              "tag": "锁降级",
+              "desc": "写锁→获取读锁→释放写锁安全降级为读锁保证数据可见"
+            },
+            {
+              "id": "reentrantreadwritelock-3-7-3-d3",
+              "tag": "锁不可升级",
+              "desc": "持有读锁时获取写锁会死锁禁止升级避免循环等待"
+            },
+            {
+              "id": "reentrantreadwritelock-3-7-3-d4",
+              "tag": "stamp优化",
+              "desc": "ReadLock可转StampedLock乐观读性能更好无CAS开销"
+            }
+          ]
+        },
+        {
+          "id": "stampedlock-3-7-4",
+          "tag": "StampedLock",
+          "desc": "Java8 引入。乐观读锁 `tryOptimisticRead()` 不加锁，读后 `validate()` 校验是否有写。性能>>ReadWriteLock。不支持重入，不适合嵌套调用",
+          "details": [
+            {
+              "id": "stampedlock-3-7-4-d0",
+              "tag": "乐观读",
+              "desc": "tryOptimisticRead获取stamp不加锁validate校验是否被修改"
+            },
+            {
+              "id": "stampedlock-3-7-4-d1",
+              "tag": "validate",
+              "desc": "校验stamp期间是否有写操作有则转悲观读锁保证数据一致"
+            },
+            {
+              "id": "stampedlock-3-7-4-d2",
+              "tag": "性能优势",
+              "desc": "乐观读无CAS无锁远优于ReadWriteLock读密集场景性能好"
+            },
+            {
+              "id": "stampedlock-3-7-4-d3",
+              "tag": "不可重入",
+              "desc": "同一线程不可重复获取写锁或读锁无重入支持需自行保证"
+            },
+            {
+              "id": "stampedlock-3-7-4-d4",
+              "tag": "转换模式",
+              "desc": "readLock→writeLock需先释放读锁再获取写锁不能直接升级"
+            }
+          ]
+        },
+        {
+          "id": "completablefuture-3-7-5",
+          "tag": "CompletableFuture",
+          "desc": "Java8 异步编程。supplyAsync(异步执行有返回值)/thenApply(转换)/thenAccept(消费)/thenCombine(合并两个)/allOf/anyOf。支持链式回调和异常处理 exceptionally()",
+          "details": [
+            {
+              "id": "completablefuture-3-7-5-d0",
+              "tag": "创建任务",
+              "desc": "supplyAsync有返回值runAsync无返回值指定Executor或默认ForkJoinPool"
+            },
+            {
+              "id": "completablefuture-3-7-5-d1",
+              "tag": "串行转换",
+              "desc": "thenApply同步转换thenApplyAsync异步转换结果类型"
+            },
+            {
+              "id": "completablefuture-3-7-5-d2",
+              "tag": "串行消费",
+              "desc": "thenAccept处理结果不返回thenRun不关心结果只执行动作"
+            },
+            {
+              "id": "completablefuture-3-7-5-d3",
+              "tag": "组合编排",
+              "desc": "thenCombine合并两个任务结果thenCompose串联异步流"
+            },
+            {
+              "id": "completablefuture-3-7-5-d4",
+              "tag": "异常处理",
+              "desc": "exceptionally捕获等价catchhandle同时处理正常和异常值"
+            }
+          ]
+        },
+        {
+          "id": "forkjoinpool-3-7-6",
+          "tag": "ForkJoinPool",
+          "desc": "分治思想+工作窃取（Work-Stealing）。大任务 fork 拆分小任务，join 等待结果。空闲线程从其他线程队列尾部窃取任务。parallelStream 底层用 ForkJoinPool.commonPool()",
+          "details": [
+            {
+              "id": "forkjoinpool-3-7-6-d0",
+              "tag": "分治思想",
+              "desc": "大任务Fork拆分为子任务Join合并子任务结果递归分解"
+            },
+            {
+              "id": "forkjoinpool-3-7-6-d1",
+              "tag": "工作窃取",
+              "desc": "空闲线程从其他线程队列尾部窃取任务提高利用率减少空闲"
+            },
+            {
+              "id": "forkjoinpool-3-7-6-d2",
+              "tag": "ForkJoinTask",
+              "desc": "RecursiveTask有返回值RecursiveAction无返回值两种基类"
+            },
+            {
+              "id": "forkjoinpool-3-7-6-d3",
+              "tag": "双端队列",
+              "desc": "每个线程维护自己的工作队列LIFO自己FIFO窃取高效"
+            },
+            {
+              "id": "forkjoinpool-3-7-6-d4",
+              "tag": "适用场景",
+              "desc": "递归分解并行计算如并行排序大矩阵运算大数据并行处理"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

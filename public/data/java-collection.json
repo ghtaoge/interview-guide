@@ -1,0 +1,727 @@
+{
+  "id": "java-collection",
+  "title": "二、Java 集合框架",
+  "tag": "集合",
+  "order": 2,
+  "icon": "📋",
+  "cssIndex": 1,
+  "subs": [
+    {
+      "id": "2-1-list-2-0",
+      "title": "2.1 List",
+      "points": [
+        {
+          "id": "arraylist-2-0-0",
+          "tag": "ArrayList",
+          "desc": "动态数组，默认初始容量 10（首次 add 时创建），扩容 1.5 倍 `oldCap+(oldCap>>1)`。随机访问 O(1)，插入删除 O(n)。`Arrays.copyOf()` 复制。非线程安全。频繁插入删除用 LinkedList，随机访问用 ArrayList",
+          "details": [
+            {
+              "id": "arraylist-2-0-0-d0",
+              "tag": "基于动态数组，默认初始容量 10（首次 add 时创建）",
+              "desc": "ArrayList底层Object[]数组，首次add时才初始化容量10（懒初始化），避免空数组浪费内存"
+            },
+            {
+              "id": "arraylist-2-0-0-d1",
+              "tag": "扩容",
+              "desc": "oldCap + (oldCap >> 1) = 1.5 倍"
+            },
+            {
+              "id": "arraylist-2-0-0-d2",
+              "tag": "Arrays.copyOf() 底层 System.arraycopy() 复制元素",
+              "desc": "扩容时Arrays.copyOf新建更大数组，底层调System.arraycopy()native方法高效批量复制元素"
+            },
+            {
+              "id": "arraylist-2-0-0-d3",
+              "tag": "随机",
+              "desc": "随机访问 O(1)，中间插入删除 O(n) 需移动元素"
+            },
+            {
+              "id": "arraylist-2-0-0-d4",
+              "tag": "非线程安全，多线程用 CopyOnWriteArrayList 或 synchronizedList",
+              "desc": "ArrayList无同步机制多线程并发修改会数据错乱，可用CopyOnWriteArrayList写时复制或Collections.synchronizedList包装"
+            }
+          ]
+        },
+        {
+          "id": "linkedlist-2-0-1",
+          "tag": "LinkedList",
+          "desc": "双向链表，Node 含 prev/item/next。实现 List+Deque 接口。随机访问 O(n)，头尾增删 O(1)。查找优化：`index < size/2` 从头遍历否则从尾。非线程安全",
+          "details": [
+            {
+              "id": "linkedlist-2-0-1-d0",
+              "tag": "数据结构",
+              "desc": "双向链表Node包含item/prev/next三字段每个节点额外存储两个指针"
+            },
+            {
+              "id": "linkedlist-2-0-1-d1",
+              "tag": "随机访问",
+              "desc": "需遍历链表时间复杂度O(n)不适合频繁随机访问场景"
+            },
+            {
+              "id": "linkedlist-2-0-1-d2",
+              "tag": "头部增删",
+              "desc": "只修改头节点指针时间复杂度O(1)适合头尾频繁操作"
+            },
+            {
+              "id": "linkedlist-2-0-1-d3",
+              "tag": "尾部增删",
+              "desc": "只修改尾节点指针时间复杂度O(1)队列/栈场景首选"
+            },
+            {
+              "id": "linkedlist-2-0-1-d4",
+              "tag": "内存开销",
+              "desc": "每个节点额外存储prev+next两个引用比ArrayList占用更多内存"
+            }
+          ]
+        },
+        {
+          "id": "vector-2-0-2",
+          "tag": "Vector",
+          "desc": "线程安全动态数组（方法 synchronized 修饰），扩容 2 倍。性能差已过时。替代：CopyOnWriteArrayList（读多写少）/Collections.synchronizedList()",
+          "details": [
+            {
+              "id": "vector-2-0-2-d0",
+              "tag": "线程安全",
+              "desc": "所有公共方法synchronized修饰保证线程安全但并发性能差"
+            },
+            {
+              "id": "vector-2-0-2-d1",
+              "tag": "扩容策略",
+              "desc": "容量不足时扩容为2倍(capacity+0)比ArrayList1.5倍更激进"
+            },
+            {
+              "id": "vector-2-0-2-d2",
+              "tag": "与ArrayList对比",
+              "desc": "ArrayList扩容1.5倍无synchronized单线程性能远优于Vector"
+            },
+            {
+              "id": "vector-2-0-2-d3",
+              "tag": "弃用建议",
+              "desc": "需线程安全用Collections.synchronizedList或CopyOnWriteArrayList替代"
+            },
+            {
+              "id": "vector-2-0-2-d4",
+              "tag": "历史原因",
+              "desc": "Vector是JDK1.0遗留类ArrayList是JDK1.2现代推荐"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2-2-set-2-1",
+      "title": "2.2 Set",
+      "points": [
+        {
+          "id": "hashset-2-1-0",
+          "tag": "HashSet",
+          "desc": "基于 HashMap 实现，元素作 key，value 为固定 PRESENT 对象。无序不重复，add/remove/contains O(1)。允许 null。初始容量 16 负载因子 0.75",
+          "details": [
+            {
+              "id": "hashset-2-1-0-d0",
+              "tag": "底层实现",
+              "desc": "基于HashMapkey存元素value存PRESENT常量(private static final Object)"
+            },
+            {
+              "id": "hashset-2-1-0-d1",
+              "tag": "PRESENT常量",
+              "desc": "占位用HashSet只需key不需要value所以用固定Object占位"
+            },
+            {
+              "id": "hashset-2-1-0-d2",
+              "tag": "无序性",
+              "desc": "HashMap哈希决定位置遍历顺序不确定每次可能不同"
+            },
+            {
+              "id": "hashset-2-1-0-d3",
+              "tag": "允许null",
+              "desc": "最多一个null元素HashMap允许一个null key"
+            },
+            {
+              "id": "hashset-2-1-0-d4",
+              "tag": "初始容量",
+              "desc": "构造可指定initialCapacity影响性能默认16加载因子0.75"
+            }
+          ]
+        },
+        {
+          "id": "linkedhashset-2-1-1",
+          "tag": "LinkedHashSet",
+          "desc": "基于 LinkedHashMap，维护双向链表保持插入顺序。迭代按插入顺序。性能略低于 HashSet（维护链表开销）",
+          "details": [
+            {
+              "id": "linkedhashset-2-1-1-d0",
+              "tag": "继承关系",
+              "desc": "继承HashSet内部LinkedHashMap实现维护双向链表"
+            },
+            {
+              "id": "linkedhashset-2-1-1-d1",
+              "tag": "双向链表",
+              "desc": "维护head/tail指针记录插入或访问顺序遍历确定性输出"
+            },
+            {
+              "id": "linkedhashset-2-1-1-d2",
+              "tag": "遍历有序",
+              "desc": "按插入顺序或访问顺序遍历输出结果确定方便调试"
+            },
+            {
+              "id": "linkedhashset-2-1-1-d3",
+              "tag": "性能代价",
+              "desc": "链表维护增加内存开销插入删除略慢但遍历快"
+            },
+            {
+              "id": "linkedhashset-2-1-1-d4",
+              "tag": "适用场景:需要有序Set如LRU缓存淘汰策略",
+              "desc": "accessOrder=true"
+            }
+          ]
+        },
+        {
+          "id": "treeset-2-1-2",
+          "tag": "TreeSet",
+          "desc": "基于 TreeMap（红黑树）。自然排序（Comparable）或定制排序（Comparator）。add/remove/contains O(log n)。不支持 null（NPE）",
+          "details": [
+            {
+              "id": "treeset-2-1-2-d0",
+              "tag": "底层实现",
+              "desc": "基于TreeMap红黑树保证元素有序排序"
+            },
+            {
+              "id": "treeset-2-1-2-d1",
+              "tag": "排序方式",
+              "desc": "自然排序Comparable或定制Comparator两种选择"
+            },
+            {
+              "id": "treeset-2-1-2-d2",
+              "tag": "不允许null",
+              "desc": "compareTo(null)抛NullPointerExceptionnull无法排序比较"
+            },
+            {
+              "id": "treeset-2-1-2-d3",
+              "tag": "性能特征",
+              "desc": "增删查O(logN)比HashSet略慢但有序性保证"
+            },
+            {
+              "id": "treeset-2-1-2-d4",
+              "tag": "排序稳定性",
+              "desc": "相等元素compareTo返回0视为重复不插入保证唯一性"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2-3-map重点-2-2",
+      "title": "2.3 Map（重点）",
+      "points": [
+        {
+          "id": "hashmap结构-2-2-0",
+          "tag": "HashMap 结构",
+          "desc": "JDK8: 数组+链表+红黑树。数组长度始终为 2 的幂（位运算取模）。链表≥8 且数组≥64 转红黑树；红黑树节点≤6 退化链表。链转树阈值 8 基于泊松分布概率论（λ=0.5 时链长≥8 概率极低）",
+          "details": [
+            {
+              "id": "hashmap结构-2-2-0-d0",
+              "tag": "JDK8",
+              "desc": "数组（桶）+ 链表 + 红黑树"
+            },
+            {
+              "id": "hashmap结构-2-2-0-d1",
+              "tag": "数组长度始终为 2 的幂（方便 hash & (n-1) 取模）",
+              "desc": "容量2的幂使hash&(n-1)等价hash%n取模运算但位运算更快，且扩容后元素分布均匀"
+            },
+            {
+              "id": "hashmap结构-2-2-0-d2",
+              "tag": "链表长度 >",
+              "desc": "8 且数组长度 >= 64 时转红黑树"
+            },
+            {
+              "id": "hashmap结构-2-2-0-d3",
+              "tag": "红黑树节点 < 6 时退化回链表",
+              "desc": "红黑树节点数≤6时退化回链表，阈值6而非8避免频繁链转树和树转链的来回切换"
+            },
+            {
+              "id": "hashmap结构-2-2-0-d4",
+              "tag": "JDK7 只有数组+链表，头插法并发扩容会死循环",
+              "desc": "JDK7 HashMap无红黑树结构，头插法在并发resize时链表指针倒置可能形成环状链表导致死循环"
+            }
+          ]
+        },
+        {
+          "id": "hashmap参数-2-2-1",
+          "tag": "HashMap 参数",
+          "desc": "初始容量 16，负载因子 0.75（时空平衡），threshold=capacity×loadFactor。size>threshold 触发扩容。链转树阈值 8，树转链阈值 6",
+          "details": [
+            {
+              "id": "hashmap参数-2-2-1-d0",
+              "tag": "初始容量 16（必须 2 的幂）",
+              "desc": "默认初始容量16=2^4，tableSizeFor()确保任意传入容量向上取整为最接近的2的幂"
+            },
+            {
+              "id": "hashmap参数-2-2-1-d1",
+              "tag": "负载因子 0.75（时间与空间的平衡）",
+              "desc": "0.75是折中值：过低浪费空间且扩容频繁，过高哈希冲突增多查询变慢，0.75时冲突概率约1/8"
+            },
+            {
+              "id": "hashmap参数-2-2-1-d2",
+              "tag": "threshold",
+              "desc": "capacity × loadFactor，size 超过则扩容"
+            },
+            {
+              "id": "hashmap参数-2-2-1-d3",
+              "tag": "链转树阈值 8（泊松分布概率论 λ=0.5 时概率极低）",
+              "desc": "理想hash下链长服从泊松分布λ=0.5，链长≥8概率仅亿分之六，阈值8是极少冲突时的优化触发点"
+            },
+            {
+              "id": "hashmap参数-2-2-1-d4",
+              "tag": "树转链阈值 6（",
+              "desc": "树转链阈值 6（避免频繁转换）"
+            }
+          ]
+        },
+        {
+          "id": "hash扰动函数-2-2-2",
+          "tag": "hash 扰动函数",
+          "desc": "`(h=key.hashCode()) ^ (h>>>16)`。高 16 位异或到低 16 位，让高位参与 `hash&(n-1)` 运算（只取低位），减少哈希冲突。n 为 2 的幂保证 `hash&(n-1)` 等价于 `hash%n` 但更快",
+          "details": [
+            {
+              "id": "hash扰动函数-2-2-2-d0",
+              "tag": "(h",
+              "desc": "key.hashCode()) ^ (h >>> 16)"
+            },
+            {
+              "id": "hash扰动函数-2-2-2-d1",
+              "tag": "高 16 位异或到低 16 位参与运算",
+              "desc": "扰动函数(h^(h>>>16))将高位信息混合到低位，使低位hash值更具随机性减少冲突"
+            },
+            {
+              "id": "hash扰动函数-2-2-2-d2",
+              "tag": "因为 n 较小时 hash & (n-1) 只用到低位",
+              "desc": "当数组长度n较小时hash&(n-1)仅取低4~5位，高位完全未参与定位，扰动函数弥补此缺陷"
+            },
+            {
+              "id": "hash扰动函数-2-2-2-d3",
+              "tag": "减少哈希冲突，使元素分布更均匀",
+              "desc": "扰动后低位包含高位信息，元素在各桶中分布更均匀，避免大量元素集中在少数桶导致链表过长"
+            },
+            {
+              "id": "hash扰动函数-2-2-2-d4",
+              "tag": "n 为 2 的幂时 hash & (n-1) ≡ hash % n 但更快",
+              "desc": "2的幂n使n-1全为1的二进制掩码，hash&(n-1)等效取模但位运算比除法取模快一个数量级"
+            }
+          ]
+        },
+        {
+          "id": "put流程-2-2-3",
+          "tag": "put 流程",
+          "desc": "1.hash(key)计算 hash 2.`hash&(n-1)` 定位桶 3.桶空直接放入 4.桶非空 key 相同则覆盖 value 5.是 TreeNode 则红黑树插入 6.链表尾插，链长≥8 转红黑树 7.`++size>threshold` 扩容 resize()",
+          "details": [
+            {
+              "id": "put流程-2-2-3-d0",
+              "tag": "1. 计算 hash(key) 扰动后的哈希值",
+              "desc": "put第一步调用hash()方法对key.hashCode()做扰动处理(h^(h>>>16))，得到优化后的哈希值"
+            },
+            {
+              "id": "put流程-2-2-3-d1",
+              "tag": "2. hash & (n-1) 定位桶位置",
+              "desc": "用扰动后的hash值与数组长度减1做位运算hash&(n-1)，快速定位该key应放入的桶索引"
+            },
+            {
+              "id": "put流程-2-2-3-d2",
+              "tag": "3. 桶为空直接放入新 Node",
+              "desc": "若定位到的桶位置为null，直接创建新Node节点放入该桶，无需额外处理"
+            },
+            {
+              "id": "put流程-2-2-3-d3",
+              "tag": "4. 桶非空且 key 相同则覆盖 value",
+              "desc": "桶非空时遍历比较key的hash和equals，若完全相同则属于更新操作，替换旧value并返回旧值"
+            },
+            {
+              "id": "put流程-2-2-3-d4",
+              "tag": "5.",
+              "desc": "5. 是 TreeNode 则走红黑树插入"
+            },
+            {
+              "id": "put流程-2-2-3-d5",
+              "tag": "6. 链表尾插（JDK8），链长 ≥ 8 转红黑树",
+              "desc": "JDK8改为尾插法避免并发扩容成环，链表遍历插入尾部，链长≥8且数组≥64时转为红黑树提升查询"
+            },
+            {
+              "id": "put流程-2-2-3-d6",
+              "tag": "7. ++size > threshold 触发 resize() 扩容",
+              "desc": "每次成功插入后size加1，若size超过阈值threshold(capacity×loadFactor)则调用resize()扩容两倍"
+            }
+          ]
+        },
+        {
+          "id": "扩容机制-2-2-4",
+          "tag": "扩容机制",
+          "desc": "容量翻倍。JDK8 优化：元素新位置=原位置 或 原位置+旧容量（由 hash 新增高一位 bit 决定）。避免了 JDK7 头插法扩容的链表成环死循环问题。多线程仍可能数据覆盖",
+          "details": [
+            {
+              "id": "扩容机制-2-2-4-d0",
+              "tag": "容量翻倍（×2），保持 2 的幂",
+              "desc": "resize时新容量=旧容量×2，始终保持2的幂特性，确保hash&(n-1)取模运算的正确性"
+            },
+            {
+              "id": "扩容机制-2-2-4-d1",
+              "tag": "JDK8 优化",
+              "desc": "元素新位置 = 原位置 或 原位置 + 旧容量"
+            },
+            {
+              "id": "扩容机制-2-2-4-d2",
+              "tag": "由 hash 新增的高位 bit 决定（0 不动，1 移动）",
+              "desc": "扩容后元素新位置=原位置或原位置+旧容量，由hash值新增的那一位bit决定：0则不动，1则偏移旧容量"
+            },
+            {
+              "id": "扩容机制-2-2-4-d3",
+              "tag": "JDK7 头插法并发扩容导致链表成环（死循环 CPU 100%）",
+              "desc": "JDK7头插法在并发resize时线程A和B同时倒置链表指针，可能使链表next指针形成环导致get操作死循环"
+            },
+            {
+              "id": "扩容机制-2-2-4-d4",
+              "tag": "JDK8 尾插法解决了成环问题，但多线程仍可能数据覆盖",
+              "desc": "JDK8尾插法保持链表原顺序避免成环，但并发put时线程A和B可能同时写入同一桶导致数据丢失覆盖"
+            }
+          ]
+        },
+        {
+          "id": "concurrenthashmapjdk7-2-2-5",
+          "tag": "ConcurrentHashMap JDK7",
+          "desc": "Segment[]+HashEntry[]，Segment 继承 ReentrantLock。默认 16 个 Segment（并发度 16）。不同 Segment 可并发，锁粒度是 Segment。put 需两次 hash（先定位 Segment 再定位桶）",
+          "details": [
+            {
+              "id": "concurrenthashmapjdk7-2-2-5-d0",
+              "tag": "Segment[] + HashEntry[]，Segment 继承 ReentrantLock",
+              "desc": "JDK7 ConcurrentHashMap分段锁设计，每个Segment是ReentrantLock，锁住整个Segment段内所有HashEntry"
+            },
+            {
+              "id": "concurrenthashmapjdk7-2-2-5-d1",
+              "tag": "默认 16 个 Segment，并发度 16",
+              "desc": "默认16个Segment段即并发度16，最多16个线程可同时操作不同Segment段，可通过构造器调整并发度"
+            },
+            {
+              "id": "concurrenthashmapjdk7-2-2-5-d2",
+              "tag": "不同 Segment 可并发操作",
+              "desc": "不同Segment段各自独立加锁，多线程操作不同段时互不阻塞并发执行，锁粒度为Segment段级别"
+            },
+            {
+              "id": "concurrenthashmapjdk7-2-2-5-d3",
+              "tag": "put 需两次 hash",
+              "desc": "先定位 Segment 再定位桶"
+            },
+            {
+              "id": "concurrenthashmapjdk7-2-2-5-d4",
+              "tag": "锁粒度",
+              "desc": "锁粒度是 Segment 级别"
+            }
+          ]
+        },
+        {
+          "id": "concurrenthashmapjdk8-2-2-6",
+          "tag": "ConcurrentHashMap JDK8",
+          "desc": "Node[]+链表/红黑树+CAS+synchronized。空桶 `casTabAt()` CAS 写入；非空桶 synchronized 锁桶头节点。sizeCtl 控制初始化和扩容。transfer() 多线程协助扩容（ForwardingNode）。并发度=桶数，锁粒度更细",
+          "details": [
+            {
+              "id": "concurrenthashmapjdk8-2-2-6-d0",
+              "tag": "Node[] + 链表/红黑树 + CAS + synchronized",
+              "desc": "JDK8 ConcurrentHashMap取消Segment，改用Node数组+链表/红黑树+CAS+synchronized细粒度锁方案"
+            },
+            {
+              "id": "concurrenthashmapjdk8-2-2-6-d1",
+              "tag": "空桶用 casTabAt() CAS 写入（无锁）",
+              "desc": "空桶位置用UNSAFE.compareAndSwapObject(CAS)无锁写入新Node，成功则完成，失败则自旋重试"
+            },
+            {
+              "id": "concurrenthashmapjdk8-2-2-6-d2",
+              "tag": "非空桶 synchronized 锁桶头节点",
+              "desc": "桶已有元素时用synchronized锁住桶头节点（对象头Monitor），同一桶内操作串行化，不同桶可并发"
+            },
+            {
+              "id": "concurrenthashmapjdk8-2-2-6-d3",
+              "tag": "sizeCtl 控制初始化和扩容",
+              "desc": "sizeCtl为0未初始化，-1正在初始化，负N表示N-1个线程正在扩容，正数表示下次扩容阈值"
+            },
+            {
+              "id": "concurrenthashmapjdk8-2-2-6-d4",
+              "tag": "transfer() 多线程协助扩容（ForwardingNode 标志已迁移）",
+              "desc": "扩容时桶头放ForwardingNode占位，其他线程put时发现ForwardingNode则加入协助扩容，多线程分片迁移数据"
+            },
+            {
+              "id": "concurrenthashmapjdk8-2-2-6-d5",
+              "tag": "并发度=桶数，锁粒度更细性能更好",
+              "desc": "JDK8并发度等于桶数组长度而非Segment数(16)，锁粒度从段级降到桶级，并发性能大幅提升"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2-4-queue-2-3",
+      "title": "2.4 Queue",
+      "points": [
+        {
+          "id": "priorityqueue-2-3-0",
+          "tag": "PriorityQueue",
+          "desc": "二叉小顶堆（数组存储）。offer/poll/peek O(log n)。不保证同优先级顺序。不允许 null。元素需 Comparable 或 Comparator。应用：TopK 问题、任务调度",
+          "details": [
+            {
+              "id": "priorityqueue-2-3-0-d0",
+              "tag": "数据结构",
+              "desc": "最小堆完全二叉树数组实现父节点<=子节点保证堆顶最小"
+            },
+            {
+              "id": "priorityqueue-2-3-0-d1",
+              "tag": "出队操作",
+              "desc": "取堆顶后下沉调整(siftDown)重新满足堆性质复杂度O(logN)"
+            },
+            {
+              "id": "priorityqueue-2-3-0-d2",
+              "tag": "入队操作",
+              "desc": "插入末尾后上浮调整(siftUp)重新满足堆性质复杂度O(logN)"
+            },
+            {
+              "id": "priorityqueue-2-3-0-d3",
+              "tag": "默认排序",
+              "desc": "自然排序元素需实现Comparable接口定义比较规则"
+            },
+            {
+              "id": "priorityqueue-2-3-0-d4",
+              "tag": "定制排序",
+              "desc": "构造时传入Comparator自定义优先级规则灵活控制出队顺序"
+            }
+          ]
+        },
+        {
+          "id": "arrayblockingqueue-2-3-1",
+          "tag": "ArrayBlockingQueue",
+          "desc": "数组有界阻塞队列。单个 ReentrantLock + 两个 Condition（notEmpty/notFull）。put 队满阻塞，take 队空阻塞。公平/非公平模式。经典生产者-消费者模型",
+          "details": [
+            {
+              "id": "arrayblockingqueue-2-3-1-d0",
+              "tag": "有界队列",
+              "desc": "构造时指定capacity不可动态扩容量固定防止OOM"
+            },
+            {
+              "id": "arrayblockingqueue-2-3-1-d1",
+              "tag": "锁机制",
+              "desc": "ReentrantLock一把锁保护put和take操作保证线程安全"
+            },
+            {
+              "id": "arrayblockingqueue-2-3-1-d2",
+              "tag": "Condition",
+              "desc": "notFull阻塞生产(notFull.await)notEmpty阻塞消费(notEmpty.await)"
+            },
+            {
+              "id": "arrayblockingqueue-2-3-1-d3",
+              "tag": "公平模式",
+              "desc": "fair=true按FIFO顺序获取锁避免饥饿但性能略低"
+            },
+            {
+              "id": "arrayblockingqueue-2-3-1-d4",
+              "tag": "底层结构",
+              "desc": "Object[]循环数组takeIndex/putIndex循环利用空间"
+            }
+          ]
+        },
+        {
+          "id": "linkedblockingqueue-2-3-2",
+          "tag": "LinkedBlockingQueue",
+          "desc": "链表阻塞队列。默认容量 Integer.MAX_VALUE（OOM 风险！）。putLock/takeLock 两把锁，读写可并行，吞吐量>ArrayBlockingQueue。Executors.newFixedThreadPool 使用此队列",
+          "details": [
+            {
+              "id": "linkedblockingqueue-2-3-2-d0",
+              "tag": "可选有界",
+              "desc": "构造不指定容量默认Integer.MAX_VALUE近乎无界可能OOM"
+            },
+            {
+              "id": "linkedblockingqueue-2-3-2-d1",
+              "tag": "两把锁",
+              "desc": "putLock和takeLock分离生产消费可并行提高并发度"
+            },
+            {
+              "id": "linkedblockingqueue-2-3-2-d2",
+              "tag": "锁分离",
+              "desc": "生产消费互不阻塞并发度高于ArrayBlockingQueue"
+            },
+            {
+              "id": "linkedblockingqueue-2-3-2-d3",
+              "tag": "节点结构",
+              "desc": "链表Node含item/next与LinkedList类似动态扩容"
+            },
+            {
+              "id": "linkedblockingqueue-2-3-2-d4",
+              "tag": "风险",
+              "desc": "默认近乎无界高吞吐可能堆积导致OOM生产需限速"
+            }
+          ]
+        },
+        {
+          "id": "delayqueue-2-3-3",
+          "tag": "DelayQueue",
+          "desc": "基于 PriorityQueue 的延迟队列。元素实现 Delayed 接口（getDelay 返回剩余延迟）。只有到期元素能被 take 取出。应用：定时任务、缓存过期、订单超时取消、重试延迟",
+          "details": [
+            {
+              "id": "delayqueue-2-3-3-d0",
+              "tag": "元素要求",
+              "desc": "必须实现Delayed接口的getDelay和compareTo定义到期规则"
+            },
+            {
+              "id": "delayqueue-2-3-3-d1",
+              "tag": "排序规则",
+              "desc": "按到期时间排序延迟越小越先出队PriorityQueue+Delayed"
+            },
+            {
+              "id": "delayqueue-2-3-3-d2",
+              "tag": "到期判断",
+              "desc": "getDelay<=0时元素到期可被取出执行延迟任务"
+            },
+            {
+              "id": "delayqueue-2-3-3-d3",
+              "tag": "Leader线程",
+              "desc": "最先到期元素被leader等待减少无效轮询其他线程await"
+            },
+            {
+              "id": "delayqueue-2-3-3-d4",
+              "tag": "应用场景",
+              "desc": "定时任务调度缓存过期清理延迟消息订单超时取消"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "2-5-其他-2-4",
+      "title": "2.5 其他",
+      "points": [
+        {
+          "id": "linkedhashmap-2-4-0",
+          "tag": "LinkedHashMap",
+          "desc": "继承 HashMap，增加 before/after 指针维护双向链表。accessOrder=false 插入顺序（默认），true 访问顺序（访问后移到链表尾）。重写 `removeEldestEntry()` 可实现 LRU 缓存",
+          "details": [
+            {
+              "id": "linkedhashmap-2-4-0-d0",
+              "tag": "继承HashMap",
+              "desc": "增加head/tail双向链表维护顺序保持HashMap性能"
+            },
+            {
+              "id": "linkedhashmap-2-4-0-d1",
+              "tag": "accessOrder",
+              "desc": "false插入顺序true访问顺序(LRU)构造时指定"
+            },
+            {
+              "id": "linkedhashmap-2-4-0-d2",
+              "tag": "afterNodeAccess",
+              "desc": "访问时将节点移到链表尾部实现LRU最近访问在尾"
+            },
+            {
+              "id": "linkedhashmap-2-4-0-d3",
+              "tag": "afterNodeInsertion",
+              "desc": "可覆写removeEldestEntry淘汰最老节点自动缓存淘汰"
+            },
+            {
+              "id": "linkedhashmap-2-4-0-d4",
+              "tag": "LRU缓存",
+              "desc": "accessOrder=true+removeEldestEntry实现自动淘汰最久未访问"
+            }
+          ]
+        },
+        {
+          "id": "copyonwritearraylist-2-4-1",
+          "tag": "CopyOnWriteArrayList",
+          "desc": "写时复制：写操作加 ReentrantLock + 复制新数组，读操作无锁直接读。适合读多写少（监听器列表、配置列表）。缺点：写开销大（复制数组）、弱一致性（可能读到旧数据）",
+          "details": [
+            {
+              "id": "copyonwritearraylist-2-4-1-d0",
+              "tag": "写时复制",
+              "desc": "add/set/remove操作复制新数组替换引用保证读一致性"
+            },
+            {
+              "id": "copyonwritearraylist-2-4-1-d1",
+              "tag": "读无锁",
+              "desc": "读取原数组引用不加锁线程安全且快速适合读多写少"
+            },
+            {
+              "id": "copyonwritearraylist-2-4-1-d2",
+              "tag": "写加锁",
+              "desc": "ReentrantLock保证写操作互斥不并发修改避免数据不一致"
+            },
+            {
+              "id": "copyonwritearraylist-2-4-1-d3",
+              "tag": "迭代安全",
+              "desc": "迭代器遍历快照数组不抛ConcurrentModificationException"
+            },
+            {
+              "id": "copyonwritearraylist-2-4-1-d4",
+              "tag": "适用场景",
+              "desc": "读多写少如事件监听列表配置项列表不适合频繁写操作"
+            }
+          ]
+        },
+        {
+          "id": "fail-fast-2-4-2",
+          "tag": "fail-fast",
+          "desc": "遍历时检测 modCount 变化，不一致抛 ConcurrentModificationException（ArrayList/HashMap）。fail-safe：遍历时复制一份（CopyOnWriteArrayList/ConcurrentHashMap），不抛异常但可能读到旧数据",
+          "details": [
+            {
+              "id": "fail-fast-2-4-2-d0",
+              "tag": "modCount",
+              "desc": "集合结构修改时modCount自增计数器记录修改次数"
+            },
+            {
+              "id": "fail-fast-2-4-2-d1",
+              "tag": "迭代检查",
+              "desc": "Iterator每次next/checkForComodification对比计数是否一致"
+            },
+            {
+              "id": "fail-fast-2-4-2-d2",
+              "tag": "触发条件",
+              "desc": "遍历期间add/remove/clear导致modCount变化与迭代器期望不符"
+            },
+            {
+              "id": "fail-fast-2-4-2-d3",
+              "tag": "异常类型",
+              "desc": "ConcurrentModificationException快速失败机制提醒并发修改"
+            },
+            {
+              "id": "fail-fast-2-4-2-d4",
+              "tag": "避免方法",
+              "desc": "使用Iterator.remove()安全删除或用Concurrent集合类允许并发修改"
+            }
+          ]
+        },
+        {
+          "id": "comparablevscomparator-2-4-3",
+          "tag": "Comparable vs Comparator",
+          "desc": "Comparable 内部比较（实现 compareTo()，自然排序）；Comparator 外部比较器（实现 compare()，定制排序）。Collections.sort() 两者都支持。Comparator 可配合 lambda：`list.sort((a,b)->a-b)`",
+          "details": [
+            {
+              "id": "comparablevscomparator-2-4-3-d0",
+              "tag": "Comparable",
+              "desc": "类内部实现compareTo定义自然排序规则单一排序方式"
+            },
+            {
+              "id": "comparablevscomparator-2-4-3-d1",
+              "tag": "Comparator",
+              "desc": "外部定义compare方法定制排序策略灵活多种排序"
+            },
+            {
+              "id": "comparablevscomparator-2-4-3-d2",
+              "tag": "优先级",
+              "desc": "Comparator传入排序优先于Comparable自然排序自定义覆盖默认"
+            },
+            {
+              "id": "comparablevscomparator-2-4-3-d3",
+              "tag": "TreeMap排序",
+              "desc": "无Comparator则用Comparable否则用Comparator灵活切换"
+            },
+            {
+              "id": "comparablevscomparator-2-4-3-d4",
+              "tag": "设计意图",
+              "desc": "Comparable是默认排序(类自带)Comparator是灵活定制(外部注入)"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,310 @@
+{
+  "id": "mongodb",
+  "title": "二十七、MongoDB",
+  "tag": "MongoDB",
+  "order": 27,
+  "icon": "🔍",
+  "cssIndex": 25,
+  "subs": [
+    {
+      "id": "27-1-mongodb核心概念-27-0",
+      "title": "27.1 MongoDB核心概念",
+      "points": [
+        {
+          "id": "mongodb文档模型与bson-27-0-0",
+          "tag": "MongoDB文档模型与BSON",
+          "desc": "MongoDB是文档型数据库数据以BSON（Binary JSON）格式存储支持嵌套文档和数组适合半结构化和非结构化数据。BSON在JSON基础上增加日期/二进制/ObjectId(12字节含时间戳+机器+进程+计数器)/整数/正则等类型。文档最大16MB嵌套层级不超过100。集合无需预定义Schema支持动态添加字段。固定集合（Capped Collection）固定大小按插入顺序存储适合日志场景超过大小自动覆盖最老文档。",
+          "details": [
+            {
+              "id": "mongodb文档模型与bson-27-0-0-d0",
+              "tag": "BSON格式",
+              "desc": "Binary JSON扩展类型支持日期/二进制/ObjectId/整数/正则，比JSON类型更丰富"
+            },
+            {
+              "id": "mongodb文档模型与bson-27-0-0-d1",
+              "tag": "文档模型",
+              "desc": "数据以JSON风格文档存储，支持嵌套和数组，适合半结构化和非结构化数据"
+            },
+            {
+              "id": "mongodb文档模型与bson-27-0-0-d2",
+              "tag": "嵌套文档",
+              "desc": "文档内可嵌套子文档和数组，天然支持层次结构无需多表JOIN"
+            },
+            {
+              "id": "mongodb文档模型与bson-27-0-0-d3",
+              "tag": "ObjectId",
+              "desc": "12字节唯一标识含时间戳+机器+进程+计数器，保证分布式唯一性"
+            },
+            {
+              "id": "mongodb文档模型与bson-27-0-0-d4",
+              "tag": "动态Schema",
+              "desc": "集合无需预定义结构，支持动态添加字段，适合模式频繁变化场景"
+            },
+            {
+              "id": "mongodb文档模型与bson-27-0-0-d5",
+              "tag": "固定集合",
+              "desc": "Capped Collection固定大小按插入顺序存储，超限自动覆盖最老文档适合日志"
+            },
+            {
+              "id": "mongodb文档模型与bson-27-0-0-d6",
+              "tag": "半结构化数据",
+              "desc": "字段不固定模式频繁变化如用户画像IoT数据，MongoDB天然适配"
+            },
+            {
+              "id": "mongodb文档模型与bson-27-0-0-d7",
+              "tag": "16MB限制",
+              "desc": "单文档最大16MB嵌套层级不超过100，大文件应存GridFS而非单个文档"
+            }
+          ]
+        },
+        {
+          "id": "mongodb副本集与分片集群-27-0-1",
+          "tag": "MongoDB副本集与分片集群",
+          "desc": "副本集由Primary（主节点接收写）、Secondary（从节点复制数据可提供读）和Arbiter（仲裁不存数据只参与选举）组成。选举机制Raft协议需要多数节点同意防脑裂。读偏好：primary/primaryPreferred/secondary/secondaryPreferred/nearest。写关注：w:1主确认/w:majority多数确认最安全/w:all所有确认。分片集群：mongos路由节点→Config Server元数据→Shard数据分片（每个分片是副本集）。分片键：范围分片适合范围查询但可能不均匀、哈希分片均匀分布但范围查询效率差。",
+          "details": [
+            {
+              "id": "mongodb副本集与分片集群-27-0-1-d0",
+              "tag": "副本集",
+              "desc": "Primary接收写+Secondary复制读+Arbiter仲裁选举，Raft协议防脑裂"
+            },
+            {
+              "id": "mongodb副本集与分片集群-27-0-1-d1",
+              "tag": "Primary选举",
+              "desc": "基于Raft协议需多数节点同意，Primary故障自动选举新主防脑裂"
+            },
+            {
+              "id": "mongodb副本集与分片集群-27-0-1-d2",
+              "tag": "Raft协议",
+              "desc": "选举需多数节点同意防脑裂，Arbiter不存数据只参与投票节省资源"
+            },
+            {
+              "id": "mongodb副本集与分片集群-27-0-1-d3",
+              "tag": "Read Preference",
+              "desc": "读偏好控制路由：primary/primaryPreferred/secondary/secondaryPreferred/nearest"
+            },
+            {
+              "id": "mongodb副本集与分片集群-27-0-1-d4",
+              "tag": "Write Concern",
+              "desc": "写关注级别：w:1主确认/w:majority多数确认最安全/w:all全部确认"
+            },
+            {
+              "id": "mongodb副本集与分片集群-27-0-1-d5",
+              "tag": "分片集群",
+              "desc": "mongos路由→Config Server元数据→Shard数据分片，每个分片是副本集"
+            },
+            {
+              "id": "mongodb副本集与分片集群-27-0-1-d6",
+              "tag": "mongos",
+              "desc": "路由查询到正确分片，聚合操作需在mongos协调多分片结果"
+            },
+            {
+              "id": "mongodb副本集与分片集群-27-0-1-d7",
+              "tag": "Shard Key",
+              "desc": "分片键决定数据分布，范围分片适合范围查询哈希分片均匀分布"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "27-2-mongodb索引与聚合-27-1",
+      "title": "27.2 MongoDB索引与聚合",
+      "points": [
+        {
+          "id": "mongodb索引类型与esr原则-27-1-0",
+          "tag": "MongoDB索引类型与ESR原则",
+          "desc": "索引类型：单字段索引、复合索引（遵循最左前缀）、多键索引（自动为数组每个元素建索引）、地理空间索引（2d/2dsphere）、全文索引（text）、哈希索引、唯一索引。复合索引ESR原则（Equality→Sort→Range）：等值条件列在前排序列中间范围列在后。部分索引（partialFilterExpression）只对满足条件文档建索引减少索引大小。TTL索引自动删除过期文档适合日志和会话。explain()查看执行计划验证索引使用情况。",
+          "details": [
+            {
+              "id": "mongodb索引类型与esr原则-27-1-0-d0",
+              "tag": "复合索引",
+              "desc": "多字段组合索引遵循最左前缀和ESR原则， Equality→Sort→Range顺序"
+            },
+            {
+              "id": "mongodb索引类型与esr原则-27-1-0-d1",
+              "tag": "ESR原则",
+              "desc": "复合索引字段顺序：等值Equality在前→排序Sort居中→范围Range在后"
+            },
+            {
+              "id": "mongodb索引类型与esr原则-27-1-0-d2",
+              "tag": "多键索引",
+              "desc": "自动为数组每个元素建索引，查询数组内任意匹配值都能命中"
+            },
+            {
+              "id": "mongodb索引类型与esr原则-27-1-0-d3",
+              "tag": "TTL索引",
+              "desc": "自动删除过期文档，适合日志和会话数据管理设定过期秒数"
+            },
+            {
+              "id": "mongodb索引类型与esr原则-27-1-0-d4",
+              "tag": "全文索引",
+              "desc": "text类型索引支持全文搜索，权重控制搜索优先级，中文需指定语言"
+            },
+            {
+              "id": "mongodb索引类型与esr原则-27-1-0-d5",
+              "tag": "部分索引",
+              "desc": "partialFilterExpression只对满足条件文档建索引，减少索引大小和维护开销"
+            },
+            {
+              "id": "mongodb索引类型与esr原则-27-1-0-d6",
+              "tag": "explain()",
+              "desc": "查看查询执行计划验证索引命中情况，分析winningPlan和rejectedPlans"
+            },
+            {
+              "id": "mongodb索引类型与esr原则-27-1-0-d7",
+              "tag": "最左前缀",
+              "desc": "复合索引必须从最左字段开始匹配，跳过前列后续列无法利用索引"
+            }
+          ]
+        },
+        {
+          "id": "mongodb聚合管道-27-1-1",
+          "tag": "MongoDB聚合管道",
+          "desc": "聚合管道通过多个Stage串联对文档转换和统计。常用阶段：match过滤相当于WHERE、group分组统计相当于GROUP BY+聚合函数、sort排序、limit/skip分页、project字段投影相当于SELECT、lookup左连接其他集合相当于LEFT JOIN、unwind展开数组每个元素变独立文档、addFields添加计算字段、facet多管道并行输出多个聚合结果、bucket/bucketAuto分桶统计。聚合优化：match尽早放置减少数据量、project尽早去除不需要字段、lookup避免大集合连接（超100MB需allowDiskUse）。MapReduce是旧版聚合方式已不推荐性能差使用聚合管道替代。",
+          "details": [
+            {
+              "id": "mongodb聚合管道-27-1-1-d0",
+              "tag": "聚合管道",
+              "desc": "多个Stage串联对文档转换和统计，是替代MapReduce的现代方案"
+            },
+            {
+              "id": "mongodb聚合管道-27-1-1-d1",
+              "tag": "match",
+              "desc": "聚合管道过滤阶段相当于WHERE，应尽早放置减少后续数据量"
+            },
+            {
+              "id": "mongodb聚合管道-27-1-1-d2",
+              "tag": "group",
+              "desc": "聚合管道分组统计相当于GROUP BY+聚合函数如$sum/$avg/$max"
+            },
+            {
+              "id": "mongodb聚合管道-27-1-1-d3",
+              "tag": "lookup",
+              "desc": "左连接其他集合相当于LEFT JOIN，避免大集合连接超100MB需allowDiskUse"
+            },
+            {
+              "id": "mongodb聚合管道-27-1-1-d4",
+              "tag": "unwind",
+              "desc": "展开数组每个元素变为独立文档，便于对数组内元素进行后续聚合"
+            },
+            {
+              "id": "mongodb聚合管道-27-1-1-d5",
+              "tag": "project",
+              "desc": "字段投影相当于SELECT，尽早去除不需要字段减少数据传输量"
+            },
+            {
+              "id": "mongodb聚合管道-27-1-1-d6",
+              "tag": "facet",
+              "desc": "多管道并行在同一输入上执行多个聚合返回多个结果集"
+            },
+            {
+              "id": "mongodb聚合管道-27-1-1-d7",
+              "tag": "MapReduce替代",
+              "desc": "MapReduce已不推荐性能差，聚合管道是现代替代方案执行效率更高"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "27-3-mongodb与关系型数据库对比-27-2",
+      "title": "27.3 MongoDB与关系型数据库对比",
+      "points": [
+        {
+          "id": "mongodb适用场景与选型-27-2-0",
+          "tag": "MongoDB适用场景与选型",
+          "desc": "MongoDB适用：半结构化数据（字段不固定模式频繁变化如用户画像IoT数据）、高并发读写（单文档操作无跨表事务约束）、嵌套数据存储（JSON天然支持无需多表JOIN）、实时分析（聚合管道强大）、内容管理（灵活Schema适应多类型）、地理位置应用（2dsphere索引）。MongoDB局限：多文档事务4.0前不支持（4.0+支持但开销大不建议跨分片）、JOIN能力弱（lookup性能有限）、数据一致性依赖应用（需应用做校验）、磁盘占用大（BSON比JSON大）、内存消耗高。选型：灵活Schema嵌套数据→MongoDB；强事务复杂JOIN→MySQL；混合→MySQL主+MongoDB辅助。",
+          "details": [
+            {
+              "id": "mongodb适用场景与选型-27-2-0-d0",
+              "tag": "适用场景",
+              "desc": "灵活Schema+嵌套数据+高并发读写+实时分析+地理位置应用"
+            },
+            {
+              "id": "mongodb适用场景与选型-27-2-0-d1",
+              "tag": "半结构化数据",
+              "desc": "字段不固定如用户画像IoT数据，MongoDB动态Schema天然适配"
+            },
+            {
+              "id": "mongodb适用场景与选型-27-2-0-d2",
+              "tag": "嵌套",
+              "desc": "JSON天然支持嵌套存储无需多表JOIN，减少关联查询开销"
+            },
+            {
+              "id": "mongodb适用场景与选型-27-2-0-d3",
+              "tag": "事务局限",
+              "desc": "4.0前不支持多文档事务，4.0+支持但跨分片开销大不建议"
+            },
+            {
+              "id": "mongodb适用场景与选型-27-2-0-d4",
+              "tag": "JOIN",
+              "desc": "lookup性能有限不适合复杂关联，嵌套设计可减少JOIN需求"
+            },
+            {
+              "id": "mongodb适用场景与选型-27-2-0-d5",
+              "tag": "BSON空间",
+              "desc": "BSON比JSON多类型元数据磁盘占用更大，需关注存储成本"
+            },
+            {
+              "id": "mongodb适用场景与选型-27-2-0-d6",
+              "tag": "数据校验",
+              "desc": "MongoDB弱一致性需应用层做数据校验，可使用validation规则约束"
+            },
+            {
+              "id": "mongodb适用场景与选型-27-2-0-d7",
+              "tag": "选型对比",
+              "desc": "灵活Schema→MongoDB；强事务→MySQL；混合→MySQL主+MongoDB辅助"
+            }
+          ]
+        },
+        {
+          "id": "mongodb事务与一致性-27-2-1",
+          "tag": "MongoDB事务与一致性",
+          "desc": "MongoDB 4.0引入多文档事务（仅副本集）4.2扩展到分片集群。事务限制：单事务默认60秒、分片事务需mongos协调两阶段提交开销大。CAP权衡：MongoDB默认CP系统（Primary不可用时拒绝写保证一致性）但Read Preference可调整AP倾向。写关注+读关注组合实现不同一致性：w:majority+r:local强一致、w:1+r:secondaryAllowed最终一致读可能旧数据。最终一致性通过oplog（操作日志类似binlog）实现Secondary从Primary异步拉取oplog存在复制延迟。",
+          "details": [
+            {
+              "id": "mongodb事务与一致性-27-2-1-d0",
+              "tag": "多文档事务",
+              "desc": "MongoDB 4.0引入仅副本集，4.2扩展到分片集群，单事务默认60秒"
+            },
+            {
+              "id": "mongodb事务与一致性-27-2-1-d1",
+              "tag": "startTransaction",
+              "desc": "开启多文档事务API，需指定readConcern/writeConcern保证一致性"
+            },
+            {
+              "id": "mongodb事务与一致性-27-2-1-d2",
+              "tag": "分片事务",
+              "desc": "4.2支持但需mongos协调两阶段提交开销大，尽量避免跨分片事务"
+            },
+            {
+              "id": "mongodb事务与一致性-27-2-1-d3",
+              "tag": "CAP权衡",
+              "desc": "MongoDB默认CP系统，Primary不可用时拒绝写，Read Preference可调AP倾向"
+            },
+            {
+              "id": "mongodb事务与一致性-27-2-1-d4",
+              "tag": "写关注",
+              "desc": "控制写确认级别：w:majority多数节点确认最安全，w:1仅主确认"
+            },
+            {
+              "id": "mongodb事务与一致性-27-2-1-d5",
+              "tag": "读关注",
+              "desc": "控制读一致性：local读最新/majority读多数确认/snapshot事务隔离读"
+            },
+            {
+              "id": "mongodb事务与一致性-27-2-1-d6",
+              "tag": "oplog",
+              "desc": "操作日志类似binlog，Secondary从Primary异步拉取oplog存在复制延迟"
+            },
+            {
+              "id": "mongodb事务与一致性-27-2-1-d7",
+              "tag": "一致性级别",
+              "desc": "w:majority+r:local强一致，w:1+r:secondaryAllowed最终一致读可能旧数据"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

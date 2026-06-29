@@ -1,0 +1,26 @@
+:root {
+  --bg: #f0f4f8; --card: #fff; --text: #1a202c;
+  --text2: #4a5568; --text3: #94a3b8; --border: #e2e8f0;
+  --accent: #0d9488; --accent2: #e8833a;
+  --radius: 16px; --radius-sm: 10px;
+  --shadow: 0 2px 12px rgba(0,0,0,.06);
+  --c0: #6366f1; --c1: #ef4444; --c2: #f59e0b; --c3: #10b981;
+  --c4: #3b82f6; --c5: #a855f7; --c6: #f97316; --c7: #14b8a6;
+  --c8: #dc2626; --c9: #059669; --c10: #2563eb; --c11: #ea580c;
+  --c12: #0ea5e9; --c13: #d946ef; --c14: #f472b6; --c15: #8b5cf6;
+  --c16: #e11d48; --c17: #22d3ee; --c18: #c084fc; --c19: #8b5cf6;
+  --c20: #0ea5e9; --c21: #dc2626; --c22: #7c3aed; --c23: #f97316;
+  --c24: #059669; --c25: #6366f1; --c26: #3b82f6; --c27: #ef4444;
+  --c28: #10b981; --c29: #f59e0b; --c30: #a855f7; --c31: #f97316;
+  --c32: #ef4444; --c33: #f59e0b; --c34: #14b8a6; --c35: #ef4444;
+  --c36: #059669; --c37: #3b82f6; --c38: #8b5cf8; --c39: #0ea5e9;
+  --c40: #a855f7; --c41: #f05032; --c42: #0ea5e9;
+}
+
+/* Vant主题色覆盖: 让Vant组件与我们设计系统一致 */
+:root {
+  --van-primary-color: #0d9488;
+  --van-success-color: #10b981;
+  --van-danger-color: #ef4444;
+  --van-warning-color: #f59e0b;
+}

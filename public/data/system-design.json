@@ -1,0 +1,187 @@
+{
+  "id": "system-design",
+  "title": "十、系统设计",
+  "tag": "分布式",
+  "order": 10,
+  "icon": "🚀",
+  "cssIndex": 9,
+  "subs": [
+    {
+      "id": "10-1-设计原则-10-0",
+      "title": "10.1 设计原则",
+      "points": [
+        {
+          "id": "cap定理-10-0-0",
+          "tag": "CAP定理",
+          "desc": "分布式系统三个特性最多同时满足两个:Consistency一致性(所有节点同一时间看到相同数据)、Availability可用性(每个请求都能收到响应)、Partition tolerance分区容错(网络分区时系统继续运行)。CP(强一致性+分区容错: ZooKeeper/etcd,写操作可能失败)。AP(可用性+分区容错: Cassandra/DNS/Cassandra,可能读到旧数据).BASE理论: Basically Available Soft state Eventual consistency",
+          "details": [
+            {
+              "id": "cap定理-10-0-0-d0",
+              "tag": "CAP三选二",
+              "desc": "CP(ZooKeeper/etcd) AP(Cassandra/DNS)"
+            },
+            {
+              "id": "cap定理-10-0-0-d1",
+              "tag": "BASE",
+              "desc": "基本可用+软状态+最终一致性（BASE的详细说明：CAP定理中关于BASE的内容）"
+            },
+            {
+              "id": "cap定理-10-0-0-d2",
+              "tag": "CAP定理",
+              "desc": "分布式最多同时满足C一致性A可用性P分区容忍三者之二不可兼得"
+            },
+            {
+              "id": "cap定理-10-0-0-d3",
+              "tag": "CP系统",
+              "desc": "Zookeeper/Etcd牺牲可用性保证一致性适合配置管理分布式锁"
+            },
+            {
+              "id": "cap定理-10-0-0-d4",
+              "tag": "AP系统",
+              "desc": "Eureka/Cassandra牺牲一致性保证可用性适合注册发现最终一致"
+            },
+            {
+              "id": "cap定理-10-0-0-d5",
+              "tag": "BASE",
+              "desc": "Basically Available基本可用+Soft State软状态+Eventually Consistent最终一致"
+            }
+          ]
+        },
+        {
+          "id": "高可用ha-10-0-1",
+          "tag": "高可用HA",
+          "desc": "冗余:多副本部署避免单点故障。故障检测:心跳/健康检查。故障转移:主备切换自动/手动。熔断: Hystrix/Sentinel(错误率达到阈值打开熔断器快速失败,半开后试探恢复)。降级: 返回兜底数据/默认值/友好提示。限流: 令牌桶/漏桶/滑动窗口(入口保护QPS)。超时: 设置合理的连接/读/写超时避免级联雪崩",
+          "details": []
+        },
+        {
+          "id": "高扩展-10-0-2",
+          "tag": "高扩展",
+          "desc": "垂直扩展(升级硬件CPU/内存简单但有上限贵)。水平扩展(增加机器节点,需无状态设计+数据分片+负载均衡)。无状态: 会话信息存Redis/外部化不依赖本地。数据分片: ShardingSphere分库分表。缓存: 多级缓存减轻DB压力。消息队列: 异步削峰解耦",
+          "details": []
+        }
+      ]
+    },
+    {
+      "id": "10-2-负载均衡-10-1",
+      "title": "10.2 负载均衡",
+      "points": [
+        {
+          "id": "四层负载均衡-10-1-0",
+          "tag": "四层负载均衡",
+          "desc": "L4(传输层):基于IP+端口分发(F5/LVS/Nginx stream)。不关心应用层内容,性能高适合TCP/UDP协议转发。LVS(Linux Virtual Server):工作在内核空间(DR/TUN/NAT三种模式),DR模式性能最好(请求响应都经过LB修改MAC地址)",
+          "details": [
+            {
+              "id": "四层负载均衡-10-1-0-d0",
+              "tag": "L4",
+              "desc": "IP+端口分发 F5/LVS/Nginx stream"
+            },
+            {
+              "id": "四层负载均衡-10-1-0-d1",
+              "tag": "LVS DR模式",
+              "desc": "内核空间+改MAC最高效（LVS DR模式的详细说明：四层负载均衡中关于LVS DR模式的内容）"
+            },
+            {
+              "id": "四层负载均衡-10-1-0-d2",
+              "tag": "负载均衡算法",
+              "desc": "轮询/加权轮询/最少连接/源地址Hash/随机5种策略选择"
+            },
+            {
+              "id": "四层负载均衡-10-1-0-d3",
+              "tag": "四层LB(L4)",
+              "desc": "传输层IP+端口转发LVS/NAT/DR/TUN模式性能极高"
+            },
+            {
+              "id": "四层负载均衡-10-1-0-d4",
+              "tag": "七层LB(L7)",
+              "desc": "应用层URL/Header/Cookie路由Nginx/HAProxy功能丰富"
+            },
+            {
+              "id": "四层负载均衡-10-1-0-d5",
+              "tag": "Nginx配置",
+              "desc": "upstream+proxy_pass+weight+max_fails+fail_timeout+backup"
+            }
+          ]
+        },
+        {
+          "id": "七层负载均衡-10-1-1",
+          "tag": "七层负载均衡",
+          "desc": "L7(应用层):基于URL/Header/Cookie等HTTP内容分发(Nginx/HAProxy)。功能丰富(会话保持/SSL卸载/健康检查/ACL规则)但性能低于L4。Nginx upstream:轮询(round robin)/加权(weight)/IP哈希(ip_hash源地址粘性)/最少连接(least_conn)/fair(响应时间短优先)",
+          "details": []
+        },
+        {
+          "id": "服务发现-10-1-2",
+          "tag": "服务发现",
+          "desc": "客户端侧:从注册中心获取服务列表本地缓存+定时刷新,客户端选择目标(Ribbon随机/轮询权重)。服务端侧:通过DNS轮询或VIP+LB集群入口。Consul/Eureka/Nacos:服务注册(心跳续约)+发现(拉取列表)+健康检查(探活剔除故障节点)",
+          "details": []
+        }
+      ]
+    },
+    {
+      "id": "10-3-分布式事务-10-2",
+      "title": "10.3 分布式事务",
+      "points": [
+        {
+          "id": "2pc两阶段提交-10-2-0",
+          "tag": "2PC两阶段提交",
+          "desc": "准备阶段(Prepare):协调者向所有参与者发送prepare请求,参与者执行本地事务写undo/redo日志但不提交,返回Yes/No。提交阶段(Commit):全部Yes则发送Commit(参与者提交释放资源),任一No则发送Rollback(回滚释放)。缺点:同步阻塞(协调者单点/所有参与者阻塞等待)/数据不一致(协调者Commit时部分参与者收不到)/性能差(两次RTT+锁持有时间长)",
+          "details": [
+            {
+              "id": "2pc两阶段提交-10-2-0-d0",
+              "tag": "Prepare全Yes",
+              "desc": "Prepare全Yes→Commit / 任一No→Rollback"
+            },
+            {
+              "id": "2pc两阶段提交-10-2-0-d1",
+              "tag": "缺点",
+              "desc": "同步阻塞/单点/性能差（缺点的详细说明：2PC两阶段提交中关于缺点的内容）"
+            },
+            {
+              "id": "2pc两阶段提交-10-2-0-d2",
+              "tag": "2PC/XA",
+              "desc": "协调者Prepare→Commit/Rollback强一致但阻塞+单点协调者风险"
+            },
+            {
+              "id": "2pc两阶段提交-10-2-0-d3",
+              "tag": "TCC",
+              "desc": "Try预留→Confirm确认→Cancel补偿柔性事务每服务3接口复杂"
+            },
+            {
+              "id": "2pc两阶段提交-10-2-0-d4",
+              "tag": "本地消息表",
+              "desc": "业务+写消息表同事务→定时扫描→MQ→消费端最终一致简单"
+            },
+            {
+              "id": "2pc两阶段提交-10-2-0-d5",
+              "tag": "Seata",
+              "desc": "AT自动补偿+TCC+Saga+XA多种模式Spring Cloud生态集成"
+            }
+          ]
+        },
+        {
+          "id": "3pc三阶段提交-10-2-1",
+          "tag": "3PC三阶段提交",
+          "desc": "增加CanCommit预询问(减少不必要的Prepare开销)和PreCommit预处理(超时自动中断)。引入超时机制:参与者等待超时自动中止/协调者等待超时自动中止。但仍存在数据不一致风险(Coordinator发出Commit后部分收不到)。实际生产中极少使用",
+          "details": []
+        },
+        {
+          "id": "tcc补偿型-10-2-2",
+          "tag": "TCC补偿型",
+          "desc": "Try(预留资源:冻结余额扣减库存锁定),Confirm(确认执行业务:实际扣减解冻),Cancel(取消回滚:释放资源恢复余额)。特点:业务侵入性强(需实现三个接口)/性能比2PC好(无全局锁长持)。适用:强一致性要求的核心业务(支付/库存扣减)。框架:Seata TCC/HMily/TCC-Transaction",
+          "details": []
+        },
+        {
+          "id": "saga模式-10-2-3",
+          "tag": "Saga模式",
+          "desc": "将长事务拆分为多个本地短事务,每个事务有对应的补偿操作(正向+逆向补偿)。编排模式:中央协调器(Orchestrator)按顺序调用每个服务+失败后逆序调用补偿。协同模式:各服务间通过事件驱动(Choreography)无需中心协调。优点:无长期锁高性能。缺点:补偿逻辑复杂/无法保证读一致性(中间状态可被读到)",
+          "details": []
+        },
+        {
+          "id": "可靠消息最终一致性-10-2-4",
+          "tag": "可靠消息最终一致性",
+          "desc": "本地消息表:业务和消息在同一DB事务保证原子性(MQ轮询发送)。事务消息(Half Message):RocketMQ半消息→执行本地事务→Commit/Rollback消息→消费者消费。最大努力通知:主动查询重试+N次失败后告警人工介入+对账系统兜底。适用于:可接受最终一致性的非核心场景(积分/通知/异步解耦)",
+          "details": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+.dark {
+  --bg: #0f172a; --card: #1e293b; --text: #e2e8f0;
+  --text2: #94a3b8; --text3: #64748b; --border: #334155;
+  --shadow: 0 2px 12px rgba(0,0,0,.3);
+}
+
+/* Vant组件深色覆盖 */
+.dark .van-cell { background: #1e293b; color: #e2e8f0 }
+.dark .van-cell__label { color: #94a3b8 }
+.dark .van-cell-group { background: #1e293b }
+.dark .van-collapse-item__title { background: #1e293b; color: #e2e8f0 }
+.dark .van-collapse-item__content { background: #1e293b; color: #e2e8f0 }
+.dark .van-search { background: #0f172a }
+.dark .van-search__content { background: #263548; border-radius: 24px }
+.dark .van-field__control { color: #e2e8f0 }
+.dark .van-field__control::-webkit-input-placeholder { color: #64748b }
+.dark .van-tag--primary { background: rgba(13,148,136,.3); color: #6ee7b8 }
+.dark .van-dialog { background: #1e293b; color: #e2e8f0 }
+.dark .van-dropdown-menu { background: #1e293b }
+.dark .van-dropdown-item__content { background: #1e293b }
+.dark .van-dropdown-item__option { color: #94a3b8 }
+.dark .van-dropdown-item__option--active { color: #6ee7b8 }
+.dark .van-skeleton { background: #263548 }
+.dark .van-back-top { background: #065f46; color: #6ee7b8 }
+.dark .van-popup { background: #1e293b; color: #e2e8f0 }
+.dark .van-loading__text { color: #94a3b8 }
+.dark .van-button--primary { background: #0d9488; border-color: #0d9488 }
+.dark .van-field__error-message { color: #f87171 }
+.dark .van-field__left-icon { color: #94a3b8 }
+
+/* 搜索高亮深色 */
+.dark .hl { background: #422006; color: #fbbf24 }
+
+/* 自定义组件深色 */
+.dark .module-card { background: #1e293b }
+.dark .sub-head { background: #1e293b; color: #e2e8f0 }
+.dark .sub-head:hover { background: #263548 }
+.dark .point { background: #1e293b; border-color: #475569; color: #e2e8f0 }
+.dark .point:hover { background: #263548 }
+.dark .point.open { border-left-color: #6ee7b7 }
+.dark .detail-item { background: #1e293b; border-color: #334155; color: #94a3b8 }
+.dark .detail-item:hover { background: #263548; border-color: rgba(13,148,136,.25); color: #e2e8f0 }
+.dark .detail-item.has-sub { color: #e2e8f0 }
+.dark .detail-item.has-sub.open { border-left-color: #6ee7b7 }
+.dark .detail-item .sub-detail { background: #0f172a; border-left-color: #065f46; color: #e2e8f0 }
+.dark .back-top-pc { background: #065f46 }
+.dark .module-header { box-shadow: 0 8px 32px rgba(0,0,0,.5) }
+
+/* AuthGate深色 */
+.dark .auth-overlay { background: #0f172a }
+.dark .auth-card { background: #1e293b; box-shadow: 0 8px 40px rgba(0,0,0,.5) }
+
+/* 初始化屏幕深色 */
+.dark .init-screen { background: #0f172a }
+.dark .init-title { color: #e2e8f0 }
+
+/* 骨架屏深色 */
+.dark .skeleton-card { background: #1e293b }

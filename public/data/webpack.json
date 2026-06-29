@@ -1,0 +1,723 @@
+{
+  "id": "webpack",
+  "title": "十八、Webpack与前端工程化",
+  "tag": "Webpack",
+  "order": 18,
+  "icon": "📦",
+  "cssIndex": 17,
+  "subs": [
+    {
+      "id": "18-1-webpack核心概念-18-0",
+      "title": "18.1 Webpack核心概念",
+      "points": [
+        {
+          "id": "entry入口与output输出-18-0-0",
+          "tag": "Entry入口与Output输出",
+          "desc": "Entry定义打包起点，Output指定产物路径和命名规则",
+          "details": [
+            {
+              "id": "entry入口与output输出-18-0-0-d0",
+              "tag": "single模式",
+              "desc": "entry为字符串路径生成一个chunk，适用于SPA应用"
+            },
+            {
+              "id": "entry入口与output输出-18-0-0-d1",
+              "tag": "object模式",
+              "desc": "entry为键值对对象每个键生成独立chunk，适用于MPA多页应用"
+            },
+            {
+              "id": "entry入口与output输出-18-0-0-d2",
+              "tag": "output.filename",
+              "desc": "多入口用[name].[contenthash].js占位符"
+            },
+            {
+              "id": "entry入口与output输出-18-0-0-d3",
+              "tag": "output.publicPath",
+              "desc": "资源引用的公共路径前缀，CDN部署时设置为CDN域名"
+            }
+          ]
+        },
+        {
+          "id": "loader转换规则-18-0-1",
+          "tag": "Loader转换规则",
+          "desc": "Loader让Webpack能处理非JS文件，链式调用从右到左执行",
+          "details": [
+            {
+              "id": "loader转换规则-18-0-1-d0",
+              "tag": "loader本质是函数",
+              "desc": "接收源文件内容返回转换后内容，链式调用从右到左执行"
+            },
+            {
+              "id": "loader转换规则-18-0-1-d1",
+              "tag": "配置方式",
+              "desc": "module.rules数组，test匹配条件+use指定loader链"
+            },
+            {
+              "id": "loader转换规则-18-0-1-d2",
+              "tag": "loader执行顺序",
+              "desc": "从数组最右向最左依次执行，pitch阶段从左向右可跳过后续loader"
+            },
+            {
+              "id": "loader转换规则-18-0-1-d3",
+              "tag": "常用loader链",
+              "desc": "[style-loader,css-loader,postcss-loader]从右向左处理CSS文件"
+            }
+          ]
+        },
+        {
+          "id": "plugin插件扩展-18-0-2",
+          "tag": "Plugin插件扩展",
+          "desc": "Plugin通过钩子机制介入Webpack构建流程各阶段",
+          "details": [
+            {
+              "id": "plugin插件扩展-18-0-2-d0",
+              "tag": "plugin本质",
+              "desc": "plugin本质是带有apply方法的类，apply接收compiler对象注册tapable钩子回调"
+            },
+            {
+              "id": "plugin插件扩展-18-0-2-d1",
+              "tag": "compiler对象",
+              "desc": "Webpack全生命周期代表，启动时创建贯穿整个构建过程"
+            },
+            {
+              "id": "plugin插件扩展-18-0-2-d2",
+              "tag": "compilation对象",
+              "desc": "每次编译创建，包含模块/chunk/依赖等信息"
+            },
+            {
+              "id": "plugin插件扩展-18-0-2-d3",
+              "tag": "常用plugin",
+              "desc": "HtmlWebpackPlugin/CleanWebpackPlugin/DefinePlugin/CopyWebpackPlugin"
+            }
+          ]
+        },
+        {
+          "id": "mode模式与resolve解析-18-0-3",
+          "tag": "Mode模式与Resolve解析",
+          "desc": "Mode指定构建模式优化策略，Resolve配置模块解析规则",
+          "details": [
+            {
+              "id": "mode模式与resolve解析-18-0-3-d0",
+              "tag": "development模式",
+              "desc": "保留调试信息不压缩；production模式：启用压缩/TreeShaking等默认优化"
+            },
+            {
+              "id": "mode模式与resolve解析-18-0-3-d1",
+              "tag": "resolve.alias",
+              "desc": "路径别名映射如@映射src目录"
+            },
+            {
+              "id": "mode模式与resolve解析-18-0-3-d2",
+              "tag": "resolve.extensions",
+              "desc": "文件扩展名自动解析顺序['.js','.jsx','.ts']"
+            }
+          ]
+        },
+        {
+          "id": "chunk与bundle与module-18-0-4",
+          "tag": "Chunk与Bundle与Module",
+          "desc": "理解Webpack中模块/代码块/产物的层次关系",
+          "details": [
+            {
+              "id": "chunk与bundle与module-18-0-4-d0",
+              "tag": "module",
+              "desc": "Webpack中一切皆模块，JS/CSS/图片等通过loader转换为模块依赖"
+            },
+            {
+              "id": "chunk与bundle与module-18-0-4-d1",
+              "tag": "chunk",
+              "desc": "模块根据依赖关系和分割策略组装成代码块(entry/async/common)"
+            },
+            {
+              "id": "chunk与bundle与module-18-0-4-d2",
+              "tag": "bundle",
+              "desc": "chunk经过输出配置最终写入磁盘的产物文件"
+            },
+            {
+              "id": "chunk与bundle与module-18-0-4-d3",
+              "tag": "dependency graph",
+              "desc": "Webpack从entry出发递归解析依赖关系构建完整的模块依赖图"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "18-2-loader与plugin详解-18-1",
+      "title": "18.2 Loader与Plugin详解",
+      "points": [
+        {
+          "id": "babel-loader与css处理链-18-1-0",
+          "tag": "babel-loader与CSS处理链",
+          "desc": "babel-loader负责ES6+语法转换，CSS处理链实现样式加载和提取",
+          "details": [
+            {
+              "id": "babel-loader与css处理链-18-1-0-d0",
+              "tag": "babel-loader",
+              "desc": "搭配@babel/preset-env处理语法转换，options.cacheDirectory开启磁盘缓存二次构建快"
+            },
+            {
+              "id": "babel-loader与css处理链-18-1-0-d1",
+              "tag": "css-loader",
+              "desc": "解析CSS中的@import和url()引用，将CSS转换为JS模块导出"
+            },
+            {
+              "id": "babel-loader与css处理链-18-1-0-d2",
+              "tag": "style-loader",
+              "desc": "将CSS以style标签注入DOM头部，开发环境适用"
+            },
+            {
+              "id": "babel-loader与css处理链-18-1-0-d3",
+              "tag": "MiniCssExtractPlugin.loader",
+              "desc": "生产环境替代style-loader提取CSS为独立文件"
+            },
+            {
+              "id": "babel-loader与css处理链-18-1-0-d4",
+              "tag": "postcss-loader+Autoprefixer",
+              "desc": "根据browserslist自动添加CSS厂商前缀"
+            }
+          ]
+        },
+        {
+          "id": "资源处理与assetmodules-18-1-1",
+          "tag": "资源处理与Asset Modules",
+          "desc": "处理图片/字体/SVG等静态资源，Webpack5原生Asset Modules替代传统loader",
+          "details": [
+            {
+              "id": "资源处理与assetmodules-18-1-1-d0",
+              "tag": "url-loader",
+              "desc": "小文件可配置limit阈值转为base64内联DataURL减少HTTP请求"
+            },
+            {
+              "id": "资源处理与assetmodules-18-1-1-d1",
+              "tag": "Webpack5 asset modules",
+              "desc": "type配置asset/asset-inline/asset/resource自动处理替代file/url-loader"
+            },
+            {
+              "id": "资源处理与assetmodules-18-1-1-d2",
+              "tag": "asset自动模式",
+              "desc": "根据文件大小自动选择inline或resource，默认8KB以下inline超过resource"
+            }
+          ]
+        },
+        {
+          "id": "常用plugin详解-18-1-2",
+          "tag": "常用Plugin详解",
+          "desc": "辅助构建流程的常用Plugin实现自动化和配置管理",
+          "details": [
+            {
+              "id": "常用plugin详解-18-1-2-d0",
+              "tag": "HtmlWebpackPlugin",
+              "desc": "自动生成HTML文件并注入script/link标签，支持template和多入口"
+            },
+            {
+              "id": "常用plugin详解-18-1-2-d1",
+              "tag": "CleanWebpackPlugin",
+              "desc": "每次构建前清理输出目录避免旧文件残留"
+            },
+            {
+              "id": "常用plugin详解-18-1-2-d2",
+              "tag": "DefinePlugin",
+              "desc": "定义全局常量替换编译时变量如process.env.NODE_ENV"
+            },
+            {
+              "id": "常用plugin详解-18-1-2-d3",
+              "tag": "CopyWebpackPlugin",
+              "desc": "拷贝静态资源到输出目录（CopyWebpackPlugin的详细说明：常用Plugin详解中关于CopyWebpackPlugin的内容）"
+            },
+            {
+              "id": "常用plugin详解-18-1-2-d4",
+              "tag": "webpack-merge",
+              "desc": "合并多环境Webpack配置（webpack-merge的详细说明：常用Plugin详解中关于webpack-merge的内容）"
+            }
+          ]
+        },
+        {
+          "id": "自定义loader与plugin编写-18-1-3",
+          "tag": "自定义Loader与Plugin编写",
+          "desc": "理解编写原理实现定制化开发",
+          "details": [
+            {
+              "id": "自定义loader与plugin编写-18-1-3-d0",
+              "tag": "loader导出函数",
+              "desc": "module.exports=function(source){return transformedSource}"
+            },
+            {
+              "id": "自定义loader与plugin编写-18-1-3-d1",
+              "tag": "plugin编写",
+              "desc": "class MyPlugin{apply(compiler){compiler.hooks.emit.tapAsync('MyPlugin',callback)}}"
+            },
+            {
+              "id": "自定义loader与plugin编写-18-1-3-d2",
+              "tag": "tapable核心库",
+              "desc": "提供SyncHook/SyncBailHook/AsyncSeriesHook等多种钩子类型"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "18-3-webpack优化策略-18-2",
+      "title": "18.3 Webpack优化策略",
+      "points": [
+        {
+          "id": "codesplitting代码分割-18-2-0",
+          "tag": "Code Splitting代码分割",
+          "desc": "将打包产物拆分为多个小块实现按需加载和缓存优化",
+          "details": [
+            {
+              "id": "codesplitting代码分割-18-2-0-d0",
+              "tag": "entry分割",
+              "desc": "多入口配置自动生成多个entry chunk，适用于MPA应用"
+            },
+            {
+              "id": "codesplitting代码分割-18-2-0-d1",
+              "tag": "动态import分割",
+              "desc": "import()语法Webpack自动生成async chunk"
+            },
+            {
+              "id": "codesplitting代码分割-18-2-0-d2",
+              "tag": "SplitChunksPlugin配置",
+              "desc": "chunks参数all/async/initial控制分割范围，all最全面"
+            },
+            {
+              "id": "codesplitting代码分割-18-2-0-d3",
+              "tag": "cacheGroups",
+              "desc": "定义自定义分组规则如vendors提取第三方库"
+            },
+            {
+              "id": "codesplitting代码分割-18-2-0-d4",
+              "tag": "runtime chunk",
+              "desc": "提取Webpack运行时代码为独立chunk避免业务代码变更影响框架缓存"
+            }
+          ]
+        },
+        {
+          "id": "treeshaking摇树优化-18-2-1",
+          "tag": "Tree Shaking摇树优化",
+          "desc": "利用ESM静态分析特性移除未使用代码减小产物体积",
+          "details": [
+            {
+              "id": "treeshaking摇树优化-18-2-1-d0",
+              "tag": "Tree Shaking前提",
+              "desc": "使用ESM静态导入，CommonJS动态require无法静态分析"
+            },
+            {
+              "id": "treeshaking摇树优化-18-2-1-d1",
+              "tag": "Webpack标记未使用导出为unused，Terser读取标记删除unused代码",
+              "desc": "Webpack依赖ESM静态import分析标记死代码；Terser在minify阶段读取harmony标记删除未引用函数，最终产物不含无用导出"
+            },
+            {
+              "id": "treeshaking摇树优化-18-2-1-d2",
+              "tag": "sideEffects",
+              "desc": "false告知Webpack该包无副作用可安全摇树"
+            },
+            {
+              "id": "treeshaking摇树优化-18-2-1-d3",
+              "tag": "摇树失效原因",
+              "desc": "CommonJS模块/有副作用的代码/动态属性访问/IIFE"
+            }
+          ]
+        },
+        {
+          "id": "懒加载与预加载-18-2-2",
+          "tag": "懒加载与预加载",
+          "desc": "通过动态加载策略优化首屏性能",
+          "details": [
+            {
+              "id": "懒加载与预加载-18-2-2-d0",
+              "tag": "动态import懒加载",
+              "desc": "import('./module')Webpack自动生成async chunk"
+            },
+            {
+              "id": "懒加载与预加载-18-2-2-d1",
+              "tag": "Webpack Magic Comment",
+              "desc": "import(/* webpackChunkName:'login' */'./login')指定chunk名称"
+            },
+            {
+              "id": "懒加载与预加载-18-2-2-d2",
+              "tag": "prefetch预加载",
+              "desc": "import(/* webpackPrefetch:true */'./module')空闲时提前下载"
+            },
+            {
+              "id": "懒加载与预加载-18-2-2-d3",
+              "tag": "preload预加载",
+              "desc": "import(/* webpackPreload:true */'./module')与父chunk并行下载"
+            }
+          ]
+        },
+        {
+          "id": "持久化缓存与压缩-18-2-3",
+          "tag": "持久化缓存与压缩",
+          "desc": "利用缓存策略减少重复下载，压缩策略减小产物体积",
+          "details": [
+            {
+              "id": "持久化缓存与压缩-18-2-3-d0",
+              "tag": "contenthash文件命名",
+              "desc": "[contenthash:8]根据文件内容生成哈希实现长期缓存"
+            },
+            {
+              "id": "持久化缓存与压缩-18-2-3-d1",
+              "tag": "vendor chunk策略",
+              "desc": "将第三方库单独打包利用变更频率低的特点实现长期缓存"
+            },
+            {
+              "id": "持久化缓存与压缩-18-2-3-d2",
+              "tag": "TerserPlugin压缩JS",
+              "desc": "支持多线程parallel和缓存cache"
+            },
+            {
+              "id": "持久化缓存与压缩-18-2-3-d3",
+              "tag": "CssMinimizerPlugin",
+              "desc": "生产环境压缩CSS去除冗余规则"
+            }
+          ]
+        },
+        {
+          "id": "构建分析与跳过解析-18-2-4",
+          "tag": "构建分析与跳过解析",
+          "desc": "通过分析工具定位瓶颈，跳过不必要的解析提升构建速度",
+          "details": [
+            {
+              "id": "构建分析与跳过解析-18-2-4-d0",
+              "tag": "webpack-bundle-analyzer",
+              "desc": "可视化展示产物体积分布（webpack-bundle-analyzer的详细说明：构建分析与跳过解析中关于webpack-bundle-analyzer的内容）"
+            },
+            {
+              "id": "构建分析与跳过解析-18-2-4-d1",
+              "tag": "Speed Measure Plugin",
+              "desc": "测量每个Plugin和Loader的耗时定位性能瓶颈"
+            },
+            {
+              "id": "构建分析与跳过解析-18-2-4-d2",
+              "tag": "noParse",
+              "desc": "指定不需要解析依赖的模块如jQuery/lodash跳过AST构建提速"
+            },
+            {
+              "id": "构建分析与跳过解析-18-2-4-d3",
+              "tag": "externals",
+              "desc": "将React/Vue等大型库排除出打包通过CDN引入"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "18-4-webpack构建原理-18-3",
+      "title": "18.4 Webpack构建原理",
+      "points": [
+        {
+          "id": "构建流程全生命周期-18-3-0",
+          "tag": "构建流程全生命周期",
+          "desc": "Webpack从启动到输出的完整构建流程",
+          "details": [
+            {
+              "id": "构建流程全生命周期-18-3-0-d0",
+              "tag": "初始化",
+              "desc": "读取webpack.config.js合并CLI参数创建Compiler对象注册所有Plugin"
+            },
+            {
+              "id": "构建流程全生命周期-18-3-0-d1",
+              "tag": "编译",
+              "desc": "调用compiler.run启动构建创建Compilation对象"
+            },
+            {
+              "id": "构建流程全生命周期-18-3-0-d2",
+              "tag": "构建模块",
+              "desc": "从entry出发调用module.build创建Module对象loader链式处理源文件"
+            },
+            {
+              "id": "构建流程全生命周期-18-3-0-d3",
+              "tag": "依赖分析",
+              "desc": "使用acorn将代码解析为AST遍历AST收集import/require依赖"
+            },
+            {
+              "id": "构建流程全生命周期-18-3-0-d4",
+              "tag": "递归构建",
+              "desc": "根据依赖图递归处理每个依赖模块直到所有依赖处理完毕"
+            },
+            {
+              "id": "构建流程全生命周期-18-3-0-d5",
+              "tag": "输出",
+              "desc": "根据output配置将chunk转化为bundle文件写入磁盘"
+            }
+          ]
+        },
+        {
+          "id": "loader与plugin执行机制-18-3-1",
+          "tag": "Loader与Plugin执行机制",
+          "desc": "Loader链式调用和Plugin钩子机制保证构建流程正确转换和扩展",
+          "details": [
+            {
+              "id": "loader与plugin执行机制-18-3-1-d0",
+              "tag": "Loader链式执行",
+              "desc": "从右向左依次执行如[style,css,postcss]先postcss再css最后style"
+            },
+            {
+              "id": "loader与plugin执行机制-18-3-1-d1",
+              "tag": "pitch阶段",
+              "desc": "从左向右执行每个loader的pitch方法，pitch返回值可跳过后续loader"
+            },
+            {
+              "id": "loader与plugin执行机制-18-3-1-d2",
+              "tag": "Compiler钩子",
+              "desc": "beforeRun/run/compile/afterCompile/emit/afterEmit贯穿整个构建生命周期"
+            },
+            {
+              "id": "loader与plugin执行机制-18-3-1-d3",
+              "tag": "Compilation钩子",
+              "desc": "buildModule/succeedModule/seal/optimizeChunks等一次编译内部"
+            },
+            {
+              "id": "loader与plugin执行机制-18-3-1-d4",
+              "tag": "tap/tapAsync/tapPromise三种注册方式分别对应同步/异步回调/Promise回调",
+              "desc": "tap同步执行立即返回；tapAsync接受callback参数异步通知完成；tapPromise返回Promise由Webpack等待resolve后继续构建流程"
+            }
+          ]
+        },
+        {
+          "id": "hmr模块热替换原理-18-3-2",
+          "tag": "HMR模块热替换原理",
+          "desc": "HMR实现在应用运行时无刷新替换模块提升开发体验",
+          "details": [
+            {
+              "id": "hmr模块热替换原理-18-3-2-d0",
+              "tag": "HMR流程",
+              "desc": "文件变更触发Webpack重新编译生成update chunk和manifest"
+            },
+            {
+              "id": "hmr模块热替换原理-18-3-2-d1",
+              "tag": "HMR Server",
+              "desc": "Webpack DevServer通过WebSocket将更新hash推送到浏览器"
+            },
+            {
+              "id": "hmr模块热替换原理-18-3-2-d2",
+              "tag": "HMR Runtime",
+              "desc": "浏览器端接收更新调用module.hot.accept应用补丁"
+            },
+            {
+              "id": "hmr模块热替换原理-18-3-2-d3",
+              "tag": "module.hot.accept指定接受更新的模块回调更新视图",
+              "desc": "accept绑定模块更新回调实现局部热替换；decline拒绝更新触发全页刷新；未accept的模块更新会冒泡至入口触发整页reload"
+            },
+            {
+              "id": "hmr模块热替换原理-18-3-2-d4",
+              "tag": "React/Vue热更新",
+              "desc": "react-hot-loader/vue-loader实现组件state保留的热更新"
+            }
+          ]
+        },
+        {
+          "id": "sourcemap配置-18-3-3",
+          "tag": "Source Map配置",
+          "desc": "Source Map将压缩混淆后的代码映射回原始源码方便调试",
+          "details": [
+            {
+              "id": "sourcemap配置-18-3-3-d0",
+              "tag": "devtool选项",
+              "desc": "eval/eval-source-map/source-map/cheap-source-map/cheap-module-source-map等"
+            },
+            {
+              "id": "sourcemap配置-18-3-3-d1",
+              "tag": "eval模式",
+              "desc": "构建最快但映射精度最低仅行级映射"
+            },
+            {
+              "id": "sourcemap配置-18-3-3-d2",
+              "tag": "source-map模式",
+              "desc": "生成独立.map文件映射精度最高含行列和原始源码"
+            },
+            {
+              "id": "sourcemap配置-18-3-3-d3",
+              "tag": "开发推荐",
+              "desc": "eval-cheap-module-source-map平衡速度和精度"
+            },
+            {
+              "id": "sourcemap配置-18-3-3-d4",
+              "tag": "生产推荐",
+              "desc": "source-map或hidden-source-map"
+            }
+          ]
+        },
+        {
+          "id": "ast解析与依赖图-18-3-4",
+          "tag": "AST解析与依赖图",
+          "desc": "Webpack使用AST分析提取模块依赖关系构建完整的依赖图",
+          "details": [
+            {
+              "id": "ast解析与依赖图-18-3-4-d0",
+              "tag": "acorn解析器",
+              "desc": "Webpack使用acorn将JS代码解析为ESTree标准AST语法树"
+            },
+            {
+              "id": "ast解析与依赖图-18-3-4-d1",
+              "tag": "AST遍历",
+              "desc": "遍历AST节点识别ImportDeclaration/CallExpression(require)等依赖声明"
+            },
+            {
+              "id": "ast解析与依赖图-18-3-4-d2",
+              "tag": "依赖收集",
+              "desc": "从AST节点提取依赖模块路径创建Dependence对象记录依赖关系"
+            },
+            {
+              "id": "ast解析与依赖图-18-3-4-d3",
+              "tag": "依赖图构建",
+              "desc": "从entry出发递归解析每个依赖模块形成完整的模块依赖有向图"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "18-5-webpack5与工程化-18-4",
+      "title": "18.5 Webpack5与工程化",
+      "points": [
+        {
+          "id": "modulefederation模块联邦-18-4-0",
+          "tag": "Module Federation模块联邦",
+          "desc": "Webpack5核心特性实现跨应用模块共享解决微前端架构下的代码复用",
+          "details": [
+            {
+              "id": "modulefederation模块联邦-18-4-0-d0",
+              "tag": "exposes配置",
+              "desc": "暴露本应用的模块供其他应用消费"
+            },
+            {
+              "id": "modulefederation模块联邦-18-4-0-d1",
+              "tag": "remotes配置",
+              "desc": "引用其他应用暴露的模块如remotes:{app1:'app1@http://cdn.com/app1/remoteEntry.js'}"
+            },
+            {
+              "id": "modulefederation模块联邦-18-4-0-d2",
+              "tag": "shared配置",
+              "desc": "声明共享依赖及版本要求如shared:{react:{singleton:true}}"
+            },
+            {
+              "id": "modulefederation模块联邦-18-4-0-d3",
+              "tag": "singleton约束",
+              "desc": "强制共享依赖只加载一个版本避免多版本冲突"
+            },
+            {
+              "id": "modulefederation模块联邦-18-4-0-d4",
+              "tag": "运行时加载",
+              "desc": "远程模块运行时通过HTTP加载不打包进本地bundle"
+            },
+            {
+              "id": "modulefederation模块联邦-18-4-0-d5",
+              "tag": "适用场景",
+              "desc": "微前端架构共享公共组件库、多团队独立开发共享业务模块"
+            }
+          ]
+        },
+        {
+          "id": "持久化缓存与assetmodules-18-4-1",
+          "tag": "持久化缓存与Asset Modules",
+          "desc": "Webpack5原生缓存机制和Asset Modules替代传统loader简化配置",
+          "details": [
+            {
+              "id": "持久化缓存与assetmodules-18-4-1-d0",
+              "tag": "filesystem缓存",
+              "desc": "cache:{type:'filesystem'}开启磁盘持久化缓存二次构建极快"
+            },
+            {
+              "id": "持久化缓存与assetmodules-18-4-1-d1",
+              "tag": "Asset Modules类型",
+              "desc": "asset/asset-inline/asset/resource自动处理替代file-loader/url-loader"
+            },
+            {
+              "id": "持久化缓存与assetmodules-18-4-1-d2",
+              "tag": "asset自动模式",
+              "desc": "根据文件大小自动选择inline或resource默认8KB以下inline"
+            }
+          ]
+        },
+        {
+          "id": "webpack5新特性-18-4-2",
+          "tag": "Webpack5新特性",
+          "desc": "Webpack5移除Node.js内置模块自动polyfill要求开发者显式处理兼容性",
+          "details": [
+            {
+              "id": "webpack5新特性-18-4-2-d0",
+              "tag": "topLevelAwait支持",
+              "desc": "模块顶层可直接使用await无需包裹async函数"
+            },
+            {
+              "id": "webpack5新特性-18-4-2-d1",
+              "tag": "Node polyfill移除",
+              "desc": "不再自动注入Node内置模块polyfill如crypto/buffer/path"
+            },
+            {
+              "id": "webpack5新特性-18-4-2-d2",
+              "tag": "resolve.fallback",
+              "desc": "配置Node模块的浏览器替代实现"
+            },
+            {
+              "id": "webpack5新特性-18-4-2-d3",
+              "tag": "真实contenthash",
+              "desc": "基于文件实际内容而非chunk构造顺序"
+            }
+          ]
+        },
+        {
+          "id": "webpack与vite-rollup对比-18-4-3",
+          "tag": "Webpack与Vite/Rollup对比",
+          "desc": "理解不同构建工具的设计理念和适用场景做出正确的技术选型",
+          "details": [
+            {
+              "id": "webpack与vite-rollup对比-18-4-3-d0",
+              "tag": "Vite开发冷启动",
+              "desc": "利用浏览器原生ESM无需打包极快启动，Webpack需全量打包启动慢"
+            },
+            {
+              "id": "webpack与vite-rollup对比-18-4-3-d1",
+              "tag": "Vite HMR速度",
+              "desc": "模块级热更新无需重新打包受影响模块"
+            },
+            {
+              "id": "webpack与vite-rollup对比-18-4-3-d2",
+              "tag": "Rollup优势",
+              "desc": "Tree Shaking更彻底输出更干净的ESM格式代码更适合打包npm库"
+            },
+            {
+              "id": "webpack与vite-rollup对比-18-4-3-d3",
+              "tag": "Webpack优势",
+              "desc": "功能最全面loader/plugin生态最庞大复杂应用和微前端首选"
+            },
+            {
+              "id": "webpack与vite-rollup对比-18-4-3-d4",
+              "tag": "选型建议",
+              "desc": "应用项目Webpack/Vite均可，库项目Rollup更优"
+            }
+          ]
+        },
+        {
+          "id": "ci-cd与monorepo工程化-18-4-4",
+          "tag": "CI/CD与Monorepo工程化",
+          "desc": "Webpack与现代工程化实践集成实现自动化构建",
+          "details": [
+            {
+              "id": "ci-cd与monorepo工程化-18-4-4-d0",
+              "tag": "CI集成",
+              "desc": "GitLab/Jenkins/GitHub Actions流水线中执行webpack build产出部署产物"
+            },
+            {
+              "id": "ci-cd与monorepo工程化-18-4-4-d1",
+              "tag": "构建缓存CI",
+              "desc": "cache.type:'filesystem'配合CI缓存目录加速流水线"
+            },
+            {
+              "id": "ci-cd与monorepo工程化-18-4-4-d2",
+              "tag": "webpack-merge策略",
+              "desc": "创建webpack.common.js基础配置各项目merge差异部分"
+            },
+            {
+              "id": "ci-cd与monorepo工程化-18-4-4-d3",
+              "tag": "Module Federation Monorepo",
+              "desc": "各子项目exposes/remotes互联共享组件库和业务模块"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

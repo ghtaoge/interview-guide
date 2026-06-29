@@ -1,0 +1,1593 @@
+{
+  "id": "mysql",
+  "title": "七、MySQL",
+  "tag": "MySQL",
+  "order": 7,
+  "icon": "🗄️",
+  "cssIndex": 6,
+  "subs": [
+    {
+      "id": "7-1-存储引擎与架构-7-0",
+      "title": "7.1 存储引擎与架构",
+      "points": [
+        {
+          "id": "innodbvsmyisam-7-0-0",
+          "tag": "InnoDB vs MyISAM",
+          "desc": "InnoDB(事务支持ACID/行级锁/外键约束/聚簇索引/崩溃恢复Redo Log,MySQL5.5+默认)。MyISAM(表级锁/不支持事务/读速度快/不支持外键/非聚簇索引,适合读多写少场景如日志报表)。Memory(哈希索引/数据在内存重启丢失/适合临时表临时缓存)。Archive(仅插入SELECT压缩高/适合日志归档存储审计)",
+          "details": [
+            {
+              "id": "innodbvsmyisam-7-0-0-d0",
+              "tag": "InnoDB",
+              "desc": "事务+行锁+聚簇+崩溃恢复(默认推荐)"
+            },
+            {
+              "id": "innodbvsmyisam-7-0-0-d1",
+              "tag": "MyISAM",
+              "desc": "表级锁+快速读取(读多写少/日志报表)"
+            },
+            {
+              "id": "innodbvsmyisam-7-0-0-d2",
+              "tag": "InnoDB支持",
+              "desc": "事务ACID/行级锁/外键/MVCC/崩溃恢复(redo log)OLTP首选"
+            },
+            {
+              "id": "innodbvsmyisam-7-0-0-d3",
+              "tag": "MyISAM支持",
+              "desc": "全文索引/表锁/压缩表/COUNT(*)极快存行数OLAP可选"
+            },
+            {
+              "id": "innodbvsmyisam-7-0-0-d4",
+              "tag": "选型",
+              "desc": "OLTP业务InnoDB/日志分析MyISAM→ES/全文ES替代"
+            },
+            {
+              "id": "innodbvsmyisam-7-0-0-d5",
+              "tag": "Memory引擎",
+              "desc": "数据存内存极速但重启丢失适合临时表缓存测试用"
+            }
+          ]
+        },
+        {
+          "id": "innodb体系架构详解-7-0-1",
+          "tag": "InnoDB体系架构详解",
+          "desc": "InnoDB的体系架构由三大核心模块构成：内存结构、磁盘结构和后台线程。内存结构主要包括Buffer Pool（缓冲池）、Log Buffer（日志缓冲）和Additional Memory Pool（额外内存池），其中Buffer Pool是最大的内存消费者，默认128MB，可通过innodb_buffer_pool_size调整，生产环境通常设置为物理内存的60%-80%。磁盘结构包括系统表空间（ibdata1）、独立表空间（ibd文件）、redo log文件（ib_logfile0/1）和临时表空间。后台线程分为Master Thread（主线程，负责脏页刷新、合并插入缓冲等核心调度）、Purge Thread（清理线程，回收无用的Undo Log页）、Page Cleaner Thread（脏页刷新线程减轻Master Thread负担）、Read Thread和Write Thread（IO线程默认各4个）。Master Thread在InnoDB 1.0.x后细化为每秒操作、每10秒操作和后台操作三个循环。理解InnoDB体系架构是排查性能问题和调优的基础。",
+          "details": [
+            {
+              "id": "innodb体系架构详解-7-0-1-d0",
+              "tag": "InnoDB体系架构",
+              "desc": "三大模块:内存(Buffer Pool/Log Buffer)+磁盘(ibdata1/ibd/redo)+后台线程(Master/Purge/Page Cleaner/IO)"
+            },
+            {
+              "id": "innodb体系架构详解-7-0-1-d1",
+              "tag": "Buffer Pool",
+              "desc": "最大内存消费者默认128MB,生产建议物理内存60%-80%,通过innodb_buffer_pool_size调整"
+            },
+            {
+              "id": "innodb体系架构详解-7-0-1-d2",
+              "tag": "Master Thread",
+              "desc": "主线程负责脏页刷新和合并插入缓冲,细化为每秒/每10秒/后台三个循环调度核心任务"
+            },
+            {
+              "id": "innodb体系架构详解-7-0-1-d3",
+              "tag": "Purge Thread",
+              "desc": "清理线程回收无用的Undo Log页,减轻Master Thread负担,可配置多个并行清理"
+            },
+            {
+              "id": "innodb体系架构详解-7-0-1-d4",
+              "tag": "后台线程",
+              "desc": "Master/Purge/Page Cleaner/IO线程(Read/Write默认各4个)协同完成刷新/清理/IO操作"
+            },
+            {
+              "id": "innodb体系架构详解-7-0-1-d5",
+              "tag": "ibdata1",
+              "desc": "系统表空间文件,存储双写区/变更缓冲/Undo Log(8.0前)等InnoDB内部数据"
+            },
+            {
+              "id": "innodb体系架构详解-7-0-1-d6",
+              "tag": "innodb_buffer_pool_size",
+              "desc": "控制Buffer Pool大小默认128MB,生产建议设物理内存60%-80%以最大化缓存命中率"
+            },
+            {
+              "id": "innodb体系架构详解-7-0-1-d7",
+              "tag": "脏页刷新",
+              "desc": "Page Cleaner Thread采用WAL原则异步刷脏页,innodb_io_capacity控制每秒刷盘上限"
+            }
+          ]
+        },
+        {
+          "id": "bufferpool深入-7-0-2",
+          "tag": "Buffer Pool深入",
+          "desc": "Buffer Pool是InnoDB最关键的内存结构，以页（默认16KB）为单位管理内存。LRU列表采用改进版LRU算法分为young区（热数据约63%）和old区（冷数据约37%），新读取的页先插入old区头部，在old区停留超过innodb_old_blocks_time（默认1000毫秒）后才可能移入young区，有效防止全表扫描将热数据挤出缓冲池。预读机制分为线性预读（innodb_read_ahead_threshold默认56）和随机预读（已默认关闭）。多实例通过innodb_buffer_pool_instances配置减少锁竞争。脏页刷新策略由Page Cleaner Thread负责采用WAL原则。innodb_io_capacity（默认200）和innodb_io_capacity_max（默认400）控制每秒刷脏页上限。当redo log空间不足时触发aggressive flushing可能导致性能抖动。",
+          "details": [
+            {
+              "id": "bufferpool深入-7-0-2-d0",
+              "tag": "Buffer Pool LRU",
+              "desc": "改进版LRU分young区(热63%)和old区(冷37%),新页先入old区防全表扫描挤出热数据"
+            },
+            {
+              "id": "bufferpool深入-7-0-2-d1",
+              "tag": "冷热分区",
+              "desc": "young区存热数据约63%,old区存冷数据约37%,新页先插old区头部防全表扫描污染热区"
+            },
+            {
+              "id": "bufferpool深入-7-0-2-d2",
+              "tag": "innodb_old_blocks_time",
+              "desc": "默认1000ms,页在old区停留超过此时间后才可能移入young区,防扫描污染"
+            },
+            {
+              "id": "bufferpool深入-7-0-2-d3",
+              "tag": "预读机制",
+              "desc": "线性预读threshold默认56页触发,随机预读已默认关闭,减少不必要的页加载开销"
+            },
+            {
+              "id": "bufferpool深入-7-0-2-d4",
+              "tag": "多实例",
+              "desc": "innodb_buffer_pool_instances配置多实例减少锁竞争,Buffer Pool>=1GB时建议设多实例"
+            },
+            {
+              "id": "bufferpool深入-7-0-2-d5",
+              "tag": "脏页刷新",
+              "desc": "WAL原则先写日志再写数据,redo log空间不足时触发aggressive flushing可能致性能抖动"
+            },
+            {
+              "id": "bufferpool深入-7-0-2-d6",
+              "tag": "innodb_io_capacity",
+              "desc": "默认200控制每秒刷脏页上限,innodb_io_capacity_max默认400为紧急刷盘上限"
+            },
+            {
+              "id": "bufferpool深入-7-0-2-d7",
+              "tag": "innodb_lru_scan_depth",
+              "desc": "控制每个LRU列表扫描深度决定刷脏页数量,过大增加CPU开销过小刷盘不足"
+            }
+          ]
+        },
+        {
+          "id": "changebuffer与adaptivehashindex-7-0-3",
+          "tag": "Change Buffer与Adaptive Hash Index",
+          "desc": "Change Buffer是Buffer Pool中的特殊区域用于缓存对非唯一二级索引的插入、删除和更新操作减少随机IO。由innodb_change_buffer_max_size控制最大比例（默认25%最大50%）。合并发生在辅助索引页被读取时、Master Thread定期合并、数据库关闭时。Adaptive Hash Index（AHI）监控对Buffer Pool中页的访问模式，当频繁以相同查询模式访问时自动构建哈希索引将B+树查找优化为O(1)。AHI由innodb_adaptive_hash_index控制（默认开启），高并发写入场景下AHI维护开销可能成为瓶颈。MySQL 8.0后AHI分区数由innodb_adaptive_hash_index_parts控制（默认8）减少锁争用。",
+          "details": [
+            {
+              "id": "changebuffer与adaptivehashindex-7-0-3-d0",
+              "tag": "Change Buffer",
+              "desc": "Buffer Pool中特殊区域缓存非唯一二级索引的DML操作减少随机IO,合并时机为页读取/Master定期/关闭时"
+            },
+            {
+              "id": "changebuffer与adaptivehashindex-7-0-3-d1",
+              "tag": "Insert Buffer",
+              "desc": "Change Buffer前身,仅缓存INSERT操作到非唯一二级索引,5.5后扩展为Change Buffer支持INSERT/DELETE/UPDATE"
+            },
+            {
+              "id": "changebuffer与adaptivehashindex-7-0-3-d2",
+              "tag": "innodb_change_buffer_max_size",
+              "desc": "默认25%最大50%,控制Change Buffer占Buffer Pool的比例,写多场景可适当调高"
+            },
+            {
+              "id": "changebuffer与adaptivehashindex-7-0-3-d3",
+              "tag": "Adaptive Hash Index",
+              "desc": "监控访问模式自动构建哈希索引将B+树查找优化为O(1),高并发写入场景维护开销可能成瓶颈"
+            },
+            {
+              "id": "changebuffer与adaptivehashindex-7-0-3-d4",
+              "tag": "AHI",
+              "desc": "自适应哈希索引,频繁相同模式访问时自动为热点页建哈希索引,8.0后分区数默认8减少锁争用"
+            },
+            {
+              "id": "changebuffer与adaptivehashindex-7-0-3-d5",
+              "tag": "innodb_adaptive_hash_index",
+              "desc": "默认开启控制AHI,高并发写场景建议关闭避免维护开销瓶颈,可通过innodb_adaptive_hash_index_parts分区"
+            },
+            {
+              "id": "changebuffer与adaptivehashindex-7-0-3-d6",
+              "tag": "二级索引优化",
+              "desc": "非唯一二级索引DML通过Change Buffer合并减少随机IO,AHI将热点等值查找优化为O(1)"
+            },
+            {
+              "id": "changebuffer与adaptivehashindex-7-0-3-d7",
+              "tag": "随机IO减少",
+              "desc": "Change Buffer将非唯一二级索引DML缓存在内存合并,页读取时批量merge将随机IO转顺序IO"
+            }
+          ]
+        },
+        {
+          "id": "doublewrite双写缓冲-7-0-4",
+          "tag": "Doublewrite双写缓冲",
+          "desc": "Doublewrite是InnoDB防止页撕裂（partial page write）的核心机制。磁盘IO最小单位是扇区（512字节）而InnoDB页16KB，写入过程中崩溃可能出现页只写了一部分这就是页撕裂。redo log只记录变更非完整内容无法恢复不完整页。Doublewrite流程：先以1MB为单位连续写入doublewrite区域（ibdata1中固定2MB区域）再写入实际位置。如果崩溃导致页撕裂恢复时从doublewrite找到完整副本先恢复再重做。Doublewrite带来约5-10%写入性能开销但换来数据安全。MySQL 8.0.20后支持更灵活的双写配置。",
+          "details": [
+            {
+              "id": "doublewrite双写缓冲-7-0-4-d0",
+              "tag": "Doublewrite",
+              "desc": "防页撕裂核心机制,先连续写入2MB双写区再写实际位置,崩溃时从双写区恢复完整页副本"
+            },
+            {
+              "id": "doublewrite双写缓冲-7-0-4-d1",
+              "tag": "双写缓冲",
+              "desc": "ibdata1中固定2MB区域,以1MB为单位连续写入两份,保证16KB页完整防止partial write"
+            },
+            {
+              "id": "doublewrite双写缓冲-7-0-4-d2",
+              "tag": "页撕裂",
+              "desc": "16KB页写入过程中崩溃只写部分扇区(512字节最小IO单位),redo log无法恢复不完整页需双写"
+            },
+            {
+              "id": "doublewrite双写缓冲-7-0-4-d3",
+              "tag": "partial page write",
+              "desc": "磁盘扇区512字节最小IO单位,16KB页写入中断只完成部分扇区就是partial page write"
+            },
+            {
+              "id": "doublewrite双写缓冲-7-0-4-d4",
+              "tag": "ibdata1",
+              "desc": "系统表空间含2MB双写区,InnoDB内部数据变更缓冲/Undo日志(8.0前)也存储于此"
+            },
+            {
+              "id": "doublewrite双写缓冲-7-0-4-d5",
+              "tag": "innodb_doublewrite",
+              "desc": "默认开启控制双写机制,SSD+文件系统保证原子写时可关闭节省5-10%写入开销"
+            },
+            {
+              "id": "doublewrite双写缓冲-7-0-4-d6",
+              "tag": "2MB双写区",
+              "desc": "ibdata1中固定2MB连续区域,以1MB为单位写两份保证页完整性,崩溃恢复时查找完整副本"
+            },
+            {
+              "id": "doublewrite双写缓冲-7-0-4-d7",
+              "tag": "崩溃",
+              "desc": "崩溃恢复:先从双写区找完整页副本恢复,再从checkpoint扫描redo重做+undo回滚未提交事务"
+            }
+          ]
+        },
+        {
+          "id": "innodb数据存储形式-7-0-5",
+          "tag": "InnoDB数据存储形式",
+          "desc": "InnoDB以页为基本存储单位默认16KB。页结构：File Header(38字节)/Page Header(56字节)/Infimum+Supremum/User Records/Free Space/Page Directory/File Trailer(8字节校验)。行格式：Compact（定长列头部附近变长列尾部逆序7位编码长度）；Dynamic（MySQL 5.7后默认列超768字节只存20字节指针指向溢出页）；Redundant（老格式）；Compressed（zlib压缩）。行溢出：行总长超约8KB时最长变长列推到溢出页行中只保留前768字节（Compact）或20字节指针（Dynamic）。",
+          "details": [
+            {
+              "id": "innodb数据存储形式-7-0-5-d0",
+              "tag": "InnoDB页结构",
+              "desc": "File Header(38B)/Page Header(56B)/Infimum+Supremum/User Records/Free Space/Page Directory/File Trailer(8B校验)"
+            },
+            {
+              "id": "innodb数据存储形式-7-0-5-d1",
+              "tag": "16KB页",
+              "desc": "InnoDB默认页大小16KB,由innodb_page_size控制,可设4K/8K/16K/32K/64K但需重新初始化"
+            },
+            {
+              "id": "innodb数据存储形式-7-0-5-d2",
+              "tag": "行格式",
+              "desc": "四种格式:Compact(变长7位编码)/Dynamic(5.7默认>768字节只存指针)/Redundant(老)/Compressed(zlib压缩)"
+            },
+            {
+              "id": "innodb数据存储形式-7-0-5-d3",
+              "tag": "Compact",
+              "desc": "定长列存头部附近变长列存尾部逆序7位编码长度,超768字节列推溢出页保留前768字节"
+            },
+            {
+              "id": "innodb数据存储形式-7-0-5-d4",
+              "tag": "Dynamic",
+              "desc": "MySQL5.7后默认,列超768字节只存20字节指针指向溢出页,不保留前768字节减少页内空间占用"
+            },
+            {
+              "id": "innodb数据存储形式-7-0-5-d5",
+              "tag": "溢出页",
+              "desc": "行总长超约8KB时最长变长列推到溢出页,Compact保留前768字节,Dynamic只保留20字节指针"
+            },
+            {
+              "id": "innodb数据存储形式-7-0-5-d6",
+              "tag": "Page Directory",
+              "desc": "页内稀疏目录存记录指针,二分查找定位槽后线性扫描少量记录,加速页内记录查找"
+            },
+            {
+              "id": "innodb数据存储形式-7-0-5-d7",
+              "tag": "innodb_page_size",
+              "desc": "默认16KB可设4K/8K/32K/64K,修改需重新初始化数据库,影响B+树高度和行存储密度"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "7-2-日志系统-7-1",
+      "title": "7.2 日志系统",
+      "points": [
+        {
+          "id": "redolog深入-7-1-0",
+          "tag": "Redo Log深入",
+          "desc": "Redo Log是InnoDB实现WAL机制的核心保证事务持久性。WAL原则先写日志再写数据。Redo Log由固定大小文件组成（默认2个ib_logfile0/1每个48MB）采用循环写入。LSN（Log Sequence Number）是核心编号机制单调递增，崩溃恢复时从checkpoint_lsn开始扫描重做。innodb_flush_log_at_trx_commit控制刷盘策略：0=每秒刷盘最多丢1秒数据；1=每次提交刷盘最安全不丢数据；2=每次提交写OS缓存。生产环境核心业务推荐1非核心可设2。崩溃恢复流程：从checkpoint扫描redo重做+undo回滚未提交事务。MySQL 8.0后支持动态调整innodb_log_file_size无需重启。",
+          "details": [
+            {
+              "id": "redolog深入-7-1-0-d0",
+              "tag": "Redo Log",
+              "desc": "InnoDB WAL核心保证持久性,固定大小文件ib_logfile0/1循环写入,崩溃时从checkpoint扫描重做"
+            },
+            {
+              "id": "redolog深入-7-1-0-d1",
+              "tag": "WAL机制",
+              "desc": "先写日志再写数据(Write-Ahead Logging),保证已提交事务修改不丢失,减少随机写为顺序写"
+            },
+            {
+              "id": "redolog深入-7-1-0-d2",
+              "tag": "LSN",
+              "desc": "Log Sequence Number单调递增编号,崩溃恢复从checkpoint_lsn开始扫描重做redo log记录"
+            },
+            {
+              "id": "redolog深入-7-1-0-d3",
+              "tag": "循环写入",
+              "desc": "redo log由固定大小文件组成默认2个各48MB,写满后循环覆盖,checkpoint推进可覆盖旧数据"
+            },
+            {
+              "id": "redolog深入-7-1-0-d4",
+              "tag": "innodb_flush_log_at_trx_commit",
+              "desc": "0=每秒刷盘最多丢1秒,1=每次提交fsync最安全,2=每次写OS缓存,生产核心业务推荐1"
+            },
+            {
+              "id": "redolog深入-7-1-0-d5",
+              "tag": "ib_logfile",
+              "desc": "默认2个文件ib_logfile0/1各48MB,MySQL8.0后支持动态调整innodb_log_file_size无需重启"
+            },
+            {
+              "id": "redolog深入-7-1-0-d6",
+              "tag": "checkpoint",
+              "desc": "标记redo log已持久化位置,崩溃恢复从checkpoint_lsn开始扫描,推进checkpoint允许覆盖旧redo"
+            },
+            {
+              "id": "redolog深入-7-1-0-d7",
+              "tag": "崩溃",
+              "desc": "从checkpoint扫描redo重做已提交事务+undo回滚未提交事务,prepare状态事务检查binlog完整性决定提交或回滚"
+            }
+          ]
+        },
+        {
+          "id": "undolog深入-7-1-1",
+          "tag": "Undo Log深入",
+          "desc": "Undo Log是InnoDB实现事务原子性和MVCC的基础。记录数据修改前的旧值回滚时逆向恢复。分为insert undo log（INSERT回滚事务提交后可删除）和update undo log（UPDATE/DELETE回滚事务提交后不能立即删除其他事务可能需要MVCC读取旧版本）。版本链：每行隐藏列trx_id+roll_pointer串联形成从最新到最老的版本链。Purge Thread负责清理不再被活跃事务需要的undo log。MySQL 8.0后undo日志默认存储在独立undo表空间。快照读通过ReadView沿版本链遍历undo log找到可见版本这是MVCC核心机制。",
+          "details": [
+            {
+              "id": "undolog深入-7-1-1-d0",
+              "tag": "Undo Log",
+              "desc": "实现原子性和MVCC,记录修改前旧值回滚时逆向恢复,分insert undo(可删)和update undo(需保留供MVCC)"
+            },
+            {
+              "id": "undolog深入-7-1-1-d1",
+              "tag": "insert undo",
+              "desc": "INSERT产生的undo日志,事务提交后可立即删除,因INSERT数据仅本事务可见无MVCC需求"
+            },
+            {
+              "id": "undolog深入-7-1-1-d2",
+              "tag": "update undo",
+              "desc": "UPDATE/DELETE产生的undo日志,事务提交后不能立即删除,其他事务可能需MVCC读取旧版本"
+            },
+            {
+              "id": "undolog深入-7-1-1-d3",
+              "tag": "版本链",
+              "desc": "每行trx_id+roll_pointer串联从最新到最老的版本链,MVCC沿版本链遍历找到对当前事务可见的版本"
+            },
+            {
+              "id": "undolog深入-7-1-1-d4",
+              "tag": "roll_pointer",
+              "desc": "隐藏列指向该行上一版本的undo log记录,串联形成版本链,是MVCC遍历历史版本的关键指针"
+            },
+            {
+              "id": "undolog深入-7-1-1-d5",
+              "tag": "trx_id",
+              "desc": "隐藏列记录最后修改该行的事务ID,ReadView根据trx_id判断该版本对当前事务是否可见"
+            },
+            {
+              "id": "undolog深入-7-1-1-d6",
+              "tag": "Purge Thread",
+              "desc": "清理不再被活跃事务需要的undo log,释放空间避免历史版本无限积累,可配置多个并行清理"
+            },
+            {
+              "id": "undolog深入-7-1-1-d7",
+              "tag": "MVCC",
+              "desc": "多版本并发控制核心机制,快照读通过ReadView沿版本链遍历undo log找到可见版本,无锁读不阻塞写"
+            }
+          ]
+        },
+        {
+          "id": "binlog深入-7-1-2",
+          "tag": "Binlog深入",
+          "desc": "Binlog是MySQL Server层日志记录所有数据修改操作主要用于主从复制和数据恢复。与redo log区别：redo log是InnoDB引擎层物理日志binlog是Server层逻辑日志；redo log循环写会覆盖binlog追加写不覆盖；redo log事务执行中持续写入binlog提交时一次性写入。Binlog三种格式：STATEMENT（记录SQL节省空间但某些函数主从不一致）；ROW（记录行变更最安全但空间大）；MIXED（默认STATEMENT遇到不确定函数切换ROW）。GTID是MySQL 5.6后全局事务标识简化主从管理。sync_binlog控制刷盘策略。两阶段提交保证redo和binlog一致性。",
+          "details": [
+            {
+              "id": "binlog深入-7-1-2-d0",
+              "tag": "Binlog",
+              "desc": "Server层逻辑日志追加写不覆盖,主从复制和数据恢复核心,三种格式STATEMENT/ROW/MIXED"
+            },
+            {
+              "id": "binlog深入-7-1-2-d1",
+              "tag": "statement格式",
+              "desc": "记录原始SQL语句节省空间,但NOW()/UUID()等不确定函数导致主从不一致,建议慎用"
+            },
+            {
+              "id": "binlog深入-7-1-2-d2",
+              "tag": "row格式",
+              "desc": "记录行变更内容最安全保证主从一致,但空间大尤其UPDATE全行时记录前后完整行数据"
+            },
+            {
+              "id": "binlog深入-7-1-2-d3",
+              "tag": "mixed格式",
+              "desc": "默认STATEMENT遇到不确定函数NOW()/UUID()自动切换ROW,兼顾空间和安全但判断逻辑有边界"
+            },
+            {
+              "id": "binlog深入-7-1-2-d4",
+              "tag": "GTID",
+              "desc": "全局事务标识(server_uuid:transaction_id)简化主从管理,从库自动定位复制位置无需手动指定binlog文件偏移"
+            },
+            {
+              "id": "binlog深入-7-1-2-d5",
+              "tag": "两阶段提交",
+              "desc": "保证redo和binlog一致性:先prepare(redo持久化)再commit(写binlog后标记committed),崩溃时检查binlog完整性决定提交或回滚"
+            },
+            {
+              "id": "binlog深入-7-1-2-d6",
+              "tag": "sync_binlog",
+              "desc": "控制binlog刷盘策略,0=由OS决定,1=每次提交fsync最安全,N=每N次提交fsync,生产推荐1"
+            },
+            {
+              "id": "binlog深入-7-1-2-d7",
+              "tag": "主从",
+              "desc": "主库写binlog从库IO线程拉取写入relay log,SQL线程回放执行,GTID简化断点续传和主从切换"
+            }
+          ]
+        },
+        {
+          "id": "三种日志协作机制-7-1-3",
+          "tag": "三种日志协作机制",
+          "desc": "MySQL事务提交过程中redo/undo/binlog三者密切协作保证原子性持久性和主从一致性。完整流程：①执行SQL时写入redo log buffer和undo log②第一阶段prepare：InnoDB刷新redo log标记事务prepare③第二阶段commit：写入binlog后InnoDB标记committed。崩溃恢复协作：遇到prepare状态事务检查binlog完整性决定commit或rollback。如果innodb_flush_log_at_trx_commit=1且sync_binlog=1绝对不丢数据但每次提交2次fsync性能差，可使用组提交（Binary Log Group Commit）优化——多个事务binlog合并一次fsync，MySQL 5.6后通过BLGC三阶段大幅提升并发性能。",
+          "details": [
+            {
+              "id": "三种日志协作机制-7-1-3-d0",
+              "tag": "redo undo binlog协作",
+              "desc": "事务提交:先写redo和undo→prepare阶段刷redo→commit阶段写binlog后标记committed,三者协作保ACID"
+            },
+            {
+              "id": "三种日志协作机制-7-1-3-d1",
+              "tag": "两阶段提交",
+              "desc": "prepare阶段InnoDB刷redo标记事务prepare,commit阶段写binlog后InnoDB标记committed,保证redo与binlog一致"
+            },
+            {
+              "id": "三种日志协作机制-7-1-3-d2",
+              "tag": "崩溃",
+              "desc": "遇到prepare状态事务检查binlog完整性决定commit或rollback,binlog完整则提交否则回滚"
+            },
+            {
+              "id": "三种日志协作机制-7-1-3-d3",
+              "tag": "prepare状态",
+              "desc": "事务第一阶段:InnoDB已刷redo log持久化但binlog尚未写入,崩溃恢复时需检查binlog完整性决定提交或回滚"
+            },
+            {
+              "id": "三种日志协作机制-7-1-3-d4",
+              "tag": "组提交",
+              "desc": "多个事务binlog合并一次fsync减少IO次数,MySQL5.6后BLGC三阶段(flush/sync/commit)大幅提升并发提交性能"
+            },
+            {
+              "id": "三种日志协作机制-7-1-3-d5",
+              "tag": "BLGC",
+              "desc": "Binary Log Group Commit三阶段:flush阶段写binlog到缓存,sync阶段批量fsync,commit阶段InnoDB提交,减少fsync次数"
+            },
+            {
+              "id": "三种日志协作机制-7-1-3-d6",
+              "tag": "fsync",
+              "desc": "系统调用强制将OS缓存数据刷到磁盘,innodb_flush_log_at_trx_commit=1和sync_binlog=1每次提交都fsync"
+            },
+            {
+              "id": "三种日志协作机制-7-1-3-d7",
+              "tag": "事务一致性",
+              "desc": "两阶段提交保证redo与binlog一致,崩溃恢复时prepare事务根据binlog完整性决定提交或回滚,确保主从数据一致"
+            }
+          ]
+        },
+        {
+          "id": "logbuffer与刷盘时机-7-1-4",
+          "tag": "Log Buffer与刷盘时机",
+          "desc": "Log Buffer是InnoDB内存中暂存redo log记录的缓冲区，大小由innodb_log_buffer_size控制（默认16MB）。redo log记录产生时机：事务执行中每条SQL修改数据页时产生不是等提交才产生。刷盘时机三种：①Master Thread每秒刷新②事务提交时根据innodb_flush_log_at_trx_commit③Log Buffer使用超过一半时主动刷新。=0最多丢1秒=1不丢数据=2MySQL崩溃不丢OS崩溃可能丢1秒。生产环境推荐核心=1非核心=2。innodb_flush_method推荐O_DIRECT绕过OS缓存。MySQL 8.0.30后支持动态调整redo log空间大小。",
+          "details": [
+            {
+              "id": "logbuffer与刷盘时机-7-1-4-d0",
+              "tag": "Log Buffer",
+              "desc": "InnoDB内存暂存redo log缓冲区,默认16MB由innodb_log_buffer_size控制,三种时机刷盘"
+            },
+            {
+              "id": "logbuffer与刷盘时机-7-1-4-d1",
+              "tag": "innodb_log_buffer_size",
+              "desc": "默认16MB控制Log Buffer大小,大事务或大量更新场景建议适当增大避免频繁刷盘"
+            },
+            {
+              "id": "logbuffer与刷盘时机-7-1-4-d2",
+              "tag": "innodb_flush_log_at_trx_commit",
+              "desc": "0=每秒刷盘最多丢1秒,1=每次提交fsync不丢数据,2=每次写OS缓存MySQL崩溃不丢OS崩溃可能丢"
+            },
+            {
+              "id": "logbuffer与刷盘时机-7-1-4-d3",
+              "tag": "刷盘时机",
+              "desc": "三种:Master Thread每秒刷新,事务提交按innodb_flush_log_at_trx_commit,Log Buffer超一半主动刷新"
+            },
+            {
+              "id": "logbuffer与刷盘时机-7-1-4-d4",
+              "tag": "fsync",
+              "desc": "将redo log从OS缓存强制刷到磁盘的系统调用,innodb_flush_log_at_trx_commit=1每次提交都执行fsync"
+            },
+            {
+              "id": "logbuffer与刷盘时机-7-1-4-d5",
+              "tag": "innodb_flush_method",
+              "desc": "控制InnoDB刷盘方式,推荐O_DIRECT绕过OS页缓存避免双重缓存浪费内存"
+            },
+            {
+              "id": "logbuffer与刷盘时机-7-1-4-d6",
+              "tag": "O_DIRECT",
+              "desc": "绕过OS页缓存直接读写磁盘,避免Buffer Pool和OS缓存双重缓存浪费内存,生产环境推荐设置"
+            },
+            {
+              "id": "logbuffer与刷盘时机-7-1-4-d7",
+              "tag": "Master Thread",
+              "desc": "每秒刷新Log Buffer到redo log文件,是redo log刷盘的三个时机之一,保证未提交事务的redo也能定期持久化"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "7-3-索引结构-7-2",
+      "title": "7.3 索引结构",
+      "points": [
+        {
+          "id": "b树深入-7-2-0",
+          "tag": "B+树深入",
+          "desc": "InnoDB使用B+树作为索引存储结构所有数据在叶子节点通过双向链表连接。页分裂：插入导致页满时分裂为两页约50%数据移到新页可能级联分裂。页合并：删除导致页使用率低于MERGE_THRESHOLD（默认50%）时与相邻页合并。三层B+树存2000万行推导：非叶子节点键+指针约14字节16KB页存1170个指针；叶子存完整行假设1KB则16行；三层=1170x1170x16约2190万。索引高度：二层约18720行三层2000万级。根节点常驻Buffer Pool。理解B+树深度对判断索引健康（不超过3层）和估算IO次数至关重要。",
+          "details": [
+            {
+              "id": "b树深入-7-2-0-d0",
+              "tag": "B+树",
+              "desc": "InnoDB索引存储结构,叶子节点存数据双向链表连接,非叶子存键+指针,三层可存约2000万行"
+            },
+            {
+              "id": "b树深入-7-2-0-d1",
+              "tag": "页分裂",
+              "desc": "插入导致页满时分裂为两页约50%数据移到新页,可能级联分裂影响性能,建议自增主键减少分裂"
+            },
+            {
+              "id": "b树深入-7-2-0-d2",
+              "tag": "页合并",
+              "desc": "删除导致页使用率低于MERGE_THRESHOLD(默认50%)时与相邻页合并,减少空间碎片"
+            },
+            {
+              "id": "b树深入-7-2-0-d3",
+              "tag": "MERGE_THRESHOLD",
+              "desc": "默认50%控制页合并阈值,页使用率低于此值时与相邻页合并减少碎片,可表级自定义设置"
+            },
+            {
+              "id": "b树深入-7-2-0-d4",
+              "tag": "三层2000万行",
+              "desc": "非叶节点存1170指针(16KB/14B),叶节点存16行(1KB/行),1170*1170*16约2190万行三层B+树"
+            },
+            {
+              "id": "b树深入-7-2-0-d5",
+              "tag": "索引高度",
+              "desc": "二层约18720行三层2000万级,高度不超过3层为健康,根节点常驻Buffer Pool减少IO次数"
+            },
+            {
+              "id": "b树深入-7-2-0-d6",
+              "tag": "双向链表",
+              "desc": "叶子节点间双向链表连接支持范围扫描顺序读,无需回父节点跳转,是B+树范围查询高效的关键"
+            },
+            {
+              "id": "b树深入-7-2-0-d7",
+              "tag": "填充因子",
+              "desc": "控制B+树页预留空间比例,插入有序时高填充因子减少页数,随机插入低填充因子减少分裂"
+            }
+          ]
+        },
+        {
+          "id": "聚簇索引与二级索引深入-7-2-1",
+          "tag": "聚簇索引与二级索引深入",
+          "desc": "InnoDB是索引组织表必须有且仅有一个聚簇索引叶子节点存完整行数据。二级索引叶子节点存键值+主键值，查找先在二级索引找主键再用主键回聚簇索引查完整行称为回表。回表代价每次是随机IO。索引跳跃扫描（Index Skip Scan MySQL 8.0.13）当联合索引前缀列少量不同值时即使查询不含前缀列也能跳跃扫描利用索引。适用条件：前缀列不同值少、前缀不在条件中、后缀列在条件中。",
+          "details": [
+            {
+              "id": "聚簇索引与二级索引深入-7-2-1-d0",
+              "tag": "聚簇索引",
+              "desc": "InnoDB索引组织表必有且仅一个聚簇索引,叶子节点存完整行数据,主键默认为聚簇索引"
+            },
+            {
+              "id": "聚簇索引与二级索引深入-7-2-1-d1",
+              "tag": "索引组织表",
+              "desc": "InnoDB按聚簇索引组织存储数据,叶子节点即行数据本身,非MyISAM的堆组织表"
+            },
+            {
+              "id": "聚簇索引与二级索引深入-7-2-1-d2",
+              "tag": "二级索引",
+              "desc": "非主键索引叶子节点存键值+主键值,查找需先查二级索引获取主键再回聚簇索引查完整行"
+            },
+            {
+              "id": "聚簇索引与二级索引深入-7-2-1-d3",
+              "tag": "回表",
+              "desc": "二级索引查找先获取主键值再到聚簇索引查完整行,每次回表是随机IO代价高,覆盖索引可避免回表"
+            },
+            {
+              "id": "聚簇索引与二级索引深入-7-2-1-d4",
+              "tag": "Bookmark Lookup",
+              "desc": "即回表操作,二级索引查到主键后回到聚簇索引查找完整行数据,每次是随机IO"
+            },
+            {
+              "id": "聚簇索引与二级索引深入-7-2-1-d5",
+              "tag": "索引跳跃扫描",
+              "desc": "MySQL8.0.13新特性,联合索引前缀列不同值少时即使WHERE不含前缀列也能跳跃扫描利用索引"
+            },
+            {
+              "id": "聚簇索引与二级索引深入-7-2-1-d6",
+              "tag": "Index Skip Scan",
+              "desc": "MySQL8.0.13引入,联合索引前缀列少量不同值时跳跃扫描利用索引,适用于前缀列不在WHERE条件中的查询"
+            },
+            {
+              "id": "聚簇索引与二级索引深入-7-2-1-d7",
+              "tag": "row_id",
+              "desc": "无显式主键时InnoDB自动生成6字节隐藏row_id作聚簇索引,有主键或非空唯一索引时不生成"
+            }
+          ]
+        },
+        {
+          "id": "联合索引与最左前缀-7-2-2",
+          "tag": "联合索引与最左前缀",
+          "desc": "联合索引索引键按定义列顺序排列B+树先按a排序a相同再按b排序。最左前缀匹配：WHERE a=1可完整使用WHERE b=2缺少最左列不能使用（除非Index Skip Scan）。范围查询中断最左前缀：WHERE a>1 AND b=2中a范围导致b无法利用索引排序。列顺序设计原则：选择性高列在前等值列在前范围列在后。MySQL 8.0.13 Index Skip Scan前缀列不同值少时生效。最左前缀本质是B+树排序规则——跳过前缀列就无法利用有序性。",
+          "details": [
+            {
+              "id": "联合索引与最左前缀-7-2-2-d0",
+              "tag": "联合索引",
+              "desc": "多列组合索引B+树按定义列顺序排列先按a排序a相同再按b,遵循最左前缀匹配规则"
+            },
+            {
+              "id": "联合索引与最左前缀-7-2-2-d1",
+              "tag": "最左前缀",
+              "desc": "联合索引匹配必须从最左列开始,WHERE a=1可用完整索引WHERE b=2缺少最左列不能使用(除非Skip Scan)"
+            },
+            {
+              "id": "联合索引与最左前缀-7-2-2-d2",
+              "tag": "Index Skip Scan",
+              "desc": "联合索引前缀列不同值少时即使查询不含前缀列也能跳跃利用索引,MySQL8.0.13引入"
+            },
+            {
+              "id": "联合索引与最左前缀-7-2-2-d3",
+              "tag": "范围查询中断",
+              "desc": "WHERE a>1 AND b=2中a范围查询导致后续b列无法利用索引排序,因范围后B+树不再保证有序"
+            },
+            {
+              "id": "联合索引与最左前缀-7-2-2-d4",
+              "tag": "列顺序设计",
+              "desc": "选择性高列在前等值列在前范围列在后,高频查询覆盖列优先,减少回表和页分裂"
+            },
+            {
+              "id": "联合索引与最左前缀-7-2-2-d5",
+              "tag": "Cardinality",
+              "desc": "索引不同值数量估算,选择性=Cardinality/总行数越接近1索引越有效,InnoDB随机采样8个页估算"
+            },
+            {
+              "id": "联合索引与最左前缀-7-2-2-d6",
+              "tag": "optimizer_switch",
+              "desc": "控制优化器行为开关如skip_scan/icp/mrr等,可按需开启关闭特定优化策略"
+            },
+            {
+              "id": "联合索引与最左前缀-7-2-2-d7",
+              "tag": "B+树排序",
+              "desc": "联合索引按定义列顺序排列B+树,先按前缀列排序相同再按后续列,跳过前缀列无法利用有序性"
+            }
+          ]
+        },
+        {
+          "id": "索引下推icp详解-7-2-3",
+          "tag": "索引下推ICP详解",
+          "desc": "索引下推（ICP MySQL 5.6+）将Server层索引条件过滤下推到引擎层在索引扫描时执行减少回表次数。无ICP：引擎扫描满足最左前缀记录→逐条回表→Server过滤。有ICP：引擎在索引中根据剩余列条件过滤→只有满足的才回表。适用：二级索引、WHERE含索引列和非索引列、MySQL 5.6+。Explain Using index condition表示ICP生效。收益：联合索引(a,b) WHERE a=1 AND b LIKE '%xyz' AND c=5，无ICP 1000行全回表，有ICP引擎用b过滤只有10行回表节省990次IO。",
+          "details": [
+            {
+              "id": "索引下推icp详解-7-2-3-d0",
+              "tag": "索引下推",
+              "desc": "MySQL5.6+将Server层索引条件过滤下推到引擎层在索引扫描时执行,减少回表次数提升性能"
+            },
+            {
+              "id": "索引下推icp详解-7-2-3-d1",
+              "tag": "ICP",
+              "desc": "Index Condition Pushdown索引下推,引擎层在索引中根据剩余列条件过滤只有满足的才回表,减少IO"
+            },
+            {
+              "id": "索引下推icp详解-7-2-3-d2",
+              "tag": "Using index condition",
+              "desc": "Explain Extra字段表示ICP生效,引擎层在索引中执行剩余条件过滤减少不必要的回表IO"
+            },
+            {
+              "id": "索引下推icp详解-7-2-3-d3",
+              "tag": "回表次数减少",
+              "desc": "ICP引擎层在索引中根据剩余列条件过滤只有满足的才回表,无ICP全回表有ICP大幅减少IO次数"
+            },
+            {
+              "id": "索引下推icp详解-7-2-3-d4",
+              "tag": "MySQL 5.6",
+              "desc": "引入ICP索引下推优化,5.6+版本支持将索引条件过滤下推到引擎层减少回表"
+            },
+            {
+              "id": "索引下推icp详解-7-2-3-d5",
+              "tag": "引擎层过滤",
+              "desc": "ICP将Server层索引条件过滤下推到InnoDB引擎层,在索引扫描时直接执行过滤减少回表"
+            },
+            {
+              "id": "索引下推icp详解-7-2-3-d6",
+              "tag": "最左前缀剩余列",
+              "desc": "满足最左前缀后索引中剩余列的条件可被ICP在引擎层过滤,无需回表后再由Server层判断"
+            },
+            {
+              "id": "索引下推icp详解-7-2-3-d7",
+              "tag": "二级索引优化",
+              "desc": "ICP对二级索引生效,将WHERE中索引列的非最左前缀条件在引擎层过滤减少回表次数"
+            }
+          ]
+        },
+        {
+          "id": "覆盖索引与索引优化-7-2-4",
+          "tag": "覆盖索引与索引优化",
+          "desc": "覆盖索引查询所需所有列都在索引中无需回表Explain显示Using index。索引选择性=Cardinality/总行数越接近1越高有效。Cardinality由InnoDB随机采样估算。索引合并（Index Merge）三种：Intersection（AND各索引交集）、Union（OR各索引并集）、Sort-Union。通常不如联合索引高效。设计原则：选择性高列优先、覆盖高频SELECT列、等值在前范围在后、避免冗余索引、低选择性单列考虑联合索引。",
+          "details": [
+            {
+              "id": "覆盖索引与索引优化-7-2-4-d0",
+              "tag": "覆盖索引",
+              "desc": "查询所需所有列都在索引中无需回表,Explain显示Using index,是最优访问方式"
+            },
+            {
+              "id": "覆盖索引与索引优化-7-2-4-d1",
+              "tag": "Using index",
+              "desc": "Explain Extra字段表示覆盖索引生效,查询所需列全在索引中无需回表随机IO性能最佳"
+            },
+            {
+              "id": "覆盖索引与索引优化-7-2-4-d2",
+              "tag": "索引选择性",
+              "desc": "Cardinality/总行数越接近1选择性越高索引越有效,低选择性索引优化器可能选择全表扫描"
+            },
+            {
+              "id": "覆盖索引与索引优化-7-2-4-d3",
+              "tag": "Cardinality",
+              "desc": "索引不同值数量由InnoDB随机采样8个页估算,ANALYZE TABLE更新统计使其更准确"
+            },
+            {
+              "id": "覆盖索引与索引优化-7-2-4-d4",
+              "tag": "索引合并",
+              "desc": "多个单列索引组合使用Intersection/Union/Sort-Union三种方式,通常不如联合索引高效"
+            },
+            {
+              "id": "覆盖索引与索引优化-7-2-4-d5",
+              "tag": "Index Merge",
+              "desc": "优化器组合多个单列索引的策略:Intersection(AND交集)/Union(OR并集)/Sort-Union,通常不如联合索引"
+            },
+            {
+              "id": "覆盖索引与索引优化-7-2-4-d6",
+              "tag": "Intersection",
+              "desc": "Index Merge AND模式取多个索引结果交集,需各索引均等值查询且主键有序才高效,不如联合索引"
+            },
+            {
+              "id": "覆盖索引与索引优化-7-2-4-d7",
+              "tag": "ANALYZE TABLE",
+              "desc": "更新表统计信息(Cardinality等)使优化器决策更准确,大表变更后建议执行避免索引选择错误"
+            }
+          ]
+        },
+        {
+          "id": "hash索引与全文索引-7-2-5",
+          "tag": "Hash索引与全文索引",
+          "desc": "Hash索引基于哈希表只支持等值查询不支持范围排序最左前缀。InnoDB内部用Adaptive Hash Index优化热点等值查询。全文索引用于文本全文检索InnoDB使用倒排索引分词后每个词映射到文档ID列表。ngram解析器中文支持MySQL 5.7.6+ngram_token_size控制粒度默认2。全文索引缓存变更先内存定期同步到辅助表。查询：MATCH(col) AGAINST('关键词' IN NATURAL LANGUAGE MODE/IN BOOLEAN MODE)。布尔模式支持+/-/*运算符。",
+          "details": [
+            {
+              "id": "hash索引与全文索引-7-2-5-d0",
+              "tag": "Hash索引",
+              "desc": "基于哈希表只支持等值查询不支持范围排序最左前缀,InnoDB内部AHI优化热点等值查询O(1)"
+            },
+            {
+              "id": "hash索引与全文索引-7-2-5-d1",
+              "tag": "全文索引",
+              "desc": "InnoDB使用倒排索引分词映射到文档ID,ngram解析器支持中文(5.7.6+),MATCH AGAINST查询"
+            },
+            {
+              "id": "hash索引与全文索引-7-2-5-d2",
+              "tag": "倒排索引",
+              "desc": "分词后每个词映射到包含该词的文档ID列表,是全文索引的核心数据结构支持快速文本检索"
+            },
+            {
+              "id": "hash索引与全文索引-7-2-5-d3",
+              "tag": "ngram",
+              "desc": "中文分词解析器MySQL5.7.6+支持,ngram_token_size默认2控制分词粒度,支持中文全文检索"
+            },
+            {
+              "id": "hash索引与全文索引-7-2-5-d4",
+              "tag": "Adaptive Hash Index",
+              "desc": "监控热点等值查询模式自动构建哈希索引将B+树查找优化为O(1),8.0后分区数默认8减少锁争用"
+            },
+            {
+              "id": "hash索引与全文索引-7-2-5-d5",
+              "tag": "FTS Cache",
+              "desc": "全文索引缓存,变更先写入内存缓存定期同步到辅助倒排索引表,减少频繁IO开销"
+            },
+            {
+              "id": "hash索引与全文索引-7-2-5-d6",
+              "tag": "MATCH AGAINST",
+              "desc": "全文检索查询语法:MATCH(col) AGAINST('关键词' IN NATURAL LANGUAGE MODE/IN BOOLEAN MODE)"
+            },
+            {
+              "id": "hash索引与全文索引-7-2-5-d7",
+              "tag": "布尔模式",
+              "desc": "全文检索BOOLEAN MODE支持+/-/*运算符精确控制匹配,如+必须包含-排除*通配前缀"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "7-4-索引失效场景-7-3",
+      "title": "7.4 索引失效场景",
+      "points": [
+        {
+          "id": "索引失效常见场景-7-3-0",
+          "tag": "索引失效常见场景",
+          "desc": "①函数或表达式：WHERE YEAR(create_time)=2022失效改为范围查询可走索引②隐式类型转换：WHERE varchar_col=123失效改为varchar_col='123'③LIKE以%开头④OR条件连接不同索引⑤NOT IN/NOT EXISTS/!=/<>优化器可能选全表⑥范围查询后联合索引列失效⑦IS NOT NULL常不走⑧ORDER BY与索引方向不一致MySQL 8前⑨联合索引中间列范围查询后续列失效。",
+          "details": [
+            {
+              "id": "索引失效常见场景-7-3-0-d0",
+              "tag": "索引失效",
+              "desc": "常见九大场景:函数/隐式转换/LIKE前%/OR/NOT IN/范围后/IS NOT NULL/ORDER方向不一致/中间范围"
+            },
+            {
+              "id": "索引失效常见场景-7-3-0-d1",
+              "tag": "函数导致失效",
+              "desc": "WHERE YEAR(create_time)=2022破坏B+树有序性,改为范围查询WHERE create_time>='2022-01-01'可走索引"
+            },
+            {
+              "id": "索引失效常见场景-7-3-0-d2",
+              "tag": "隐式类型",
+              "desc": "WHERE varchar_col=123触发CAST隐式转换破坏有序性,改为varchar_col='123'可走索引"
+            },
+            {
+              "id": "索引失效常见场景-7-3-0-d3",
+              "tag": "LIKE前%",
+              "desc": "LIKE '%xyz'以通配符开头无法利用B+树有序性做范围扫描,只能全索引扫描,LIKE 'xyz%'可走索引"
+            },
+            {
+              "id": "索引失效常见场景-7-3-0-d4",
+              "tag": "NOT IN",
+              "desc": "NOT IN/NOT EXISTS/!=/<>优化器可能选择全表扫描而非索引,大结果集时回表代价高于顺序IO"
+            },
+            {
+              "id": "索引失效常见场景-7-3-0-d5",
+              "tag": "范围后列失效",
+              "desc": "联合索引WHERE a>1 AND b=2中a范围查询后b无法利用索引排序,因范围后B+树不再保证b有序"
+            },
+            {
+              "id": "索引失效常见场景-7-3-0-d6",
+              "tag": "联合索引中间范围",
+              "desc": "联合索引中间列范围查询导致后续列失效,如idx(a,b,c) WHERE a=1 AND b>2中c无法利用索引"
+            },
+            {
+              "id": "索引失效常见场景-7-3-0-d7",
+              "tag": "OR条件",
+              "desc": "OR连接不同索引列时优化器可能无法合并索引,改为UNION ALL分别查询或建联合索引解决"
+            }
+          ]
+        },
+        {
+          "id": "索引失效深入原理-7-3-1",
+          "tag": "索引失效深入原理",
+          "desc": "B+树有序性维度：函数破坏有序性因为索引存原始列值而非函数结果无法在有序索引中查找函数转换后的值。隐式转换：varchar_col=123时MySQL将varchar转数字等价CAST破坏有序性。优化器成本模型：基于IO成本和CPU成本计算总成本选成本低的方案。结果集占表比例高时索引+回表随机IO成本可能高于全表顺序IO。范围查询后列失效：B+树按定义顺序排列范围后后续列不保证有序无法利用索引排序。force index可强制使用指定索引绕过优化器错误选择但需谨慎。",
+          "details": [
+            {
+              "id": "索引失效深入原理-7-3-1-d0",
+              "tag": "B+树有序性",
+              "desc": "B+树按列值排序建立有序结构,函数/隐式转换/LIKE前%等操作破坏有序性导致索引无法使用"
+            },
+            {
+              "id": "索引失效深入原理-7-3-1-d1",
+              "tag": "函数破坏有序",
+              "desc": "索引存原始列值而非函数结果,WHERE func(col)=val无法在有序索引中查找函数转换后的值"
+            },
+            {
+              "id": "索引失效深入原理-7-3-1-d2",
+              "tag": "隐式",
+              "desc": "varchar_col=123时MySQL将varchar转数字等价CAST(col AS INT)破坏B+树有序性导致索引失效"
+            },
+            {
+              "id": "索引失效深入原理-7-3-1-d3",
+              "tag": "优化器成本模型",
+              "desc": "基于IO成本(磁盘读取页数)和CPU成本(行评估和排序)计算总成本选最低方案,索引不一定总被选"
+            },
+            {
+              "id": "索引失效深入原理-7-3-1-d4",
+              "tag": "IO成本",
+              "desc": "磁盘读取页数为主要成本因子,索引+回表每次随机IO成本高,全表扫描顺序IO单页成本低"
+            },
+            {
+              "id": "索引失效深入原理-7-3-1-d5",
+              "tag": "CPU成本",
+              "desc": "行评估过滤和排序计算的CPU开销,复杂WHERE条件和ORDER BY增加CPU成本影响优化器选择"
+            },
+            {
+              "id": "索引失效深入原理-7-3-1-d6",
+              "tag": "范围后列无序",
+              "desc": "范围查询后B+树后续列不再保证有序,如WHERE a>1后b可能各值交错排列无法利用索引排序"
+            },
+            {
+              "id": "索引失效深入原理-7-3-1-d7",
+              "tag": "force index",
+              "desc": "强制使用指定索引绕过优化器错误选择,如FORCE INDEX(idx_a),需谨慎使用需验证确实优于优化器选择"
+            }
+          ]
+        },
+        {
+          "id": "索引优化实战技巧-7-3-2",
+          "tag": "索引优化实战技巧",
+          "desc": "设计原则：选择性优先、覆盖高频查询、联合索引等值在前范围在后、避免冗余索引。列选择：优先WHERE条件列、WHERE+ORDER BY联合索引、JOIN连接列确保两表有索引。维护：定期ANALYZE TABLE更新统计、监控使用率（sys.schema_unused_indexes）、监控碎片。大表加索引：MySQL 5.6+Online DDL（ALGORITHM=INPLACE LOCK=NONE）、pt-online-schema-change无锁变更工具。",
+          "details": [
+            {
+              "id": "索引优化实战技巧-7-3-2-d0",
+              "tag": "索引设计原则",
+              "desc": "选择性优先、覆盖高频查询、联合索引等值在前范围在后、避免冗余索引、低选择性单列考虑联合索引"
+            },
+            {
+              "id": "索引优化实战技巧-7-3-2-d1",
+              "tag": "选择性",
+              "desc": "选择性=Cardinality/总行数越接近1越高,高选择性列索引过滤效果好应优先建索引"
+            },
+            {
+              "id": "索引优化实战技巧-7-3-2-d2",
+              "tag": "覆盖索引",
+              "desc": "查询所需列全在索引中无需回表,Explain显示Using index,设计索引时应尽量覆盖高频SELECT列"
+            },
+            {
+              "id": "索引优化实战技巧-7-3-2-d3",
+              "tag": "冗余索引",
+              "desc": "idx(a)被idx(a,b)包含前者冗余应删除,冗余索引浪费空间增加维护开销影响写入性能"
+            },
+            {
+              "id": "索引优化实战技巧-7-3-2-d4",
+              "tag": "ANALYZE TABLE",
+              "desc": "更新表统计信息让Cardinality更准确,大表数据大量变更后执行避免优化器选择错误索引"
+            },
+            {
+              "id": "索引优化实战技巧-7-3-2-d5",
+              "tag": "Online DDL",
+              "desc": "MySQL5.6+ALGORITHM=INPLACE LOCK=NONE在线加索引不阻塞读写,大表推荐pt-osc工具无锁变更"
+            },
+            {
+              "id": "索引优化实战技巧-7-3-2-d6",
+              "tag": "pt-online-schema-change",
+              "desc": "Percona工具创建影子表+拷贝数据+binlog同步+原子切换,大表在线加索引零锁表零阻塞"
+            },
+            {
+              "id": "索引优化实战技巧-7-3-2-d7",
+              "tag": "sys.schema_unused_indexes",
+              "desc": "MySQL系统视图监控从未使用的索引,定期检查清理减少不必要的索引维护开销和存储空间"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "7-5-锁机制深入-7-4",
+      "title": "7.5 锁机制深入",
+      "points": [
+        {
+          "id": "innodb锁类型详解-7-4-0",
+          "tag": "InnoDB锁类型详解",
+          "desc": "行级锁：Record Lock（记录锁锁定索引单条记录S/X锁）、Gap Lock（间隙锁锁定索引记录间间隙防止插入只存在于RR级别）、Next-Key Lock（临键锁=Record+Gap左开右闭区间RR默认行锁算法）、Insert Intention Lock（插入意向锁同间隙不同位置插入不互斥）、Auto-inc Lock（自增锁表级）。表级锁：意向锁（IS/IX表级声明行锁意向快速检测表锁冲突）MDL锁（Metadata Lock保护表结构SELECT自动加读锁防止DDL长查询可能阻塞DDL导致连锁阻塞）。",
+          "details": [
+            {
+              "id": "innodb锁类型详解-7-4-0-d0",
+              "tag": "Record Lock",
+              "desc": "记录锁锁定索引单条记录,有S/X两种模式,等值唯一索引命中时Next-Key Lock退化为Record Lock"
+            },
+            {
+              "id": "innodb锁类型详解-7-4-0-d1",
+              "tag": "Gap Lock",
+              "desc": "间隙锁锁定索引记录间间隙防止插入,只存在于RR级别,等值唯一索引未命中时退化为Gap Lock"
+            },
+            {
+              "id": "innodb锁类型详解-7-4-0-d2",
+              "tag": "Next-Key Lock",
+              "desc": "临键锁=Record+Gap左开右闭区间,RR默认行锁算法,防止幻读锁住查询范围阻止新记录插入"
+            },
+            {
+              "id": "innodb锁类型详解-7-4-0-d3",
+              "tag": "Insert Intention Lock",
+              "desc": "插入意向锁同间隙不同位置插入不互斥,表明插入意图在Gap Lock释放后优先获得插入权"
+            },
+            {
+              "id": "innodb锁类型详解-7-4-0-d4",
+              "tag": "Auto-inc Lock",
+              "desc": "自增锁表级保证自增ID连续,innodb_autoinc_lock_mode=0传统=1交错=2轻量,BULK INSERT用表锁"
+            },
+            {
+              "id": "innodb锁类型详解-7-4-0-d5",
+              "tag": "意向锁",
+              "desc": "IS/IX表级声明行锁意向快速检测表锁冲突,无需逐行检查,意向锁之间兼容但与表锁互斥"
+            },
+            {
+              "id": "innodb锁类型详解-7-4-0-d6",
+              "tag": "MDL锁",
+              "desc": "Metadata Lock保护表结构SELECT自动加MDL读锁防止DDL,长查询可能阻塞DDL导致连锁阻塞"
+            },
+            {
+              "id": "innodb锁类型详解-7-4-0-d7",
+              "tag": "innodb_autoinc_lock_mode",
+              "desc": "0=每次INSERT表锁保连续,1=普通INSERT轻量锁BULK表锁,2=全部轻量不保连续复制用ROW格式即可"
+            }
+          ]
+        },
+        {
+          "id": "锁的加锁规则-7-4-1",
+          "tag": "锁的加锁规则",
+          "desc": "基于MySQL 8.0+。原则：1.加锁单位Next-Key Lock左开右闭2.访问到的对象才加锁3.等值唯一索引命中退化为Record Lock4.等值唯一索引未命中退化为Gap Lock5.等值普通索引命中加Next-Key Lock+下一个记录Gap Lock6.范围查询不退化。优化：等值唯一索引命中→只锁记录；等值普通索引向右到第一个不满足条件→退化为Gap Lock。示例：非唯一索引WHERE a=5命中3行加锁(0,5)、(5,10)、(10,15)、(15,20)的Gap Lock。范围查询访问到的每个记录和间隙都加Next-Key Lock。",
+          "details": [
+            {
+              "id": "锁的加锁规则-7-4-1-d0",
+              "tag": "加锁规则",
+              "desc": "MySQL8.0+六原则:单位Next-Key Lock,访问才加锁,唯一等值命中退化为Record,未命中退化为Gap,普通等值加Next-Key+右侧Gap,范围不退化"
+            },
+            {
+              "id": "锁的加锁规则-7-4-1-d1",
+              "tag": "Next-Key Lock退化",
+              "desc": "等值唯一索引命中退化为Record Lock只锁记录,等值唯一索引未命中退化为Gap Lock只锁间隙"
+            },
+            {
+              "id": "锁的加锁规则-7-4-1-d2",
+              "tag": "Record Lock退化",
+              "desc": "等值唯一索引命中时Next-Key Lock退化为Record Lock只锁命中记录本身不锁间隙"
+            },
+            {
+              "id": "锁的加锁规则-7-4-1-d3",
+              "tag": "Gap Lock退化",
+              "desc": "等值唯一索引未命中时Next-Key Lock退化为Gap Lock只锁间隙不锁记录,防止该位置被插入"
+            },
+            {
+              "id": "锁的加锁规则-7-4-1-d4",
+              "tag": "等值查询加锁",
+              "desc": "唯一索引命中退化为Record Lock,普通索引命中加Next-Key Lock+右侧Gap Lock,未命中加Gap Lock"
+            },
+            {
+              "id": "锁的加锁规则-7-4-1-d5",
+              "tag": "范围查询加锁",
+              "desc": "访问到的每个记录和间隙都加Next-Key Lock不退化,WHERE a>5锁住(5,+∞)所有区间"
+            },
+            {
+              "id": "锁的加锁规则-7-4-1-d6",
+              "tag": "唯一索引",
+              "desc": "等值命中退化为Record Lock只锁单条记录,等值未命中退化为Gap Lock锁住间隙防止插入"
+            },
+            {
+              "id": "锁的加锁规则-7-4-1-d7",
+              "tag": "普通索引",
+              "desc": "等值命中加Next-Key Lock+下一个记录Gap Lock,向右到第一个不满足条件退化为Gap Lock"
+            }
+          ]
+        },
+        {
+          "id": "死锁检测与处理-7-4-2",
+          "tag": "死锁检测与处理",
+          "desc": "死锁是多个事务相互持有对方需要的锁的循环等待。InnoDB检测：innodb_deadlock_detect默认开启遍历wait-for graph检测循环发现死锁选代价最小事务作victim回滚。高并发检测开销显著可设OFF依赖innodb_lock_wait_timeout超时回滚但等待远不如检测高效。避免策略：1.按固定顺序访问表行2.大事务拆小3.用低隔离级别RC无Gap Lock4.合理索引确保走索引5.避免长事务6.捕获死错自动重试。SHOW ENGINE INNODB STATUS分析死锁详情。",
+          "details": [
+            {
+              "id": "死锁检测与处理-7-4-2-d0",
+              "tag": "死锁",
+              "desc": "多个事务相互持有对方需要的锁形成循环等待,InnoDB检测后选代价最小事务作victim回滚"
+            },
+            {
+              "id": "死锁检测与处理-7-4-2-d1",
+              "tag": "wait-for graph",
+              "desc": "锁等待图遍历检测循环依赖,发现死锁选代价最小事务作victim回滚,高并发下检测开销显著"
+            },
+            {
+              "id": "死锁检测与处理-7-4-2-d2",
+              "tag": "innodb_deadlock_detect",
+              "desc": "默认开启遍历wait-for graph检测死锁,高并发场景检测开销显著可设OFF依赖超时回滚"
+            },
+            {
+              "id": "死锁检测与处理-7-4-2-d3",
+              "tag": "innodb_lock_wait_timeout",
+              "desc": "默认50秒控制锁等待超时,超时后回滚等待事务,检测关闭时作为死锁处理替代机制"
+            },
+            {
+              "id": "死锁检测与处理-7-4-2-d4",
+              "tag": "死锁",
+              "desc": "避免策略:按固定顺序访问表行,大事务拆小,用RC级别无Gap Lock,合理索引确保走索引,避免长事务"
+            },
+            {
+              "id": "死锁检测与处理-7-4-2-d5",
+              "tag": "锁等待图",
+              "desc": "wait-for graph记录事务间锁等待关系,遍历检测循环依赖发现死锁,是InnoDB死锁检测的核心算法"
+            },
+            {
+              "id": "死锁检测与处理-7-4-2-d6",
+              "tag": "victim回滚",
+              "desc": "死锁检测选代价最小(修改行数最少)的事务作牺牲者回滚,释放锁让另一事务继续执行"
+            },
+            {
+              "id": "死锁检测与处理-7-4-2-d7",
+              "tag": "死锁日志",
+              "desc": "SHOW ENGINE INNODB STATUS查看最近死锁详情含事务ID/锁类型/等待关系,用于分析死锁成因"
+            }
+          ]
+        },
+        {
+          "id": "锁等待与锁监控-7-4-3",
+          "tag": "锁等待与锁监控",
+          "desc": "锁等待严重影响并发性能。innodb_lock_wait_timeout控制超时默认50秒。MySQL 8.0用performance_schema：data_locks（锁详细信息）、data_lock_waits（锁等待关系）。监控SQL：查看锁等待、长事务（INNODB_TRX）、行锁统计（SHOW STATUS LIKE 'Innodb_row_lock%'）。sys.innodb_lock_waits整合信息。常见排查：DDL被长查询阻塞→MDL锁→kill长查询；UPDATE无索引→行锁升级表锁→加索引。",
+          "details": [
+            {
+              "id": "锁等待与锁监控-7-4-3-d0",
+              "tag": "锁等待",
+              "desc": "事务等待被其他事务持有的锁,innodb_lock_wait_timeout默认50秒控制超时回滚等待事务"
+            },
+            {
+              "id": "锁等待与锁监控-7-4-3-d1",
+              "tag": "INNODB_TRX",
+              "desc": "information_schema视图显示当前运行事务详情含开始时间/锁等待/行修改数,排查长事务和锁等待"
+            },
+            {
+              "id": "锁等待与锁监控-7-4-3-d2",
+              "tag": "performance_schema",
+              "desc": "MySQL8.0用data_locks和data_lock_waits视图替代旧INNODB_LOCKS,提供更详细的锁信息"
+            },
+            {
+              "id": "锁等待与锁监控-7-4-3-d3",
+              "tag": "data_locks",
+              "desc": "performance_schema视图显示当前持有锁详情含锁类型/模式/索引/记录,MySQL8.0替代INNODB_LOCKS"
+            },
+            {
+              "id": "锁等待与锁监控-7-4-3-d4",
+              "tag": "innodb_lock_wait_timeout",
+              "desc": "默认50秒控制锁等待超时时间,超时后回滚等待事务,生产环境可适当调小避免长时间阻塞"
+            },
+            {
+              "id": "锁等待与锁监控-7-4-3-d5",
+              "tag": "MDL锁",
+              "desc": "长查询持有MDL读锁阻塞DDL操作,DDL又阻塞后续所有查询造成连锁阻塞,需kill长查询或等其结束"
+            },
+            {
+              "id": "锁等待与锁监控-7-4-3-d6",
+              "tag": "Innodb_row_lock",
+              "desc": "SHOW STATUS LIKE 'Innodb_row_lock%'统计行锁等待次数/时间/平均时间,监控锁竞争严重程度"
+            },
+            {
+              "id": "锁等待与锁监控-7-4-3-d7",
+              "tag": "sys.innodb_lock_waits",
+              "desc": "整合锁等待信息视图,显示等待事务/阻塞事务/锁类型/等待时间,一键定位锁阻塞链"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "7-6-事务底层原理-7-5",
+      "title": "7.6 事务底层原理",
+      "points": [
+        {
+          "id": "事务实现原理-7-5-0",
+          "tag": "事务实现原理",
+          "desc": "原子性由Undo Log实现——修改前旧值写入undo回滚时逆向恢复。持久性由Redo Log实现——WAL先写redo再写数据只要redo持久化崩溃可恢复。隔离性由MVCC+锁共同实现——快照读通过ReadView+版本链无锁并发读；当前读通过锁机制读写互斥RR下Next-Key Lock+MVCC解决幻读。一致性是A+D+I共同保证——原子性保证要么全成功要么全回滚持久性保证已提交修改永久保存隔离性保证并发互不干扰三者共同确保从一个一致状态到另一个一致状态。约束（主键唯一索引外键CHECK）也在事务层面保证一致性。",
+          "details": [
+            {
+              "id": "事务实现原理-7-5-0-d0",
+              "tag": "原子性",
+              "desc": "由Undo Log实现,修改前旧值写入undo日志回滚时逆向恢复保证事务要么全成功要么全回滚"
+            },
+            {
+              "id": "事务实现原理-7-5-0-d1",
+              "tag": "Undo Log",
+              "desc": "记录数据修改前旧值实现原子性回滚时逆向恢复,也是MVCC版本链的数据来源"
+            },
+            {
+              "id": "事务实现原理-7-5-0-d2",
+              "tag": "持久性",
+              "desc": "由Redo Log实现,WAL先写redo再写数据,redo持久化则崩溃后可恢复已提交事务修改不丢失"
+            },
+            {
+              "id": "事务实现原理-7-5-0-d3",
+              "tag": "Redo Log",
+              "desc": "WAL机制先写redo再写数据保证持久性,只要redo已持久化即使崩溃也能恢复已提交修改"
+            },
+            {
+              "id": "事务实现原理-7-5-0-d4",
+              "tag": "隔离性",
+              "desc": "由MVCC+锁共同实现,快照读通过ReadView+版本链无锁并发读,当前读通过锁机制读写互斥"
+            },
+            {
+              "id": "事务实现原理-7-5-0-d5",
+              "tag": "MVCC+锁",
+              "desc": "快照读MVCC无锁并发读不阻塞写,当前读加Next-Key Lock读写互斥防幻读,两种机制协作实现隔离性"
+            },
+            {
+              "id": "事务实现原理-7-5-0-d6",
+              "tag": "一致性",
+              "desc": "A+D+I共同保证从一个一致状态到另一个一致状态,约束(主键/唯一/外键/CHECK)也在事务层面保证"
+            },
+            {
+              "id": "事务实现原理-7-5-0-d7",
+              "tag": "ACID",
+              "desc": "原子性(Undo)+持久性(Redo)+隔离性(MVCC+锁)共同保证一致性,是事务处理的四大基本属性"
+            }
+          ]
+        },
+        {
+          "id": "脏读幻读不可重复读-7-5-1",
+          "tag": "脏读幻读不可重复读",
+          "desc": "脏读：读到未提交数据如果回滚则数据无效READ UNCOMMITTED下出现。不可重复读：两次读同一行结果不同READ COMMITTED下出现。幻读：两次范围查询结果集不同RR下当前读可能出现。各隔离级别：READ UNCOMMITTED三种都有；READ COMMITTED无脏读有不可重复读和幻读；REPEATABLE READ无脏读不可重复读快照读无幻读但当前读可能有幻读；SERIALIZABLE三种都不出现。MySQL InnoDB默认RR解决幻读双重机制：1.快照读MVCC解决2.当前读Next-Key Lock锁住范围阻止插入。注意RR下快照读和当前读混用可能逻辑幻读。",
+          "details": [
+            {
+              "id": "脏读幻读不可重复读-7-5-1-d0",
+              "tag": "脏读",
+              "desc": "读到未提交数据若回滚则数据无效,READ UNCOMMITTED级别出现,RC及以上级别通过MVCC避免"
+            },
+            {
+              "id": "脏读幻读不可重复读-7-5-1-d1",
+              "tag": "不可重复读",
+              "desc": "两次读同一行结果不同,READ COMMITTED级别出现(RC每次新建ReadView),RR通过复用ReadView避免"
+            },
+            {
+              "id": "脏读幻读不可重复读-7-5-1-d2",
+              "tag": "幻读",
+              "desc": "两次范围查询结果集不同,RR下快照读通过MVCC解决,当前读通过Next-Key Lock锁范围阻止插入"
+            },
+            {
+              "id": "脏读幻读不可重复读-7-5-1-d3",
+              "tag": "READ UNCOMMITTED",
+              "desc": "最低隔离级别脏读+不可重复读+幻读均可能出现,生产环境不推荐使用"
+            },
+            {
+              "id": "脏读幻读不可重复读-7-5-1-d4",
+              "tag": "READ COMMITTED",
+              "desc": "无脏读但存在不可重复读和幻读,每次快照读新建ReadView可看到其他已提交事务的最新修改"
+            },
+            {
+              "id": "脏读幻读不可重复读-7-5-1-d5",
+              "tag": "REPEATABLE READ",
+              "desc": "InnoDB默认级别,无脏读不可重复读,快照读无幻读(MVCC),当前读通过Next-Key Lock防幻读"
+            },
+            {
+              "id": "脏读幻读不可重复读-7-5-1-d6",
+              "tag": "SERIALIZABLE",
+              "desc": "最高级别所有读加共享锁完全串行化,三种问题均不出现但并发性能最差,生产极少使用"
+            },
+            {
+              "id": "脏读幻读不可重复读-7-5-1-d7",
+              "tag": "Next-Key Lock防幻读",
+              "desc": "RR下当前读加Next-Key Lock锁住查询范围阻止新记录插入,防止两次范围查询结果集不同"
+            }
+          ]
+        },
+        {
+          "id": "mvcc深入-7-5-2",
+          "tag": "MVCC深入",
+          "desc": "MVCC基于三个核心组件：隐藏列（DB_TRX_ID/DB_ROLL_PTR/DB_ROW_ID）、Undo Log版本链（roll_pointer串联历史版本）、ReadView（决定可见版本）。ReadView四属性：m_ids活跃事务列表、min_trx_id最小事务ID、max_trx_id下一个事务ID、creator_trx_id创建者ID。可见性判断：trx_id<min可见、>=max不可见、中间范围在m_ids不可见不在可见、等于creator可见。RC每次快照读创建新ReadView出现不可重复读；RR只在首次创建复用不会不可重复读。快照读用MVCC不加锁；当前读读最新数据+加Next-Key Lock。",
+          "details": [
+            {
+              "id": "mvcc深入-7-5-2-d0",
+              "tag": "MVCC",
+              "desc": "基于隐藏列+Undo版本链+ReadView实现无锁并发读,快照读沿版本链找可见版本当前读加锁"
+            },
+            {
+              "id": "mvcc深入-7-5-2-d1",
+              "tag": "ReadView",
+              "desc": "四属性:m_ids活跃事务/min_trx_id最小/max_trx_id下一个/creator_trx_id创建者,决定版本可见性"
+            },
+            {
+              "id": "mvcc深入-7-5-2-d2",
+              "tag": "DB_TRX_ID",
+              "desc": "隐藏列记录最后修改该行的事务ID,ReadView根据此ID判断该版本对当前事务是否可见"
+            },
+            {
+              "id": "mvcc深入-7-5-2-d3",
+              "tag": "DB_ROLL_PTR",
+              "desc": "隐藏列回滚指针指向undo log中该行上一版本,串联形成版本链是MVCC遍历历史版本的关键"
+            },
+            {
+              "id": "mvcc深入-7-5-2-d4",
+              "tag": "版本链",
+              "desc": "DB_ROLL_PTR串联从最新到最老的行版本,MVCC沿版本链遍历找到对当前事务可见的版本"
+            },
+            {
+              "id": "mvcc深入-7-5-2-d5",
+              "tag": "可见性判断",
+              "desc": "trx_id<min可见,>=max不可见,中间在m_ids不可见不在可见,等于creator可见,是ReadView核心规则"
+            },
+            {
+              "id": "mvcc深入-7-5-2-d6",
+              "tag": "RC每次新建ReadView",
+              "desc": "READ COMMITTED每次快照读创建新ReadView可看到其他已提交事务的最新修改,导致不可重复读"
+            },
+            {
+              "id": "mvcc深入-7-5-2-d7",
+              "tag": "RR复用ReadView",
+              "desc": "REPEATABLE READ只在首次快照读创建ReadView后续复用,保证同一事务内多次读结果一致"
+            }
+          ]
+        },
+        {
+          "id": "事务传播行为-7-5-3",
+          "tag": "事务传播行为",
+          "desc": "Spring事务7种传播行为控制事务边界（与MySQL隔离级别不同维度）。REQUIRED默认有则加入无则新建；REQUIRES_NEW无论有无都新建独立事务；NESTED有则创建嵌套子事务savepoint机制；SUPPORTS有则加入无则非事务；NOT_SUPPORTED无论有无非事务执行挂起当前；MANDATORY必须在事务中否则异常；NEVER必须不在事务中否则异常。与MySQL关系：REQUIRED共享同一MySQL事务；REQUIRES_NEW需两个连接独立事务；NESTED通过SAVEPOINT实现。Spring事务失效：非public、同类内部调用绕过代理、异常被catch未抛、rollbackFor不匹配。",
+          "details": [
+            {
+              "id": "事务传播行为-7-5-3-d0",
+              "tag": "事务传播行为",
+              "desc": "Spring7种传播行为控制事务边界:REQUIRED/REQUIRES_NEW/NESTED/SUPPORTS/NOT_SUPPORTED/MANDATORY/NEVER"
+            },
+            {
+              "id": "事务传播行为-7-5-3-d1",
+              "tag": "REQUIRED",
+              "desc": "默认传播行为有事务则加入无则新建,共享同一MySQL事务回滚互相影响"
+            },
+            {
+              "id": "事务传播行为-7-5-3-d2",
+              "tag": "REQUIRES_NEW",
+              "desc": "无论有无外层事务都新建独立事务需两个连接,内层事务回滚不影响外层独立提交或回滚"
+            },
+            {
+              "id": "事务传播行为-7-5-3-d3",
+              "tag": "NESTED",
+              "desc": "有事务则创建嵌套子事务通过SAVEPOINT实现,子事务回滚到savepoint不影响外层,外层回滚则子层也回滚"
+            },
+            {
+              "id": "事务传播行为-7-5-3-d4",
+              "tag": "SUPPORTS",
+              "desc": "有事务则加入无则非事务执行,适用于非关键查询操作不强制要求事务保护"
+            },
+            {
+              "id": "事务传播行为-7-5-3-d5",
+              "tag": "MANDATORY",
+              "desc": "必须在已有事务中执行否则抛IllegalTransactionStateException,强制要求事务保护防止无事务执行"
+            },
+            {
+              "id": "事务传播行为-7-5-3-d6",
+              "tag": "SAVEPOINT",
+              "desc": "事务内标记点可回滚到该位置而不回滚整个事务,NESTED传播行为基于此机制实现嵌套子事务"
+            },
+            {
+              "id": "事务传播行为-7-5-3-d7",
+              "tag": "Spring事务失效",
+              "desc": "非public方法/同类内部调用绕过代理/异常被catch未抛/rollbackFor不匹配(默认只回滚RuntimeException)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "7-7-explain与sql调优-7-6",
+      "title": "7.7 Explain与SQL调优",
+      "points": [
+        {
+          "id": "explain详解-7-6-0",
+          "tag": "Explain详解",
+          "desc": "Explain分析SQL执行计划。id：值越大越先执行相同从上往下。select_type：SIMPLE/PRIMARY/SUBQUERY/DERIVED/UNION等。type访问类型从优到差：system>const>eq_ref>ref>range>index>ALL。system/const最多一行（主键等值），eq_ref连接最多一行，ref多行等值，range索引范围扫描，index全索引扫描，ALL全表必须优化。possible_keys可能用索引。key实际用索引。key_len使用索引最长前缀长度估算联合索引用了多少列。rows预估扫描行数。filtered过滤后剩余百分比。",
+          "details": [
+            {
+              "id": "explain详解-7-6-0-d0",
+              "tag": "Explain",
+              "desc": "分析SQL执行计划关键工具,输出id/select_type/type/key/key_len/rows/filtered/Extra等字段"
+            },
+            {
+              "id": "explain详解-7-6-0-d1",
+              "tag": "id",
+              "desc": "执行顺序标识值越大越先执行,相同id从上往下,子查询id递增DERIVED临时表id最小"
+            },
+            {
+              "id": "explain详解-7-6-0-d2",
+              "tag": "select_type",
+              "desc": "查询类型:SIMPLE简单/PRIMARY主/SUBQUERY子查询/DERIVED派生临时表/UNION联合查询"
+            },
+            {
+              "id": "explain详解-7-6-0-d3",
+              "tag": "type",
+              "desc": "访问类型从优到差:system>const>eq_ref>ref>range>index>ALL,ALL全表扫描必须优化"
+            },
+            {
+              "id": "explain详解-7-6-0-d4",
+              "tag": "possible_keys",
+              "desc": "优化器考虑可能使用的索引列表,实际用哪个由key字段决定,possible多但key为空说明优化器放弃索引"
+            },
+            {
+              "id": "explain详解-7-6-0-d5",
+              "tag": "key",
+              "desc": "实际使用的索引名,NULL表示未用索引走全表扫描,需优化WHERE条件或添加合适索引"
+            },
+            {
+              "id": "explain详解-7-6-0-d6",
+              "tag": "key_len",
+              "desc": "使用索引最长前缀字节数,估算联合索引用了多少列,utf8字符3字节varchar额外+2字节头"
+            },
+            {
+              "id": "explain详解-7-6-0-d7",
+              "tag": "rows",
+              "desc": "预估扫描行数基于统计估算,越少越好,与实际行数可能偏差需ANALYZE TABLE更新统计"
+            },
+            {
+              "id": "explain详解-7-6-0-d8",
+              "tag": "filtered",
+              "desc": "过滤后剩余百分比rows*filtered=最终返回行数,100%表示全匹配,低值表示大量行被过滤浪费扫描"
+            }
+          ]
+        },
+        {
+          "id": "explainextra字段详解-7-6-1",
+          "tag": "Explain Extra字段详解",
+          "desc": "Using index覆盖索引无需回表性能最佳。Using where Server层过滤。Using index condition索引下推ICP生效减少回表。Using temporary需创建临时表开销大需优化。Using filesort需额外排序为ORDER BY建索引避免。Using MRR Multi-Range Read优化将随机IO转顺序IO。Using join buffer连接无索引需为被驱动表加索引。FirstMatch/LooseScan半连接优化策略。",
+          "details": [
+            {
+              "id": "explainextra字段详解-7-6-1-d0",
+              "tag": "Extra",
+              "desc": "额外信息:Using index覆盖/Using where过滤/Using index condition下推/Using filesort排序/Using temporary临时表"
+            },
+            {
+              "id": "explainextra字段详解-7-6-1-d1",
+              "tag": "Using index",
+              "desc": "覆盖索引无需回表性能最佳,查询所需列全在索引中直接从索引树获取数据"
+            },
+            {
+              "id": "explainextra字段详解-7-6-1-d2",
+              "tag": "Using where",
+              "desc": "Server层过滤引擎返回的行,WHERE条件中含非索引列需在Server层二次判断"
+            },
+            {
+              "id": "explainextra字段详解-7-6-1-d3",
+              "tag": "Using index condition",
+              "desc": "ICP索引下推生效,引擎层在索引中执行剩余列条件过滤减少不必要的回表IO"
+            },
+            {
+              "id": "explainextra字段详解-7-6-1-d4",
+              "tag": "Using filesort",
+              "desc": "需额外排序无法利用索引有序性,为ORDER BY列建索引避免filesort开销大需优化"
+            },
+            {
+              "id": "explainextra字段详解-7-6-1-d5",
+              "tag": "Using temporary",
+              "desc": "需创建临时表排序或分组开销大,GROUP BY无索引或DISTINCT时出现需优化避免"
+            },
+            {
+              "id": "explainextra字段详解-7-6-1-d6",
+              "tag": "Using MRR",
+              "desc": "Multi-Range Read优化将随机IO转顺序IO,按主键排序后批量回表减少磁盘随机读取次数"
+            },
+            {
+              "id": "explainextra字段详解-7-6-1-d7",
+              "tag": "Using join buffer",
+              "desc": "连接操作无索引需join buffer缓存被驱动表数据,为被驱动表JOIN列加索引可消除"
+            }
+          ]
+        },
+        {
+          "id": "sql调优实战-7-6-2",
+          "tag": "SQL调优实战",
+          "desc": "慢查询发现：slow_query_log=ON（建议long_query_time=1秒）；pt-query-digest分析慢日志TOP N；MySQL 8.0 performance_schema实时统计。定位：EXPLAIN分析；EXPLAIN ANALYZE（8.0.18+）提供实际执行时间。深入：optimizer_trace查看优化器决策过程。大表优化：深分页游标分页WHERE id>上次最大id LIMIT 10；延迟关联先子查询取id再JOIN回表。分库分表：垂直按业务拆、水平按id/hash分，sharding-jdbc/mycat。",
+          "details": [
+            {
+              "id": "sql调优实战-7-6-2-d0",
+              "tag": "慢查询日志",
+              "desc": "slow_query_log=ON开启,long_query_time=1秒阈值,记录执行超阈值的SQL用于性能排查"
+            },
+            {
+              "id": "sql调优实战-7-6-2-d1",
+              "tag": "pt-query-digest",
+              "desc": "Percona工具分析慢查询日志输出TOP N和执行统计,快速定位最耗时的SQL语句"
+            },
+            {
+              "id": "sql调优实战-7-6-2-d2",
+              "tag": "EXPLAIN ANALYZE",
+              "desc": "MySQL8.0.18+提供实际执行时间和行数而非估算,验证优化器预估准确性定位真实瓶颈"
+            },
+            {
+              "id": "sql调优实战-7-6-2-d3",
+              "tag": "optimizer_trace",
+              "desc": "查看优化器决策全过程含成本计算和索引选择原因,SET optimizer_trace='enabled=on'开启"
+            },
+            {
+              "id": "sql调优实战-7-6-2-d4",
+              "tag": "深分页优化",
+              "desc": "LIMIT 100000,10扫描10万行丢弃前99990行,改用游标分页或延迟关联减少扫描量"
+            },
+            {
+              "id": "sql调优实战-7-6-2-d5",
+              "tag": "游标分页",
+              "desc": "WHERE id>上次最大id LIMIT 10利用索引有序性只扫描10行,替代OFFSET深分页避免大量无用扫描"
+            },
+            {
+              "id": "sql调优实战-7-6-2-d6",
+              "tag": "延迟关联",
+              "desc": "深分页优化:先子查询SELECT id FROM t LIMIT 100000,10取id再JOIN回表,子查询走覆盖索引减少回表"
+            },
+            {
+              "id": "sql调优实战-7-6-2-d7",
+              "tag": "分库分表",
+              "desc": "垂直按业务拆分不同服务,水平按id/hash范围分到多个表,sharding-jdbc/mycat中间件管理路由"
+            }
+          ]
+        },
+        {
+          "id": "mysql8新特性-7-6-3",
+          "tag": "MySQL 8新特性",
+          "desc": "窗口函数为每行计算基于窗口聚合值不折叠结果集支持ROW_NUMBER/RANK/LEAD/LAG等替代子查询临时表。CTE WITH子句定义临时结果集多次引用递归CTE（WITH RECURSIVE）实现树形遍历。隐藏列SELECT *不返回显式指定可查询用于迁移。函数索引CREATE INDEX idx ON t ((UPPER(name)))解决函数查询走索引。降序索引真正支持DESC方向。JSON增强JSON_TABLE()转关系表>>运算符简化提取。角色管理CREATE ROLE简化权限。InnoDB增强redo动态调整临时表持久化。",
+          "details": [
+            {
+              "id": "mysql8新特性-7-6-3-d0",
+              "tag": "窗口函数",
+              "desc": "为每行计算基于窗口的聚合值不折叠结果集,支持ROW_NUMBER/RANK/LEAD/LAG替代子查询"
+            },
+            {
+              "id": "mysql8新特性-7-6-3-d1",
+              "tag": "CTE",
+              "desc": "WITH子句定义临时结果集可多次引用避免重复子查询,提升可读性和性能"
+            },
+            {
+              "id": "mysql8新特性-7-6-3-d2",
+              "tag": "递归CTE",
+              "desc": "WITH RECURSIVE实现树形遍历和层级查询,锚点查询+递归查询逐层展开直到无新行产生"
+            },
+            {
+              "id": "mysql8新特性-7-6-3-d3",
+              "tag": "隐藏列",
+              "desc": "CREATE TABLE时标记INVISIBLE,SELECT *不返回但显式指定列名可查询,用于在线迁移兼容旧代码"
+            },
+            {
+              "id": "mysql8新特性-7-6-3-d4",
+              "tag": "函数索引",
+              "desc": "CREATE INDEX idx ON t((UPPER(name)))为函数计算结果建索引,解决WHERE UPPER(name)='ABC'无法走索引"
+            },
+            {
+              "id": "mysql8新特性-7-6-3-d5",
+              "tag": "降序索引",
+              "desc": "MySQL8.0真正支持DESC方向索引扫描,5.7及之前DESC索引实际倒序存储无真正降序扫描优化"
+            },
+            {
+              "id": "mysql8新特性-7-6-3-d6",
+              "tag": "JSON_TABLE",
+              "desc": "MySQL8.0将JSON数组转关系表行,配合>>运算符简化JSON数据提取和SQL分析"
+            },
+            {
+              "id": "mysql8新特性-7-6-3-d7",
+              "tag": "角色",
+              "desc": "CREATE ROLE定义角色批量赋权再GRANT角色给用户,简化权限管理避免逐用户赋权"
+            }
+          ]
+        },
+        {
+          "id": "explainanalyze深入-7-6-4",
+          "tag": "EXPLAIN ANALYZE 与 ANALYZE TABLE",
+          "desc": "EXPLAIN ANALYZE(MySQL8.0.18+)输出实际执行时间与行数而非估算,是验证优化器预估准确性的关键工具;ANALYZE TABLE更新表统计信息(Cardinality等)使优化器索引选择更准确,大表数据大量变更后应执行",
+          "details": [
+            {
+              "id": "explainanalyze深入-7-6-4-d0",
+              "tag": "EXPLAIN ANALYZE",
+              "desc": "MySQL8.0.18+在EXPLAIN基础上增加实际执行时间和行数,输出迭代器树结构含cost/rows/actual时间/actual行数,验证优化器预估准确性定位真实瓶颈"
+            },
+            {
+              "id": "explainanalyze深入-7-6-4-d1",
+              "tag": "EXPLAIN vs EXPLAIN ANALYZE",
+              "desc": "EXPLAIN仅显示优化器预估rows/cost,EXPLAIN ANALYZE额外显示实际执行结果(actual time/actual rows),可对比发现优化器误判场景(如预估扫描100行实际扫描10万行)"
+            },
+            {
+              "id": "explainanalyze深入-7-6-4-d2",
+              "tag": "输出格式",
+              "desc": "EXPLAIN ANALYZE输出迭代器树格式,每个节点显示estimated cost/estimated rows/actual time(ms)/actual rows/actual loops,子节点嵌套显示可看清执行层次和耗时分布"
+            },
+            {
+              "id": "explainanalyze深入-7-6-4-d3",
+              "tag": "ANALYZE TABLE",
+              "desc": "更新表/索引的统计信息(Cardinality/Avg_row_length/Data_length等),让优化器基于真实数据做索引选择和执行计划决策,数据大量变更(批量INSERT/DELETE/UPDATE)后建议执行"
+            },
+            {
+              "id": "explainanalyze深入-7-6-4-d4",
+              "tag": "ANALYZE TABLE 语法与锁",
+              "desc": "ANALYZE TABLE tbl_name[,tbl_name...]执行期间对表加读锁(MDL),不阻塞SELECT但阻塞DML,大表InnoDB通过8个随机页采样估算Cardinality,不遍历全表速度快但统计可能不精确"
+            },
+            {
+              "id": "explainanalyze深入-7-6-4-d5",
+              "tag": "EXPLAIN FORMAT=JSON/TREE",
+              "desc": "FORMAT=JSON提供结构化cost信息含queried_cost/total_cost,FORMAT=TREE(MySQL8.0)以树形结构直观展示迭代器层次,EXPLAIN ANALYZE结合TREE+实际数据最全面"
+            },
+            {
+              "id": "explainanalyze深入-7-6-4-d6",
+              "tag": "实战组合策略",
+              "desc": "先EXPLAIN看预估执行计划找可疑点→再EXPLAIN ANALYZE对比实际与预估差距→必要时ANALYZE TABLE刷新统计后重新EXPLAIN→用optimizer_trace追踪优化器决策过程定位索引选择错误根因"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

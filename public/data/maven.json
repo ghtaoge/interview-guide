@@ -1,0 +1,398 @@
+{
+  "id": "maven",
+  "title": "二十九、Maven",
+  "tag": "Maven",
+  "order": 29,
+  "icon": "🐘",
+  "cssIndex": 27,
+  "subs": [
+    {
+      "id": "29-1-maven核心-29-0",
+      "title": "29.1 Maven核心",
+      "points": [
+        {
+          "id": "mavenpom与生命周期-29-0-0",
+          "tag": "Maven POM与生命周期",
+          "desc": "Maven通过POM管理项目构建定义坐标（groupId/artifactId/version）依赖插件和构建配置。生命周期三套：clean（清理构建产物）、default（validate→compile→test→package→install→deploy完整流程）、site（生成文档站点）。每个Phase绑定零或多个插件Goal如compile绑定maven-compiler-plugin。超级POM定义默认配置如默认目录结构src/main/java。",
+          "details": [
+            {
+              "id": "mavenpom与生命周期-29-0-0-d0",
+              "tag": "POM",
+              "desc": "Project Object Model定义坐标依赖插件和构建配置，是Maven项目核心"
+            },
+            {
+              "id": "mavenpom与生命周期-29-0-0-d1",
+              "tag": "生命周期",
+              "desc": "三套生命周期：clean清理/default构建/site文档，Phase有序执行不可跳过"
+            },
+            {
+              "id": "mavenpom与生命周期-29-0-0-d2",
+              "tag": "clean",
+              "desc": "clean生命周期清理构建产物，pre-clean→clean→post-clean三个Phase"
+            },
+            {
+              "id": "mavenpom与生命周期-29-0-0-d3",
+              "tag": "default",
+              "desc": "default核心生命周期validate→compile→test→package→install→deploy"
+            },
+            {
+              "id": "mavenpom与生命周期-29-0-0-d4",
+              "tag": "Phase",
+              "desc": "生命周期中的构建阶段，执行某Phase会顺序执行之前所有Phase"
+            },
+            {
+              "id": "mavenpom与生命周期-29-0-0-d5",
+              "tag": "Goal",
+              "desc": "插件的具体执行单元，一个Phase可绑定零或多个Goal如compile绑定compiler"
+            },
+            {
+              "id": "mavenpom与生命周期-29-0-0-d6",
+              "tag": "插件绑定",
+              "desc": "每个Phase绑定零或多个插件Goal，如compile绑定maven-compiler-plugin"
+            },
+            {
+              "id": "mavenpom与生命周期-29-0-0-d7",
+              "tag": "超级POM",
+              "desc": "定义默认配置如默认目录结构src/main/java，所有POM隐式继承"
+            }
+          ]
+        },
+        {
+          "id": "maven依赖管理-29-0-1",
+          "tag": "Maven依赖管理",
+          "desc": "坐标定位唯一依赖。scope范围：compile默认全阶段/test仅测试/provided编译运行由环境提供/runtime运行时如JDBC/system本地jar。依赖传递（A→B→C自动传递但test和provided不传递）。冲突解决最近优先（路径短版本优先）最先声明（路径相同先声明优先）。optional可选依赖不向下游传递。exclusions排除不需要的传递依赖。dependencyManagement在父POM声明版本号子模块无需指定version。BOM（Bill of Materials）如Spring Boot统一管理一组依赖版本。",
+          "details": [
+            {
+              "id": "maven依赖管理-29-0-1-d0",
+              "tag": "依赖",
+              "desc": "坐标定位唯一依赖，通过groupId/artifactId/version精确定位构件"
+            },
+            {
+              "id": "maven依赖管理-29-0-1-d1",
+              "tag": "scope范围",
+              "desc": "compile默认全阶段/test仅测试/provided环境提供/runtime运行时/system本地"
+            },
+            {
+              "id": "maven依赖管理-29-0-1-d2",
+              "tag": "依赖传递",
+              "desc": "A→B→C自动传递但test和provided不传递，可能引入不需要的依赖"
+            },
+            {
+              "id": "maven依赖管理-29-0-1-d3",
+              "tag": "冲突解决",
+              "desc": "最近优先路径短版本优先，最先声明路径相同先声明优先"
+            },
+            {
+              "id": "maven依赖管理-29-0-1-d4",
+              "tag": "最近优先",
+              "desc": "依赖路径短的版本优先，路径相同则最先声明的优先"
+            },
+            {
+              "id": "maven依赖管理-29-0-1-d5",
+              "tag": "optional",
+              "desc": "可选依赖不向下游传递，声明方使用但不会强制传递给依赖方"
+            },
+            {
+              "id": "maven依赖管理-29-0-1-d6",
+              "tag": "exclusions",
+              "desc": "排除不需要的传递依赖，精确控制依赖树避免引入冲突版本"
+            },
+            {
+              "id": "maven依赖管理-29-0-1-d7",
+              "tag": "dependencyManagement",
+              "desc": "父POM声明版本号子模块无需指定version，统一管理依赖版本"
+            }
+          ]
+        },
+        {
+          "id": "maven仓库与坐标-29-0-2",
+          "tag": "Maven仓库与坐标",
+          "desc": "仓库分本地（~/.m2/repository）中央（Maven Central）私服（企业Nexus/Artifactory代理中央+发布内部构件）。查找顺序：本地→私服→中央。私服配置settings.xml mirror和profile。release仓库稳定版本不可覆盖snapshot仓库开发版本可覆盖。SNAPSHOT版本自动更新时间戳后缀Maven每天检查更新。发布时改为RELEASE去掉SNAPSHOT。",
+          "details": [
+            {
+              "id": "maven仓库与坐标-29-0-2-d0",
+              "tag": "本地仓库",
+              "desc": "~/.m2/repository缓存下载的构件，构建时优先从本地查找"
+            },
+            {
+              "id": "maven仓库与坐标-29-0-2-d1",
+              "tag": "中央仓库",
+              "desc": "Maven Central社区公共仓库，包含绝大多数开源构件"
+            },
+            {
+              "id": "maven仓库与坐标-29-0-2-d2",
+              "tag": "私服Nexus",
+              "desc": "企业Nexus/Artifactory代理中央+发布内部构件，加速下载保证稳定"
+            },
+            {
+              "id": "maven仓库与坐标-29-0-2-d3",
+              "tag": "mirror",
+              "desc": "settings.xml配置镜像替代中央仓库，私服加速下载控制访问"
+            },
+            {
+              "id": "maven仓库与坐标-29-0-2-d4",
+              "tag": "release仓库",
+              "desc": "稳定版本发布后不可覆盖，保证构建可重复性和一致性"
+            },
+            {
+              "id": "maven仓库与坐标-29-0-2-d5",
+              "tag": "snapshot版本",
+              "desc": "开发版本自动更新带时间戳后缀，Maven每天检查更新"
+            },
+            {
+              "id": "maven仓库与坐标-29-0-2-d6",
+              "tag": "坐标格式",
+              "desc": "groupId组织/artifactId模块/version版本三者唯一定位一个构件"
+            },
+            {
+              "id": "maven仓库与坐标-29-0-2-d7",
+              "tag": "settings.xml",
+              "desc": "Maven全局配置文件定义镜像仓库认证和Profile，优先级高于POM"
+            }
+          ]
+        },
+        {
+          "id": "maven插件体系-29-0-3",
+          "tag": "Maven插件体系",
+          "desc": "核心插件：maven-compiler-plugin编译、maven-surefire-plugin运行单元测试、maven-jar-plugin打包jar、maven-war-plugin打包war、maven-source-plugin生成源码jar、maven-javadoc-plugin文档jar、maven-deploy-plugin发布到远程仓库。插件配置在build/plugins或build/pluginManagement中。Goal绑定到生命周期Phase。自定义插件通过Mojo继承AbstractMojo标注Mojo注解实现execute()方法。",
+          "details": [
+            {
+              "id": "maven插件体系-29-0-3-d0",
+              "tag": "maven-compiler",
+              "desc": "编译插件配置source/target版本和编码参数，控制Java编译行为"
+            },
+            {
+              "id": "maven插件体系-29-0-3-d1",
+              "tag": "maven-surefire",
+              "desc": "运行单元测试插件，支持JUnit/TestNG配置包含排除测试类"
+            },
+            {
+              "id": "maven插件体系-29-0-3-d2",
+              "tag": "maven-jar",
+              "desc": "打包jar插件，可配置mainClass和manifest生成可执行jar"
+            },
+            {
+              "id": "maven插件体系-29-0-3-d3",
+              "tag": "pluginManagement",
+              "desc": "父POM声明插件版本和配置子模块继承无需重复声明版本"
+            },
+            {
+              "id": "maven插件体系-29-0-3-d4",
+              "tag": "Goal绑定",
+              "desc": "插件Goal绑定到生命周期Phase执行，也可独立调用如mvn dependency:tree"
+            },
+            {
+              "id": "maven插件体系-29-0-3-d5",
+              "tag": "Mojo开发",
+              "desc": "继承AbstractMojo标注@Mojo注解实现execute()方法开发自定义插件"
+            },
+            {
+              "id": "maven插件体系-29-0-3-d6",
+              "tag": "生命周期绑定",
+              "desc": "Goal绑定到Phase在对应阶段自动执行，未绑定则需手动调用"
+            },
+            {
+              "id": "maven插件体系-29-0-3-d7",
+              "tag": "自定义插件",
+              "desc": "通过Mojo开发实现execute()方法，可添加自定义构建逻辑"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "29-2-maven进阶-29-1",
+      "title": "29.2 Maven进阶",
+      "points": [
+        {
+          "id": "maven依赖冲突排查-29-1-0",
+          "tag": "Maven依赖冲突排查",
+          "desc": "排查方法：mvn dependency:tree打印完整依赖树；mvn dependency:tree -Dverbose显示冲突详情（omitted for duplicate/conflict）；mvn dependency:analyze分析未使用和未声明依赖。IDEA Maven Helper可视化定位冲突。解决策略：1.exclusion排除传递依赖2.dependencyManagement锁定版本3.直接依赖覆盖路径最短优先。典型冲突：slf4j多个binding冲突（只能有一个binding排除其他）、guava版本冲突、Jackson版本不一致需统一。",
+          "details": [
+            {
+              "id": "maven依赖冲突排查-29-1-0-d0",
+              "tag": "dependency",
+              "desc": "tree（dependency的详细说明：Maven依赖冲突排查中关于dependency的内容）"
+            },
+            {
+              "id": "maven依赖冲突排查-29-1-0-d1",
+              "tag": "冲突排查",
+              "desc": "mvn dependency:tree打印依赖树，-Dverbose显示冲突详情定位版本冲突"
+            },
+            {
+              "id": "maven依赖冲突排查-29-1-0-d2",
+              "tag": "verbose树",
+              "desc": "-Dverbose显示冲突详情如omitted for duplicate/conflict精准定位问题"
+            },
+            {
+              "id": "maven依赖冲突排查-29-1-0-d3",
+              "tag": "exclusion",
+              "desc": "在依赖声明中排除传递依赖，精确移除冲突或不需要的版本"
+            },
+            {
+              "id": "maven依赖冲突排查-29-1-0-d4",
+              "tag": "dependencyManagement",
+              "desc": "锁定版本号统一冲突解决策略，子模块无需指定version"
+            },
+            {
+              "id": "maven依赖冲突排查-29-1-0-d5",
+              "tag": "直接依赖覆盖",
+              "desc": "直接声明依赖版本路径最短优先，覆盖传递依赖的冲突版本"
+            },
+            {
+              "id": "maven依赖冲突排查-29-1-0-d6",
+              "tag": "slf4j冲突",
+              "desc": "多个binding冲突只能有一个，排除多余binding如log4j/jdk14"
+            },
+            {
+              "id": "maven依赖冲突排查-29-1-0-d7",
+              "tag": "guava冲突",
+              "desc": "不同模块引入不同guava版本需统一，通常exclusion+强制指定版本"
+            }
+          ]
+        },
+        {
+          "id": "maven多模块聚合-29-1-1",
+          "tag": "Maven多模块聚合",
+          "desc": "父POM（packaging=pom）定义modules列表和公共配置（dependencyManagement/pluginManagement/properties）。子模块POM parent引用父POM坐标继承配置只需定义自身特有依赖和插件。聚合构建在父目录执行mvn install按Reactor排序自动构建所有子模块。常见结构：api/service/dao/common/web。模块间依赖web→service→dao→common。聚合modules决定构建哪些模块继承parent决定配置来源两者通常结合。",
+          "details": [
+            {
+              "id": "maven多模块聚合-29-1-1-d0",
+              "tag": "多模块",
+              "desc": "父POM定义modules和公共配置子模块继承，聚合构建管理大型项目"
+            },
+            {
+              "id": "maven多模块聚合-29-1-1-d1",
+              "tag": "父POM",
+              "desc": "packaging=pom定义modules列表和公共dependencyManagement/pluginManagement"
+            },
+            {
+              "id": "maven多模块聚合-29-1-1-d2",
+              "tag": "modules",
+              "desc": "父POM声明子模块列表决定聚合构建包含哪些模块"
+            },
+            {
+              "id": "maven多模块聚合-29-1-1-d3",
+              "tag": "聚合构建",
+              "desc": "父目录执行mvn install按Reactor排序自动构建所有子模块"
+            },
+            {
+              "id": "maven多模块聚合-29-1-1-d4",
+              "tag": "Reactor排序",
+              "desc": "根据模块间依赖关系自动确定构建顺序，依赖模块先构建"
+            },
+            {
+              "id": "maven多模块聚合-29-1-1-d5",
+              "tag": "dependencyManagement",
+              "desc": "父POM声明版本号子模块继承无需指定version统一版本管理"
+            },
+            {
+              "id": "maven多模块聚合-29-1-1-d6",
+              "tag": "模块依赖",
+              "desc": "web→service→dao→common层级依赖，单向依赖避免循环"
+            },
+            {
+              "id": "maven多模块聚合-29-1-1-d7",
+              "tag": "继承",
+              "desc": "子模块parent引用父POM坐标继承配置，只需定义自身特有依赖"
+            }
+          ]
+        },
+        {
+          "id": "maven打包与私服部署-29-1-2",
+          "tag": "Maven打包与私服部署",
+          "desc": "打包策略：jar默认、war Web项目、pom聚合不产出、maven-shade-plugin创建fat jar含所有依赖适合微服务、maven-assembly-plugin自定义打包支持zip/tar、spring-boot-maven-plugin Spring Boot可执行jar含内嵌Tomcat。私服部署：settings.xml配置server认证→POM配置distributionManagement（repository+snapshotRepository）→mvn deploy自动发布。Nexus管理：创建release/snapshot hosted仓库、proxy代理中央仓库、group组合对外统一入口。版本规范：开发SNAPSHOT频繁更新→发布正式版本不可覆盖→下个开发版本SNAPSHOT。",
+          "details": [
+            {
+              "id": "maven打包与私服部署-29-1-2-d0",
+              "tag": "shade打包",
+              "desc": "maven-shade-plugin创建fat jar含所有依赖，适合微服务独立部署"
+            },
+            {
+              "id": "maven打包与私服部署-29-1-2-d1",
+              "tag": "assembly打包",
+              "desc": "maven-assembly-plugin自定义打包支持zip/tar格式，灵活组装输出"
+            },
+            {
+              "id": "maven打包与私服部署-29-1-2-d2",
+              "tag": "Spring Boot jar",
+              "desc": "spring-boot-maven-plugin生成可执行jar含内嵌Tomcat和依赖层"
+            },
+            {
+              "id": "maven打包与私服部署-29-1-2-d3",
+              "tag": "私服",
+              "desc": "settings.xml配置server认证+POM配置distributionManagement+mvn deploy发布"
+            },
+            {
+              "id": "maven打包与私服部署-29-1-2-d4",
+              "tag": "Nexus仓库",
+              "desc": "hosted内部发布/proxy代理中央/group组合入口，统一企业仓库管理"
+            },
+            {
+              "id": "maven打包与私服部署-29-1-2-d5",
+              "tag": "release版本",
+              "desc": "正式版本不可覆盖保证可重复构建，发布时去掉SNAPSHOT标记"
+            },
+            {
+              "id": "maven打包与私服部署-29-1-2-d6",
+              "tag": "SNAPSHOT",
+              "desc": "开发版本带时间戳自动更新频繁迭代，发布时改为正式版本"
+            },
+            {
+              "id": "maven打包与私服部署-29-1-2-d7",
+              "tag": "maven-release-plugin",
+              "desc": "自动化版本发布流程：准备→执行→清理，自动修改版本号和创建tag"
+            }
+          ]
+        },
+        {
+          "id": "mavenprofile与环境隔离-29-1-3",
+          "tag": "Maven Profile与环境隔离",
+          "desc": "Profile实现多环境构建（dev/test/prod不同配置）。Profile包含id/activation/properties/build配置/dependencies。激活方式：命令行-Pdev、settings.xml activeProfiles、POM activeByDefault、多profile可同时激活合并配置。多环境资源：src/main/resources下创建环境目录通过maven-resources-plugin在不同profile复制对应配置并替换变量占位符。Spring Boot项目通常用自身profile（application-dev.yml）但Maven profile可控制依赖差异和构建参数。",
+          "details": [
+            {
+              "id": "mavenprofile与环境隔离-29-1-3-d0",
+              "tag": "Profile",
+              "desc": "实现多环境构建dev/test/prod不同配置，包含id/activation/properties"
+            },
+            {
+              "id": "mavenprofile与环境隔离-29-1-3-d1",
+              "tag": "多环境",
+              "desc": "dev/test/prod不同配置通过Profile切换，构建时-P参数激活"
+            },
+            {
+              "id": "mavenprofile与环境隔离-29-1-3-d2",
+              "tag": "activation",
+              "desc": "Profile激活条件如JDK版本/OS/文件存在/属性值，可activeByDefault"
+            },
+            {
+              "id": "mavenprofile与环境隔离-29-1-3-d3",
+              "tag": "-P参数",
+              "desc": "命令行-Pdev激活指定Profile，可同时激活多个如-Pdev,local"
+            },
+            {
+              "id": "mavenprofile与环境隔离-29-1-3-d4",
+              "tag": "activeByDefault",
+              "desc": "POM中Profile默认激活标志，命令行激活其他Profile时默认自动失效"
+            },
+            {
+              "id": "mavenprofile与环境隔离-29-1-3-d5",
+              "tag": "resources过滤",
+              "desc": "maven-resources-plugin替换变量占位符${xxx}，按Profile复制对应配置"
+            },
+            {
+              "id": "mavenprofile与环境隔离-29-1-3-d6",
+              "tag": "环境隔离",
+              "desc": "通过Profile+资源过滤实现不同环境配置自动切换构建产出"
+            },
+            {
+              "id": "mavenprofile与环境隔离-29-1-3-d7",
+              "tag": "Spring Boot配合",
+              "desc": "Boot用自身profile但Maven profile可控制依赖差异和构建参数互补"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

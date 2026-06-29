@@ -1,0 +1,1181 @@
+{
+  "id": "vue3",
+  "title": "十四、Vue3 生态体系",
+  "tag": "Vue3",
+  "order": 14,
+  "icon": "💚",
+  "cssIndex": 13,
+  "subs": [
+    {
+      "id": "14-1-vue3-核心-14-0",
+      "title": "14.1 Vue3 核心",
+      "points": [
+        {
+          "id": "compositionapivsoptionsapi-14-0-0",
+          "tag": "Composition API vs Options API",
+          "desc": "Composition API基于函数组合逻辑，Options API基于对象选项组织代码；Composition API通过setup函数将相关逻辑聚合而非按选项类型分散更利于逻辑复用",
+          "details": [
+            {
+              "id": "compositionapivsoptionsapi-14-0-0-d0",
+              "tag": "Composition API核心",
+              "desc": "setup()入口、ref/reactive响应式、watch/watchEffect副作用"
+            },
+            {
+              "id": "compositionapivsoptionsapi-14-0-0-d1",
+              "tag": "逻辑复用方式",
+              "desc": "自定义Hook函数提取复用逻辑替代mixin(命名冲突/来源不清)"
+            },
+            {
+              "id": "compositionapivsoptionsapi-14-0-0-d2",
+              "tag": "setup执行时机",
+              "desc": "组件创建之前beforeCreate之前无法访问this"
+            },
+            {
+              "id": "compositionapivsoptionsapi-14-0-0-d3",
+              "tag": "Composition API更",
+              "desc": "Composition API更适合复杂组件和逻辑复用场景"
+            }
+          ]
+        },
+        {
+          "id": "响应式原理proxyvsdefineproperty-14-0-1",
+          "tag": "响应式原理Proxy vs defineProperty",
+          "desc": "Vue3使用Proxy替代Vue2的Object.defineProperty实现响应式；Proxy可直接拦截对象全部操作无需递归遍历属性逐一劫持；Proxy支持数组索引修改和length变化监听",
+          "details": [
+            {
+              "id": "响应式原理proxyvsdefineproperty-14-0-1-d0",
+              "tag": "Proxy拦截13种操作get/set/has/deleteProperty/ownKeys等覆盖全面",
+              "desc": "Proxy可拦截属性读写、删除、枚举、函数调用等13种操作，对比defineProperty只能拦截get/set两种"
+            },
+            {
+              "id": "响应式原理proxyvsdefineproperty-14-0-1-d1",
+              "tag": "reactive内部实现",
+              "desc": "创建Proxy代理对象get通过track收集依赖set通过trigger触发更新"
+            },
+            {
+              "id": "响应式原理proxyvsdefineproperty-14-0-1-d2",
+              "tag": "ref实现",
+              "desc": "基本类型用class RefImpl包装+自定义get/set访问器劫持"
+            },
+            {
+              "id": "响应式原理proxyvsdefineproperty-14-0-1-d3",
+              "tag": "性能优势",
+              "desc": "Proxy惰性响应式只在访问嵌套属性时才递归代理子对象"
+            }
+          ]
+        },
+        {
+          "id": "ref与reactive-14-0-2",
+          "tag": "ref与reactive",
+          "desc": "ref用于基本类型和任意类型值的响应式包装reactive仅用于对象类型的深层响应式代理；ref通过.value访问修改值reactive直接访问属性无需.value",
+          "details": [
+            {
+              "id": "ref与reactive-14-0-2-d0",
+              "tag": "ref模板中自动解包",
+              "desc": "template访问ref无需.value但setup中必须.value"
+            },
+            {
+              "id": "ref与reactive-14-0-2-d1",
+              "tag": "reactive局限性",
+              "desc": "无法替换整个对象(代理绑定丢失)无法对基本类型使用"
+            },
+            {
+              "id": "ref与reactive-14-0-2-d2",
+              "tag": "toRefs原理",
+              "desc": "为reactive对象每个属性创建ObjectRefImpl保持响应式引用关系"
+            },
+            {
+              "id": "ref与reactive-14-0-2-d3",
+              "tag": "shallowRef/shallowReactive",
+              "desc": "仅表层响应式不深度代理嵌套对象"
+            }
+          ]
+        },
+        {
+          "id": "生命周期与setup函数-14-0-3",
+          "tag": "生命周期与setup函数",
+          "desc": "Vue3组合式API生命周期钩子前缀on：onMounted/onUpdated/onUnmounted等；setup()替代beforeCreate和created无法访问this",
+          "details": [
+            {
+              "id": "生命周期与setup函数-14-0-3-d0",
+              "tag": "对应关系",
+              "desc": "beforeCreate→setup()、created→setup()、mounted→onMounted"
+            },
+            {
+              "id": "生命周期与setup函数-14-0-3-d1",
+              "tag": "setup接收props和context(attrs/slots/emit/expose)两个参数",
+              "desc": "setup(props,context)中props是响应式不可修改；context.attrs含未声明props的属性，emit触发自定义事件替代this.$emit"
+            },
+            {
+              "id": "生命周期与setup函数-14-0-3-d2",
+              "tag": "生命周期钩子必须在setup同步",
+              "desc": "生命周期钩子必须在setup同步调用期间注册异步回调中注册无效"
+            },
+            {
+              "id": "生命周期与setup函数-14-0-3-d3",
+              "tag": "Vue3销毁钩子命名语义更准确",
+              "desc": "unmount替代destroy"
+            }
+          ]
+        },
+        {
+          "id": "fragment-teleport-suspense-14-0-4",
+          "tag": "Fragment/Teleport/Suspense",
+          "desc": "Fragment允许组件模板返回多个根节点；Teleport将组件内容渲染到DOM任意位置；Suspense协调异步组件加载状态",
+          "details": [
+            {
+              "id": "fragment-teleport-suspense-14-0-4-d0",
+              "tag": "Fragment原理",
+              "desc": "编译器生成Fragment类型VNode包含多个子节点数组"
+            },
+            {
+              "id": "fragment-teleport-suspense-14-0-4-d1",
+              "tag": "Teleport",
+              "desc": "to属性指定目标容器disabled属性可禁用传送就地渲染"
+            },
+            {
+              "id": "fragment-teleport-suspense-14-0-4-d2",
+              "tag": "Suspense",
+              "desc": "支持async setup()组件和defineAsyncComponent懒加载组件"
+            },
+            {
+              "id": "fragment-teleport-suspense-14-0-4-d3",
+              "tag": "Suspense目前仍为实验性功",
+              "desc": "Suspense目前仍为实验性功能生产环境需谨慎"
+            }
+          ]
+        },
+        {
+          "id": "虚拟dom优化与tree-shaking-14-0-5",
+          "tag": "虚拟DOM优化与Tree-shaking",
+          "desc": "Vue3虚拟DOM重写引入静态标记(PatchFlag)和静态提升(Block Tree)；编译器分析模板节点类型动态节点标记PatchFlagdiff时仅对比标记节点跳过静态内容",
+          "details": [
+            {
+              "id": "虚拟dom优化与tree-shaking-14-0-5-d0",
+              "tag": "PatchFlag类型",
+              "desc": "TEXT/CLASS/STYLE/PROPS等位掩码组合高效判断"
+            },
+            {
+              "id": "虚拟dom优化与tree-shaking-14-0-5-d1",
+              "tag": "Tree-shaking",
+              "desc": "Vue3全局API改为具名导出未使用的API打包时自动移除"
+            },
+            {
+              "id": "虚拟dom优化与tree-shaking-14-0-5-d2",
+              "tag": "缓存事件处理器",
+              "desc": "绑定的事件函数提升为常量缓存更新时仅对比引用"
+            },
+            {
+              "id": "虚拟dom优化与tree-shaking-14-0-5-d3",
+              "tag": "模板编译优化",
+              "desc": "v-if/v-for分支提升为独立Block动态子节点扁平化收集"
+            }
+          ]
+        },
+        {
+          "id": "vue3与vue2差异对比-14-0-6",
+          "tag": "Vue3与Vue2差异对比",
+          "desc": "Vue3全面重构核心响应式、虚拟DOM和编译器性能提升显著",
+          "details": [
+            {
+              "id": "vue3与vue2差异对比-14-0-6-d0",
+              "tag": "性能提升",
+              "desc": "初始渲染+55%、更新渲染+33%、内存占用-54%"
+            },
+            {
+              "id": "vue3与vue2差异对比-14-0-6-d1",
+              "tag": "API变化",
+              "desc": "new Vue()→createApp()、Vue.component→app.component"
+            },
+            {
+              "id": "vue3与vue2差异对比-14-0-6-d2",
+              "tag": "移除特性",
+              "desc": "$on/$off/$once事件总线、filter过滤器、$children、$destroy"
+            },
+            {
+              "id": "vue3与vue2差异对比-14-0-6-d3",
+              "tag": "新增特性",
+              "desc": "defineComponent、defineExpose、emits选项、CSS v-bind()动态样式"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "14-2-pinia-状态管理-14-1",
+      "title": "14.2 Pinia 状态管理",
+      "points": [
+        {
+          "id": "pinia核心概念state-getter-action-14-1-0",
+          "tag": "Pinia核心概念State/Getter/Action",
+          "desc": "Pinia由State/Getter/Action三要素组成无Mutation概念；State定义在state函数返回对象中Getter定义在getters对象中Action定义在actions对象中可为async函数",
+          "details": [
+            {
+              "id": "pinia核心概念state-getter-action-14-1-0-d0",
+              "tag": "defineStore两种风格",
+              "desc": "Options API风格和Setup风格(ref/computed/function定义)"
+            },
+            {
+              "id": "pinia核心概念state-getter-action-14-1-0-d1",
+              "tag": "State修改方式",
+              "desc": "直接修改、$patch(对象/函数)批量修改、Action内部修改、$reset()重置"
+            },
+            {
+              "id": "pinia核心概念state-getter-action-14-1-0-d2",
+              "tag": "Getter可接受state参数和其他getter参数支持返回函数实现参数化getter",
+              "desc": "Getter函数签名(state,otherGetters)可引用其他getter；返回函数时实现参数化如getters.filterBy(state)=>(key)=>state.list.filter(...)"
+            },
+            {
+              "id": "pinia核心概念state-getter-action-14-1-0-d3",
+              "tag": "Action天然",
+              "desc": "Action天然支持async/await内部可通过this访问整个store实例"
+            }
+          ]
+        },
+        {
+          "id": "piniavsvuex区别-14-1-1",
+          "tag": "Pinia vs Vuex区别",
+          "desc": "Pinia移除Mutation层简化架构State修改直接通过Action或$patch完成无需Mutation函数；Pinia无需嵌套模块每个defineStore即独立store天然模块化",
+          "details": [
+            {
+              "id": "piniavsvuex区别-14-1-1-d0",
+              "tag": "Vuex核心问题",
+              "desc": "Mutation冗余、模块嵌套复杂、TypeScript需大量手动类型声明"
+            },
+            {
+              "id": "piniavsvuex区别-14-1-1-d1",
+              "tag": "Pinia优势",
+              "desc": "扁平化Store无嵌套、$patch替代Mutation+commit、无需namespaced"
+            },
+            {
+              "id": "piniavsvuex区别-14-1-1-d2",
+              "tag": "Pinia的Action同时承担Vuex的Mutation(commit)和Action(dispatch)职能",
+              "desc": "Pinia统一用Action修改State，无需commit/dispatch区分，同步异步操作均在Action中直接修改state"
+            },
+            {
+              "id": "piniavsvuex区别-14-1-1-d3",
+              "tag": "Pinia不再需要dispatch/commit调用方式直接函数调用更直观",
+              "desc": "Pinia的Action通过store.xxx()直接调用，无需Vuex的commit/dispatch分发机制，代码更简洁可链式调用"
+            }
+          ]
+        },
+        {
+          "id": "持久化与插件系统-14-1-2",
+          "tag": "持久化与插件系统",
+          "desc": "Pinia持久化通过pinia-plugin-persistedstate插件自动将State同步到localStorage/sessionStorage；插件系统通过pinia.use()注册可扩展Store功能",
+          "details": [
+            {
+              "id": "持久化与插件系统-14-1-2-d0",
+              "tag": "配置",
+              "desc": "persist:{enabled:true,key:'customKey',storage:sessionStorage,paths:['user']}"
+            },
+            {
+              "id": "持久化与插件系统-14-1-2-d1",
+              "tag": "插件开发",
+              "desc": "函数返回对象可给store添加属性/方法监听$state变化"
+            },
+            {
+              "id": "持久化与插件系统-14-1-2-d2",
+              "tag": "$subscribe订阅State变化类似Vuex的subscribe",
+              "desc": "Pinia的$subscribe监听State整体变化触发回调，可持久化快照；Vuex的subscribe只监听单个mutation"
+            },
+            {
+              "id": "持久化与插件系统-14-1-2-d3",
+              "tag": "自定义serializer/storage实现加密存储等高级策略",
+              "desc": "pinia-plugin-persistedstate支持自定义serializer序列化(如加密)和storage目标(如IndexedDB)，不只是简单localStorage"
+            }
+          ]
+        },
+        {
+          "id": "store组合与跨store通信-14-1-3",
+          "tag": "Store组合与跨Store通信",
+          "desc": "Pinia支持在Action中直接引入其他Store调用其Action/State实现跨Store组合通信",
+          "details": [
+            {
+              "id": "store组合与跨store通信-14-1-3-d0",
+              "tag": "跨Store调用",
+              "desc": "在action中调用const userStore=useUserStore(); userStore.logout()"
+            },
+            {
+              "id": "store组合与跨store通信-14-1-3-d1",
+              "tag": "组合Store模式",
+              "desc": "defineStore内部使用多个Store实例整合逻辑"
+            },
+            {
+              "id": "store组合与跨store通信-14-1-3-d2",
+              "tag": "注意点",
+              "desc": "Store间循环引用需在Action中延迟引用避免初始化死循环"
+            },
+            {
+              "id": "store组合与跨store通信-14-1-3-d3",
+              "tag": "Store组合函数可",
+              "desc": "Store组合函数可返回额外计算逻辑不限于现有Store简单拼接"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "14-3-vite-构建工具-14-2",
+      "title": "14.3 Vite 构建工具",
+      "points": [
+        {
+          "id": "vite原理基于esm的devserver-14-2-0",
+          "tag": "Vite原理基于ESM的Dev Server",
+          "desc": "Vite开发服务器利用浏览器原生ESM支持按请求路径即时编译转换模块返回无需预打包整个应用",
+          "details": [
+            {
+              "id": "vite原理基于esm的devserver-14-2-0-d0",
+              "tag": "冷启动提速原理",
+              "desc": "无需打包整个应用依赖图启动时间与项目规模弱相关"
+            },
+            {
+              "id": "vite原理基于esm的devserver-14-2-0-d1",
+              "tag": "模块请求流程",
+              "desc": "浏览器import→Vite拦截请求→识别文件类型→转换编译→返回ESM格式代码"
+            },
+            {
+              "id": "vite原理基于esm的devserver-14-2-0-d2",
+              "tag": "预打包目的",
+              "desc": "第三方npm包多为CJS/UMD格式需转ESM减少HTTP请求合并小依赖"
+            },
+            {
+              "id": "vite原理基于esm的devserver-14-2-0-d3",
+              "tag": "esbuild角色",
+              "desc": "开发模式用esbuild处理TS/JSX转换比tsc快10-100倍"
+            }
+          ]
+        },
+        {
+          "id": "vitevswebpack对比-14-2-1",
+          "tag": "Vite vs Webpack对比",
+          "desc": "Webpack开发模式需预打包全部模块生成bundle后启动dev server项目越大启动越慢；Vite开发模式无bundle按需编译冷启动速度几乎不受项目规模影响",
+          "details": [
+            {
+              "id": "vitevswebpack对比-14-2-1-d0",
+              "tag": "冷启动",
+              "desc": "Webpack数十秒至分钟级(全量打包)、Vite毫秒至秒级(按需编译)"
+            },
+            {
+              "id": "vitevswebpack对比-14-2-1-d1",
+              "tag": "HMR速度",
+              "desc": "Webpack随项目增长变慢Vite几乎恒定"
+            },
+            {
+              "id": "vitevswebpack对比-14-2-1-d2",
+              "tag": "打包工具",
+              "desc": "Webpack自带bundle生产构建、Vite开发esbuild+生产Rollup"
+            },
+            {
+              "id": "vitevswebpack对比-14-2-1-d3",
+              "tag": "迁移成本",
+              "desc": "配置理念差异较大需逐步适配（迁移成本的详细说明：Vite vs Webpack对比中关于迁移成本的内容）"
+            }
+          ]
+        },
+        {
+          "id": "rollup生产构建与预优化-14-2-2",
+          "tag": "Rollup生产构建与预优化",
+          "desc": "Vite生产构建基于Rollup执行利用Rollup成熟的ESM Tree-shaking和代码分割能力产出优化产物",
+          "details": [
+            {
+              "id": "rollup生产构建与预优化-14-2-2-d0",
+              "tag": "预优化触发时机",
+              "desc": "首次启动、lockfile变更、dependencies变化、--force参数"
+            },
+            {
+              "id": "rollup生产构建与预优化-14-2-2-d1",
+              "tag": "预优化策略",
+              "desc": "CJS→ESM转换、合并小模块减少请求、esbuild极速处理"
+            },
+            {
+              "id": "rollup生产构建与预优化-14-2-2-d2",
+              "tag": "预优化缓存",
+              "desc": ".vite/deps目录存储预打包结果缓存文件名基于lockfile哈希"
+            },
+            {
+              "id": "rollup生产构建与预优化-14-2-2-d3",
+              "tag": "Rollup Tree-shaking",
+              "desc": "Rollup Tree-shaking基于ESM静态分析消除未使用导出"
+            }
+          ]
+        },
+        {
+          "id": "vite插件系统-14-2-3",
+          "tag": "Vite插件系统",
+          "desc": "Vite插件体系兼容Rollup插件(生产构建阶段)并扩展独有钩子(开发服务阶段)",
+          "details": [
+            {
+              "id": "vite插件系统-14-2-3-d0",
+              "tag": "独有钩子",
+              "desc": "configureServer配置dev server、transformIndexHtml转换HTML入口、hotUpdate自定义HMR"
+            },
+            {
+              "id": "vite插件系统-14-2-3-d1",
+              "tag": "常用插件",
+              "desc": "vite-plugin-vue、@vitejs/plugin-vue-jsx、vite-plugin-svg"
+            },
+            {
+              "id": "vite插件系统-14-2-3-d2",
+              "tag": "插件执行顺序",
+              "desc": "enforce:'pre'|'post'|默认中间"
+            },
+            {
+              "id": "vite插件系统-14-2-3-d3",
+              "tag": "虚拟模块",
+              "desc": "插件resolveId返回id+load返回内容可创建虚拟模块"
+            }
+          ]
+        },
+        {
+          "id": "环境变量与构建优化-14-2-4",
+          "tag": "环境变量与构建优化",
+          "desc": "Vite环境变量通过.env文件加载暴露给客户端的变量必须VITE_前缀；import.meta.env在代码中访问环境变量",
+          "details": [
+            {
+              "id": "环境变量与构建优化-14-2-4-d0",
+              "tag": "环境变量优先级",
+              "desc": ".env.[mode].local>.env.[mode]>.env.local>.env"
+            },
+            {
+              "id": "环境变量与构建优化-14-2-4-d1",
+              "tag": "VITE_前缀原理",
+              "desc": "仅包含VITE_开头的变量防止服务端敏感信息泄露"
+            },
+            {
+              "id": "环境变量与构建优化-14-2-4-d2",
+              "tag": "CSS处理",
+              "desc": "PostCSS自动生效、CSS Modules(.module.css)、预处理器自动安装"
+            },
+            {
+              "id": "环境变量与构建优化-14-2-4-d3",
+              "tag": "构建优化",
+              "desc": "manualChunks自定义代码分割、build.minify指定压缩工具(esbuild更快)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "14-4-vue3-进阶-14-3",
+      "title": "14.4 Vue3 进阶",
+      "points": [
+        {
+          "id": "自定义hooks实践-14-3-0",
+          "tag": "自定义Hooks实践",
+          "desc": "自定义Hook是Composition API的核心复用模式将组件逻辑提取为独立可复用函数；Hook函数以use前缀命名内部使用ref/computed/watch等组合API组合逻辑",
+          "details": [
+            {
+              "id": "自定义hooks实践-14-3-0-d0",
+              "tag": "典型Hook结构",
+              "desc": "export function useXxx(params){const state=ref();return{state,method};}"
+            },
+            {
+              "id": "自定义hooks实践-14-3-0-d1",
+              "tag": "常用Hook场景",
+              "desc": "数据请求(useFetch)、表单验证(useForm)、鼠标/键盘事件(useMouse)"
+            },
+            {
+              "id": "自定义hooks实践-14-3-0-d2",
+              "tag": "Hook与组件通信",
+              "desc": "Hook可接受ref/computed作为参数实现父子逻辑联动"
+            },
+            {
+              "id": "自定义hooks实践-14-3-0-d3",
+              "tag": "Hook设计原则",
+              "desc": "单一职责、显式参数(不依赖this)、返回值最小暴露"
+            }
+          ]
+        },
+        {
+          "id": "性能优化策略-14-3-1",
+          "tag": "性能优化策略",
+          "desc": "Vue3性能优化涵盖渲染层、组件层和架构层多维度策略",
+          "details": [
+            {
+              "id": "性能优化策略-14-3-1-d0",
+              "tag": "Virtual Scroll虚拟滚动仅渲染可视区域DOM节点解决长列表性能瓶颈",
+              "desc": "虚拟滚动通过计算scrollTop+offset+itemHeight确定可视区间，只渲染可见DOM节点，万级数据仅维护数十个DOM"
+            },
+            {
+              "id": "性能优化策略-14-3-1-d1",
+              "tag": "keep-alive缓存组件实例",
+              "desc": "keep-alive缓存组件实例避免重复创建销毁include/exclude/max控制策略"
+            },
+            {
+              "id": "性能优化策略-14-3-1-d2",
+              "tag": "异步组件defineAsyncComponent延迟加载非首屏组件配合Suspense处理加载状态",
+              "desc": "defineAsyncComponent配合import()动态导入，Suspense提供loading/error/fallback插槽，非首屏组件按需加载减少首屏体积"
+            },
+            {
+              "id": "性能优化策略-14-3-1-d3",
+              "tag": "v-once/v-memo标记静态内容跳过更新diff",
+              "desc": "v-once让节点只渲染一次后续跳过diff；v-memo接收依赖数组值不变时跳过整个子树patch，大幅减少比对开销"
+            },
+            {
+              "id": "性能优化策略-14-3-1-d4",
+              "tag": "shallowRef/shallowReactive仅表层响应式避免大对象深度代理开销",
+              "desc": "shallowRef只在.value赋值时触发更新不追踪内部属性；shallowReactive只代理顶层属性，深层修改不触发响应式"
+            }
+          ]
+        },
+        {
+          "id": "ssr与nuxt3-14-3-2",
+          "tag": "SSR与Nuxt3",
+          "desc": "Vue3 SSR将组件渲染为服务端HTML字符串发送客户端hydration接管DOM恢复交互",
+          "details": [
+            {
+              "id": "ssr与nuxt3-14-3-2-d0",
+              "tag": "SSR优势",
+              "desc": "首屏加载快、SEO友好（SSR优势的详细说明：SSR与Nuxt3中关于SSR优势的内容）"
+            },
+            {
+              "id": "ssr与nuxt3-14-3-2-d1",
+              "tag": "SSR关键问题",
+              "desc": "服务端无DOM/BOM、生命周期仅执行到onMounted之前"
+            },
+            {
+              "id": "ssr与nuxt3-14-3-2-d2",
+              "tag": "Nuxt3核心特性",
+              "desc": "Nitro服务引擎、auto-imports自动导入、layers模块化扩展"
+            },
+            {
+              "id": "ssr与nuxt3-14-3-2-d3",
+              "tag": "ISR增量静态生成",
+              "desc": "首次SSR生成静态页面缓存后续请求返回缓存页面"
+            }
+          ]
+        },
+        {
+          "id": "typescript集成-14-3-3",
+          "tag": "TypeScript集成",
+          "desc": "Vue3全面TypeScript重写提供原生TS支持",
+          "details": [
+            {
+              "id": "typescript集成-14-3-3-d0",
+              "tag": "defineComponent",
+              "desc": "为Options API组件提供类型推断"
+            },
+            {
+              "id": "typescript集成-14-3-3-d1",
+              "tag": "defineProps/defineEmits",
+              "desc": "SFC编译器宏基于泛型声明推断类型仅限<script setup>"
+            },
+            {
+              "id": "typescript集成-14-3-3-d2",
+              "tag": "ref类型",
+              "desc": "ref<string>('hello')指定泛型"
+            },
+            {
+              "id": "typescript集成-14-3-3-d3",
+              "tag": "类型工具",
+              "desc": "PropType<T>定义复杂prop类型、ExtractPropTypes提取运行时类型"
+            }
+          ]
+        },
+        {
+          "id": "响应式api进阶-14-3-4",
+          "tag": "响应式API进阶",
+          "desc": "computed返回只读ref自动追踪依赖缓存计算值；watch精确监听特定响应式源执行副作用回调",
+          "details": [
+            {
+              "id": "响应式api进阶-14-3-4-d0",
+              "tag": "computed缓存机制",
+              "desc": "依赖不变时多次访问返回同一缓存值惰性求值"
+            },
+            {
+              "id": "响应式api进阶-14-3-4-d1",
+              "tag": "watch vs watchEffect",
+              "desc": "watch需明确指定监听源默认惰性，watchEffect自动收集依赖立即执行"
+            },
+            {
+              "id": "响应式api进阶-14-3-4-d2",
+              "tag": "watch配置",
+              "desc": "deep:true深度监听、immediate:true立即执行、flush:'post'|'sync'|'pre'"
+            },
+            {
+              "id": "响应式api进阶-14-3-4-d3",
+              "tag": "高级API",
+              "desc": "shallowReactive表层响应式、toRaw还原原始对象、markRaw阻止代理"
+            }
+          ]
+        },
+        {
+          "id": "自定义渲染器-14-3-5",
+          "tag": "自定义渲染器",
+          "desc": "Vue3通过createRenderer API可创建自定义渲染器将Vue组件渲染到任意目标平台",
+          "details": [
+            {
+              "id": "自定义渲染器-14-3-5-d0",
+              "tag": "createRenderer",
+              "desc": "传入nodeOps(节点操作接口)+patchOptions(属性比对逻辑)"
+            },
+            {
+              "id": "自定义渲染器-14-3-5-d1",
+              "tag": "nodeOps核心接口",
+              "desc": "createElement/insertChild/removeChild/setElementText/setElementProp"
+            },
+            {
+              "id": "自定义渲染器-14-3-5-d2",
+              "tag": "实际案例",
+              "desc": "vue-native渲染到原生组件、@vue-three渲染到Three.js 3D场景"
+            },
+            {
+              "id": "自定义渲染器-14-3-5-d3",
+              "tag": "渲染器与运行时分离",
+              "desc": "核心逻辑复用率极高跨平台只需600行适配层"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "14-5-vue-router-4-14-4",
+      "title": "14.5 Vue Router 4",
+      "points": [
+        {
+          "id": "路由模式与createrouter-14-4-0",
+          "tag": "路由模式与createRouter",
+          "desc": "Vue Router 4为Vue3专属路由库使用createRouter创建路由实例支持hash/history/abstract三种模式",
+          "details": [
+            {
+              "id": "路由模式与createrouter-14-4-0-d0",
+              "tag": "createRouter取代new VueRouter",
+              "desc": "import{createRouter,createWebHistory}from vue-router"
+            },
+            {
+              "id": "路由模式与createrouter-14-4-0-d1",
+              "tag": "createWebHistory()对应history模式URL无#号需服务器配置fallback",
+              "desc": "history模式利用HTML5 pushState/replaceState生成干净URL，需服务器配置所有路径回退到index.html防止404"
+            },
+            {
+              "id": "路由模式与createrouter-14-4-0-d2",
+              "tag": "createWebHashHistory()对应hash模式URL带#号兼容性好无需服务器配置",
+              "desc": "hash模式通过location.hash+hashchange事件路由，URL带#号SEO不友好但无需服务器fallback配置兼容性最佳"
+            },
+            {
+              "id": "路由模式与createrouter-14-4-0-d3",
+              "tag": "createMemoryHistory()对应abstract模式用于SSR和测试环境",
+              "desc": "abstract模式在内存中维护路由历史不依赖浏览器URL，SSR时无window对象可用，测试环境隔离URL副作用"
+            },
+            {
+              "id": "路由模式与createrouter-14-4-0-d4",
+              "tag": "history模式nginx配置",
+              "desc": "try_files $uri $uri/ /index.html避免刷新404"
+            }
+          ]
+        },
+        {
+          "id": "导航守卫全面升级-14-4-1",
+          "tag": "导航守卫全面升级",
+          "desc": "Vue Router 4导航守卫API更简洁全局守卫返回值语义更明确",
+          "details": [
+            {
+              "id": "导航守卫全面升级-14-4-1-d0",
+              "tag": "router.beforeEach可直接返回false或路由路径替代next()",
+              "desc": "Vue Router 4守卫返回false取消导航，返回路径字符串/路由对象重定向，不再需要显式调用next()函数"
+            },
+            {
+              "id": "导航守卫全面升级-14-4-1-d1",
+              "tag": "全局后置守卫router.afterEach新增failure参数捕获导航失败原因",
+              "desc": "afterEach(to,from,failure)第三个参数failure在导航被守卫中断或重复时捕获失败原因，便于错误追踪和日志记录"
+            },
+            {
+              "id": "导航守卫全面升级-14-4-1-d2",
+              "tag": "路由独享守卫beforeEnter可直接在路由配置中写函数数组",
+              "desc": "Vue Router 4的beforeEnter支持数组形式传入多个守卫函数按顺序执行，比Vue2只能写单个函数更灵活"
+            },
+            {
+              "id": "导航守卫全面升级-14-4-1-d3",
+              "tag": "组件内守卫onBeforeRouteLeave/onBeforeRouteUpdate需在setup中注册",
+              "desc": "组合式API中用onBeforeRouteLeave/onBeforeRouteUpdate替代Vue2的beforeRouteLeave/beforeRouteUpdate选项式钩子"
+            },
+            {
+              "id": "导航守卫全面升级-14-4-1-d4",
+              "tag": "守卫执行顺序与Vue2不同",
+              "desc": "beforeEach→beforeRouteUpdate→afterEach"
+            }
+          ]
+        },
+        {
+          "id": "动态路由与addroute-14-4-2",
+          "tag": "动态路由与addRoute",
+          "desc": "Vue Router 4支持运行时动态添加删除路由适配权限系统需求",
+          "details": [
+            {
+              "id": "动态路由与addroute-14-4-2-d0",
+              "tag": "router.addRoute(route)动态添加单个路由配置",
+              "desc": "addRoute接收路由配置对象{name,path,component}动态添加路由，常用于权限系统按角色动态加载菜单路由"
+            },
+            {
+              "id": "动态路由与addroute-14-4-2-d1",
+              "tag": "router.addRoute(parentName,route)为已有路由添加嵌套子路由",
+              "desc": "addRoute(parentName,route)将新路由作为指定父路由的children添加，实现动态嵌套路由如权限子系统子菜单"
+            },
+            {
+              "id": "动态路由与addroute-14-4-2-d2",
+              "tag": "router.removeRoute(routeName)动态删除已注册路由",
+              "desc": "removeRoute按路由name删除动态添加的路路配置，用户权限变更时移除不再授权的路由防止非法访问"
+            },
+            {
+              "id": "动态路由与addroute-14-4-2-d3",
+              "tag": "router.hasRoute(routeName)检查路由是否存在",
+              "desc": "hasRoute返回boolean判断指定name的路由是否已注册，权限系统可据此判断用户是否可访问某页面"
+            },
+            {
+              "id": "动态路由与addroute-14-4-2-d4",
+              "tag": "router.getRoutes()获取所有已注册路由完整列表",
+              "desc": "getRoutes返回包含所有动态和静态路由的完整数组，便于调试和权限系统批量校验路由可用性"
+            },
+            {
+              "id": "动态路由与addroute-14-4-2-d5",
+              "tag": "典型应用",
+              "desc": "登录后根据用户权限动态注册有权限的路由"
+            }
+          ]
+        },
+        {
+          "id": "路由懒加载与过渡动画-14-4-3",
+          "tag": "路由懒加载与过渡动画",
+          "desc": "Vue Router 4配合Vite实现高效路由懒加载和过渡动画",
+          "details": [
+            {
+              "id": "路由懒加载与过渡动画-14-4-3-d0",
+              "tag": "路由懒加载component",
+              "desc": "()=>import(@/views/User.vue)Vite自动代码分割"
+            },
+            {
+              "id": "路由懒加载与过渡动画-14-4-3-d1",
+              "tag": "命名chunk()",
+              "desc": ">import(/*webpackChunkName:user*/./User.vue)"
+            },
+            {
+              "id": "路由懒加载与过渡动画-14-4-3-d2",
+              "tag": "路由过渡router-view v-slot",
+              "desc": "{Component}配合transition实现切换动画"
+            },
+            {
+              "id": "路由懒加载与过渡动画-14-4-3-d3",
+              "tag": "Suspense配合router-view v-slot",
+              "desc": "{Component}处理异步组件加载"
+            },
+            {
+              "id": "路由懒加载与过渡动画-14-4-3-d4",
+              "tag": "scrollBehavior(to,from,savedPosition)控制路由切换后页面滚动位置",
+              "desc": "savedPosition保留浏览器前进后退时的滚动位置；返回{x:0,y:0}滚动到顶部，返回锚点selector定位到元素"
+            }
+          ]
+        },
+        {
+          "id": "compositionapi路由钩子-14-4-4",
+          "tag": "Composition API路由钩子",
+          "desc": "Vue Router 4提供Composition API风格路由函数替代this.$route/$router",
+          "details": [
+            {
+              "id": "compositionapi路由钩子-14-4-4-d0",
+              "tag": "useRouter()在setup中获取router实例等同this.$router",
+              "desc": "useRouter()返回路由实例可直接调用push/replace/go等方法，替代Vue2中this.$router的选项式访问方式"
+            },
+            {
+              "id": "compositionapi路由钩子-14-4-4-d1",
+              "tag": "useRoute()在setup中获取当前路由信息等同this.$route返回reactive对象",
+              "desc": "useRoute()返回的reactive路由对象自动跟踪params/query/hash变化，watch监听route.params即可响应路由参数变更"
+            },
+            {
+              "id": "compositionapi路由钩子-14-4-4-d2",
+              "tag": "onBeforeRouteLeave组件内离开守卫",
+              "desc": "onBeforeRouteLeave在setup中注册离开当前路由前的拦截逻辑，返回false阻止导航，适合未保存表单确认场景"
+            },
+            {
+              "id": "compositionapi路由钩子-14-4-4-d3",
+              "tag": "onBeforeRouteUpdate组件内更新守卫",
+              "desc": "onBeforeRouteUpdate在同路由不同参数切换时触发(如/user/:id)，用于复用组件时响应参数变化重新加载数据"
+            },
+            {
+              "id": "compositionapi路由钩子-14-4-4-d4",
+              "tag": "useRoute()",
+              "desc": "useRoute()是reactive的可直接watch监听路由变化"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "14-6-vue3组件库生态-14-5",
+      "title": "14.6 Vue3组件库生态",
+      "points": [
+        {
+          "id": "elementplus-14-5-0",
+          "tag": "Element Plus",
+          "desc": "Element Plus是Element UI的Vue3重构版本全面支持Composition API和TypeScript",
+          "details": [
+            {
+              "id": "elementplus-14-5-0-d0",
+              "tag": "从Element UI迁移组件API基本兼容需注意v-model语法变化",
+              "desc": "Vue3 v-model默认prop名为modelValue事件为update:modelValue，替代Vue2的value+input事件，需迁移现有v-model绑定"
+            },
+            {
+              "id": "elementplus-14-5-0-d1",
+              "tag": "TypeScript支持所有组件",
+              "desc": "TypeScript支持所有组件提供完整类型声明无需额外@types包"
+            },
+            {
+              "id": "elementplus-14-5-0-d2",
+              "tag": "暗黑模式内置Dark Mode",
+              "desc": "暗黑模式内置Dark Mode通过useDark()切换CSS变量驱动全局主题"
+            },
+            {
+              "id": "elementplus-14-5-0-d3",
+              "tag": "按需导入配合unplugin-vue-components和unplugin-auto-import自动按需引入",
+              "desc": "unplugin自动解析模板中组件名按需引入对应模块，无需手动import每个组件，大幅减少最终打包体积"
+            },
+            {
+              "id": "elementplus-14-5-0-d4",
+              "tag": "国际化内置多语言支持",
+              "desc": "国际化内置多语言支持通过useI18n配置locale"
+            },
+            {
+              "id": "elementplus-14-5-0-d5",
+              "tag": "虚拟化表格el-table-v2",
+              "desc": "虚拟化表格el-table-v2支持万级数据虚拟滚动渲染性能大幅提升"
+            }
+          ]
+        },
+        {
+          "id": "antdesignvue3x-14-5-1",
+          "tag": "Ant Design Vue 3.x",
+          "desc": "Ant Design Vue 3.x完全基于Vue3重构遵循Ant Design设计规范",
+          "details": [
+            {
+              "id": "antdesignvue3x-14-5-1-d0",
+              "tag": "设计语言遵循Ant Design 4.0设计规范组件风格与React版一致",
+              "desc": "Ant Design Vue 3.x遵循Ant Design 4.0设计体系，视觉风格和交互规范与React版Ant Design保持一致便于跨框架统一"
+            },
+            {
+              "id": "antdesignvue3x-14-5-1-d1",
+              "tag": "Form表单重构不再需要v-decorator改用v-model+rules声明式校验",
+              "desc": "Vue3版Form用v-model双向绑定字段值，rules配置校验规则，替代Vue2版v-decorator装饰器模式更直观简洁"
+            },
+            {
+              "id": "antdesignvue3x-14-5-1-d2",
+              "tag": "按需",
+              "desc": "按需加载配合babel-plugin-import或unplugin-vue-components自动按需引入"
+            },
+            {
+              "id": "antdesignvue3x-14-5-1-d3",
+              "tag": "主题定制ConfigProvider全局配置主题通过modifyVars修改Less变量",
+              "desc": "ConfigProvider包裹应用通过modifyVars覆盖Less变量定制主题色/字号等，支持动态切换主题无需重建样式"
+            },
+            {
+              "id": "antdesignvue3x-14-5-1-d4",
+              "tag": "国际化内置多语言",
+              "desc": "国际化内置多语言支持moment.js→day.js替换体积更小"
+            },
+            {
+              "id": "antdesignvue3x-14-5-1-d5",
+              "tag": "组件丰富度50+组件涵盖表单/数据展示/导航/反馈/布局全场景",
+              "desc": "Ant Design Vue提供50+组件覆盖表单输入、数据表格、导航菜单、反馈弹窗、布局容器等企业级全交互场景"
+            }
+          ]
+        },
+        {
+          "id": "naiveui-14-5-2",
+          "tag": "Naive UI",
+          "desc": "Naive UI是Vue3原生组件库TypeScript编写不依赖第三方CSS框架",
+          "details": [
+            {
+              "id": "naiveui-14-5-2-d0",
+              "tag": "TypeScript优先100%TypeScript编写类型推断最完善无需额外类型包",
+              "desc": "Naive UI源码100%TS编写组件Props/Events/Slots类型完整推断，IDE智能提示覆盖率最高无需安装@types包"
+            },
+            {
+              "id": "naiveui-14-5-2-d1",
+              "tag": "主题系统",
+              "desc": "主题系统基于CSS-in-JS(themeOverrides对象)深度定制无需预处理器"
+            },
+            {
+              "id": "naiveui-14-5-2-d2",
+              "tag": "暗黑模式内置darkTheme",
+              "desc": "暗黑模式内置darkTheme通过n-config-provider切换"
+            },
+            {
+              "id": "naiveui-14-5-2-d3",
+              "tag": "Tree-shaking友好ESM导出按需引入产物体积可控",
+              "desc": "Naive UI组件均ESM模块化导出，Vite/Webpack可精准Tree-shaking移除未使用组件，按需引入产物体积小"
+            },
+            {
+              "id": "naiveui-14-5-2-d4",
+              "tag": "无第三方依赖不依赖moment/lodash等库体积小全量约300KB gzip",
+              "desc": "Naive UI零外部依赖自实现日期/工具函数，全量gzip约300KB对比Element Plus依赖moment超600KB更轻量"
+            },
+            {
+              "id": "naiveui-14-5-2-d5",
+              "tag": "独特组件n-data-table高级表格/n-tree-select树选择/n-icon自定义图标",
+              "desc": "n-data-table支持排序/筛选/分页/固定列等高级功能；n-tree-select下拉树选择器是其他库少有的独特组件"
+            }
+          ]
+        },
+        {
+          "id": "组件库选型对比-14-5-3",
+          "tag": "组件库选型对比",
+          "desc": "三大主流Vue3组件库各有特色需根据项目需求选择",
+          "details": [
+            {
+              "id": "组件库选型对比-14-5-3-d0",
+              "tag": "Element Plus生态最大社区活跃中文文档完善适合中后台管理系统",
+              "desc": "Element Plus社区贡献者最多插件生态丰富，中文文档和教程覆盖率高，是Vue3中后台管理系统首选组件库"
+            },
+            {
+              "id": "组件库选型对比-14-5-3-d1",
+              "tag": "Ant Design Vue设计规范严格国际化好适合企业级复杂交互场景",
+              "desc": "Ant Design Vue遵循蚂蚁设计体系规范严格一致，国际化i18n方案完善支持30+语言，适合多语言企业级应用"
+            },
+            {
+              "id": "组件库选型对比-14-5-3-d2",
+              "tag": "Naive UI TS优先轻量无依赖主题定制灵活适合定制化需求强的项目",
+              "desc": "Naive UI TS类型最完善零依赖体积最小，主题通过n-config-provider+themeOverrides深度定制适合高度定制化项目"
+            },
+            {
+              "id": "组件库选型对比-14-5-3-d3",
+              "tag": "Vant 4移动端组件库",
+              "desc": "Vant 4移动端组件库适合H5和小程序场景"
+            },
+            {
+              "id": "组件库选型对比-14-5-3-d4",
+              "tag": "TDesign Vue Next腾讯设计体系跨框架统一设计语言",
+              "desc": "TDesign遵循腾讯设计体系统一Web/移动/小程序设计语言，跨React/Vue多框架保持视觉一致性"
+            },
+            {
+              "id": "组件库选型对比-14-5-3-d5",
+              "tag": "Arco Design Vue字节跳动设计体系组件质量高",
+              "desc": "Arco Design来自字节跳动飞书设计体系，组件交互细节打磨精细，暗黑模式和国际化支持完善"
+            }
+          ]
+        },
+        {
+          "id": "vant4与其他移动端库-14-5-4",
+          "tag": "Vant 4与其他移动端库",
+          "desc": "Vue3移动端组件库选择影响H5和小程序开发体验",
+          "details": [
+            {
+              "id": "vant4与其他移动端库-14-5-4-d0",
+              "tag": "Vant 4有赞出品轻量可靠70+组件",
+              "desc": "Vant 4有赞出品轻量可靠70+组件支持Vue3+TypeScript开箱即用"
+            },
+            {
+              "id": "vant4与其他移动端库-14-5-4-d1",
+              "tag": "Varlet Material Design风格Vue3移动端组件库支持暗黑模式和多语言",
+              "desc": "Varlet遵循Material Design规范设计，支持暗黑模式动态切换和i18n多语言，专为Vue3移动端H5场景打造"
+            },
+            {
+              "id": "vant4与其他移动端库-14-5-4-d2",
+              "tag": "NutUI 4京东出品Vue3",
+              "desc": "NutUI 4京东出品Vue3移动端组件库支持Taro多端适配H5+小程序"
+            },
+            {
+              "id": "vant4与其他移动端库-14-5-4-d3",
+              "tag": "uni-app+uni-ui跨端方案一套代码编译到H5/小程序/App",
+              "desc": "uni-app使用Vue语法一套代码编译到iOS/Android/H5/微信小程序等多端，uni-ui提供跨端兼容的基础组件集"
+            },
+            {
+              "id": "vant4与其他移动端库-14-5-4-d4",
+              "tag": "组件库选型纯H5选Vant4/Varlet跨端选NutUI或uni-ui",
+              "desc": "纯H5场景选Vant4轻量成熟或Varlet风格灵活；需要跨端编译小程序/App时选NutUI(京东)或uni-ui(跨端兼容)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "14-7-vue3测试体系-14-6",
+      "title": "14.7 Vue3测试体系",
+      "points": [
+        {
+          "id": "vitest单元测试-14-6-0",
+          "tag": "Vitest单元测试",
+          "desc": "Vitest是Vite生态的单元测试框架与Vite共享配置极速启动兼容Jest API",
+          "details": [
+            {
+              "id": "vitest单元测试-14-6-0-d0",
+              "tag": "Vitest vs Jest Vitest基于Vite转换模块启动极快Jest需自行配置转换较慢",
+              "desc": "Vitest复用Vite的插件管道和模块转换管线启动毫秒级，Jest需为每种文件类型配置transform启动慢秒级"
+            },
+            {
+              "id": "vitest单元测试-14-6-0-d1",
+              "tag": "兼容Jest API expect/describe/it/jest.mock/spyOn等Jest用户零学习成本",
+              "desc": "VitestAPI设计兼容Jest核心方法expect/describe/it/vi.mock/vi.spyOn，现有Jest测试代码只需改jest为vi即可迁移"
+            },
+            {
+              "id": "vitest单元测试-14-6-0-d2",
+              "tag": "组件测试配合@vue/test-utils挂载组件mount/shallowMount验证渲染和行为",
+              "desc": "@vue/test-utils提供mount完整渲染+shallowMount浅渲染替换子组件，配合Vitest验证组件DOM输出和交互行为"
+            },
+            {
+              "id": "vitest单元测试-14-6-0-d3",
+              "tag": "覆盖率coverageprovider",
+              "desc": "istanbul或v8生成覆盖率报告"
+            },
+            {
+              "id": "vitest单元测试-14-6-0-d4",
+              "tag": "快照测试expect(result).toMatchSnapshot()验证组件渲染输出",
+              "desc": "toMatchSnapshot将组件渲染HTML序列化为快照文件，后续运行比对差异，结构变更时需--update主动更新快照"
+            },
+            {
+              "id": "vitest单元测试-14-6-0-d5",
+              "tag": "Watch模式vitest --watch文件变更自动重跑相关测试",
+              "desc": "vitest --watch监听源文件变更自动重跑依赖该文件的测试用例，开发时实时反馈无需手动执行测试命令"
+            }
+          ]
+        },
+        {
+          "id": "vuetestutils2-14-6-1",
+          "tag": "Vue Test Utils 2",
+          "desc": "@vue/test-utils是Vue3官方组件测试工具库提供挂载/交互/断言API",
+          "details": [
+            {
+              "id": "vuetestutils2-14-6-1-d0",
+              "tag": "mount()完整挂载组件含所有子组件",
+              "desc": "mount()完整挂载组件含所有子组件适合集成测试"
+            },
+            {
+              "id": "vuetestutils2-14-6-1-d1",
+              "tag": "shallowMount()浅挂载替换子组件为占位符适合单元测试隔离依赖",
+              "desc": "shallowMount将子组件渲染为占位stub隔离子组件副作用，聚焦测试当前组件逻辑不关心子组件实现细节"
+            },
+            {
+              "id": "vuetestutils2-14-6-1-d2",
+              "tag": "find()/findAll()",
+              "desc": "find()/findAll()通过选择器查找DOM元素或子组件"
+            },
+            {
+              "id": "vuetestutils2-14-6-1-d3",
+              "tag": "trigger()",
+              "desc": "trigger()触发DOM事件如trigger(click)或trigger(input,{value:xx})"
+            },
+            {
+              "id": "vuetestutils2-14-6-1-d4",
+              "tag": "setValue()/setChecked()便捷修改表单元素值模拟用户输入",
+              "desc": "setValue修改input/select值触发v-model更新；setChecked切换checkbox状态，简化表单交互测试避免手动模拟DOM事件"
+            },
+            {
+              "id": "vuetestutils2-14-6-1-d5",
+              "tag": "emitted()获取组件emit的事件列表验证事件触发和参数",
+              "desc": "wrapper.emitted()返回组件已触发的事件名和参数数组，emitted('click')[0]获取首次click事件的参数用于断言"
+            }
+          ]
+        },
+        {
+          "id": "cypresse2e测试-14-6-2",
+          "tag": "Cypress E2E测试",
+          "desc": "Cypress是现代端到端测试框架真实浏览器环境运行适合验收测试",
+          "details": [
+            {
+              "id": "cypresse2e测试-14-6-2-d0",
+              "tag": "Cypress vs Selenium Cypress在同一浏览器进程中运行无需WebDriver更快更稳定",
+              "desc": "Cypress直接在浏览器Chromium进程内运行操控DOM，Selenium通过WebDriver协议跨进程通信延迟高且易超时"
+            },
+            {
+              "id": "cypresse2e测试-14-6-2-d1",
+              "tag": "cy.visit()导航到页面cy.get()选择元素cy.contains()查找文本",
+              "desc": "cy.visit加载URL页面；cy.get用CSS选择器定位DOM元素；cy.contains按文本内容查找元素适合按钮/链接定位"
+            },
+            {
+              "id": "cypresse2e测试-14-6-2-d2",
+              "tag": "cy.intercept()拦截和模拟API请求控制后端响应数据",
+              "desc": "cy.intercept拦截指定URL请求可返回模拟fixture数据或修改真实响应，隔离后端依赖使E2E测试不依赖服务状态"
+            },
+            {
+              "id": "cypresse2e测试-14-6-2-d3",
+              "tag": "时间旅行测试",
+              "desc": "时间旅行测试运行时可在每个命令步骤间跳转查看DOM状态截图"
+            },
+            {
+              "id": "cypresse2e测试-14-6-2-d4",
+              "tag": "自动重试断言失败时Cypress自动重试直到超时减少假失败",
+              "desc": "Cypress断言失败不立即报错而是自动重试等待DOM更新或异步完成，默认4秒超时减少因动画或延迟导致的假失败"
+            },
+            {
+              "id": "cypresse2e测试-14-6-2-d5",
+              "tag": "Vue3集成@cypress/vue组件测试+@cypress/code-coverage覆盖率收集",
+              "desc": "@cypress/vue在Cypress中挂载单个Vue组件做组件级CT测试，@cypress/code-coverage收集Istanbul覆盖率数据"
+            }
+          ]
+        },
+        {
+          "id": "测试策略与覆盖率-14-6-3",
+          "tag": "测试策略与覆盖率",
+          "desc": "合理的测试策略平衡投入产出比覆盖率不是唯一目标",
+          "details": [
+            {
+              "id": "测试策略与覆盖率-14-6-3-d0",
+              "tag": "测试金字塔70%单元测试+20%集成测试+10%E2E测试投入产出最优",
+              "desc": "单元测试成本最低覆盖逻辑分支最多占70%；集成测试验证模块协作占20%；E2E成本最高仅覆盖关键流程占10%"
+            },
+            {
+              "id": "测试策略与覆盖率-14-6-3-d1",
+              "tag": "单元测试重点纯函数/计算逻辑/状态",
+              "desc": "单元测试重点纯函数/计算逻辑/状态管理store/自定义Hook"
+            },
+            {
+              "id": "测试策略与覆盖率-14-6-3-d2",
+              "tag": "组件测试重点用户交互(点击输入)/props渲染/事件emit/条件渲染",
+              "desc": "重点验证按钮点击触发正确事件、props变化更新渲染、emit传出正确参数、v-if/v-show条件切换DOM可见性"
+            },
+            {
+              "id": "测试策略与覆盖率-14-6-3-d3",
+              "tag": "E2E测试重点核心业务流程(登录下单支付)/页面路由跳转/关键数据展示",
+              "desc": "E2E覆盖用户核心操作路径：登录认证流程、下单支付链路、路由跳转正确性、关键数据列表加载和展示验证"
+            },
+            {
+              "id": "测试策略与覆盖率-14-6-3-d4",
+              "tag": "覆盖率目标核心逻辑80%+/组件交互60%+/整体不低于50%",
+              "desc": "核心业务逻辑函数分支覆盖率80%以上保证关键路径正确；组件交互覆盖60%；整体50%以上避免遗漏重要模块"
+            },
+            {
+              "id": "测试策略与覆盖率-14-6-3-d5",
+              "tag": "避免过度测试UI样式/第三方库行为/简单getter不需要单独测试",
+              "desc": "CSS样式变更频繁测试价值低；第三方库已有自身测试无需重复；纯getter无逻辑分支测试成本大于收益应跳过"
+            }
+          ]
+        },
+        {
+          "id": "mock与stub策略-14-6-4",
+          "tag": "Mock与Stub策略",
+          "desc": "测试中Mock和Stub隔离外部依赖保证测试独立性和稳定性",
+          "details": [
+            {
+              "id": "mock与stub策略-14-6-4-d0",
+              "tag": "vi.mock(module)Vitest全局Mock模块替代真实实现返回可控数据",
+              "desc": "vi.mock('axios')自动替换整个模块为模拟实现，返回可控数据避免真实HTTP请求，保证测试稳定不依赖外部服务"
+            },
+            {
+              "id": "mock与stub策略-14-6-4-d1",
+              "tag": "vi.spyOn(object,method)监听方法调用记录参数和返回值不替换实现",
+              "desc": "vi.spyOn包裹方法记录调用次数/参数但不改变原实现行为，适合验证函数是否被正确调用同时保留真实逻辑"
+            },
+            {
+              "id": "mock与stub策略-14-6-4-d2",
+              "tag": "vi.fn()",
+              "desc": "vi.fn()创建空Mock函数可配置返回值和调用验证"
+            },
+            {
+              "id": "mock与stub策略-14-6-4-d3",
+              "tag": "API Mock vi.mock(@/api/user,()",
+              "desc": ">({getUser:vi.fn().mockResolvedValue(mockData)}))"
+            },
+            {
+              "id": "mock与stub策略-14-6-4-d4",
+              "tag": "组件Mock shallowMount时stubs",
+              "desc": "{ChildComponent:true}替换子组件"
+            },
+            {
+              "id": "mock与stub策略-14-6-4-d5",
+              "tag": "时间Mock vi.useFakeTimers()控制setTimeout/setInterval精准测试异步逻辑",
+              "desc": "vi.useFakeTimers()替换真实计时器为模拟版本，vi.advanceTimersByTime(ms)精确推进时间验证定时器回调行为"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,621 @@
+{
+  "id": "distributed-system",
+  "title": "二十二、分布式系统",
+  "tag": "分布式系统",
+  "order": 22,
+  "icon": "🚀",
+  "cssIndex": 21,
+  "subs": [
+    {
+      "id": "22-1-一致性协议-22-0",
+      "title": "22.1 一致性协议",
+      "points": [
+        {
+          "id": "raft共识算法-22-0-0",
+          "tag": "Raft共识算法",
+          "desc": "易理解的共识算法。Leader选举(随机选举超时，获多数票成为 Leader)。日志复制(Leader 追加日志→Follower 复制→多数确认→Commit)。安全性(Leader 完整性/选举限制)。Etcd/Consul/TiKV 使用 Raft",
+          "details": [
+            {
+              "id": "raft共识算法-22-0-0-d0",
+              "tag": "Leader选举",
+              "desc": "随机选举超时+获多数票成为Leader避免同时选举"
+            },
+            {
+              "id": "raft共识算法-22-0-0-d1",
+              "tag": "日志复制",
+              "desc": "Leader追加日志→Follower复制→多数确认→Commit保证一致性"
+            },
+            {
+              "id": "raft共识算法-22-0-0-d2",
+              "tag": "安全性",
+              "desc": "Leader完整性(新Leader包含所有已提交日志)+选举限制(只选有最新日志的节点)"
+            },
+            {
+              "id": "raft共识算法-22-0-0-d3",
+              "tag": "应用",
+              "desc": "Etcd/Consul/TiKV/Nacos集群模式都基于Raft实现共识"
+            },
+            {
+              "id": "raft共识算法-22-0-0-d4",
+              "tag": "vs Paxos",
+              "desc": "Raft更易理解(强Leader+有序日志)Paxos更理论化难实现"
+            }
+          ]
+        },
+        {
+          "id": "zab协议-22-0-1",
+          "tag": "ZAB协议",
+          "desc": "Zookeeper Atomic Broadcast。消息广播(类 2PC：Leader 发 proposal→Follower ACK→多数 ACK 则 commit)。崩溃恢复(Leader 选举：ZXID 最大者优先，ZXID=epoch+counter)。Zookeeper 专用，类似 Raft 但更早",
+          "details": [
+            {
+              "id": "zab协议-22-0-1-d0",
+              "tag": "消息广播",
+              "desc": "类2PC Leader发proposal→Follower ACK→多数ACK则commit"
+            },
+            {
+              "id": "zab协议-22-0-1-d1",
+              "tag": "崩溃恢复:Leader选举ZXID最大者优先",
+              "desc": "ZXID=epoch+counter高位epoch优先"
+            },
+            {
+              "id": "zab协议-22-0-1-d2",
+              "tag": "ZAB专用Zookeeper类似Raft但更早发布",
+              "desc": "ZAB专为Zookeeper设计，采用类2PC广播+崩溃恢复机制，比Raft更早但未提供通用实现"
+            },
+            {
+              "id": "zab协议-22-0-1-d3",
+              "tag": "vs Raft",
+              "desc": "ZAB有恢复模式+广播模式Raft更简化统一"
+            },
+            {
+              "id": "zab协议-22-0-1-d4",
+              "tag": "ZAB保证",
+              "desc": "全局有序(FIFO)+主从有序(Leader先执行)"
+            }
+          ]
+        },
+        {
+          "id": "gossip协议-22-0-2",
+          "tag": "Gossip协议",
+          "desc": "去中心化协议。每个节点周期性随机选 k 个邻居交换信息。Push/Pull/Push-Pull 三种模式。反熵(全量同步)和谣传(增量传播)。收敛速度 O(logN)。Cassandra/Consul 使用。优：简单鲁棒；缺：最终一致延迟高",
+          "details": [
+            {
+              "id": "gossip协议-22-0-2-d0",
+              "tag": "去中心化",
+              "desc": "每个节点周期性随机选k个邻居交换信息无中心节点"
+            },
+            {
+              "id": "gossip协议-22-0-2-d1",
+              "tag": "三种模式",
+              "desc": "Push(推)/Pull(拉)/Push-Pull(推拉结合效率最高)"
+            },
+            {
+              "id": "gossip协议-22-0-2-d2",
+              "tag": "反熵",
+              "desc": "全量同步修复所有差异;谣传:增量传播只传播新信息节省带宽"
+            },
+            {
+              "id": "gossip协议-22-0-2-d3",
+              "tag": "收敛速度O(logN)传播N节点约logN轮全部节点收到",
+              "desc": "每轮每个节点随机选k个邻居交换状态，N节点约logN轮即可全网收敛，实际受fanout和网络延迟影响"
+            },
+            {
+              "id": "gossip协议-22-0-2-d4",
+              "tag": "应用",
+              "desc": "Cassandra/Consul/Swarm使用;优:简单鲁棒容错;缺:最终一致延迟高"
+            }
+          ]
+        },
+        {
+          "id": "一致性哈希-22-0-3",
+          "tag": "一致性哈希",
+          "desc": "将哈希空间组织成虚拟圆环(0~2^32-1)。节点和数据都映射到环上，数据顺时针找到的第一个节点即归属节点。虚拟节点(每个物理节点对应多个虚拟节点)解决数据倾斜。节点增删只影响相邻节点数据",
+          "details": [
+            {
+              "id": "一致性哈希-22-0-3-d0",
+              "tag": "虚拟圆环0~2^32-1",
+              "desc": "节点和数据都hash映射到环上"
+            },
+            {
+              "id": "一致性哈希-22-0-3-d1",
+              "tag": "数据归属",
+              "desc": "顺时针找到第一个节点即归属节点简单高效"
+            },
+            {
+              "id": "一致性哈希-22-0-3-d2",
+              "tag": "虚拟节点",
+              "desc": "每个物理节点对应多个虚拟节点(150-200个)解决数据倾斜"
+            },
+            {
+              "id": "一致性哈希-22-0-3-d3",
+              "tag": "增删节点",
+              "desc": "只影响相邻节点数据不触发大规模数据迁移"
+            },
+            {
+              "id": "一致性哈希-22-0-3-d4",
+              "tag": "应用",
+              "desc": "Cassandra/Dynamo/Riak使用;vs Hash取模:增删节点影响小"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "22-2-分布式id-22-1",
+      "title": "22.2 分布式ID",
+      "points": [
+        {
+          "id": "雪花算法snowflake-22-1-0",
+          "tag": "雪花算法Snowflake",
+          "desc": "64 位 long：1bit 符号(0)+41bit 时间戳(69 年)+10bit 机器 ID(5 数据中心+5 机器,1024 节点)+12bit 序列号(同毫秒 4096 个)。趋势递增。时钟回拨问题：等待/报错/借用机器 ID。美团 Leaf-snowflake 用 ZK 注册机器 ID",
+          "details": [
+            {
+              "id": "雪花算法snowflake-22-1-0-d0",
+              "tag": "1bit符号(0)+41bit时间戳(69年)+10bit机器ID+12bit序列号(4096/ms)",
+              "desc": "64位long结构：首位0保证正数，41位时间戳差值支持69年，10位机器标识1024节点，12位序列号每毫秒4096个ID"
+            },
+            {
+              "id": "雪花算法snowflake-22-1-0-d1",
+              "tag": "趋势递增但不严格连续(不同机器不同序列)适合MySQL B+树插入",
+              "desc": "单机内序列号递增但跨机器ID跳跃，整体趋势递增避免B+树页分裂，优于UUID随机插入导致索引碎片"
+            },
+            {
+              "id": "雪花算法snowflake-22-1-0-d2",
+              "tag": "时钟回拨问题",
+              "desc": "等待回拨时间过去/报错拒绝/借用机器ID灵活处理"
+            },
+            {
+              "id": "雪花算法snowflake-22-1-0-d3",
+              "tag": "美团Leaf-snowflake用ZK",
+              "desc": "美团Leaf-snowflake用ZK注册机器ID+本地文件缓存workerId"
+            },
+            {
+              "id": "雪花算法snowflake-22-1-0-d4",
+              "tag": "百度UidGenerator",
+              "desc": "_ringbuffer预生成+位计算高性能变种实现"
+            }
+          ]
+        },
+        {
+          "id": "leaf号段模式-22-1-1",
+          "tag": "Leaf号段模式",
+          "desc": "美团开源。数据库批量获取号段(step=1000)，内存中递增分配。双 buffer 预加载(buffer 用到一定比例时异步加载下一个)。性能高(不频繁访问 DB)。ID 可能不连续(跳号)",
+          "details": [
+            {
+              "id": "leaf号段模式-22-1-1-d0",
+              "tag": "数据库批量获取号段",
+              "desc": "step=1000内存中递增分配不频繁访问DB"
+            },
+            {
+              "id": "leaf号段模式-22-1-1-d1",
+              "tag": "双buffer预加载",
+              "desc": "当前buffer用到一定比例时异步加载下一个号段无缝切换"
+            },
+            {
+              "id": "leaf号段模式-22-1-1-d2",
+              "tag": "性能高",
+              "desc": "号段内分配纯内存操作无网络开销>传统数据库自增方案"
+            },
+            {
+              "id": "leaf号段模式-22-1-1-d3",
+              "tag": "ID可能不连续:号段切换时跳号",
+              "desc": "如当前号段1000-2000切换到3000-4000"
+            },
+            {
+              "id": "leaf号段模式-22-1-1-d4",
+              "tag": "Leaf-segment+Leaf-snowflake双模式号段+雪花灵活选型",
+              "desc": "segment号段模式依赖DB批量获取步长，双buffer预加载避免DB访问瓶颈；snowflake模式用ZK分配workerId应对时钟回拨"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "22-3-分布式锁-22-2",
+      "title": "22.3 分布式锁",
+      "points": [
+        {
+          "id": "redis分布式锁-22-2-0",
+          "tag": "Redis分布式锁",
+          "desc": "`SET key value NX PX 30000`。NX 保证互斥(不存在才设置)。PX 防死锁(过期自动释放)。value 设唯一标识(UUID+线程 ID)。释放用 Lua 脚本原子操作：先 get 比对 value 再 del。问题：锁过期但业务未完成",
+          "details": [
+            {
+              "id": "redis分布式锁-22-2-0-d0",
+              "tag": "SET key value NX PX 30000",
+              "desc": "NX互斥+PX过期防死锁（SET key value NX PX 30000的详细说明：Redis分布式锁中关于SET key value NX PX 30000的内容）"
+            },
+            {
+              "id": "redis分布式锁-22-2-0-d1",
+              "tag": "value设唯一标识(UUID+线程ID)防止误删其他线程的锁",
+              "desc": "释放锁时Lua脚本先GET比对value是否为自身持有，匹配才DEL，避免锁过期后被其他线程获取后误删导致连锁失效"
+            },
+            {
+              "id": "redis分布式锁-22-2-0-d2",
+              "tag": "释放用Lua脚本原子操作",
+              "desc": "先GET比对value再DEL保证安全"
+            },
+            {
+              "id": "redis分布式锁-22-2-0-d3",
+              "tag": "问题",
+              "desc": "锁过期但业务未完成→其他线程获锁→并发安全问题"
+            },
+            {
+              "id": "redis分布式锁-22-2-0-d4",
+              "tag": "适用",
+              "desc": "单Redis实例简单场景;复杂场景推荐Redisson"
+            }
+          ]
+        },
+        {
+          "id": "redisson看门狗-22-2-1",
+          "tag": "Redisson看门狗",
+          "desc": "Redisson Java 客户端。默认锁 30 秒过期，看门狗每 10 秒检查锁仍持有则续期到 30 秒。可重入锁(Hash 存线程 ID+重入次数)。公平锁/读写锁/联锁 MultiLock。生产推荐 Redisson 而非手写 SETNX",
+          "details": [
+            {
+              "id": "redisson看门狗-22-2-1-d0",
+              "tag": "看门狗",
+              "desc": "默认锁30秒过期每10秒(lockWatchdogTimeout/3)续期到30秒"
+            },
+            {
+              "id": "redisson看门狗-22-2-1-d1",
+              "tag": "可重入锁",
+              "desc": "Hash结构存线程ID+重入次数支持嵌套加锁解锁"
+            },
+            {
+              "id": "redisson看门狗-22-2-1-d2",
+              "tag": "公平锁/读写锁/联锁MultiLock/红锁RedLock多种锁类型",
+              "desc": "公平锁按请求顺序排队；读写锁支持并发读独占写；MultiLock联合多锁；RedLock跨多Redis实例半数成功即获锁"
+            },
+            {
+              "id": "redisson看门狗-22-2-1-d3",
+              "tag": "生产推荐Redisson而非手写SETNX看门狗自动续期解决锁过期问题",
+              "desc": "Redisson看门狗默认lockWatchdogTimeout=30s，每10s(1/3超时)自动续期，业务未完成锁不丢失，避免手写SETNX锁过期风险"
+            },
+            {
+              "id": "redisson看门狗-22-2-1-d4",
+              "tag": "加锁流程",
+              "desc": "tryLock→Lua脚本(exists+hset+pexpire)原子操作保证安全"
+            }
+          ]
+        },
+        {
+          "id": "zookeeper分布式锁-22-2-2",
+          "tag": "Zookeeper分布式锁",
+          "desc": "创建临时顺序节点/locks/lock_000001。判断是否最小序号节点：是则获取锁；否则监听(Watch)前一个节点删除事件。前节点释放(删除)→Watch 触发→重新判断。CP 强一致不会丢锁。比 Redis 性能低(写需同步到半数 Follower)",
+          "details": [
+            {
+              "id": "zookeeper分布式锁-22-2-2-d0",
+              "tag": "临时顺序节点",
+              "desc": "/locks/lock_000001保证有序+临时节点会话断自动删除"
+            },
+            {
+              "id": "zookeeper分布式锁-22-2-2-d1",
+              "tag": "判断最小序号",
+              "desc": "最小序号节点获取锁否则Watch监听前一个节点删除"
+            },
+            {
+              "id": "zookeeper分布式锁-22-2-2-d2",
+              "tag": "前节点释放→Watch触发→重新判断",
+              "desc": "前节点释放→Watch触发→重新判断避免羊群效应只监听前一个"
+            },
+            {
+              "id": "zookeeper分布式锁-22-2-2-d3",
+              "tag": "CP强一致",
+              "desc": "ZK保证一致性不会丢锁但性能低于Redis"
+            },
+            {
+              "id": "zookeeper分布式锁-22-2-2-d4",
+              "tag": "缺点",
+              "desc": "性能低(每次写需同步到半数Follower)+重试开销大不适合高频场景"
+            }
+          ]
+        },
+        {
+          "id": "redlock算法-22-2-3",
+          "tag": "Redlock算法",
+          "desc": "Redis 作者提出。向 N 个(通常 5 个)独立 Redis 实例申请锁，超过半数(N/2+1)成功且耗时<锁过期时间则获取成功。争议：Martin Kleppmann 指出时钟漂移和 GC 暂停存在安全问题。实际生产 Redisson Redlock 实现",
+          "details": [
+            {
+              "id": "redlock算法-22-2-3-d0",
+              "tag": "向N个(通常5个)独立Redis实例申请锁超过半数(N/2+1)成功",
+              "desc": "向5个独立Redis实例依次加锁，需3个以上成功且总耗时小于锁有效期才算获取成功，任一实例故障不影响整体可用性"
+            },
+            {
+              "id": "redlock算法-22-2-3-d1",
+              "tag": "加锁耗时必须<锁过期时间否则加锁失败",
+              "desc": "加锁耗时必须<锁过期时间否则加锁失败防止慢加锁"
+            },
+            {
+              "id": "redlock算法-22-2-3-d2",
+              "tag": "释放锁",
+              "desc": "向所有N个实例发送释放命令不只在成功的实例"
+            },
+            {
+              "id": "redlock算法-22-2-3-d3",
+              "tag": "争议",
+              "desc": "Martin Kleppmann指出时钟漂移和GC暂停存在安全问题"
+            },
+            {
+              "id": "redlock算法-22-2-3-d4",
+              "tag": "Redisson Redlock",
+              "desc": "Redisson Redlock实现生产可用但多数场景单实例Redisson足够"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "22-4-分布式事务详解-22-3",
+      "title": "22.4 分布式事务详解",
+      "points": [
+        {
+          "id": "本地消息表-22-3-0",
+          "tag": "本地消息表",
+          "desc": "业务操作+写消息表在同一本地事务中。定时任务扫描消息表中 PENDING 状态消息→发送 MQ→消费方处理成功后回调更新消息状态为 SENT。最终一致性。优点：实现简单不引入额外 MQ 组件。缺点：耦合数据库",
+          "details": [
+            {
+              "id": "本地消息表-22-3-0-d0",
+              "tag": "业务+写消息表同一本地事务",
+              "desc": "业务+写消息表同一本地事务保证原子性"
+            },
+            {
+              "id": "本地消息表-22-3-0-d1",
+              "tag": "定时任务扫描PENDING消息",
+              "desc": "定时任务扫描PENDING消息→发送MQ→消费成功→更新SENT"
+            },
+            {
+              "id": "本地消息表-22-3-0-d2",
+              "tag": "最终一致性",
+              "desc": "消息最终被消费业务最终一致（最终一致性的详细说明：本地消息表中关于最终一致性的内容）"
+            },
+            {
+              "id": "本地消息表-22-3-0-d3",
+              "tag": "优点",
+              "desc": "实现简单不引入额外MQ组件依赖DB事务"
+            },
+            {
+              "id": "本地消息表-22-3-0-d4",
+              "tag": "缺点",
+              "desc": "消息表耦合业务DB定时扫描有延迟需维护消息状态"
+            }
+          ]
+        },
+        {
+          "id": "rocketmq事务消息-22-3-1",
+          "tag": "RocketMQ事务消息",
+          "desc": "1.发送 Half Message(对消费者不可见) 2.执行本地事务 3.提交 Commit(消息可见)/Rollback(删除消息)。本地事务状态未知时 Broker 定时回查 Producer 事务状态(最多 15 次)。解决本地事务与消息发送原子性",
+          "details": [
+            {
+              "id": "rocketmq事务消息-22-3-1-d0",
+              "tag": "1.发送Half Message(半消息对消费者不可见)",
+              "desc": "Half Message暂存Broker特殊存储区域，消费者暂不可见，等待本地事务结果决定Commit或Rollback，实现事务与消息原子性"
+            },
+            {
+              "id": "rocketmq事务消息-22-3-1-d1",
+              "tag": "2.",
+              "desc": "2.执行本地事务(成功/失败/未知)"
+            },
+            {
+              "id": "rocketmq事务消息-22-3-1-d2",
+              "tag": "3.Commit(消息可见)/Rollback(删除消息)",
+              "desc": "本地事务成功则Commit让消费者可见并消费；失败则Rollback删除半消息；未知状态触发Broker定时回查Producer最多15次确认最终状态"
+            },
+            {
+              "id": "rocketmq事务消息-22-3-1-d3",
+              "tag": "本地事务未知",
+              "desc": "本地事务未知→Broker定时回查Producer事务状态(最多15次15分钟)"
+            },
+            {
+              "id": "rocketmq事务消息-22-3-1-d4",
+              "tag": "解决本地事务与消息发送原子性无需本地消息表",
+              "desc": "半消息机制将消息发送与本地事务绑定，通过Broker回查保障最终一致性，省去本地消息表和定时扫描的额外存储与复杂度"
+            }
+          ]
+        },
+        {
+          "id": "seataat模式-22-3-2",
+          "tag": "Seata AT模式",
+          "desc": "阿里开源。一阶段：业务 SQL 执行时记录 Before/After Image(undo log)，本地事务提交。二阶段：全局 Commit→异步删除 undo log；全局 Rollback→用 undo log 反向 SQL 恢复数据。全局锁防脏写。对业务侵入小(只需 @GlobalTransactional)",
+          "details": [
+            {
+              "id": "seataat模式-22-3-2-d0",
+              "tag": "一阶段",
+              "desc": "业务SQL执行+记录Before/After Image(undo log)+本地提交"
+            },
+            {
+              "id": "seataat模式-22-3-2-d1",
+              "tag": "二阶段Commit",
+              "desc": "异步删除undo log轻量（二阶段Commit的详细说明：Seata AT模式中关于二阶段Commit的内容）"
+            },
+            {
+              "id": "seataat模式-22-3-2-d2",
+              "tag": "二阶段Rollback",
+              "desc": "用undo log反向SQL恢复数据自动补偿"
+            },
+            {
+              "id": "seataat模式-22-3-2-d3",
+              "tag": "全局锁:防脏写",
+              "desc": "防止其他事务修改正在回滚的数据"
+            },
+            {
+              "id": "seataat模式-22-3-2-d4",
+              "tag": "对业务侵入小",
+              "desc": "只需@GlobalTransactional注解自动管理"
+            }
+          ]
+        },
+        {
+          "id": "幂等性保障-22-3-3",
+          "tag": "幂等性保障",
+          "desc": "多次执行相同操作结果一致。方案：1.数据库唯一索引(防重复插入) 2.Token 机制(请求前获取 Token,使用后失效) 3.乐观锁 version 字段 4.状态机(订单状态不可逆) 5.分布式锁(防并发) 6.去重表(message_id)",
+          "details": [
+            {
+              "id": "幂等性保障-22-3-3-d0",
+              "tag": "数据库唯一索引",
+              "desc": "防重复插入简单可靠最常用（数据库唯一索引的详细说明：幂等性保障中关于数据库唯一索引的内容）"
+            },
+            {
+              "id": "幂等性保障-22-3-3-d1",
+              "tag": "Token机制",
+              "desc": "请求前获取Token使用后失效防重复提交"
+            },
+            {
+              "id": "幂等性保障-22-3-3-d2",
+              "tag": "乐观锁version字段",
+              "desc": "UPDATE SET version=version+1 WHERE version=old"
+            },
+            {
+              "id": "幂等性保障-22-3-3-d3",
+              "tag": "状态机",
+              "desc": "订单状态不可逆单向流转pending→paid→refunded"
+            },
+            {
+              "id": "幂等性保障-22-3-3-d4",
+              "tag": "分布式锁",
+              "desc": "防并发重复操作Redis SETNX或Redisson"
+            },
+            {
+              "id": "幂等性保障-22-3-3-d5",
+              "tag": "去重表",
+              "desc": "message_id唯一索引消费前检查是否已处理"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "22-5-rpc与服务治理-22-4",
+      "title": "22.5 RPC与服务治理",
+      "points": [
+        {
+          "id": "dubbo框架-22-4-0",
+          "tag": "Dubbo框架",
+          "desc": "阿里开源 RPC 框架(Apache 顶级项目)。Netty NIO 通信/Hessian2 序列化/SPI 扩展机制(可替换任意组件)。核心：Provider 注册→Consumer 订阅→负载均衡调用→集群容错(Failover 重试/Failfast 快速失败/Failsafe 忽略异常)。Dubbo3.0 Triple 协议兼容 gRPC",
+          "details": [
+            {
+              "id": "dubbo框架-22-4-0-d0",
+              "tag": "Netty NIO通信+Hessian2序列化+SPI扩展可替换任意组件",
+              "desc": "Netty非阻塞IO高并发长连接；Hessian2二进制序列化跨语言高效；Dubbo SPI按META-INF配置热插拔替换协议/序列化/负载均衡等组件"
+            },
+            {
+              "id": "dubbo框架-22-4-0-d1",
+              "tag": "核心流程",
+              "desc": "Provider注册→Consumer订阅→负载均衡→集群容错"
+            },
+            {
+              "id": "dubbo框架-22-4-0-d2",
+              "tag": "集群容错",
+              "desc": "Failover重试/Failfast快速失败/Failsafe忽略异常/Forking并行"
+            },
+            {
+              "id": "dubbo框架-22-4-0-d3",
+              "tag": "负载均衡",
+              "desc": "Random随机/RoundRobin轮询/LeastActive最少调用/ConsistentHash一致性哈希"
+            },
+            {
+              "id": "dubbo框架-22-4-0-d4",
+              "tag": "Dubbo3.0 Triple协议兼容gRPC+应用级服务发现+Mesh方案",
+              "desc": "Triple协议基于HTTP/2兼容gRPC跨语言互通；应用级服务发现替代接口级降低注册中心压力；Mesh方案支持Sidecar模式平滑迁移云原生"
+            }
+          ]
+        },
+        {
+          "id": "grpc框架-22-4-1",
+          "tag": "gRPC框架",
+          "desc": "Google 开源。HTTP/2+Protobuf 序列化(体积小速度快)。跨语言(Java/Go/Python/C++等)。四种调用：Unary(一请求一响应)/Server Streaming/Client Streaming/双向 Streaming。.proto IDL 定义接口",
+          "details": [
+            {
+              "id": "grpc框架-22-4-1-d0",
+              "tag": "HTTP/2+Protobuf序列化体积小速度快适合微服务间通信",
+              "desc": "Protobuf二进制编码比JSON缩小3-10倍、序列化快20-100倍；HTTP/2多路复用单连接并行请求减少连接开销，适合内网微服务高频调用"
+            },
+            {
+              "id": "grpc框架-22-4-1-d1",
+              "tag": "跨语言",
+              "desc": "Java/Go/Python/C++等同一.proto定义多语言实现"
+            },
+            {
+              "id": "grpc框架-22-4-1-d2",
+              "tag": "四种调用",
+              "desc": "Unary(一请求一响应)/Server Streaming/Client Streaming/双向Streaming"
+            },
+            {
+              "id": "grpc框架-22-4-1-d3",
+              "tag": ".proto IDL定义接口强类型约束编译器生成客户端服务端代码",
+              "desc": "proto文件声明式定义消息结构和服务方法，protoc编译器自动生成多语言类型安全代码，接口变更即编译报错杜绝运行时类型不匹配"
+            },
+            {
+              "id": "grpc框架-22-4-1-d4",
+              "tag": "vs REST",
+              "desc": "更高效(二进制+HTTP/2多路复用)+强类型+流式;但调试不如REST直观"
+            }
+          ]
+        },
+        {
+          "id": "api网关-22-4-2",
+          "tag": "API网关",
+          "desc": "Spring Cloud Gateway：WebFlux 响应式(Netty 非阻塞)。Route(路由)+Predicate(断言 Path/Method/Header)+Filter(过滤器)。功能：路由转发/认证授权/限流/熔断/日志/协议转换/CORS。Zuul1.x(阻塞已过时)/Kong/APISIX",
+          "details": [
+            {
+              "id": "api网关-22-4-2-d0",
+              "tag": "Spring Cloud Gateway",
+              "desc": "WebFlux响应式(Netty非阻塞)高性能"
+            },
+            {
+              "id": "api网关-22-4-2-d1",
+              "tag": "Route(",
+              "desc": "Route(路由)+Predicate(断言Path/Method/Header)+Filter(过滤器)"
+            },
+            {
+              "id": "api网关-22-4-2-d2",
+              "tag": "功能",
+              "desc": "路由转发/认证授权/限流/熔断/日志/协议转换/CORS"
+            },
+            {
+              "id": "api网关-22-4-2-d3",
+              "tag": "Zuul1.x阻塞已过时/Zuul2.x响应式未普及/Kong(APISIX)性能强",
+              "desc": "Zuul1.x基于Servlet阻塞模型高并发差已废弃；Zuul2.xNetty响应式但生态未成熟；Kong/APISIX基于Nginx+Lua/OpenResty万级QPS性能领先"
+            },
+            {
+              "id": "api网关-22-4-2-d4",
+              "tag": "选型",
+              "desc": "Spring生态用Gateway/Kong/APISIX高性能需求/OpenResty极致性能"
+            }
+          ]
+        },
+        {
+          "id": "配置中心-22-4-3",
+          "tag": "配置中心",
+          "desc": "Nacos Config：namespace+group+dataId 三级隔离，动态刷新(@RefreshScope+@Value)。Apollo(携程)：多环境/灰度发布/权限管理/审计。Spring Cloud Config：Git/SVN 后端+Bus 广播刷新",
+          "details": [
+            {
+              "id": "配置中心-22-4-3-d0",
+              "tag": "Nacos Config",
+              "desc": "namespace+group+dataId三级隔离+动态刷新"
+            },
+            {
+              "id": "配置中心-22-4-3-d1",
+              "tag": "Apollo(携程)",
+              "desc": "多环境/灰度发布/权限管理/审计变更记录"
+            },
+            {
+              "id": "配置中心-22-4-3-d2",
+              "tag": "Spring Cloud Config",
+              "desc": "Git/SVN后端+Bus广播刷新需额外组件"
+            },
+            {
+              "id": "配置中心-22-4-3-d3",
+              "tag": "Nacos优势",
+              "desc": "配置+注册一体化/Apollo优势:功能完善灰度发布"
+            },
+            {
+              "id": "配置中心-22-4-3-d4",
+              "tag": "动态刷新",
+              "desc": "@RefreshScope+@Value或NacosListener自动更新无需重启"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,743 @@
+{
+  "id": "kubernetes",
+  "title": "二十、Kubernetes 容器编排",
+  "tag": "Kubernetes",
+  "order": 20,
+  "icon": "🔥",
+  "cssIndex": 19,
+  "subs": [
+    {
+      "id": "20-1-k8s-核心概念与架构-20-0",
+      "title": "20.1 K8s 核心概念与架构",
+      "points": [
+        {
+          "id": "k8s是什么-20-0-0",
+          "tag": "K8s 是什么",
+          "desc": "Kubernetes(K8s)是 Google 开源的容器编排平台，自动化容器部署、伸缩和管理。源自 Borg 系统，2015 年捐赠给 CNCF",
+          "details": [
+            {
+              "id": "k8s是什么-20-0-0-d0",
+              "tag": "核心能力",
+              "desc": "服务发现与负载均衡/自动装箱(调度)/自愈(重启/替换/重新调度)/水平扩缩/滚动更新与回滚"
+            },
+            {
+              "id": "k8s是什么-20-0-0-d1",
+              "tag": "声明式 API",
+              "desc": "用户声明期望状态(Deployment yaml)，Controller 持续调谐实际状态向期望状态靠近"
+            },
+            {
+              "id": "k8s是什么-20-0-0-d2",
+              "tag": "架构思想",
+              "desc": "控制回路(Control Loop)，Observe→Diff→Act 循环"
+            },
+            {
+              "id": "k8s是什么-20-0-0-d3",
+              "tag": "K8s 不是 PaaS",
+              "desc": "不限制应用框架/语言/中间件，不提供 CI/CD/日志/监控(可集成)"
+            }
+          ]
+        },
+        {
+          "id": "master-controlplane组件-20-0-1",
+          "tag": "Master/Control Plane 组件",
+          "desc": "控制平面负责集群全局决策和事件响应，生产部署通常 3 个 Master 节点 HA",
+          "details": [
+            {
+              "id": "master-controlplane组件-20-0-1-d0",
+              "tag": "kube-apiserver",
+              "desc": "集群统一入口，RESTful API，kubectl 所有操作经过它，水平可扩展"
+            },
+            {
+              "id": "master-controlplane组件-20-0-1-d1",
+              "tag": "etcd",
+              "desc": "分布式 KV 存储，Raft 共识算法，存储所有集群状态数据，定期备份至关重要"
+            },
+            {
+              "id": "master-controlplane组件-20-0-1-d2",
+              "tag": "kube-scheduler",
+              "desc": "调度器，Watch 新 Pod 选择最优 Node 绑定(过滤→打分：资源/亲和性/污点)"
+            },
+            {
+              "id": "master-controlplane组件-20-0-1-d3",
+              "tag": "kube-controller-manager",
+              "desc": "运行各种 Controller(Deployment/ReplicaSet/Node/Service/Endpoint…)，每个 Controller 是独立控制回路"
+            },
+            {
+              "id": "master-controlplane组件-20-0-1-d4",
+              "tag": "cloud-controller-manager",
+              "desc": "云厂商 Controller(Node/Route/Service LB)，与云平台 API 交互"
+            }
+          ]
+        },
+        {
+          "id": "node组件-20-0-2",
+          "tag": "Node 组件",
+          "desc": "每个工作节点运行的核心组件",
+          "details": [
+            {
+              "id": "node组件-20-0-2-d0",
+              "tag": "kubelet",
+              "desc": "节点代理，接收 PodSpec 确保容器按声明运行，上报 Node 和 Pod 状态给 API Server"
+            },
+            {
+              "id": "node组件-20-0-2-d1",
+              "tag": "kube-proxy",
+              "desc": "网络代理，实现 Service 抽象，维护节点网络规则(iptables/IPVS)，转发流量到 Pod"
+            },
+            {
+              "id": "node组件-20-0-2-d2",
+              "tag": "Container Runtime",
+              "desc": "CRI(Container Runtime Interface)标准的容器运行时，containerd/CRI-O/docker(已弃用 dockershim)"
+            },
+            {
+              "id": "node组件-20-0-2-d3",
+              "tag": "Pod",
+              "desc": "K8s 最小部署单元，一个 Pod 包含一个或多个紧密耦合的容器，共享网络/IPC/存储卷"
+            }
+          ]
+        },
+        {
+          "id": "核心资源对象-20-0-3",
+          "tag": "核心资源对象",
+          "desc": "理解 K8s 常用资源对象及其层级关系",
+          "details": [
+            {
+              "id": "核心资源对象-20-0-3-d0",
+              "tag": "Pod→ReplicaSet→Deployment",
+              "desc": "Pod 是最小单元，RS 保证副本数，Deployment 管理 RS 滚动升级回滚"
+            },
+            {
+              "id": "核心资源对象-20-0-3-d1",
+              "tag": "Service→Endpoints",
+              "desc": "Service 提供稳定访问入口(ClusterIP/NodePort/LoadBalancer)，Endpoints 动态跟踪 Pod IP"
+            },
+            {
+              "id": "核心资源对象-20-0-3-d2",
+              "tag": "ConfigMap/Secret",
+              "desc": "非敏感/敏感配置解耦，以环境变量或 Volume 方式挂载到 Pod"
+            },
+            {
+              "id": "核心资源对象-20-0-3-d3",
+              "tag": "Ingress",
+              "desc": "七层负载均衡，域名路由到不同 Service，配合 Ingress Controller(nginx-ingress/traefik)"
+            },
+            {
+              "id": "核心资源对象-20-0-3-d4",
+              "tag": "PV/PVC",
+              "desc": "PersistentVolume 集群存储资源池，PVC 声明消费，StorageClass 动态创建"
+            },
+            {
+              "id": "核心资源对象-20-0-3-d5",
+              "tag": "Namespace",
+              "desc": "逻辑隔离(资源配额+网络策略+RBAC)，非物理隔离，划分环境/团队"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "20-2-pod-与容器设计-20-1",
+      "title": "20.2 Pod 与容器设计",
+      "points": [
+        {
+          "id": "pod详解-20-1-0",
+          "tag": "Pod 详解",
+          "desc": "Pod 是 K8s 调度和运行的最小原子单元，一个 Pod 内所有容器共享 Network/IPC 命名空间",
+          "details": [
+            {
+              "id": "pod详解-20-1-0-d0",
+              "tag": "共享资源",
+              "desc": "同一 Pod 内容器共享网络命名空间(同一 IP/端口空间 localhost 通信)和 IPC 命名空间"
+            },
+            {
+              "id": "pod详解-20-1-0-d1",
+              "tag": "Pod 生命周期",
+              "desc": "Pending(调度中)→Running(绑定 Node 运行)→Succeeded/Failed(终止)→Unknown"
+            },
+            {
+              "id": "pod详解-20-1-0-d2",
+              "tag": "Init 容器",
+              "desc": "在主容器启动前按顺序执行，常用于初始化(等待依赖就绪/权限设置/配置模板)"
+            },
+            {
+              "id": "pod详解-20-1-0-d3",
+              "tag": "Sidecar 模式",
+              "desc": "辅助容器增强主容器功能(日志收集/配置刷新/代理转发)，同一 Pod 共享存储"
+            },
+            {
+              "id": "pod详解-20-1-0-d4",
+              "tag": "Pod 设计原则",
+              "desc": "单一职责(一个 Pod 一个主进程)，紧密耦合放同一 Pod，松散耦合不同 Pod"
+            }
+          ]
+        },
+        {
+          "id": "健康检查probe-20-1-1",
+          "tag": "健康检查 Probe",
+          "desc": "三种探针保障 Pod 可用性，kubelet 负责执行探测",
+          "details": [
+            {
+              "id": "健康检查probe-20-1-1-d0",
+              "tag": "livenessProbe(存活探针)",
+              "desc": "检测容器是否存活，失败→重启容器(restartPolicy)，避免僵尸容器"
+            },
+            {
+              "id": "健康检查probe-20-1-1-d1",
+              "tag": "readinessProbe(就绪探针)",
+              "desc": "检测容器是否可接收流量，失败→从 Service Endpoints 移除，适合预热/依赖服务就绪检查"
+            },
+            {
+              "id": "健康检查probe-20-1-1-d2",
+              "tag": "startupProbe(启动探针)",
+              "desc": "仅容器启动时执行，成功后才切换 livenessProbe，防止启动慢的容器被误杀"
+            },
+            {
+              "id": "健康检查probe-20-1-1-d3",
+              "tag": "探测方式",
+              "desc": "exec(执行命令返回码0)/httpGet(HTTP 200-399)/tcpSocket(TCP 端口可达)/grpc"
+            },
+            {
+              "id": "健康检查probe-20-1-1-d4",
+              "tag": "配置参数",
+              "desc": "initialDelaySeconds/failureThreshold(失败阈值)/periodSeconds/successThreshold/timeoutSeconds"
+            }
+          ]
+        },
+        {
+          "id": "资源请求与限制-20-1-2",
+          "tag": "资源请求与限制",
+          "desc": "Resource Requests(调度依据)和 Limits(运行时上限)是 Pod 资源管理的核心",
+          "details": [
+            {
+              "id": "资源请求与限制-20-1-2-d0",
+              "tag": "requests",
+              "desc": "调度器确保 Node 可分配资源≥Pod 总 requests；容器至少获得 requests 量"
+            },
+            {
+              "id": "资源请求与限制-20-1-2-d1",
+              "tag": "limits",
+              "desc": "容器运行不可超过 limits，CPU 超限会被 throttle，内存超限触发 OOMKilled"
+            },
+            {
+              "id": "资源请求与限制-20-1-2-d2",
+              "tag": "CPU 单位",
+              "desc": "1 = 1 核 vCPU，0.5 = 500m；内存单位：Mi/Gi"
+            },
+            {
+              "id": "资源请求与限制-20-1-2-d3",
+              "tag": "QoS 等级",
+              "desc": "Guaranteed(requests=limits)、Burstable(requests<limits)、BestEffort(未设置)"
+            },
+            {
+              "id": "资源请求与限制-20-1-2-d4",
+              "tag": "BestEffort 优先被驱逐；Guaranteed 最后被驱逐；生产关键服务设置 Guaranteed",
+              "desc": "BestEfford未设requests/limits内存不足最先驱逐；Burstable设了requests但limits>requests中间驱逐；Guaranteed requests=limits最稳最后驱逐"
+            },
+            {
+              "id": "资源请求与限制-20-1-2-d5",
+              "tag": "LimitRange",
+              "desc": "设置 Namespace 内默认 requests/limits；ResourceQuota：Namespace 总资源配额"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "20-3-controller-控制器-20-2",
+      "title": "20.3 Controller 控制器",
+      "points": [
+        {
+          "id": "deployment部署管理-20-2-0",
+          "tag": "Deployment 部署管理",
+          "desc": "Deployment 管理 ReplicaSet，ReplicaSet 管理 Pod，支持声明式更新/回滚/扩缩",
+          "details": [
+            {
+              "id": "deployment部署管理-20-2-0-d0",
+              "tag": "Deployment",
+              "desc": "定义 Pod 模板+副本数+更新策略；创建 RS→管理 Pod 生命周期"
+            },
+            {
+              "id": "deployment部署管理-20-2-0-d1",
+              "tag": "滚动更新(RollingUpdate)",
+              "desc": "新 RS 逐步创建 Pod，旧 RS 逐步删除 Pod；maxSurge(峰值超出数)+maxUnavailable(最大不可用数)控制"
+            },
+            {
+              "id": "deployment部署管理-20-2-0-d2",
+              "tag": "Recreate",
+              "desc": "先全删旧 Pod 再全建新 Pod，有停服时间；适合数据库等不可并存场景"
+            },
+            {
+              "id": "deployment部署管理-20-2-0-d3",
+              "tag": "回滚",
+              "desc": "kubectl rollout undo deploy/xxx --to-revision=N，记录历史 RS(默认10个)"
+            },
+            {
+              "id": "deployment部署管理-20-2-0-d4",
+              "tag": "rollout 命令",
+              "desc": "status(更新状态)/history(历史记录)/pause(暂停)/resume(恢复) 精细控制"
+            },
+            {
+              "id": "deployment部署管理-20-2-0-d5",
+              "tag": "更新策略金丝雀发布",
+              "desc": "先更新少量→观察→全量；蓝绿部署：新环境全量切 DNS"
+            }
+          ]
+        },
+        {
+          "id": "statefulset有状态应用-20-2-1",
+          "tag": "StatefulSet 有状态应用",
+          "desc": "StatefulSet 管理需要持久化标识的有状态应用(数据库/消息队列/分布式存储)",
+          "details": [
+            {
+              "id": "statefulset有状态应用-20-2-1-d0",
+              "tag": "Pod 命名规则",
+              "desc": "<statefulset>-<序号> 从 0 到 N-1 稳定标识，有序启动(0→N-1)和倒序停止(N-1→0)"
+            },
+            {
+              "id": "statefulset有状态应用-20-2-1-d1",
+              "tag": "稳定网络标识",
+              "desc": "同一 Pod 重启 IP 可能变但 DNS 名不变(pod-0.svc-headless.ns.svc.cluster.local)"
+            },
+            {
+              "id": "statefulset有状态应用-20-2-1-d2",
+              "tag": "稳定持久化存储",
+              "desc": "每个 Pod 绑定独立 PVC，Pod 重新调度到其他 Node PVC 跟随"
+            },
+            {
+              "id": "statefulset有状态应用-20-2-1-d3",
+              "tag": "volumeClaimTemplates",
+              "desc": "StatefulSet 自动为每个 Pod 创建 PVC，删除 StatefulSet 不会删除 PVC/存储"
+            },
+            {
+              "id": "statefulset有状态应用-20-2-1-d4",
+              "tag": "适用场景",
+              "desc": "MySQL 主从/Redis Sentinel/Kafka/Zookeeper/Elasticsearch"
+            },
+            {
+              "id": "statefulset有状态应用-20-2-1-d5",
+              "tag": "Headless Service",
+              "desc": "clusterIP:None，DNS 直接解析为 Pod IP，配合 StatefulSet 使用"
+            }
+          ]
+        },
+        {
+          "id": "daemonset-job-cronjob-20-2-2",
+          "tag": "DaemonSet/Job/CronJob",
+          "desc": "其他常用 Controller 各自负责特定场景",
+          "details": [
+            {
+              "id": "daemonset-job-cronjob-20-2-2-d0",
+              "tag": "DaemonSet",
+              "desc": "每个 Node 运行一个 Pod 副本，新 Node 加入自动调度；典型：日志收集 Fluentd/监控 NodeExporter/网络 CNI"
+            },
+            {
+              "id": "daemonset-job-cronjob-20-2-2-d1",
+              "tag": "Job",
+              "desc": "一次性任务，保证指定数量的 Pod 成功完成(completions)，支持并行(parallelism: N)"
+            },
+            {
+              "id": "daemonset-job-cronjob-20-2-2-d2",
+              "tag": "CronJob",
+              "desc": "定时任务，schedule 字段 Cron 表达式(分 时 日 月 星期)，创建 Job 执行"
+            },
+            {
+              "id": "daemonset-job-cronjob-20-2-2-d3",
+              "tag": "HorizontalPodAutoscaler(HPA)",
+              "desc": "根据 CPU/内存/自定义指标自动调整 Pod 副本数(需 metrics-server)"
+            },
+            {
+              "id": "daemonset-job-cronjob-20-2-2-d4",
+              "tag": "HPA 算法",
+              "desc": "期望副本 = ceil(当前副本 × 当前指标 / 目标指标)；可设 minReplicas/maxReplicas"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "20-4-service-服务发现与网络-20-3",
+      "title": "20.4 Service 服务发现与网络",
+      "points": [
+        {
+          "id": "service四层负载均衡-20-3-0",
+          "tag": "Service 四层负载均衡",
+          "desc": "Service 将一组 Pod 抽象为稳定访问入口，通过 Label Selector 关联 Pod",
+          "details": [
+            {
+              "id": "service四层负载均衡-20-3-0-d0",
+              "tag": "ClusterIP(默认)",
+              "desc": "集群内部虚拟 IP(Service IP)，只能集群内访问，kube-proxy 维护转发规则"
+            },
+            {
+              "id": "service四层负载均衡-20-3-0-d1",
+              "tag": "NodePort",
+              "desc": "在每个 Node 上开放端口(30000-32767)，NodeIP:NodePort→ClusterIP→Pod，适合开发/调试"
+            },
+            {
+              "id": "service四层负载均衡-20-3-0-d2",
+              "tag": "LoadBalancer",
+              "desc": "云厂商 LB(CLB/ALB/NLB)暴露公网服务，分配公网 IP 负载到 NodePort"
+            },
+            {
+              "id": "service四层负载均衡-20-3-0-d3",
+              "tag": "ExternalName",
+              "desc": "DNS CNAME 别名，将 Service 映射到外部域名'外挂'服务"
+            },
+            {
+              "id": "service四层负载均衡-20-3-0-d4",
+              "tag": "Service 类型选择",
+              "desc": "内部间→ClusterIP，对外简单 HTTP→LoadBalancer+Ingress，非 HTTP→NodePort/LoadBalancer"
+            }
+          ]
+        },
+        {
+          "id": "iptablesvsipvs模式-20-3-1",
+          "tag": "iptables vs IPVS 模式",
+          "desc": "kube-proxy 实现 Service 流量转发的两种模式",
+          "details": [
+            {
+              "id": "iptablesvsipvs模式-20-3-1-d0",
+              "tag": "iptables 模式",
+              "desc": "规则链随机选择后端 Pod，规则全量替换(O(N)复杂度)，大规模集群性能差"
+            },
+            {
+              "id": "iptablesvsipvs模式-20-3-1-d1",
+              "tag": "IPVS 模式",
+              "desc": "Linux 内核四层负载均衡，支持 rr/wrr/lc/sed 多种调度算法，性能高(O(1)查找)"
+            },
+            {
+              "id": "iptablesvsipvs模式-20-3-1-d2",
+              "tag": "IPVS 优势",
+              "desc": "延迟低/吞吐高/规则变更增量更新；需要加载内核模块 ip_vs"
+            },
+            {
+              "id": "iptablesvsipvs模式-20-3-1-d3",
+              "tag": "DNS 服务发现",
+              "desc": "CoreDNS 为 Service 和 Pod 分配 DNS A/AAAA 记录"
+            },
+            {
+              "id": "iptablesvsipvs模式-20-3-1-d4",
+              "tag": "Headless Service",
+              "desc": "clusterIP:None，DNS 返回所有 Pod IP(A 记录)而非 Service IP"
+            }
+          ]
+        },
+        {
+          "id": "ingress七层负载均衡-20-3-2",
+          "tag": "Ingress 七层负载均衡",
+          "desc": "Ingress 提供 HTTP/HTTPS 路由能力，域名/路径→Service 映射",
+          "details": [
+            {
+              "id": "ingress七层负载均衡-20-3-2-d0",
+              "tag": "Ingress Resource",
+              "desc": "定义路由规则(host/path→service:port)的声明式资源"
+            },
+            {
+              "id": "ingress七层负载均衡-20-3-2-d1",
+              "tag": "Ingress Controller",
+              "desc": "真正实现流量转发的组件(nginx-ingress/traefik/istio-gateway/contour)"
+            },
+            {
+              "id": "ingress七层负载均衡-20-3-2-d2",
+              "tag": "nginx-ingress",
+              "desc": "基于 Nginx 反向代理，支持 SSL 终结/重写/限流/CORS/金丝雀"
+            },
+            {
+              "id": "ingress七层负载均衡-20-3-2-d3",
+              "tag": "TLS 证书",
+              "desc": "Ingress 通过 Secret(tls 类型)引用 TLS 私钥和证书"
+            },
+            {
+              "id": "ingress七层负载均衡-20-3-2-d4",
+              "tag": "Ingress vs Gateway API",
+              "desc": "Gateway API 是新一代标准(角色/可扩展性更优)，GAMMA 支持 Service Mesh"
+            }
+          ]
+        },
+        {
+          "id": "网络插件cni-20-3-3",
+          "tag": "网络插件 CNI",
+          "desc": "Container Network Interface(CNI)为容器分配 IP 和跨主机通信",
+          "details": [
+            {
+              "id": "网络插件cni-20-3-3-d0",
+              "tag": "Flannel",
+              "desc": "简单 overlay 网络(VXLAN/host-gw)，vxlan 封装开销约 10-20%"
+            },
+            {
+              "id": "网络插件cni-20-3-3-d1",
+              "tag": "Calico",
+              "desc": "高性能纯三层网络(BGP 路由)，支持网络策略(NetworkPolicy)，不封装无性能损耗"
+            },
+            {
+              "id": "网络插件cni-20-3-3-d2",
+              "tag": "Cilium(eBPF)",
+              "desc": "新一代网络插件，内核级包处理和可观测性(无代理 Sidecar)"
+            },
+            {
+              "id": "网络插件cni-20-3-3-d3",
+              "tag": "NetworkPolicy",
+              "desc": "防火墙规则控制 Pod 间流量(Ingress/Egress)，需 CNI 支持"
+            },
+            {
+              "id": "网络插件cni-20-3-3-d4",
+              "tag": "Pod 通信三大路径",
+              "desc": "同一 Pod(lo)、同 Node 不同 Pod(docker0 网桥)、跨 Node Pod(overlay 隧道/路由)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "20-5-存储与配置管理-20-4",
+      "title": "20.5 存储与配置管理",
+      "points": [
+        {
+          "id": "persistentvolume-pvc-storageclass-20-4-0",
+          "tag": "PersistentVolume/PVC/StorageClass",
+          "desc": "K8s 存储体系三层架构：管理员定义 PV/StorageClass，用户创建 PVC 声明",
+          "details": [
+            {
+              "id": "persistentvolume-pvc-storageclass-20-4-0-d0",
+              "tag": "PV(PersistentVolume)",
+              "desc": "集群管理员预先分配或 SC 动态创建，独立于 Pod 生命周期(Retain/Delete)"
+            },
+            {
+              "id": "persistentvolume-pvc-storageclass-20-4-0-d1",
+              "tag": "PVC(PersistentVolumeClaim)",
+              "desc": "用户声明存储需求(大小/读写模式/SC)，系统自动匹配 PV 绑定"
+            },
+            {
+              "id": "persistentvolume-pvc-storageclass-20-4-0-d2",
+              "tag": "StorageClass(SC)",
+              "desc": "定义存储 provisioner(AWS EBS/GCE PD/NFS/CSI 插件)和参数，实现动态存储"
+            },
+            {
+              "id": "persistentvolume-pvc-storageclass-20-4-0-d3",
+              "tag": "accessModes",
+              "desc": "RWO(单节点读写)/ROX(多节点只读)/RWX(多节点读写)"
+            },
+            {
+              "id": "persistentvolume-pvc-storageclass-20-4-0-d4",
+              "tag": "VolumeMode",
+              "desc": "Filesystem(文件系统，默认)/Block(裸块设备)"
+            },
+            {
+              "id": "persistentvolume-pvc-storageclass-20-4-0-d5",
+              "tag": "CSI(Container Storage Interface)",
+              "desc": "标准化存储接口，云厂商实现 CSI 驱动对接各类存储"
+            }
+          ]
+        },
+        {
+          "id": "configmap-secret配置解耦-20-4-1",
+          "tag": "ConfigMap/Secret 配置解耦",
+          "desc": "ConfigMap 和 Secret 将配置与镜像解耦，实现配置热更新(需应用支持 reload)",
+          "details": [
+            {
+              "id": "configmap-secret配置解耦-20-4-1-d0",
+              "tag": "ConfigMap",
+              "desc": "存储非敏感配置(key-value)，以环境变量(envFrom)或文件(volume mount)注入 Pod"
+            },
+            {
+              "id": "configmap-secret配置解耦-20-4-1-d1",
+              "tag": "Secret",
+              "desc": "存储敏感信息(base64 编码)，类型：Opaque(任意)/tls(证书)/docker-registry(镜像仓库凭证)"
+            },
+            {
+              "id": "configmap-secret配置解耦-20-4-1-d2",
+              "tag": "Secret base64 不",
+              "desc": "Secret base64 不是加密仅是编码！配合 etcd 加密 rest 和 RBAC 控制访问"
+            },
+            {
+              "id": "configmap-secret配置解耦-20-4-1-d3",
+              "tag": "Immutable ConfigMap/Secret(beta)",
+              "desc": "创建后不可修改，提升性能(减少 kubelet watch 压力)"
+            },
+            {
+              "id": "configmap-secret配置解耦-20-4-1-d4",
+              "tag": "SubPath",
+              "desc": "Volume 挂载子路径而非整个卷，避免覆盖容器内已有目录"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "20-6-调度-安全与运维-20-5",
+      "title": "20.6 调度、安全与运维",
+      "points": [
+        {
+          "id": "调度策略-20-5-0",
+          "tag": "调度策略",
+          "desc": "kube-scheduler 如何选择最优 Node 运行 Pod",
+          "details": [
+            {
+              "id": "调度策略-20-5-0-d0",
+              "tag": "调度流程",
+              "desc": "过滤(Filtering)→打分(Scoring)→选定(Binding)"
+            },
+            {
+              "id": "调度策略-20-5-0-d1",
+              "tag": "nodeSelector(简单)",
+              "desc": "Pod 指定 nodeSelector 标签，Node 必须有对应标签"
+            },
+            {
+              "id": "调度策略-20-5-0-d2",
+              "tag": "nodeAffinity(节点亲和性)",
+              "desc": "requiredDuringScheduling(硬)/preferredDuringScheduling(软)调度条件"
+            },
+            {
+              "id": "调度策略-20-5-0-d3",
+              "tag": "podAffinity/podAntiAffinity",
+              "desc": "Pod 间亲和/反亲和(如缓存与 Web 部署在同节点/不同节点)"
+            },
+            {
+              "id": "调度策略-20-5-0-d4",
+              "tag": "Taints(污点) + Tolerations(容忍)",
+              "desc": "Node 打污点排斥 Pod，Pod 加容忍可调度上去"
+            },
+            {
+              "id": "调度策略-20-5-0-d5",
+              "tag": "topologySpreadConstraints",
+              "desc": "跨拓扑域(Zone/Node)均匀分布 Pod 提高高可用"
+            }
+          ]
+        },
+        {
+          "id": "rbac权限控制-20-5-1",
+          "tag": "RBAC 权限控制",
+          "desc": "Role-Based Access Control 控制对 K8s API 资源的访问权限",
+          "details": [
+            {
+              "id": "rbac权限控制-20-5-1-d0",
+              "tag": "四对象",
+              "desc": "Role/ClusterRole(定义权限集)+ RoleBinding/ClusterRoleBinding(绑定到用户/组/SA)"
+            },
+            {
+              "id": "rbac权限控制-20-5-1-d1",
+              "tag": "Role(命名空间级) vs ClusterRole(集群级)",
+              "desc": "Role权限限定在单个namespace内如pod读写；ClusterRole跨namespace或集群级资源如node/pv管理；ClusterRoleBinding授予全集群权限"
+            },
+            {
+              "id": "rbac权限控制-20-5-1-d2",
+              "tag": "ServiceAccount",
+              "desc": "Pod 身份，绑定 Role 使其可调用 API Server(如 Prometheus 采集指标)"
+            },
+            {
+              "id": "rbac权限控制-20-5-1-d3",
+              "tag": "kubectl auth can-i 检查权限",
+              "desc": "kubectl auth can-i create pods --as system:serviceaccount:default:my-sa"
+            },
+            {
+              "id": "rbac权限控制-20-5-1-d4",
+              "tag": "最小权限原则",
+              "desc": "为每个应用创建专用 SA，只授予必需权限"
+            }
+          ]
+        },
+        {
+          "id": "滚动更新与灰度发布-20-5-2",
+          "tag": "滚动更新与灰度发布",
+          "desc": "K8s 原生滚动升级组件及高级发布策略",
+          "details": [
+            {
+              "id": "滚动更新与灰度发布-20-5-2-d0",
+              "tag": "Deployment 滚动更新",
+              "desc": "maxSurge=25%+maxUnavailable=25%，逐步替换旧 Pod"
+            },
+            {
+              "id": "滚动更新与灰度发布-20-5-2-d1",
+              "tag": "金丝雀发布",
+              "desc": "创建新 Deployment/RS(N replicas=1)接收少量流量验证→通过后更新主 Deployment"
+            },
+            {
+              "id": "滚动更新与灰度发布-20-5-2-d2",
+              "tag": "蓝绿部署",
+              "desc": "准备两套完整环境(蓝=旧/绿=新)，Service Selector 切换版本"
+            },
+            {
+              "id": "滚动更新与灰度发布-20-5-2-d3",
+              "tag": "Argo Rollouts/Flagger",
+              "desc": "提供金丝雀/蓝绿/渐进式交付，集成 Ingress Controller 流量分配"
+            },
+            {
+              "id": "滚动更新与灰度发布-20-5-2-d4",
+              "tag": "发布失败自动回滚",
+              "desc": "Deployment progressDeadlineSeconds 超时自动回滚(.spec.progressDeadlineSeconds)"
+            }
+          ]
+        },
+        {
+          "id": "弹性伸缩-20-5-3",
+          "tag": "弹性伸缩",
+          "desc": "HPA 水平扩缩 + VPA 垂直扩缩 + Cluster Autoscaler 集群扩缩",
+          "details": [
+            {
+              "id": "弹性伸缩-20-5-3-d0",
+              "tag": "HPA(HorizontalPodAutoscaler)",
+              "desc": "CPU/内存/自定义指标→自动调副本数，=ceil(当前副本×当前值/目标值)"
+            },
+            {
+              "id": "弹性伸缩-20-5-3-d1",
+              "tag": "VPA(VerticalPodAutoscaler)",
+              "desc": "自动调整 Pod requests/limits，分析历史用量推荐值；需重启 Pod"
+            },
+            {
+              "id": "弹性伸缩-20-5-3-d2",
+              "tag": "Cluster Autoscaler",
+              "desc": "Node 资源不足时自动扩节点，Pod 长时间 Pending 触发；空闲节点缩容"
+            },
+            {
+              "id": "弹性伸缩-20-5-3-d3",
+              "tag": "KEDA(Kubernetes Event-driven Autoscaling)：基于事件驱动伸缩(消息队列积压/Cron/数据库查询)，支持伸缩到 0",
+              "desc": "KEDA监听外部事件源指标(如Kafka lag/RabbitMQ队列深度)触发Pod伸缩；伸缩到0实现无流量时零资源消耗，比HPA纯CPU指标更智能"
+            },
+            {
+              "id": "弹性伸缩-20-5-3-d4",
+              "tag": "Karpenter(AWS)",
+              "desc": "新一代 Node 弹性伸缩，直接管理 EC2，比 CA 更快更灵活"
+            }
+          ]
+        },
+        {
+          "id": "k8s监控与日志-20-5-4",
+          "tag": "K8s 监控与日志",
+          "desc": "Prometheus 监控 + EFK/Loki 日志的云原生可观测性方案",
+          "details": [
+            {
+              "id": "k8s监控与日志-20-5-4-d0",
+              "tag": "Prometheus + Grafana",
+              "desc": "cAdvisor 采集容器指标→Prometheus Operator 管理→Grafana 可视化"
+            },
+            {
+              "id": "k8s监控与日志-20-5-4-d1",
+              "tag": "监控黄金指标",
+              "desc": "延迟/流量/错误/饱和度(RED 方法)，K8s 增加 Pod 重启次数/OOM/调度延迟"
+            },
+            {
+              "id": "k8s监控与日志-20-5-4-d2",
+              "tag": "kube-state-metrics",
+              "desc": "暴露 K8s 资源对象状态指标(Deployment 副本数/Pod 状态等)"
+            },
+            {
+              "id": "k8s监控与日志-20-5-4-d3",
+              "tag": "日志方案",
+              "desc": "DaemonSet Fluentd/Fluent Bit 收集容器日志(stdout/stderr)→ES/Kafka/Loki"
+            },
+            {
+              "id": "k8s监控与日志-20-5-4-d4",
+              "tag": "Loki 轻量级日志",
+              "desc": "类似 Prometheus 标签索引但不对日志全文索引，比 ELK 轻量成本更低"
+            },
+            {
+              "id": "k8s监控与日志-20-5-4-d5",
+              "tag": "K9s",
+              "desc": "终端 UI 工具，实时查看和管理集群资源，操作效率高"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

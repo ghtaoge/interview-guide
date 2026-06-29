@@ -1,0 +1,253 @@
+{
+  "id": "redis",
+  "title": "八、Redis",
+  "tag": "Redis",
+  "order": 8,
+  "icon": "📠",
+  "cssIndex": 7,
+  "subs": [
+    {
+      "id": "8-1-数据结构-8-0",
+      "title": "8.1 数据结构",
+      "points": [
+        {
+          "id": "string字符串-8-0-0",
+          "tag": "String字符串",
+          "desc": "底层SDS(Simple Dynamic String)动态字符串(比C字符串:O(1)获取长度/二进制安全/自动扩容减少分配次数)。用途:缓存(SET key value EX 300)/计数器(INCR/DECR原子操作点赞数/限流/分布式锁SETNX EX NX)。编码:int(长整数≤longmax)/embstr(≤44字节连续内存)/raw(>44字节)。注意:BigKey(>10KB)删除阻塞用UNLINK异步删除",
+          "details": [
+            {
+              "id": "string字符串-8-0-0-d0",
+              "tag": "缓存/计数器/分布式锁 三大场景",
+              "desc": "缓存SET EX过期,计数器INCR原子操作限流点赞,分布式锁SETNX EX NX互斥防重"
+            },
+            {
+              "id": "string字符串-8-0-0-d1",
+              "tag": "编码",
+              "desc": "int<embstr(<44B)<raw SDS动态扩容"
+            },
+            {
+              "id": "string字符串-8-0-0-d2",
+              "tag": "String",
+              "desc": "SDS动态字符串+二进制安全+预分配+适用缓存/计数/分布式锁5大场景"
+            },
+            {
+              "id": "string字符串-8-0-0-d3",
+              "tag": "Hash",
+              "desc": "ziplist(小)→ht(大)转换阈值512/64字节+适用对象存储购物车"
+            },
+            {
+              "id": "string字符串-8-0-0-d4",
+              "tag": "List",
+              "desc": "quicklist双向链表+适用消息队列/最新消息LPUSH+LRANGE分页"
+            },
+            {
+              "id": "string字符串-8-0-0-d5",
+              "tag": "Set",
+              "desc": "intset→ht转换512+适用标签/共同好友SINTER/去重SADD自动"
+            },
+            {
+              "id": "string字符串-8-0-0-d6",
+              "tag": "ZSet",
+              "desc": "ziplist→skiplist+ht跳跃表O(logN)范围查询+排行榜/延迟队列"
+            }
+          ]
+        },
+        {
+          "id": "hash哈希-8-0-1",
+          "tag": "Hash哈希",
+          "desc": "field-value键值对集合(类似Java HashMap)。HSET user:1000 name 'zhangsan' age 25。适用:对象缓存(HMGETALL user:1000一次取出整个对象比String序列化JSON更灵活修改单字段)/购物车(Hash Key=userId field=商品Id value=数量)。编码:ziplist(元素少且value小<64B)/hashtable(超过阈值转hash表)。HGET/HSET/HDEL/HMGET/HINCRBY",
+          "details": []
+        },
+        {
+          "id": "list列表-8-0-2",
+          "tag": "List列表",
+          "desc": "双向链表(两端LPUSH/RPOP/RPOPLPUSH)。用途:最新消息(LPUSH msg:latest *100 LTRIM保留100条)/简易队列(生产者LPUSH消费者RPOP,不支持阻塞消费用Stream代替)/排行榜(按时间倒序)。编码:ziplist(元素少且短)/linkedlist(多元素)。注意:LRANGE 0 -1全量遍历O(N)大列表慎用",
+          "details": []
+        },
+        {
+          "id": "set集合-8-0-3",
+          "tag": "Set集合",
+          "desc": "无序唯一元素(类似Java HashSet)。SADD tag:article:1 java redis /SINTER求交集(共同关注标签)/SUNION并集/SDIFF差集/SMEMBERS成员/SISMEMBER检查存在/SRANDMEMBER随机(抽奖)。编码:intset(整数元素且少)/hashtable(通用)。用途:标签系统/好友推荐(共同好友=SINTER)/抽奖(SRANDMEMBER POP)/去重",
+          "details": []
+        },
+        {
+          "id": "zset有序集合-8-0-4",
+          "tag": "ZSet有序集合",
+          "desc": "Score排序唯一成员(跳表SkipList+Dict哈希表双结构)。ZADD rank:game score1 player1 /ZREVRANGE排名/ZRANK分数排名/ZINCRBY加分。用途:排行榜(实时排名ZREVRANGE 0 9 Top10)/延迟队列(Score=到期时间轮询)/加权随机权重(ZRANGEBYSCORE)。Dict查member→Score,O(1); SkipList按Score范围查询,O(logN)",
+          "details": []
+        }
+      ]
+    },
+    {
+      "id": "8-2-持久化-8-1",
+      "title": "8.2 持久化",
+      "points": [
+        {
+          "id": "rdb快照-8-1-0",
+          "tag": "RDB快照",
+          "desc": "fork子进程Copy-On-Write写时复制,将内存数据快照 dump 到 .rdb 二进制文件。触发:SAVE(阻塞主线程)/BGSAVE(后台fork,默认配置 bgsave 规则:900秒1次/300次10次/10000次1次)。优点:恢复快(直接加载RDB文件)、文件紧凑(压缩)。缺点:可能丢数据(两次快照之间修改丢失)、fork时内存膨胀(两倍)。适用:主从复制全量同步",
+          "details": [
+            {
+              "id": "rdb快照-8-1-0-d0",
+              "tag": "fork子进程COW写时",
+              "desc": "fork子进程COW写时复制 → .rdb二进制文件"
+            },
+            {
+              "id": "rdb快照-8-1-0-d1",
+              "tag": "优点",
+              "desc": "恢复快文件紧凑 缺点: 可能丢数据fork内存翻倍"
+            },
+            {
+              "id": "rdb快照-8-1-0-d2",
+              "tag": "RDB优点",
+              "desc": "fork子进程不阻塞+紧凑二进制恢复快+适合备份容灾灾备"
+            },
+            {
+              "id": "rdb快照-8-1-0-d3",
+              "tag": "RDB缺点",
+              "desc": "非实时可能丢最后一次持久化数据+fork大内存实例可能卡顿"
+            },
+            {
+              "id": "rdb快照-8-1-0-d4",
+              "tag": "AOF优点",
+              "desc": "每秒fsync最多丢1秒+可读日志适合数据安全优先场景"
+            },
+            {
+              "id": "rdb快照-8-1-0-d5",
+              "tag": "混合持久化(4.0+)",
+              "desc": "RDB全量+AOF增量=AOF重写后体积小恢复快两全"
+            }
+          ]
+        },
+        {
+          "id": "aof日志-8-1-1",
+          "tag": "AOF日志",
+          "desc": "Append Only File:记录每个写命令追加到 .aof 文件(APPENDFSYNC always/everysec/no)。always(每条fsync最安全但最慢影响性能)。everysec(每秒fsync折中,最多丢1秒数据,推荐生产)。no(交OS可能丢较多数据不推荐)。AOF重写:文件过大时BGREWRITEAOF fork子进程根据当前内存数据重写生成新的精简AOF文件(合并重复命令如INCR多次→SET最终值)",
+          "details": []
+        },
+        {
+          "id": "混合持久化-8-1-2",
+          "tag": "混合持久化",
+          "desc": "Redis 4.0+: RDB-AOF混合模式。AOF重写时先将内存数据以RDB格式写入AOF文件头,之后增量命令仍以AOF格式追加。兼顾RDB加载快+AOF数据完整性(增量命令不丢)。配置: aof-use-rdb-preamble yes。恢复时:先加载RDF部分(快速恢复基础数据),再回放AOF增量(追加重做丢失期间的命令)。生产环境推荐开启",
+          "details": []
+        }
+      ]
+    },
+    {
+      "id": "8-3-缓存问题-8-2",
+      "title": "8.3 缓存问题",
+      "points": [
+        {
+          "id": "缓存穿透-8-2-0",
+          "tag": "缓存穿透",
+          "desc": "查询不存在的数据(恶意攻击id=-1或随机UUID),每次都穿透缓存直击DB。解决方案:①布隆过滤器(Bloom Filter:位数组+K个Hash函数判断一定不存在可能存在,Guava/Redisson实现前置拦截)②缓存空值(null短过期如60s)③接口层校验(id合法性校验参数范围)④限流(单个IP高频请求拦截)。布隆过滤器误判率可接受但不能100%准确",
+          "details": [
+            {
+              "id": "缓存穿透-8-2-0-d0",
+              "tag": "布隆过滤器前置拦截 +",
+              "desc": "布隆过滤器前置拦截 + 缓存空值短过期 + 参数校验 + 限流"
+            },
+            {
+              "id": "缓存穿透-8-2-0-d1",
+              "tag": "BloomFilter",
+              "desc": "位数组+K个Hash 一定不存在/可能存在"
+            },
+            {
+              "id": "缓存穿透-8-2-0-d2",
+              "tag": "穿透防护",
+              "desc": "布隆过滤器拦截不存在的查询+空值缓存(null,5min)两层防御"
+            },
+            {
+              "id": "缓存穿透-8-2-0-d3",
+              "tag": "击穿防护",
+              "desc": "互斥锁SETNX+过期只允许一个请求重建缓存避免雪崩打DB"
+            },
+            {
+              "id": "缓存穿透-8-2-0-d4",
+              "tag": "雪崩防护",
+              "desc": "随机过期时间base±10%分散失效+多级缓存兜底+熔断降级"
+            },
+            {
+              "id": "缓存穿透-8-2-0-d5",
+              "tag": "预热",
+              "desc": "活动前热点数据批量加载Redis避免首次请求穿透DB性能保障"
+            }
+          ]
+        },
+        {
+          "id": "缓存击穿-8-2-1",
+          "tag": "缓存击穿",
+          "desc": "热点Key突然过期(微博热搜/爆款商品),大量并发请求同时打到DB。解决方案:①互斥锁(SETNX分布式锁只有一个线程查DB重建缓存,其他线程等待或降级返回旧数据)②逻辑过期(不设TTL,Value中嵌入过期时间,发现过期时异步重建,牺牲一致性换高性能)③热点Key永不过期+主动刷新(后台任务更新)。推荐方案: 非极高并发用互斥锁,超高并发用逻辑过期",
+          "details": []
+        },
+        {
+          "id": "缓存雪崩-8-2-2",
+          "tag": "缓存雪崩",
+          "desc": "大量Key同时过期(同一时刻批量失效)或Redis宕机,DB瞬间压力激增甚至打垮。预防:①TTL随机打散(基础过期时间+随机偏移0~过期时间的10%避免集体失效)②多级缓存(LocalCache L1 + Redis L2 + DB L3,LocalCache扛住部分流量)③熔断降级(Sentinel/Hystrix:DB不可用时返回兜底数据或友好提示)④Redis高可用(主从哨兵Cluster集群避免单点故障)⑤限流(入口限流保护后端)",
+          "details": []
+        },
+        {
+          "id": "数据一致性-8-2-3",
+          "tag": "数据一致性",
+          "desc": "Cache Aside Pattern:更新时先更DB再删Cache(延迟双删策略:删Cache→更新DB→Sleep(如200ms)→再删Cache防止旧数据回填)。Read Through/Wirte Through:由缓存组件统一管理DB读写(屏蔽复杂性)。Write Behind:异步批量写DB(性能好但可能丢数据)。消息队列最终一致性:更新DB后发MQ异步更新Cache(保证最终一致,适合高并发写场景)",
+          "details": []
+        }
+      ]
+    },
+    {
+      "id": "8-4-高可用集群-8-3",
+      "title": "8.4 高可用集群",
+      "points": [
+        {
+          "id": "主从复制-8-3-0",
+          "tag": "主从复制",
+          "desc": "全量复制: Slave发PSYNC(含master_runid+offset)→Master检查offset是否有积攒 backlog,无则fork子进程RDB全量发送+期间增量命令缓存→Slave加载RDB并回放增量命令。增量复制: offset在backlog范围内,只发送积攒的增量命令。断点续传: 复制积压缓冲区(replication backlog,默认1MB可配)保存最近命令,Slave重连后从断点继续",
+          "details": [
+            {
+              "id": "主从复制-8-3-0-d0",
+              "tag": "全量",
+              "desc": "RDB快照+增量回放 / 增量: backlog续传"
+            },
+            {
+              "id": "主从复制-8-3-0-d1",
+              "tag": "replication backlog缓冲区 断点续传",
+              "desc": "默认1MB保存最近命令,Slave重连后offset在backlog范围内只需增量复制,超出则全量RDB"
+            },
+            {
+              "id": "主从复制-8-3-0-d2",
+              "tag": "主从复制",
+              "desc": "异步复制主写→从读+SLAVEOF+PSYNC断线续传增量同步"
+            },
+            {
+              "id": "主从复制-8-3-0-d3",
+              "tag": "哨兵",
+              "desc": "监控+通知+自动故障转移主观下线→客观下线→Raft选举新主"
+            },
+            {
+              "id": "主从复制-8-3-0-d4",
+              "tag": "哨兵选举",
+              "desc": "优先级→复制偏移→RunID三级选择最优从库升主"
+            },
+            {
+              "id": "主从复制-8-3-0-d5",
+              "tag": "最少哨兵",
+              "desc": "3个保证多数派(2/3)决策避免单点故障集群监控"
+            }
+          ]
+        },
+        {
+          "id": "哨兵sentinel-8-3-1",
+          "tag": "哨兵Sentinel",
+          "desc": "监控(Master/Slave健康检查PING,主观下线SDOWN+客观下线ODOWN quorum投票)。自动故障转移:哨兵Leader选举(Raft共识)→选出新Master(slave-priority优先级/offset复制进度/runId字典序)→SLAVEOF NO ONE提升为新Master→其他 Slave 指向新 Master →客户端感知(发布订阅switch-master通知客户端)。配置:sentinel monitor mymaster host port quorum(如3个哨兵2个同意即故障转移)",
+          "details": []
+        },
+        {
+          "id": "cluster集群-8-3-2",
+          "tag": "Cluster集群",
+          "desc": "数据分片:16384个槽(slot)均匀分布到各Master节点(CRC16(key)%16384→slot→Node)。每个Master有Slave副本(异步复制)。MOVED重定向:访问的slot不在本节点返回MOVED slot IP PORT,客户端更新路由表。ASK重定向:slot正在迁移中返回ASK临时转向。Gossip协议:节点间定期Ping/Pong交换状态信息(去中心化无代理层)。扩容:resharding迁移槽位数据(从源node获取→目标node确认)",
+          "details": []
+        }
+      ]
+    }
+  ]
+}

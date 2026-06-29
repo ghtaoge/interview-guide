@@ -1,0 +1,710 @@
+{
+  "id": "vue2",
+  "title": "十三、Vue2 生态体系",
+  "tag": "Vue2",
+  "order": 13,
+  "icon": "💚",
+  "cssIndex": 12,
+  "subs": [
+    {
+      "id": "13-1-vue2-核心-13-0",
+      "title": "13.1 Vue2 核心",
+      "points": [
+        {
+          "id": "双向绑定原理-13-0-0",
+          "tag": "双向绑定原理",
+          "desc": "Vue2通过Object.defineProperty实现数据劫持，配合Observer/Dep/Watcher三者协同完成响应式更新",
+          "details": [
+            {
+              "id": "双向绑定原理-13-0-0-d0",
+              "tag": "Observer",
+              "desc": "递历遍历data对象对每个属性设置getter/setter进行劫持"
+            },
+            {
+              "id": "双向绑定原理-13-0-0-d1",
+              "tag": "Dep",
+              "desc": "每个响应式属性对应一个Dep依赖收集器，getter时收集Watcher"
+            },
+            {
+              "id": "双向绑定原理-13-0-0-d2",
+              "tag": "Watcher",
+              "desc": "组件渲染时创建渲染Watcher，数据变化时Dep.notify()通知Watcher执行update"
+            },
+            {
+              "id": "双向绑定原理-13-0-0-d3",
+              "tag": "数组变异方法(push/pop/splice等)通过重写原型实现拦截",
+              "desc": "Vue2对数组7个变异方法重写Array.prototype，调用时触发Dep.notify通知Watcher更新，直接索引赋值无法触发响应式"
+            },
+            {
+              "id": "双向绑定原理-13-0-0-d4",
+              "tag": "缺陷",
+              "desc": "无法检测对象属性增加/删除需Vue.set；无法监听数组索引直接赋值"
+            }
+          ]
+        },
+        {
+          "id": "生命周期钩子-13-0-1",
+          "tag": "生命周期钩子",
+          "desc": "Vue2组件从创建到销毁经历8个钩子阶段，每个阶段可执行特定逻辑",
+          "details": [
+            {
+              "id": "生命周期钩子-13-0-1-d0",
+              "tag": "beforeCreate",
+              "desc": "实例刚初始化data/methods均不可用"
+            },
+            {
+              "id": "生命周期钩子-13-0-1-d1",
+              "tag": "created",
+              "desc": "实例创建完成data/methods可访问但DOM未挂载，适合发起异步请求"
+            },
+            {
+              "id": "生命周期钩子-13-0-1-d2",
+              "tag": "beforeMount",
+              "desc": "模板编译完成虚拟DOM已生成但未渲染"
+            },
+            {
+              "id": "生命周期钩子-13-0-1-d3",
+              "tag": "mounted",
+              "desc": "真实DOM挂载完成可操作DOM初始化第三方库"
+            },
+            {
+              "id": "生命周期钩子-13-0-1-d4",
+              "tag": "beforeUpdate",
+              "desc": "数据变化后DOM更新前（beforeUpdate的详细说明：生命周期钩子中关于beforeUpdate的内容）"
+            },
+            {
+              "id": "生命周期钩子-13-0-1-d5",
+              "tag": "updated",
+              "desc": "DOM重新渲染完成（updated的详细说明：生命周期钩子中关于updated的内容）"
+            },
+            {
+              "id": "生命周期钩子-13-0-1-d6",
+              "tag": "beforeDestroy",
+              "desc": "实例销毁前适合清理定时器/解绑事件"
+            },
+            {
+              "id": "生命周期钩子-13-0-1-d7",
+              "tag": "destroyed",
+              "desc": "实例完全销毁（destroyed的详细说明：生命周期钩子中关于destroyed的内容）"
+            }
+          ]
+        },
+        {
+          "id": "组件通信方式-13-0-2",
+          "tag": "组件通信方式",
+          "desc": "Vue2提供多种组件间通信机制，适用场景各异",
+          "details": [
+            {
+              "id": "组件通信方式-13-0-2-d0",
+              "tag": "props/$emit",
+              "desc": "父子组件基础通信（props/$emit的详细说明：组件通信方式中关于props/$emit的内容）"
+            },
+            {
+              "id": "组件通信方式-13-0-2-d1",
+              "tag": "$parent/$children",
+              "desc": "直接访问父/子实例，耦合度高不推荐"
+            },
+            {
+              "id": "组件通信方式-13-0-2-d2",
+              "tag": "provide/inject",
+              "desc": "祖先provide数据后代inject接收适合深层嵌套"
+            },
+            {
+              "id": "组件通信方式-13-0-2-d3",
+              "tag": "EventBus",
+              "desc": "空Vue实例作为事件中心适合兄弟组件，大型项目难维护"
+            },
+            {
+              "id": "组件通信方式-13-0-2-d4",
+              "tag": "$refs",
+              "desc": "直接获取子组件实例或DOM元素"
+            },
+            {
+              "id": "组件通信方式-13-0-2-d5",
+              "tag": "Vuex",
+              "desc": "全局状态管理适合大型项目多组件共享状态"
+            }
+          ]
+        },
+        {
+          "id": "computedvswatch-13-0-3",
+          "tag": "computed vs watch",
+          "desc": "computed计算属性与watch侦听器都是响应式依赖追踪机制但用途不同",
+          "details": [
+            {
+              "id": "computedvswatch-13-0-3-d0",
+              "tag": "computed",
+              "desc": "基于依赖缓存，依赖不变不重新计算必须有返回值适合派生数据"
+            },
+            {
+              "id": "computedvswatch-13-0-3-d1",
+              "tag": "watch",
+              "desc": "无缓存数据变化即执行回调适合异步操作或开销较大逻辑"
+            },
+            {
+              "id": "computedvswatch-13-0-3-d2",
+              "tag": "watch配置",
+              "desc": "immediate:true立即执行；deep:true深层监听(性能开销大)"
+            },
+            {
+              "id": "computedvswatch-13-0-3-d3",
+              "tag": "面试要点",
+              "desc": "computed支持getter/setter；watch可用字符串监听'obj.key'"
+            }
+          ]
+        },
+        {
+          "id": "指令系统-13-0-4",
+          "tag": "指令系统",
+          "desc": "Vue2内置核心指令实现条件渲染、列表渲染和双向绑定",
+          "details": [
+            {
+              "id": "指令系统-13-0-4-d0",
+              "tag": "v-if vs v-show",
+              "desc": "v-if条件false时DOM不渲染(v-show通过display切换)"
+            },
+            {
+              "id": "指令系统-13-0-4-d1",
+              "tag": "v-for",
+              "desc": "必须加:key辅助Diff算法复用节点；与v-if同级时v-for优先级更高"
+            },
+            {
+              "id": "指令系统-13-0-4-d2",
+              "tag": "v-model",
+              "desc": "双向绑定语法糖本质是:value+@input，可通过model选项自定义prop/event"
+            },
+            {
+              "id": "指令系统-13-0-4-d3",
+              "tag": "自定义指令",
+              "desc": "五个钩子bind/inserted/update/componentUpdated/unbind"
+            }
+          ]
+        },
+        {
+          "id": "组件化与插槽-13-0-5",
+          "tag": "组件化与插槽",
+          "desc": "组件是Vue2最核心的抽象单位，插槽机制实现内容分发与组件复用",
+          "details": [
+            {
+              "id": "组件化与插槽-13-0-5-d0",
+              "tag": "默认插槽",
+              "desc": "<slot>作为内容分发出口（默认插槽的详细说明：组件化与插槽中关于默认插槽的内容）"
+            },
+            {
+              "id": "组件化与插槽-13-0-5-d1",
+              "tag": "具名插槽",
+              "desc": "<slot name='xxx'>配合<template v-slot:xxx>或简写#xxx"
+            },
+            {
+              "id": "组件化与插槽-13-0-5-d2",
+              "tag": "作用域插槽",
+              "desc": "<slot :data='xxx'>将子组件数据传出父组件用v-slot接收"
+            },
+            {
+              "id": "组件化与插槽-13-0-5-d3",
+              "tag": "组件注册",
+              "desc": "全局Vue.component()、局部components选项按需引入"
+            }
+          ]
+        },
+        {
+          "id": "模板编译原理-13-0-6",
+          "tag": "模板编译原理",
+          "desc": "Vue2将template模板字符串编译为render函数经历三个阶段",
+          "details": [
+            {
+              "id": "模板编译原理-13-0-6-d0",
+              "tag": "解析(parse)",
+              "desc": "template字符串解析为AST抽象语法树"
+            },
+            {
+              "id": "模板编译原理-13-0-6-d1",
+              "tag": "优化(optimize)",
+              "desc": "遍历AST标记静态节点和静态根节点Diff时跳过"
+            },
+            {
+              "id": "模板编译原理-13-0-6-d2",
+              "tag": "生成(generate)",
+              "desc": "将优化后AST转换为render函数代码字符串"
+            },
+            {
+              "id": "模板编译原理-13-0-6-d3",
+              "tag": "runtime+compiler vs runtime-only",
+              "desc": "含compiler可运行时编译，runtime-only依赖预编译体积更小"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "13-2-vuex-状态管理-13-1",
+      "title": "13.2 Vuex 状态管理",
+      "points": [
+        {
+          "id": "核心概念-13-1-0",
+          "tag": "核心概念",
+          "desc": "Vuex由State/Getter/Mutation/Action/Module五个核心部分组成统一状态树",
+          "details": [
+            {
+              "id": "核心概念-13-1-0-d0",
+              "tag": "State",
+              "desc": "单一状态树唯一数据源通过this.$store.state或mapState访问"
+            },
+            {
+              "id": "核心概念-13-1-0-d1",
+              "tag": "Getter",
+              "desc": "派生计算属性从state派出新状态类似computed"
+            },
+            {
+              "id": "核心概念-13-1-0-d2",
+              "tag": "Mutation",
+              "desc": "唯一修改state的方式必须是同步函数通过commit触发"
+            },
+            {
+              "id": "核心概念-13-1-0-d3",
+              "tag": "Action",
+              "desc": "提交mutation而非直接修改state可包含异步操作通过dispatch触发"
+            },
+            {
+              "id": "核心概念-13-1-0-d4",
+              "tag": "Module",
+              "desc": "将store分割成模块每个模块拥有独立的state/mutation/action/getter"
+            }
+          ]
+        },
+        {
+          "id": "数据流转单向-13-1-1",
+          "tag": "数据流转单向",
+          "desc": "Vuex遵循单向数据流原则：View→Action→Mutation→State→View",
+          "details": [
+            {
+              "id": "数据流转单向-13-1-1-d0",
+              "tag": "组件",
+              "desc": "组件通过dispatch触发Action(异步操作如API请求)"
+            },
+            {
+              "id": "数据流转单向-13-1-1-d1",
+              "tag": "Action内部",
+              "desc": "Action内部通过commit提交Mutation(同步修改state)"
+            },
+            {
+              "id": "数据流转单向-13-1-1-d2",
+              "tag": "Mutation",
+              "desc": "Mutation是唯一合法修改State的入口保证状态变更可追踪"
+            },
+            {
+              "id": "数据流转单向-13-1-1-d3",
+              "tag": "State变化",
+              "desc": "State变化触发View重新渲染形成闭环"
+            },
+            {
+              "id": "数据流转单向-13-1-1-d4",
+              "tag": "严格模式下直接",
+              "desc": "严格模式下直接修改state将抛出错误"
+            }
+          ]
+        },
+        {
+          "id": "mutationvsaction-13-1-2",
+          "tag": "Mutation vs Action",
+          "desc": "Mutation和Action分别负责同步和异步状态变更，面试常考区分要点",
+          "details": [
+            {
+              "id": "mutationvsaction-13-1-2-d0",
+              "tag": "Mutation必须同步执行",
+              "desc": "DevTools依赖mutation记录状态快照"
+            },
+            {
+              "id": "mutationvsaction-13-1-2-d1",
+              "tag": "Action可异步执行",
+              "desc": "最终仍通过commit提交mutation修改state"
+            },
+            {
+              "id": "mutationvsaction-13-1-2-d2",
+              "tag": "Action返回Promise",
+              "desc": "dispatch返回action函数返回值可链式调用"
+            },
+            {
+              "id": "mutationvsaction-13-1-2-d3",
+              "tag": "Mutation Type常量",
+              "desc": "推荐用常量替代字符串事件类型便于维护"
+            }
+          ]
+        },
+        {
+          "id": "module动态注册-13-1-3",
+          "tag": "Module 动态注册",
+          "desc": "大型项目中Vuex模块可按需动态注册与卸载实现按路由懒加载",
+          "details": [
+            {
+              "id": "module动态注册-13-1-3-d0",
+              "tag": "store.registerModule('moduleName',module)：运行时动态注册",
+              "desc": "registerModule按需加载Vuex模块，配合路由懒加载减少首屏体积，模块含state/mutations/actions/getters完整定义"
+            },
+            {
+              "id": "module动态注册-13-1-3-d1",
+              "tag": "store.unregisterModule('moduleName')：卸载已注册模块",
+              "desc": "unregisterModule卸载动态注册模块释放内存，路由离开时卸载对应模块保持Store精简，不可卸载静态注册模块"
+            },
+            {
+              "id": "module动态注册-13-1-3-d2",
+              "tag": "namespaced:true",
+              "desc": "模块启用命名空间后getter/action/mutation自动带模块路径前缀"
+            },
+            {
+              "id": "module动态注册-13-1-3-d3",
+              "tag": "动态模块访问",
+              "desc": "mapState('moduleName',[...])或store.state.moduleName"
+            }
+          ]
+        },
+        {
+          "id": "持久化方案-13-1-4",
+          "tag": "持久化方案",
+          "desc": "Vuex状态默认存储在内存中页面刷新后丢失需持久化方案保留关键状态",
+          "details": [
+            {
+              "id": "持久化方案-13-1-4-d0",
+              "tag": "vuex-persistedstate插件",
+              "desc": "自动将state同步到localStorage/sessionStorage"
+            },
+            {
+              "id": "持久化方案-13-1-4-d1",
+              "tag": "配置项",
+              "desc": "key指定存储键名、paths指定需持久化的state路径、storage切换存储引擎"
+            },
+            {
+              "id": "持久化方案-13-1-4-d2",
+              "tag": "自定义storage",
+              "desc": "可实现IndexedDB/Cookie等只需实现getItem/setItem/removeItem"
+            },
+            {
+              "id": "持久化方案-13-1-4-d3",
+              "tag": "安全注意",
+              "desc": "敏感数据不建议直接存localStorage可加密或配合Cookie"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "13-3-vue-router-13-2",
+      "title": "13.3 Vue Router",
+      "points": [
+        {
+          "id": "路由模式-13-2-0",
+          "tag": "路由模式",
+          "desc": "Vue Router支持hash/history/abstract三种路由模式",
+          "details": [
+            {
+              "id": "路由模式-13-2-0-d0",
+              "tag": "hash模式",
+              "desc": "URL带#号通过hashchange事件监听无需服务器配置兼容性最好"
+            },
+            {
+              "id": "路由模式-13-2-0-d1",
+              "tag": "history模式",
+              "desc": "URL无#号利用pushState/popstate需服务器配置fallback到index.html"
+            },
+            {
+              "id": "路由模式-13-2-0-d2",
+              "tag": "abstract模式",
+              "desc": "不依赖浏览器环境使用内存栈适用于Node.js/SSR"
+            },
+            {
+              "id": "路由模式-13-2-0-d3",
+              "tag": "history模式nginx配置",
+              "desc": "try_files $uri $uri/ /index.html避免刷新404"
+            }
+          ]
+        },
+        {
+          "id": "导航守卫-13-2-1",
+          "tag": "导航守卫",
+          "desc": "路由导航守卫提供全局/路由独享/组件内三个层级拦截控制路由跳转",
+          "details": [
+            {
+              "id": "导航守卫-13-2-1-d0",
+              "tag": "全局前置守卫router.beforeEach",
+              "desc": "登录验证、权限拦截最常用（全局前置守卫router.beforeEach的详细说明：导航守卫中关于全局前置守卫router.beforeEach的内容）"
+            },
+            {
+              "id": "导航守卫-13-2-1-d1",
+              "tag": "全局后置钩子router.afterEach",
+              "desc": "无next不可改变导航适合页面标题/埋点"
+            },
+            {
+              "id": "导航守卫-13-2-1-d2",
+              "tag": "路由独享守卫beforeEnter写在路由配置中",
+              "desc": "beforeEnter守卫定义在路由配置对象的beforeEnter字段中，仅对该路由生效，不像全局守卫影响所有路由"
+            },
+            {
+              "id": "导航守卫-13-2-1-d3",
+              "tag": "组件内守卫",
+              "desc": "beforeRouteEnter/beforeRouteUpdate/beforeRouteLeave"
+            },
+            {
+              "id": "导航守卫-13-2-1-d4",
+              "tag": "守卫执行顺序",
+              "desc": "beforeEach→beforeRouteEnter→afterEach"
+            }
+          ]
+        },
+        {
+          "id": "动态路由与懒加载-13-2-2",
+          "tag": "动态路由与懒加载",
+          "desc": "动态路由匹配实现参数化路径路由懒加载优化首屏加载性能",
+          "details": [
+            {
+              "id": "动态路由与懒加载-13-2-2-d0",
+              "tag": "动态路径参数",
+              "desc": "path:'/user/:id'通过this.$route.params.id获取"
+            },
+            {
+              "id": "动态路由与懒加载-13-2-2-d1",
+              "tag": "懒加载",
+              "desc": "component:()=>import('@/views/User.vue')Webpack自动代码分割"
+            },
+            {
+              "id": "动态路由与懒加载-13-2-2-d2",
+              "tag": "分组打包",
+              "desc": "()=>import(/* webpackChunkName:'user' */ '@/views/User.vue')"
+            },
+            {
+              "id": "动态路由与懒加载-13-2-2-d3",
+              "tag": "404路由",
+              "desc": "path:'*'作为兜底匹配（404路由的详细说明：动态路由与懒加载中关于404路由的内容）"
+            }
+          ]
+        },
+        {
+          "id": "嵌套路由-13-2-3",
+          "tag": "嵌套路由",
+          "desc": "通过children配置实现路由嵌套对应组件内<router-view>层级嵌套",
+          "details": [
+            {
+              "id": "嵌套路由-13-2-3-d0",
+              "tag": "children配置",
+              "desc": "路由对象内children数组定义子路由"
+            },
+            {
+              "id": "嵌套路由-13-2-3-d1",
+              "tag": "嵌套渲染",
+              "desc": "父组件<router-view>渲染父路由子路由组件内再<router-view>"
+            },
+            {
+              "id": "嵌套路由-13-2-3-d2",
+              "tag": "默认子路由",
+              "desc": "children中path:''的子路由在父路由匹配时自动渲染"
+            },
+            {
+              "id": "嵌套路由-13-2-3-d3",
+              "tag": "命名视图",
+              "desc": "<router-view name='sidebar'>配合components多组件同时渲染"
+            }
+          ]
+        },
+        {
+          "id": "路由传参-13-2-4",
+          "tag": "路由传参",
+          "desc": "路由间传递数据有params和query两种主要方式",
+          "details": [
+            {
+              "id": "路由传参-13-2-4-d0",
+              "tag": "params动态参数",
+              "desc": "路由声明path:'/user/:id'URL显示/user/123"
+            },
+            {
+              "id": "路由传参-13-2-4-d1",
+              "tag": "query查询参数",
+              "desc": "URL显示/user?id=123$this.$route.query.id获取"
+            },
+            {
+              "id": "路由传参-13-2-4-d2",
+              "tag": "编程式导航传参",
+              "desc": "this.$router.push({name:'User',params:{id:123}})"
+            },
+            {
+              "id": "路由传参-13-2-4-d3",
+              "tag": "props解耦",
+              "desc": "路由配置props:true将params自动转为组件props"
+            }
+          ]
+        },
+        {
+          "id": "keep-alive缓存-13-2-5",
+          "tag": "keep-alive缓存",
+          "desc": "<keep-alive>包裹<router-view>缓存组件实例避免重复渲染提升性能",
+          "details": [
+            {
+              "id": "keep-alive缓存-13-2-5-d0",
+              "tag": "基本用法",
+              "desc": "<keep-alive><router-view/></keep-alive>切换路由时不销毁组件"
+            },
+            {
+              "id": "keep-alive缓存-13-2-5-d1",
+              "tag": "include/exclude",
+              "desc": "指定缓存或排除的组件名如include='UserList,OrderList'"
+            },
+            {
+              "id": "keep-alive缓存-13-2-5-d2",
+              "tag": "max属性",
+              "desc": "限制最大缓存实例数超出时LRU算法销毁最久未访问的组件"
+            },
+            {
+              "id": "keep-alive缓存-13-2-5-d3",
+              "tag": "activated/deactivated",
+              "desc": "被缓存组件独有的生命周期钩子（activated/deactivated的详细说明：keep-alive缓存中关于activated/deactivated的内容）"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "13-4-axios-13-3",
+      "title": "13.4 Axios",
+      "points": [
+        {
+          "id": "基本用法-13-3-0",
+          "tag": "基本用法",
+          "desc": "Axios是基于Promise的HTTP客户端支持浏览器和Node.js双端使用",
+          "details": [
+            {
+              "id": "基本用法-13-3-0-d0",
+              "tag": "GET",
+              "desc": "axios.get('/api/user',{params:{id:1}})"
+            },
+            {
+              "id": "基本用法-13-3-0-d1",
+              "tag": "POST",
+              "desc": "axios.post('/api/user',data)默认JSON请求体"
+            },
+            {
+              "id": "基本用法-13-3-0-d2",
+              "tag": "响应结构",
+              "desc": "{data,status,statusText,headers,config,request}data为服务器返回体"
+            },
+            {
+              "id": "基本用法-13-3-0-d3",
+              "tag": "并发请求",
+              "desc": "axios.all([req1,req2]).then(axios.spread((res1,res2)=>{}))"
+            }
+          ]
+        },
+        {
+          "id": "拦截器-13-3-1",
+          "tag": "拦截器",
+          "desc": "Axios请求/响应拦截器在请求发出前和响应返回后统一处理逻辑",
+          "details": [
+            {
+              "id": "拦截器-13-3-1-d0",
+              "tag": "请求拦截器",
+              "desc": "统一添加token/签名/时间戳/Content-Type"
+            },
+            {
+              "id": "拦截器-13-3-1-d1",
+              "tag": "响应拦截器",
+              "desc": "统一处理错误码/业务错误码/token过期跳转"
+            },
+            {
+              "id": "拦截器-13-3-1-d2",
+              "tag": "拦截器执行顺序",
+              "desc": "请求按添加顺序先内后外，响应按添加顺序先外后内"
+            },
+            {
+              "id": "拦截器-13-3-1-d3",
+              "tag": "移除拦截器",
+              "desc": "axios.interceptors.request.eject(myInterceptor)"
+            }
+          ]
+        },
+        {
+          "id": "请求取消-13-3-2",
+          "tag": "请求取消",
+          "desc": "Axios支持通过CancelToken取消正在进行中的HTTP请求",
+          "details": [
+            {
+              "id": "请求取消-13-3-2-d0",
+              "tag": "CancelToken方式",
+              "desc": "const source=axios.CancelToken.source(); source.cancel('取消原因')"
+            },
+            {
+              "id": "请求取消-13-3-2-d1",
+              "tag": "典型场景",
+              "desc": "路由切换取消未完成请求防数据错乱、搜索框防抖取消旧请求"
+            },
+            {
+              "id": "请求取消-13-3-2-d2",
+              "tag": "AbortController(现代方案)",
+              "desc": "Axios 0.22+支持signal参数配合AbortController"
+            },
+            {
+              "id": "请求取消-13-3-2-d3",
+              "tag": "批量取消",
+              "desc": "维护请求队列Map遍历调用每个source.cancel()"
+            }
+          ]
+        },
+        {
+          "id": "封装实践-13-3-3",
+          "tag": "封装实践",
+          "desc": "生产项目中Axios需要封装统一配置错误处理重试和请求管理",
+          "details": [
+            {
+              "id": "封装实践-13-3-3-d0",
+              "tag": "创建实例",
+              "desc": "axios.create({baseURL,timeout:10000,headers})"
+            },
+            {
+              "id": "封装实践-13-3-3-d1",
+              "tag": "baseURL配置",
+              "desc": "通过环境变量切换API地址(process.env.VUE_APP_BASE_API)"
+            },
+            {
+              "id": "封装实践-13-3-3-d2",
+              "tag": "统一错误处理",
+              "desc": "响应拦截器按status分类(401跳登录/403无权限/500服务端错误)"
+            },
+            {
+              "id": "封装实践-13-3-3-d3",
+              "tag": "请求重试",
+              "desc": "响应拦截器判断重试次数递归调用并递减retryCount"
+            },
+            {
+              "id": "封装实践-13-3-3-d4",
+              "tag": "Loading管理",
+              "desc": "请求拦截器开启响应拦截器关闭需计数器管理N个并发请求"
+            }
+          ]
+        },
+        {
+          "id": "跨域处理-13-3-4",
+          "tag": "跨域处理",
+          "desc": "前后端分离项目中Axios跨域请求需代理或CORS方案解决",
+          "details": [
+            {
+              "id": "跨域处理-13-3-4-d0",
+              "tag": "开发代理",
+              "desc": "vue.config.js配置devServer.proxy将/api请求代理到后端域名"
+            },
+            {
+              "id": "跨域处理-13-3-4-d1",
+              "tag": "生产代理",
+              "desc": "nginx反向代理location /api {proxy_pass http://backend;}"
+            },
+            {
+              "id": "跨域处理-13-3-4-d2",
+              "tag": "CORS",
+              "desc": "后端设置Access-Control-Allow-Origin/Method/Headers响应头"
+            },
+            {
+              "id": "跨域处理-13-3-4-d3",
+              "tag": "withCredentials",
+              "desc": "axios配置withCredentials:true允许跨域请求携带Cookie"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

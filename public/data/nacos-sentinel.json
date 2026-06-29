@@ -1,0 +1,210 @@
+{
+  "id": "nacos-sentinel",
+  "title": "三十五、Nacos与Sentinel微服务组件",
+  "tag": "Nacos/Sentinel",
+  "order": 35,
+  "icon": "📨",
+  "cssIndex": 32,
+  "subs": [
+    {
+      "id": "35-1-nacos配置与服务发现-35-0",
+      "title": "35.1 Nacos配置与服务发现",
+      "points": [
+        {
+          "id": "nacos核心架构-35-0-0",
+          "tag": "Nacos核心架构",
+          "desc": "Nacos是阿里开源的动态服务发现、配置管理和服务管理平台。核心能力：服务注册与发现NameService、动态配置管理ConfigService。架构：Server集群模式数据存储MySQL持久化/内嵌Derby、Client注册配置SDK。服务注册：实例临时temporary心跳保活15秒默认3次失败剔除vs持久permanent主动注册不依赖心跳。配置管理：Namespace隔离→Group分组→DataId配置集三级层次。监听机制长轮询Long Polling29.5秒超时配置变更立即返回。集群部署3节点以上推荐Raft协议选举Leader。面试重点：临时vs持久实例区别、配置监听长轮询原理、集群选主机制。",
+          "details": [
+            {
+              "id": "nacos核心架构-35-0-0-d0",
+              "tag": "Nacos",
+              "desc": "阿里开源动态服务发现和配置管理平台替代Spring Cloud Config+Eureka一站式方案"
+            },
+            {
+              "id": "nacos核心架构-35-0-0-d1",
+              "tag": "服务注册",
+              "desc": "实例注册到Nacos Server临时实例心跳保活15秒3次失败剔除持久实例主动注册不心跳"
+            },
+            {
+              "id": "nacos核心架构-35-0-0-d2",
+              "tag": "服务发现",
+              "desc": "消费者从Nacos查询可用实例列表支持权重路由健康检查自动剔除不可用实例"
+            },
+            {
+              "id": "nacos核心架构-35-0-0-d3",
+              "tag": "临时实例",
+              "desc": "temporary模式心跳保活默认15秒3次心跳失败自动剔除适合微服务弹性伸缩场景"
+            },
+            {
+              "id": "nacos核心架构-35-0-0-d4",
+              "tag": "持久实例",
+              "desc": "permanent模式主动注册不依赖心跳Nacos主动探测健康适合传统非弹性服务"
+            },
+            {
+              "id": "nacos核心架构-35-0-0-d5",
+              "tag": "配置管理",
+              "desc": "Namespace隔离→Group分组→DataId配置集三级层次支持多环境多项目配置隔离"
+            },
+            {
+              "id": "nacos核心架构-35-0-0-d6",
+              "tag": "长轮询监听",
+              "desc": "Client发起29.5秒长轮询请求配置变更时立即返回未变更则超时后重新发起减少网络开销"
+            },
+            {
+              "id": "nacos核心架构-35-0-0-d7",
+              "tag": "集群选主",
+              "desc": "Raft协议选举Leader3节点以上推荐MySQL持久化数据内嵌Derby仅单机测试用"
+            }
+          ]
+        },
+        {
+          "id": "nacos配置管理与实践-35-0-1",
+          "tag": "Nacos配置管理与实践",
+          "desc": "Nacos配置管理核心：Namespace环境隔离(dev/fat/uat/prod)、Group项目分组、DataId配置集名称格式${prefix}-${spring.profile.active}.${file-extension}。配置加载优先级：共享配置extension-configs→应用配置→profile配置后者覆盖前者。动态刷新@RefreshScope+@Value自动感知配置变更无需重启。灰度发布Beta发布指定IP/比例观察后全量。配置加密内置加密存储AES解密后返回客户端。多环境管理：同一DataId不同profile(dev/fat/uat/prod)不同Namespace强隔离。线上常见问题：配置推送延迟→检查长轮询超时、配置回滚→Nacos支持历史版本一键回滚、配置丢失→MySQL持久化确保数据安全。面试重点：配置加载优先级、动态刷新机制、多环境策略。",
+          "details": [
+            {
+              "id": "nacos配置管理与实践-35-0-1-d0",
+              "tag": "Namespace隔离",
+              "desc": "命名空间环境隔离dev/fat/uat/prod不同Namespace配置和实例完全隔离互不影响"
+            },
+            {
+              "id": "nacos配置管理与实践-35-0-1-d1",
+              "tag": "配置集DataId",
+              "desc": "配置集标识格式prefix-profile-extension如application-dev.yaml不同profile不同配置"
+            },
+            {
+              "id": "nacos配置管理与实践-35-0-1-d2",
+              "tag": "共享配置",
+              "desc": "extension-configs多应用共享同一配置如数据库连接Redis地址减少重复配置"
+            },
+            {
+              "id": "nacos配置管理与实践-35-0-1-d3",
+              "tag": "动态刷新",
+              "desc": "@RefreshScope+@Value配置变更后自动刷新无需重启服务感知变更实时生效"
+            },
+            {
+              "id": "nacos配置管理与实践-35-0-1-d4",
+              "tag": "灰度发布",
+              "desc": "Beta发布指定IP列表或比例推送灰度配置观察无误后全量发布"
+            },
+            {
+              "id": "nacos配置管理与实践-35-0-1-d5",
+              "tag": "配置加密",
+              "desc": "内置AES加密敏感配置数据库密码密钥加密存储解密后返回客户端"
+            },
+            {
+              "id": "nacos配置管理与实践-35-0-1-d6",
+              "tag": "配置回滚",
+              "desc": "Nacos记录配置历史版本支持一键回滚到任意历史版本误改可恢复"
+            },
+            {
+              "id": "nacos配置管理与实践-35-0-1-d7",
+              "tag": "多环境管理",
+              "desc": "同一DataId不同profile或不同Namespace实现多环境隔离推荐Namespace强隔离"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "35-2-sentinel流控与熔断-35-1",
+      "title": "35.2 Sentinel流控与熔断",
+      "points": [
+        {
+          "id": "sentinel核心架构与流控-35-1-0",
+          "tag": "Sentinel核心架构与流控",
+          "desc": "Sentinel是阿里开源的流量控制和熔断降级组件以流量为切入点提供流控、熔断降级、系统保护。核心概念：Resource资源名入口控制点、Rule规则定义限流/熔断/降级策略、Slot插槽链责任链模式各Slot分工处理。流控模式：直接拒绝QPS超阈值直接Reject、关联关联资源触发限流如写接口限流读接口也限、链路只限入口流量。流控效果：快速失败直接拒绝、Warm Up预热冷启动逐步放行避免瞬间冲击初始阈值=阈值/3逐步升到阈值、排队等待匀速器请求排队处理不过阈值。阈值类型QPS每秒请求数或并发线程数。面试重点：三种流控模式区别、Warm Up预热原理、Slot链机制。",
+          "details": [
+            {
+              "id": "sentinel核心架构与流控-35-1-0-d0",
+              "tag": "Sentinel",
+              "desc": "阿里开源流量控制熔断降级组件以流量为切入点从限流熔断系统保护多维度保障稳定性"
+            },
+            {
+              "id": "sentinel核心架构与流控-35-1-0-d1",
+              "tag": "Resource资源",
+              "desc": "受保护的入口点可以是方法URL服务名每个Resource有唯一标识"
+            },
+            {
+              "id": "sentinel核心架构与流控-35-1-0-d2",
+              "tag": "Slot插槽链",
+              "desc": "责任链模式每个Slot分工处理如NodeSelectorSlot/ClusterBuilderSlot/StatisticSlot/FlowSlot/DegradeSlot"
+            },
+            {
+              "id": "sentinel核心架构与流控-35-1-0-d3",
+              "tag": "流控模式",
+              "desc": "直接拒绝QPS超阈值Reject/关联关联资源触发限流/链路只限入口流量三种模式"
+            },
+            {
+              "id": "sentinel核心架构与流控-35-1-0-d4",
+              "tag": "Warm Up预热",
+              "desc": "冷启动逐步放行初始阈值=阈值/3逐步升到阈值避免瞬间冲击保护冷启动系统"
+            },
+            {
+              "id": "sentinel核心架构与流控-35-1-0-d5",
+              "tag": "排队等待",
+              "desc": "匀速器请求排队匀速处理QPS不超阈值适合脉冲流量削峰填谷"
+            },
+            {
+              "id": "sentinel核心架构与流控-35-1-0-d6",
+              "tag": "阈值类型",
+              "desc": "QPS每秒请求数量限流或并发线程数限流两种粒度"
+            },
+            {
+              "id": "sentinel核心架构与流控-35-1-0-d7",
+              "tag": "快速失败",
+              "desc": "QPS超阈值直接拒绝抛FlowExceededException最简单直接限流效果"
+            }
+          ]
+        },
+        {
+          "id": "sentinel熔断降级与系统保护-35-1-1",
+          "tag": "Sentinel熔断降级与系统保护",
+          "desc": "熔断策略三种：慢调用比例RT超阈值比例达阈值触发熔断、异常比例异常比例达阈值触发、异常数量异常数达阈值触发。熔断状态机：CLOSED正常→OPEN熔断拒绝所有请求→HALF-OPEN探测放行少量请求探测成功回CLOSED失败回OPEN。熔断时间配置timeWindow熔断持续秒数。降级策略：fallback指定降级方法返回兜底数据、blockHandler指定流控方法返回限流提示。@SentinelResource注解标注资源指定fallback/blockHandler。系统保护维度：Load系统负载、CPU使用率、平均RT、并发线程数、入口QPS五个指标保护整机。热点参数限流ParamFlow针对参数值限流如热点商品ID。集群流控Server模式统一管控Token Client模式本地采集。面试重点：三种熔断策略区别、状态机转换、降级与流控区别、系统保护维度。",
+          "details": [
+            {
+              "id": "sentinel熔断降级与系统保护-35-1-1-d0",
+              "tag": "慢调用比例",
+              "desc": "RT响应时间超阈值比例达到配置阈值触发熔断适合检测服务响应变慢"
+            },
+            {
+              "id": "sentinel熔断降级与系统保护-35-1-1-d1",
+              "tag": "异常比例",
+              "desc": "异常请求比例达阈值触发熔断注意时间窗口内请求数不足时异常比例不统计"
+            },
+            {
+              "id": "sentinel熔断降级与系统保护-35-1-1-d2",
+              "tag": "异常数量",
+              "desc": "异常请求绝对数达阈值触发熔断比异常比例更精确适合低流量场景"
+            },
+            {
+              "id": "sentinel熔断降级与系统保护-35-1-1-d3",
+              "tag": "熔断状态机",
+              "desc": "CLOSED正常→OPEN熔断拒绝所有→HALF-OPEN探测放行少量→成功回CLOSED失败回OPEN"
+            },
+            {
+              "id": "sentinel熔断降级与系统保护-35-1-1-d4",
+              "tag": "fallback降级",
+              "desc": "熔断或限流时调用降级方法返回兜底数据如返回默认值缓存数据友好提示"
+            },
+            {
+              "id": "sentinel熔断降级与系统保护-35-1-1-d5",
+              "tag": "blockHandler",
+              "desc": "限流时调用处理方法返回限流提示与fallback不同blockHandler只处理限流不处理异常"
+            },
+            {
+              "id": "sentinel熔断降级与系统保护-35-1-1-d6",
+              "tag": "系统保护",
+              "desc": "Load/CPU使用率/平均RT/并发线程数/入口QPS五个维度保护整机防止雪崩"
+            },
+            {
+              "id": "sentinel熔断降级与系统保护-35-1-1-d7",
+              "tag": "热点参数限流",
+              "desc": "ParamFlowRule针对具体参数值限流如热点商品ID接口正常但某商品ID超限"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

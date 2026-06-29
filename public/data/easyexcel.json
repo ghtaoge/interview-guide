@@ -1,0 +1,110 @@
+{
+  "id": "easyexcel",
+  "title": "三十八、EasyExcel与数据处理",
+  "tag": "EasyExcel",
+  "order": 38,
+  "icon": "🔧",
+  "cssIndex": 35,
+  "subs": [
+    {
+      "id": "38-1-easyexcel核心-38-0",
+      "title": "38.1 EasyExcel核心",
+      "points": [
+        {
+          "id": "easyexcel架构与核心api-38-0-0",
+          "tag": "EasyExcel架构与核心API",
+          "desc": "EasyExcel是阿里开源的Excel处理框架基于SAX模式解析避免OOM核心优势内存占用极低(仅一行数据在内存)、速度快百万数据秒级、API简洁注解驱动。写Excel：EasyExcel.write(file,ModelClass).sheet().doWrite(dataList)注解@ExcelProperty定义列映射、@ColumnWidth列宽、@DateTimeFormat日期格式、@NumberFormat数字格式。读Excel：EasyExcel.read(file,ModelClass,Listener).sheet().doRead()监听器ReadListener逐行解析每行触发invoke()方法不一次性加载全部。大数据量写：分sheet每个sheet100万行、分文件每个文件500万行。面试重点：SAX模式防OOM原理、注解映射、监听器模式。",
+          "details": [
+            {
+              "id": "easyexcel架构与核心api-38-0-0-d0",
+              "tag": "EasyExcel",
+              "desc": "阿里开源Excel处理框架SAX模式解析内存极低仅一行数据在内存避免OOM"
+            },
+            {
+              "id": "easyexcel架构与核心api-38-0-0-d1",
+              "tag": "SAX模式",
+              "desc": "事件驱动逐行解析不一次性加载全文件内存仅保留当前行数据适合大文件"
+            },
+            {
+              "id": "easyexcel架构与核心api-38-0-0-d2",
+              "tag": "写Excel",
+              "desc": "EasyExcel.write(file,ModelClass).sheet().doWrite(dataList)注解驱动简洁"
+            },
+            {
+              "id": "easyexcel架构与核心api-38-0-0-d3",
+              "tag": "读Excel",
+              "desc": "EasyExcel.read(file,ModelClass,Listener).sheet().doRead()监听器逐行解析"
+            },
+            {
+              "id": "easyexcel架构与核心api-38-0-0-d4",
+              "tag": "@ExcelProperty",
+              "desc": "注解定义列名和列序号如@ExcelProperty(\"姓名\")或@ExcelProperty(index=0)"
+            },
+            {
+              "id": "easyexcel架构与核心api-38-0-0-d5",
+              "tag": "ReadListener",
+              "desc": "读监听器每行触发invoke()方法处理当前行数据不一次性加载全文件防OOM"
+            },
+            {
+              "id": "easyexcel架构与核心api-38-0-0-d6",
+              "tag": "大数据量写",
+              "desc": "分sheet每个100万行分文件每个500万行避免单sheet超限和内存溢出"
+            },
+            {
+              "id": "easyexcel架构与核心api-38-0-0-d7",
+              "tag": "格式注解",
+              "desc": "@DateTimeFormat日期格式@NumberFormat数字格式@ColumnWidth列宽样式灵活"
+            }
+          ]
+        },
+        {
+          "id": "easyexcel实战与线上问题-38-0-1",
+          "tag": "EasyExcel实战与线上问题",
+          "desc": "EasyExcel实战场景：数据导入用户上传Excel→校验格式→ReadListener逐行解析→批量入库每500条batch insert→返回成功失败统计。数据导出查询数据→EasyExcel.write生成→分sheet分文件→返回下载链接。校验策略：行级校验ReadListener.invoke中校验格式业务规则→记录错误行号和原因→最后汇总返回。线上常见问题：1.大文件OOM→确认用ReadListener不用List一次性加载、2.导入数据量太大→分批入库每500条、3.格式不一致→@ExcelProperty忽略未知列ignoreUnknown=true、4.内存泄漏→ExcelReader/ExcelWriter必须close否则临时文件不清理、5.日期解析失败→@DateTimeFormat指定格式、6.并发导出→限制并发数避免内存叠加OOM。面试重点：导入导出完整流程、分批入库策略、常见OOM原因和解决。",
+          "details": [
+            {
+              "id": "easyexcel实战与线上问题-38-0-1-d0",
+              "tag": "数据导入流程",
+              "desc": "上传Excel→校验格式→ReadListener逐行解析→批量入库每500条→返回成功失败统计"
+            },
+            {
+              "id": "easyexcel实战与线上问题-38-0-1-d1",
+              "tag": "批量入库",
+              "desc": "每500条batch insert减少DB交互次数ReadListener中用batch列表累积到500条触发入库"
+            },
+            {
+              "id": "easyexcel实战与线上问题-38-0-1-d2",
+              "tag": "数据导出",
+              "desc": "查询数据→EasyExcel.write生成→大数据分sheet分文件→返回下载链接"
+            },
+            {
+              "id": "easyexcel实战与线上问题-38-0-1-d3",
+              "tag": "行级校验",
+              "desc": "ReadListener.invoke中校验格式业务规则记录错误行号原因最后汇总返回"
+            },
+            {
+              "id": "easyexcel实战与线上问题-38-0-1-d4",
+              "tag": "ignoreUnknown",
+              "desc": "忽略未知列防止Excel多列导致解析错误ignoreUnknown=true兼容格式不一致"
+            },
+            {
+              "id": "easyexcel实战与线上问题-38-0-1-d5",
+              "tag": "必须close",
+              "desc": "ExcelReader/ExcelWriter必须close否则临时文件不清理内存泄漏try-with-resources"
+            },
+            {
+              "id": "easyexcel实战与线上问题-38-0-1-d6",
+              "tag": "日期解析",
+              "desc": "@DateTimeFormat指定格式如yyyy-MM-dd HH:mm:ss防止默认格式不匹配解析失败"
+            },
+            {
+              "id": "easyexcel实战与线上问题-38-0-1-d7",
+              "tag": "并发限制",
+              "desc": "限制并发导出数量避免多线程同时写Excel内存叠加OOM用Semaphore控制"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

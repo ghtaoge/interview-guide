@@ -1,0 +1,1270 @@
+{
+  "id": "jvm",
+  "title": "四、JVM 虚拟机",
+  "tag": "JVM",
+  "order": 4,
+  "icon": "🧩",
+  "cssIndex": 3,
+  "subs": [
+    {
+      "id": "4-1-内存区域-4-0",
+      "title": "4.1 内存区域",
+      "points": [
+        {
+          "id": "程序计数器-4-0-0",
+          "tag": "程序计数器",
+          "desc": "线程私有，记录当前线程执行的字节码行号。分支/循环/跳转/异常/线程恢复依赖它。Native 方法时为 undefined。唯一不会 OOM 的区域",
+          "details": [
+            {
+              "id": "程序计数器-4-0-0-d0",
+              "tag": "线程私有，记录字节码行号",
+              "desc": "程序计数器线程私有记录当前执行字节码指令地址，分支循环跳转异常恢复依赖它确定下一条执行指令"
+            },
+            {
+              "id": "程序计数器-4-0-0-d1",
+              "tag": "分支/循环/跳转/异常/线程",
+              "desc": "分支/循环/跳转/异常/线程恢复依赖它"
+            },
+            {
+              "id": "程序计数器-4-0-0-d2",
+              "tag": "执行 Native 方法时值为 undefined",
+              "desc": "执行Native方法时PC计数器无有效值(undefined)，因为Native方法非字节码无法用行号记录执行位置"
+            },
+            {
+              "id": "程序计数器-4-0-0-d3",
+              "tag": "唯一不会发生 OOM 的区域",
+              "desc": "程序计数器容量极小仅存一个地址值，JVM规范明确不会抛OutOfMemoryError，是唯一无OOM风险的内存区域"
+            }
+          ]
+        },
+        {
+          "id": "虚拟机栈-4-0-1",
+          "tag": "虚拟机栈",
+          "desc": "线程私有，存栈帧。每方法调用创建栈帧：局部变量表(Slot 存参数和局部变量)/操作数栈(计算中间结果)/动态链接(运行时常量池引用)/方法返回地址。栈深度超限→StackOverflowError(递归)，无法扩展→OOM",
+          "details": [
+            {
+              "id": "虚拟机栈-4-0-1-d0",
+              "tag": "线程私有，存储栈帧",
+              "desc": "虚拟机栈线程私有，每个方法调用创建一个栈帧压入栈顶，方法返回时弹出栈帧，栈深度超限抛StackOverflowError"
+            },
+            {
+              "id": "虚拟机栈-4-0-1-d1",
+              "tag": "栈帧",
+              "desc": "局部变量表 + 操作数栈 + 动态链接 + 返回地址"
+            },
+            {
+              "id": "虚拟机栈-4-0-1-d2",
+              "tag": "递归过深",
+              "desc": "递归过深 → StackOverflowError"
+            },
+            {
+              "id": "虚拟机栈-4-0-1-d3",
+              "tag": "无法扩展",
+              "desc": "无法扩展 → OutOfMemoryError"
+            }
+          ]
+        },
+        {
+          "id": "堆-4-0-2",
+          "tag": "堆",
+          "desc": "线程共享，存对象实例和数组，GC 主区域。新生代(Eden+S0+S1 比例 8:1:1)+老年代。对象先分配 Eden，GC 后存活进 Survivor，多次 GC 后进老年代。OOM: `java.lang.OutOfMemoryError: Java heap space`",
+          "details": [
+            {
+              "id": "堆-4-0-2-d0",
+              "tag": "线程共享，存放对象实例和数组",
+              "desc": "堆是线程共享的最大内存区域，所有对象实例和数组都在堆上分配，是GC的主要工作区域"
+            },
+            {
+              "id": "堆-4-0-2-d1",
+              "tag": "新生代",
+              "desc": "Eden + S0 + S1（8:1:1）"
+            },
+            {
+              "id": "堆-4-0-2-d2",
+              "tag": "老年代",
+              "desc": "长期存活对象和大对象（老年代的详细说明：堆中关于老年代的内容）"
+            },
+            {
+              "id": "堆-4-0-2-d3",
+              "tag": "对象先",
+              "desc": "对象先分配 Eden，GC 后进 Survivor"
+            },
+            {
+              "id": "堆-4-0-2-d4",
+              "tag": "OOM",
+              "desc": "java.lang.OutOfMemoryError: Java heap space"
+            }
+          ]
+        },
+        {
+          "id": "方法区元空间-4-0-3",
+          "tag": "方法区→元空间",
+          "desc": "存类信息/常量/静态变量/JIT 代码。JDK7 永久代(PermGen,JVM 内存)→JDK8 元空间(Metaspace,本地内存)。元空间优势：避免永久代 OOM(大小受限于物理内存)。`-XX:MetaspaceSize`/`-XX:MaxMetaspaceSize`",
+          "details": [
+            {
+              "id": "方法区元空间-4-0-3-d0",
+              "tag": "存储类信息/常量/静态变量/JIT 代码",
+              "desc": "方法区存储已加载类的结构信息(字段方法)、运行时常量池、静态变量及JIT编译后的本地代码缓存"
+            },
+            {
+              "id": "方法区元空间-4-0-3-d1",
+              "tag": "JDK7 永久代 PermGen（JVM 内存）",
+              "desc": "JDK7方法区实现为永久代位于JVM堆内存中，大小由-XX:MaxPermSize固定限制，动态生成类多时易OOM"
+            },
+            {
+              "id": "方法区元空间-4-0-3-d2",
+              "tag": "JDK8 元空间 Metaspace（本地内存）",
+              "desc": "JDK8方法区实现为元空间使用本地内存(非JVM堆)，大小仅受物理内存限制，避免了永久代空间不足的OOM"
+            },
+            {
+              "id": "方法区元空间-4-0-3-d3",
+              "tag": "优势",
+              "desc": "不受 JVM 内存限制，避免永久代 OOM"
+            },
+            {
+              "id": "方法区元空间-4-0-3-d4",
+              "tag": "字符串常量池 JDK7 从永久代移到堆",
+              "desc": "JDK7将字符串常量池从永久代移至Java堆，因为永久代空间有限字符串常量过多易导致PermGen OOM"
+            }
+          ]
+        },
+        {
+          "id": "运行时常量池-4-0-4",
+          "tag": "运行时常量池",
+          "desc": "方法区一部分，存编译期字面量和符号引用。JDK7 后字符串常量池从方法区移到堆（避免永久代 OOM）。运行时 intern() 也可添加",
+          "details": [
+            {
+              "id": "运行时常量池-4-0-4-d0",
+              "tag": "位置演变",
+              "desc": "JDK6方法区(永久代)JDK7+移到Java堆中与类常量池分离"
+            },
+            {
+              "id": "运行时常量池-4-0-4-d1",
+              "tag": "内容来源",
+              "desc": "class文件常量池符号引用→运行时解析为直接引用动态绑定"
+            },
+            {
+              "id": "运行时常量池-4-0-4-d2",
+              "tag": "动态性",
+              "desc": "运行期可动态添加String.intern()将字符串入池运行时扩充"
+            },
+            {
+              "id": "运行时常量池-4-0-4-d3",
+              "tag": "String常量池",
+              "desc": "JDK7前永久代JDK7+堆中与类常量池分离独立管理"
+            },
+            {
+              "id": "运行时常量池-4-0-4-d4",
+              "tag": "OOM风险",
+              "desc": "常量池无上限限制大量intern可能导致堆OOM需控制"
+            }
+          ]
+        },
+        {
+          "id": "直接内存-4-0-5",
+          "tag": "直接内存",
+          "desc": "NIO DirectByteBuffer 分配的堆外内存，不受 JVM 堆大小限制（受物理内存限制）。避免 Java 堆↔Native 堆数据拷贝，提升 IO 性能。`-XX:MaxDirectMemorySize` 限制。Netty 大量使用",
+          "details": [
+            {
+              "id": "直接内存-4-0-5-d0",
+              "tag": "NIO分配",
+              "desc": "DirectByteBuffer.allocateDirect分配堆外内存不受Young GC管理"
+            },
+            {
+              "id": "直接内存-4-0-5-d1",
+              "tag": "不受GC管",
+              "desc": "堆外内存不受Young GC管理但Full GC可回收间接清理"
+            },
+            {
+              "id": "直接内存-4-0-5-d2",
+              "tag": "回收机制",
+              "desc": "Cleaner虚引用回收DirectByteBuffer时释放堆外内存被动触发"
+            },
+            {
+              "id": "直接内存-4-0-5-d3",
+              "tag": "OOM风险",
+              "desc": "堆外内存无明确上限-XX:MaxDirectMemorySize限制大小防溢出"
+            },
+            {
+              "id": "直接内存-4-0-5-d4",
+              "tag": "性能优势",
+              "desc": "避免堆内→堆外拷贝零拷贝IO大文件网络传输性能高减少GC压力"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4-2-对象与-gc-roots-4-1",
+      "title": "4.2 对象与 GC Roots",
+      "points": [
+        {
+          "id": "对象创建-4-1-0",
+          "tag": "对象创建",
+          "desc": "1.类加载检查(是否已加载) 2.分配内存(指针碰撞/空闲列表+TLAB) 3.初始化零值 4.设置对象头(Mark Word+类型指针) 5.执行 `<init>` 构造方法。TLAB 线程本地分配缓冲区避免竞争",
+          "details": [
+            {
+              "id": "对象创建-4-1-0-d0",
+              "tag": "类加载检查",
+              "desc": "new触发常量池符号引用→检查类是否已加载解析初始化"
+            },
+            {
+              "id": "对象创建-4-1-0-d1",
+              "tag": "分配内存",
+              "desc": "指针碰撞(连续空间)或空闲列表(碎片空间)两种方式选择"
+            },
+            {
+              "id": "对象创建-4-1-0-d2",
+              "tag": "初始化零值",
+              "desc": "内存分配后字段设为零值不包含对象头和实例数据保证安全"
+            },
+            {
+              "id": "对象创建-4-1-0-d3",
+              "tag": "设置对象头",
+              "desc": "存储MarkWord(KlassPointer锁信息GC分代年龄)元数据"
+            },
+            {
+              "id": "对象创建-4-1-0-d4",
+              "tag": "执行init",
+              "desc": "构造方法<init>赋值程序员定义的初始值完成对象创建"
+            }
+          ]
+        },
+        {
+          "id": "对象布局-4-1-1",
+          "tag": "对象布局",
+          "desc": "对象头(Mark Word:hashCode/GC 年龄/锁标志/偏向线程 ID + 类型指针 + 数组长度[数组才有]) + 实例数据(字段值) + 对齐填充(8 字节对齐)。64 位 JVM 对象头 12-16 字节",
+          "details": [
+            {
+              "id": "对象布局-4-1-1-d0",
+              "tag": "对象头",
+              "desc": "MarkWord(32/64bit存锁+GC年龄)+KlassPointer类型指针定位类元数据"
+            },
+            {
+              "id": "对象布局-4-1-1-d1",
+              "tag": "MarkWord内容",
+              "desc": "无锁存hashCode偏向锁存线程ID轻量锁存LockRecord指针"
+            },
+            {
+              "id": "对象布局-4-1-1-d2",
+              "tag": "实例数据",
+              "desc": "对象真正存储的字段数据包括父类继承的字段按类型排列"
+            },
+            {
+              "id": "对象布局-4-1-1-d3",
+              "tag": "对齐填充",
+              "desc": "8字节对齐保证对象大小是8的倍数便于寻址提高性能"
+            },
+            {
+              "id": "对象布局-4-1-1-d4",
+              "tag": "指针压缩",
+              "desc": "-XX:+UseCompressedOops64位JVMKlassPointer4字节节省空间"
+            }
+          ]
+        },
+        {
+          "id": "gcroots-4-1-2",
+          "tag": "GC Roots",
+          "desc": "虚拟机栈引用对象/本地方法栈引用/方法区静态属性引用/方法区常量引用/synchronized 持有对象/JNI 引用。从 GC Roots 搜索引用链，不可达则可回收",
+          "details": [
+            {
+              "id": "gcroots-4-1-2-d0",
+              "tag": "可达性分析的起点",
+              "desc": "GC Roots是可达性分析算法的起始根节点集合，从Roots向下搜索引用链，链外不可达对象即可回收垃圾"
+            },
+            {
+              "id": "gcroots-4-1-2-d1",
+              "tag": "1. 虚拟机栈中引用的对象",
+              "desc": "方法执行时局部变量表引用的对象作为GC Root，方法在栈中时其引用的对象不可被回收"
+            },
+            {
+              "id": "gcroots-4-1-2-d2",
+              "tag": "2. 本地方法栈 JNI 引用",
+              "desc": "Native方法中通过JNI引用的Java对象也是GC Root，保证本地代码持有引用时对象不会被GC回收"
+            },
+            {
+              "id": "gcroots-4-1-2-d3",
+              "tag": "3. 方法区静态属性引用",
+              "desc": "类的static变量引用的对象作为GC Root，类未卸载时静态引用指向的对象始终可达不可回收"
+            },
+            {
+              "id": "gcroots-4-1-2-d4",
+              "tag": "4. 方法区常量引用",
+              "desc": "运行时常量池中final常量引用的对象是GC Root，常量不失效期间其引用对象不会被回收"
+            },
+            {
+              "id": "gcroots-4-1-2-d5",
+              "tag": "5. synchronized 持有的对象",
+              "desc": "被synchronized锁持有的对象作为GC Root，锁未释放时对象可达不会被回收，防止GC回收正在使用的锁对象"
+            }
+          ]
+        },
+        {
+          "id": "四种引用-4-1-3",
+          "tag": "四种引用",
+          "desc": "强引用 StrongReference(永不回收，OOM 也不回收)/软引用 SoftReference(内存不足回收，适合缓存)/弱引用 WeakReference(下次 GC 回收，ThreadLocalMap 的 key)/虚引用 PhantomReference(跟踪回收过程，配 ReferenceQueue)",
+          "details": [
+            {
+              "id": "四种引用-4-1-3-d0",
+              "tag": "强引用",
+              "desc": "永不回收（OOM 也不回收）（强引用的详细说明：四种引用中关于强引用的内容）"
+            },
+            {
+              "id": "四种引用-4-1-3-d1",
+              "tag": "软引用",
+              "desc": "内存不足时回收（适合缓存）（软引用的详细说明：四种引用中关于软引用的内容）"
+            },
+            {
+              "id": "四种引用-4-1-3-d2",
+              "tag": "弱引用",
+              "desc": "下次 GC 必回收（ThreadLocalMap key）"
+            },
+            {
+              "id": "四种引用-4-1-3-d3",
+              "tag": "虚引用",
+              "desc": "跟踪回收过程，配 ReferenceQueue"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4-3-gc-算法-4-2",
+      "title": "4.3 GC 算法",
+      "points": [
+        {
+          "id": "标记-清除-4-2-0",
+          "tag": "标记-清除",
+          "desc": "标记存活对象→清除其他。缺点：内存碎片(分配大对象时找不到连续空间触发 FullGC)、效率不稳定(对象多时慢)。CMS 基于此算法",
+          "details": [
+            {
+              "id": "标记-清除-4-2-0-d0",
+              "tag": "标记存活对象 → 清除其他",
+              "desc": "标记-清除算法先标记所有从GC Roots可达的存活对象，然后统一清除未标记对象，释放其占用空间"
+            },
+            {
+              "id": "标记-清除-4-2-0-d1",
+              "tag": "缺点",
+              "desc": "内存碎片（空间不连续）（缺点的详细说明：标记-清除中关于缺点的内容）"
+            },
+            {
+              "id": "标记-清除-4-2-0-d2",
+              "tag": "碎片过多时",
+              "desc": "碎片过多时分配大对象提前触发 Full GC"
+            },
+            {
+              "id": "标记-清除-4-2-0-d3",
+              "tag": "CMS 收集器基于标记-清除算法",
+              "desc": "CMS收集器采用标记-清除算法追求最短停顿，但清除后产生大量内存碎片，大对象分配时可能触发FullGC压缩"
+            }
+          ]
+        },
+        {
+          "id": "标记-复制-4-2-1",
+          "tag": "标记-复制",
+          "desc": "内存分两块，存活对象复制到另一半，清空当前块。优点：无碎片、简单高效。缺点：可用内存减半。适合新生代(存活率低)。Serial/ParNew 用此算法",
+          "details": [
+            {
+              "id": "标记-复制-4-2-1-d0",
+              "tag": "内存分两块，存活对象",
+              "desc": "内存分两块，存活对象复制到另一块"
+            },
+            {
+              "id": "标记-复制-4-2-1-d1",
+              "tag": "优点",
+              "desc": "无碎片，分配快（优点的详细说明：标记-复制中关于优点的内容）"
+            },
+            {
+              "id": "标记-复制-4-2-1-d2",
+              "tag": "缺点",
+              "desc": "可用内存减半（缺点的详细说明：标记-复制中关于缺点的内容）"
+            },
+            {
+              "id": "标记-复制-4-2-1-d3",
+              "tag": "适合新生代（存活率低）",
+              "desc": "标记-复制算法适合新生代因对象存活率低(约10%)，只需复制少量存活对象到另一半空间效率高浪费少"
+            }
+          ]
+        },
+        {
+          "id": "标记-整理-4-2-2",
+          "tag": "标记-整理",
+          "desc": "标记存活→向一端移动→清理边界外。优点：无碎片。缺点：移动对象开销大(GC 停顿长)。适合老年代。Serial Old/Parallel Old/G1 用此算法",
+          "details": [
+            {
+              "id": "标记-整理-4-2-2-d0",
+              "tag": "存活对象向一端移动",
+              "desc": "标记-整理算法先将存活对象向内存一端移动紧凑排列，然后清理边界外所有空间，消除碎片但移动开销大"
+            },
+            {
+              "id": "标记-整理-4-2-2-d1",
+              "tag": "优点",
+              "desc": "无碎片（优点的详细说明：标记-整理中关于优点的内容）"
+            },
+            {
+              "id": "标记-整理-4-2-2-d2",
+              "tag": "缺点",
+              "desc": "移动开销大，停顿长（缺点的详细说明：标记-整理中关于缺点的内容）"
+            },
+            {
+              "id": "标记-整理-4-2-2-d3",
+              "tag": "适合老年代（对象存活率高）",
+              "desc": "标记-整理适合老年代因对象存活率高不适合复制算法(浪费空间)，整理消除碎片避免大对象分配触发FullGC"
+            }
+          ]
+        },
+        {
+          "id": "分代收集-4-2-3",
+          "tag": "分代收集",
+          "desc": "新生代存活率低→复制算法；老年代存活率高→标记清除/标记整理。不同代用不同算法，各有优势",
+          "details": [
+            {
+              "id": "分代收集-4-2-3-d0",
+              "tag": "新生代Minor GC",
+              "desc": "Eden+Survivor区频繁但回收速度快短停顿"
+            },
+            {
+              "id": "分代收集-4-2-3-d1",
+              "tag": "老年代Major GC",
+              "desc": "Old区较少但耗时较长标记-压缩算法停顿时间长"
+            },
+            {
+              "id": "分代收集-4-2-3-d2",
+              "tag": "Full GC",
+              "desc": "全堆新生代+老年代+元空间最慢应尽量避免减少触发"
+            },
+            {
+              "id": "分代收集-4-2-3-d3",
+              "tag": "晋升机制",
+              "desc": "Survivor年龄达阈值或动态年龄判断对象进入Old区长期存活"
+            },
+            {
+              "id": "分代收集-4-2-3-d4",
+              "tag": "GC触发",
+              "desc": "Eden满触发Minor GCOld满或担保失败触发Full GC最耗性能"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4-4-垃圾收集器-4-3",
+      "title": "4.4 垃圾收集器",
+      "points": [
+        {
+          "id": "cms-4-3-0",
+          "tag": "CMS",
+          "desc": "Concurrent Mark Sweep，最短停顿。4 阶段：1.初始标记(STW 标记 GC Roots 直接引用) 2.并发标记(GC 线程与用户线程并发，遍历引用链) 3.重新标记(STW 修正并发标记期间变动) 4.并发清除。缺点：CPU 敏感/浮动垃圾/内存碎片/Concurrent Mode Failure。JDK14 移除",
+          "details": [
+            {
+              "id": "cms-4-3-0-d0",
+              "tag": "以获取最短停顿时间为目标",
+              "desc": "CMS设计目标是最小化GC停顿时间，大部分标记和清除阶段与用户线程并发执行，适合对响应时间敏感的应用"
+            },
+            {
+              "id": "cms-4-3-0-d1",
+              "tag": "4 阶段",
+              "desc": "初始标记 STW → 并发标记 → 重新标记 STW → 并发清除"
+            },
+            {
+              "id": "cms-4-3-0-d2",
+              "tag": "缺点",
+              "desc": "CPU 敏感/浮动垃圾/内存碎片/Concurrent Mode Failure"
+            },
+            {
+              "id": "cms-4-3-0-d3",
+              "tag": "JDK14 移除",
+              "desc": "CMS因内存碎片、浮动垃圾和Concurrent Mode Failure等问题，在JDK9被标记废弃，JDK14正式移除，推荐使用G1"
+            }
+          ]
+        },
+        {
+          "id": "g1-4-3-1",
+          "tag": "G1",
+          "desc": "JDK9 默认。堆划分为 Region(1-32MB)，每个 Region 可充当 Eden/Survivor/Old/Humongous。可预测停顿(`-XX:MaxGCPauseMillis`)。标记整理+复制(无碎片)。回收：初始标记→并发标记→最终标记→筛选回收(按收益排序回收 Region)",
+          "details": [
+            {
+              "id": "g1-4-3-1-d0",
+              "tag": "JDK9 默认垃圾收集器",
+              "desc": "G1从JDK9起取代CMS成为默认收集器，面向大堆内存可预测停顿时间，适合多核大内存服务器场景"
+            },
+            {
+              "id": "g1-4-3-1-d1",
+              "tag": "堆划分为 Region（1-32MB）",
+              "desc": "G1将堆划分为大小相等的Region(1~32MB)，每个Region可动态角色Eden/Survivor/Old/Humongous，灵活回收"
+            },
+            {
+              "id": "g1-4-3-1-d2",
+              "tag": "可预测停顿",
+              "desc": "-XX:MaxGCPauseMillis"
+            },
+            {
+              "id": "g1-4-3-1-d3",
+              "tag": "标记整理+复制（无碎片）",
+              "desc": "G1从整体看是标记-整理算法无碎片，局部(Region间)看是复制算法，兼顾空间利用和碎片避免"
+            },
+            {
+              "id": "g1-4-3-1-d4",
+              "tag": "回收",
+              "desc": "初始标记→并发标记→最终标记→筛选回收"
+            }
+          ]
+        },
+        {
+          "id": "zgc-4-3-2",
+          "tag": "ZGC",
+          "desc": "JDK11 引入(JDK15 正式)。支持 TB 级堆，STW<10ms。染色指针(64 位指针借用几位标记状态)+读屏障(读时修复指针)。并发标记/转移/重定位，几乎全程并发",
+          "details": [
+            {
+              "id": "zgc-4-3-2-d0",
+              "tag": "JDK11 引入 ZGC",
+              "desc": "ZGC在JDK11作为实验特性引入，JDK15成为正式特性，面向超大堆内存设计STW亚毫秒级极低停顿"
+            },
+            {
+              "id": "zgc-4-3-2-d1",
+              "tag": "支持 TB 级堆",
+              "desc": "ZGC可管理从8MB到16TB级别的堆内存，通过多重映射和动态分区支持超大堆而不增加GC停顿时间"
+            },
+            {
+              "id": "zgc-4-3-2-d2",
+              "tag": "STW < 10ms",
+              "desc": "ZGC的STW停顿时间控制在亚毫秒级别(通常<1ms)，最坏情况下也不超过10ms，与堆大小无关"
+            },
+            {
+              "id": "zgc-4-3-2-d3",
+              "tag": "染色指针 + 读屏障",
+              "desc": "染色指针借用64位地址中几位存储对象标记状态(Marked/Remapped/Finalized)，读屏障在读时自修复指针实现并发转移"
+            },
+            {
+              "id": "zgc-4-3-2-d4",
+              "tag": "几乎全程并发",
+              "desc": "ZGC的标记、转移、重定位几乎全部与用户线程并发执行，仅极短的初始标记等阶段需STW，实现亚毫秒停顿"
+            }
+          ]
+        },
+        {
+          "id": "shenandoah-4-3-3",
+          "tag": "Shenandoah",
+          "desc": "JDK12 引入(Red Hat)。超低延迟。转发指针(Brooks Pointer)对象头额外指针指向自身或新对象，实现并发整理。与 ZGC 类似但实现不同",
+          "details": [
+            {
+              "id": "shenandoah-4-3-3-d0",
+              "tag": "并发压缩",
+              "desc": "Brooks指针转发对象引用到新位置移动与并发访问共存"
+            },
+            {
+              "id": "shenandoah-4-3-3-d1",
+              "tag": "低延迟目标",
+              "desc": "GC暂停<10ms甚至<1ms适合大堆延迟敏感应用实时交易"
+            },
+            {
+              "id": "shenandoah-4-3-3-d2",
+              "tag": "与G1对比",
+              "desc": "G1压缩需STW(Stop-The-World)Shenandoah并发压缩突破STW瓶颈"
+            },
+            {
+              "id": "shenandoah-4-3-3-d3",
+              "tag": "Evacuation",
+              "desc": "并发搬运对象写屏障更新Brooks转发指针保证一致性"
+            },
+            {
+              "id": "shenandoah-4-3-3-d4",
+              "tag": "适用场景",
+              "desc": "大堆内存(>50GB)低延迟要求实时交易大数据分析响应时间敏感"
+            }
+          ]
+        },
+        {
+          "id": "serial-parnew-parallel-4-3-4",
+          "tag": "Serial/ParNew/Parallel",
+          "desc": "Serial 单线程 STW(Client 模式)；ParNew=Serial 多线程(Server 新生代)；Parallel Scavenge 关注吞吐量(=用户时间/总时间)，适合后台计算。对应老年代：Serial Old/Parallel Old",
+          "details": [
+            {
+              "id": "serial-parnew-parallel-4-3-4-d0",
+              "tag": "Serial",
+              "desc": "单线程收集器Client模式默认简单但停顿长不适合服务端"
+            },
+            {
+              "id": "serial-parnew-parallel-4-3-4-d1",
+              "tag": "ParNew",
+              "desc": "Serial多线程版本配合CMS新生代并行收集减少停顿时间"
+            },
+            {
+              "id": "serial-parnew-parallel-4-3-4-d2",
+              "tag": "Parallel Scavenge",
+              "desc": "吞吐量优先自适应调节策略关注CPU利用率适合后台"
+            },
+            {
+              "id": "serial-parnew-parallel-4-3-4-d3",
+              "tag": "Parallel Old",
+              "desc": "Parallel Scavenge老年代版本标记-压缩算法配合使用"
+            },
+            {
+              "id": "serial-parnew-parallel-4-3-4-d4",
+              "tag": "选择策略",
+              "desc": "响应优先选CMS/ZGC吞吐优先选Parallel Scavenge场景驱动"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4-5-内存分配策略-4-4",
+      "title": "4.5 内存分配策略",
+      "points": [
+        {
+          "id": "对象优先eden-4-4-0",
+          "tag": "对象优先 Eden",
+          "desc": "Eden 满触发 Minor GC。Minor GC 只回收新生代(快)。Survivor 区作为 Eden 到老年代的缓冲",
+          "details": [
+            {
+              "id": "对象优先eden-4-4-0-d0",
+              "tag": "Eden优先",
+              "desc": "新对象优先在Eden区分配空间占新生代80%比例最大"
+            },
+            {
+              "id": "对象优先eden-4-4-0-d1",
+              "tag": "Minor GC回收",
+              "desc": "Eden满触发Minor GC存活对象进入Survivor复制算法"
+            },
+            {
+              "id": "对象优先eden-4-4-0-d2",
+              "tag": "Survivor区",
+              "desc": "From和To两个区交替使用复制算法保证其中一个空"
+            },
+            {
+              "id": "对象优先eden-4-4-0-d3",
+              "tag": "GC日志",
+              "desc": "Eden区+From区存活对象复制到To区清空Eden+From高效"
+            },
+            {
+              "id": "对象优先eden-4-4-0-d4",
+              "tag": "快速分配",
+              "desc": "TLAB(Thread Local Allocation Buffer)线程本地分配避免竞争"
+            }
+          ]
+        },
+        {
+          "id": "大对象直接老年代-4-4-1",
+          "tag": "大对象直接老年代",
+          "desc": "`-XX:PretenureSizeThreshold` 设置阈值，超过的大对象(长数组/大字符串)直接分配到老年代，避免 Eden↔Survivor 之间复制",
+          "details": [
+            {
+              "id": "大对象直接老年代-4-4-1-d0",
+              "tag": "大对象定义",
+              "desc": "超过-XX:PretenureSizeThreshold设定的字节数的大数组/大字符串"
+            },
+            {
+              "id": "大对象直接老年代-4-4-1-d1",
+              "tag": "直接进Old",
+              "desc": "避免在Eden→Survivor间大量复制降低GC效率减少开销"
+            },
+            {
+              "id": "大对象直接老年代-4-4-1-d2",
+              "tag": "典型大对象",
+              "desc": "长数组大字符串大文件byte缓冲区超过阈值直接分配Old"
+            },
+            {
+              "id": "大对象直接老年代-4-4-1-d3",
+              "tag": "阈值设置",
+              "desc": "PretenureSizeThreshold只对Serial和ParNew有效其他收集器忽略"
+            },
+            {
+              "id": "大对象直接老年代-4-4-1-d4",
+              "tag": "优化建议",
+              "desc": "短命大对象应避免分配否则快速填满Old触发Full GC需控制"
+            }
+          ]
+        },
+        {
+          "id": "长期存活进老年代-4-4-2",
+          "tag": "长期存活进老年代",
+          "desc": "每个对象有 GC 年龄(Mark Word 中 4bit，最大 15)。`-XX:MaxTenuringThreshold` 默认 15，每次 Minor GC 存活年龄+1，达阈值进老年代",
+          "details": [
+            {
+              "id": "长期存活进老年代-4-4-2-d0",
+              "tag": "年龄计数",
+              "desc": "每次Minor GC后Survivor中对象年龄+1递增记录存活次数"
+            },
+            {
+              "id": "长期存活进老年代-4-4-2-d1",
+              "tag": "晋升阈值",
+              "desc": "-XX:MaxTenuringThreshold默认15CMS为6可配置调整"
+            },
+            {
+              "id": "长期存活进老年代-4-4-2-d2",
+              "tag": "年龄达阈值",
+              "desc": "对象年龄>=MaxTenuringThreshold晋升到Old区长期存活"
+            },
+            {
+              "id": "长期存活进老年代-4-4-2-d3",
+              "tag": "动态判断优先",
+              "desc": "实际晋升年龄可能更低取决于动态年龄判断更灵活"
+            },
+            {
+              "id": "长期存活进老年代-4-4-2-d4",
+              "tag": "目标",
+              "desc": "让Survivor区保持合理利用率避免过多长期存活对象占空间浪费"
+            }
+          ]
+        },
+        {
+          "id": "动态年龄判断-4-4-3",
+          "tag": "动态年龄判断",
+          "desc": "Survivor 中相同年龄所有对象大小总和超过 Survivor 空间一半，该年龄及以上对象直接进老年代。避免 Survivor 空间不足",
+          "details": [
+            {
+              "id": "动态年龄判断-4-4-3-d0",
+              "tag": "规则",
+              "desc": "Survivor中相同年龄所有对象大小总和>Survivor空间一半触发"
+            },
+            {
+              "id": "动态年龄判断-4-4-3-d1",
+              "tag": "晋升年龄",
+              "desc": "年龄>=该年龄的最小值即可晋升不必等到MaxTenuringThreshold"
+            },
+            {
+              "id": "动态年龄判断-4-4-3-d2",
+              "tag": "优先级",
+              "desc": "动态年龄判断优先于MaxTenuringThreshold阈值实际更早晋升"
+            },
+            {
+              "id": "动态年龄判断-4-4-3-d3",
+              "tag": "计算方式",
+              "desc": "从年龄1开始累加对象大小超过一半时年龄+1晋升灵活适应"
+            },
+            {
+              "id": "动态年龄判断-4-4-3-d4",
+              "tag": "目的",
+              "desc": "避免Survivor区被长期存活对象占满降低复制效率影响GC性能"
+            }
+          ]
+        },
+        {
+          "id": "空间分配担保-4-4-4",
+          "tag": "空间分配担保",
+          "desc": "Minor GC 前检查老年代连续可用空间是否>新生代所有对象总空间(或历次晋升平均大小)。不够则检查是否允许担保失败，不允许则 Full GC",
+          "details": [
+            {
+              "id": "空间分配担保-4-4-4-d0",
+              "tag": "检查条件",
+              "desc": "Minor GC前老年代最大可用连续空间>新生代所有对象总大小"
+            },
+            {
+              "id": "空间分配担保-4-4-4-d1",
+              "tag": "允许冒险",
+              "desc": "HandlePromotionFailure=true时只检查>新生代晋升平均大小宽松"
+            },
+            {
+              "id": "空间分配担保-4-4-4-d2",
+              "tag": "担保失败",
+              "desc": "Minor GC后存活对象>老年代可用空间则触发Full GC兜底"
+            },
+            {
+              "id": "空间分配担保-4-4-4-d3",
+              "tag": "风险",
+              "desc": "冲新生代对象全部存活需老年代完全担保极端情况Full GC"
+            },
+            {
+              "id": "空间分配担保-4-4-4-d4",
+              "tag": "配置",
+              "desc": "-XX:-HandlePromotionFailure关闭冒险每次必须完全担保保守策略"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4-6-jvm调优实战-4-5",
+      "title": "4.6 JVM调优实战",
+      "points": [
+        {
+          "id": "gc日志分析-4-5-0",
+          "tag": "GC日志分析",
+          "desc": "-Xlog:gc*(JDK9+)或-XX:+PrintGCDetails(JDK8)输出GC日志。日志格式解读:Minor GC(PSYoungGen:新生代回收)标识年轻代GC/Major GC(ParOldGen)标识老年代部分回收/Full GC(全堆回收含新生代+老年代+元空间最慢应尽量避免)。GCViewer/GCEasy在线分析工具:可视化GC频率/停顿时间/回收效率/内存趋势。关键指标:GC频率(每分钟几次)/平均停顿时间/最长停顿时间/GC后堆内存回收率",
+          "details": [
+            {
+              "id": "gc日志分析-4-5-0-d0",
+              "tag": "-Xlog",
+              "desc": "gc*:JDK9+统一日志配置输出详细GC信息"
+            },
+            {
+              "id": "gc日志分析-4-5-0-d1",
+              "tag": "Minor GC",
+              "desc": "只回收新生代(Eden+Survivor)频率高停顿短影响小"
+            },
+            {
+              "id": "gc日志分析-4-5-0-d2",
+              "tag": "Major GC",
+              "desc": "回收老年代频率低停顿较长需关注"
+            },
+            {
+              "id": "gc日志分析-4-5-0-d3",
+              "tag": "Full GC",
+              "desc": "全堆+元空间回收最慢应尽量避免分析触发原因"
+            },
+            {
+              "id": "gc日志分析-4-5-0-d4",
+              "tag": "GCViewer/GCEasy",
+              "desc": "在线工具可视化分析GC频率/停顿/回收率/趋势"
+            },
+            {
+              "id": "gc日志分析-4-5-0-d5",
+              "tag": "关键指标",
+              "desc": "GC频率/平均停顿时间/最长停顿时间/GC后内存回收率"
+            }
+          ]
+        },
+        {
+          "id": "内存泄漏排查-4-5-1",
+          "tag": "内存泄漏排查",
+          "desc": "步骤:①jmap -histo <pid>查看对象统计(按占用大小排序定位大对象类型)②jmap -dump:format=b,file=heap.hprof <pid>生成堆dump文件③MAT(Memory Analyzer)打开dump分析④MAT自动生成Leak Suspect Report(泄漏嫌疑报告)⑤查看Dominator Tree(支配者树)找到占用最大对象⑥追踪GC Roots引用链找到泄漏根因⑦常见原因:ThreadLocal未remove/静态集合持续增长/缓存未淘汰/资源未close",
+          "details": [
+            {
+              "id": "内存泄漏排查-4-5-1-d0",
+              "tag": "jmap -histo",
+              "desc": "按对象占用大小排序定位大对象类型快速排查"
+            },
+            {
+              "id": "内存泄漏排查-4-5-1-d1",
+              "tag": "jmap -dump",
+              "desc": "生成堆转储hprof文件完整堆快照供深入分析"
+            },
+            {
+              "id": "内存泄漏排查-4-5-1-d2",
+              "tag": "MAT分析",
+              "desc": "Eclipse Memory Analyzer专业堆dump分析工具"
+            },
+            {
+              "id": "内存泄漏排查-4-5-1-d3",
+              "tag": "Leak Suspect",
+              "desc": "MAT自动检测泄漏嫌疑报告一键定位疑似泄漏点"
+            },
+            {
+              "id": "内存泄漏排查-4-5-1-d4",
+              "tag": "Dominator Tree",
+              "desc": "支配者树展示对象引用关系找到占用最大对象"
+            },
+            {
+              "id": "内存泄漏排查-4-5-1-d5",
+              "tag": "常见泄漏",
+              "desc": "ThreadLocal未remove/静态Map持续增长/缓存无淘汰/资源未close"
+            }
+          ]
+        },
+        {
+          "id": "cpu飙高排查-4-5-2",
+          "tag": "CPU飙高排查",
+          "desc": "步骤:①top命令定位CPU占用最高的Java进程PID②top -H -p <PID>定位该进程内CPU最高的线程TID③printf %x <TID>将线程ID转十六进制④jstack <PID> | grep <hexTID>打印该线程堆栈⑤分析堆栈:死循环(代码bug)/频繁GC(GC线程占比高)/线程阻塞(锁竞争)/热点方法(计算密集)。Arthas在线诊断:thread命令查看线程CPU占用/thread -n 3看最忙3个线程/profile生成火焰图定位热点方法",
+          "details": [
+            {
+              "id": "cpu飙高排查-4-5-2-d0",
+              "tag": "top",
+              "desc": "定位CPU最高的Java进程PID第一步快速发现异常进程"
+            },
+            {
+              "id": "cpu飙高排查-4-5-2-d1",
+              "tag": "top -H -p",
+              "desc": "定位进程内最高CPU线程TID精确定位问题线程"
+            },
+            {
+              "id": "cpu飙高排查-4-5-2-d2",
+              "tag": "jstack+grep",
+              "desc": "线程堆栈转十六进制grep匹配定位线程执行代码"
+            },
+            {
+              "id": "cpu飙高排查-4-5-2-d3",
+              "tag": "死循环",
+              "desc": "代码bug导致循环无法退出CPU持续100%定位循环位置"
+            },
+            {
+              "id": "cpu飙高排查-4-5-2-d4",
+              "tag": "频繁GC",
+              "desc": "GC线程CPU高说明对象创建过快GC频繁需优化内存分配"
+            },
+            {
+              "id": "cpu飙高排查-4-5-2-d5",
+              "tag": "Arthas",
+              "desc": "thread/thread -n 3/profile火焰图在线诊断无需重启"
+            }
+          ]
+        },
+        {
+          "id": "常见oom类型-4-5-3",
+          "tag": "常见OOM类型",
+          "desc": "Java heap space(堆内存溢出:对象太多/内存泄漏/Xmx太小)/Metaspace(元空间溢出:动态生成类过多/CGLIB代理类大量创建/反射大量使用)/GC overhead limit exceeded(GC回收效率过低超过98%时间做GC但只回收<2%内存)/Direct buffer memory(堆外内存溢出:NIO DirectByteBuffer分配过多)/unable to create new native thread(线程数超过OS限制:Xss过大/线程池无上限)/Requested array size exceeds VM limit(数组长度超Integer.MAX_VALUE)",
+          "details": [
+            {
+              "id": "常见oom类型-4-5-3-d0",
+              "tag": "Java heap space",
+              "desc": "对象太多或内存泄漏-Xmx太小需增大或排查泄漏"
+            },
+            {
+              "id": "常见oom类型-4-5-3-d1",
+              "tag": "Metaspace",
+              "desc": "动态生成类过多CGLIB代理大量创建-XX:MaxMetaspaceSize限制"
+            },
+            {
+              "id": "常见oom类型-4-5-3-d2",
+              "tag": "GC overhead limit",
+              "desc": "GC效率过低98%时间GC只回收<2%内存严重性能问题"
+            },
+            {
+              "id": "常见oom类型-4-5-3-d3",
+              "tag": "Direct buffer memory",
+              "desc": "NIO堆外内存分配过多-XX:MaxDirectMemorySize限制"
+            },
+            {
+              "id": "常见oom类型-4-5-3-d4",
+              "tag": "unable to create new thread",
+              "desc": "线程数超OS限制-Xss过大减少栈大小"
+            },
+            {
+              "id": "常见oom类型-4-5-3-d5",
+              "tag": "Requested array size exceeds VM limit:数组长度超Integer.MAX_VALUE限制",
+              "desc": "尝试创建长度超过Integer.MAX_VALUE(约21亿)的数组时抛此错误，JVM实现数组长度用int限制最大2^31-1"
+            }
+          ]
+        },
+        {
+          "id": "jvm参数调优策略-4-5-4",
+          "tag": "JVM参数调优策略",
+          "desc": "堆大小:-Xms=-Xmx(生产环境避免动态扩容减少GC波动)/新生代比例:-XX:NewRatio=2(新生代1/3老年代2/3)或-XX:SurvivorRatio=8(Eden:S0:S1=8:1:1)/GC收集器选择:低延迟选G1/ZGC/高吞吐选Parallel Scavenge/监控GC频率和停顿时间调整参数/避免Full GC(调大新生代/优化代码减少大对象/避免内存泄漏)/线程栈:-Xss256k(减少线程内存占用)/元空间:-XX:MaxMetaspaceSize=256m(限制防止无限增长)",
+          "details": [
+            {
+              "id": "jvm参数调优策略-4-5-4-d0",
+              "tag": "Xms=Xmx",
+              "desc": "生产环境设为相同值避免堆动态扩缩容减少GC波动"
+            },
+            {
+              "id": "jvm参数调优策略-4-5-4-d1",
+              "tag": "NewRatio/SurvivorRatio",
+              "desc": "调整新生代比例Eden:Survivor=8:1:1默认"
+            },
+            {
+              "id": "jvm参数调优策略-4-5-4-d2",
+              "tag": "GC选择",
+              "desc": "低延迟G1(-XX:MaxGCPauseMillis)/高吞吐Parallel Scavenge"
+            },
+            {
+              "id": "jvm参数调优策略-4-5-4-d3",
+              "tag": "避免FullGC",
+              "desc": "调大新生代/减少大对象/修复内存泄漏/优化查询"
+            },
+            {
+              "id": "jvm参数调优策略-4-5-4-d4",
+              "tag": "Xss",
+              "desc": "线程栈大小256k默认1m减少线程内存占用支持更多线程"
+            },
+            {
+              "id": "jvm参数调优策略-4-5-4-d5",
+              "tag": "MaxMetaspaceSize",
+              "desc": "限制元空间256m防止类加载过多导致无限增长"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4-7-类加载机制-4-6",
+      "title": "4.7 类加载机制",
+      "points": [
+        {
+          "id": "5阶段-4-6-0",
+          "tag": "5 阶段",
+          "desc": "加载(读 class 二进制→方法区→堆 Class 对象)→验证(文件格式/元数据/字节码/符号引用)→准备(static 变量分配内存设零值，final static 赋实际值)→解析(符号引用→直接引用)→初始化(执行 `<clinit>()`，static 赋值+static 块，JVM 保证线程安全)",
+          "details": [
+            {
+              "id": "5阶段-4-6-0-d0",
+              "tag": "加载",
+              "desc": "读 .class → 方法区 → 堆 Class 对象"
+            },
+            {
+              "id": "5阶段-4-6-0-d1",
+              "tag": "验证",
+              "desc": "文件格式/元数据/字节码/符号引用"
+            },
+            {
+              "id": "5阶段-4-6-0-d2",
+              "tag": "准备",
+              "desc": "static 变量分配内存设零值"
+            },
+            {
+              "id": "5阶段-4-6-0-d3",
+              "tag": "解析",
+              "desc": "符号引用 → 直接引用（解析的详细说明：5 阶段中关于解析的内容）"
+            },
+            {
+              "id": "5阶段-4-6-0-d4",
+              "tag": "初始化",
+              "desc": "执行 <clinit>()（static 赋值+static 块），线程安全"
+            }
+          ]
+        },
+        {
+          "id": "初始化触发-4-6-1",
+          "tag": "初始化触发",
+          "desc": "1.new/getstatic/putstatic/invokstatic 2.反射 Class.forName() 3.初始化子类先初始化父类 4.JVM 启动主类(含 main) 5.MethodHandle 对应的类 6.接口有 default 方法时实现类初始化",
+          "details": [
+            {
+              "id": "初始化触发-4-6-1-d0",
+              "tag": "4条字节码",
+              "desc": "new/getstatic/putstatic/invokestatic触发类初始化"
+            },
+            {
+              "id": "初始化触发-4-6-1-d1",
+              "tag": "反射调用",
+              "desc": "Class.forName()或newInstance()触发初始化主动使用"
+            },
+            {
+              "id": "初始化触发-4-6-1-d2",
+              "tag": "子类初始化",
+              "desc": "初始化子类先初始化父类但接口初始化不要求父接口"
+            },
+            {
+              "id": "初始化触发-4-6-1-d3",
+              "tag": "main方法",
+              "desc": "执行类的main方法触发该类初始化程序入口"
+            },
+            {
+              "id": "初始化触发-4-6-1-d4",
+              "tag": "被动引用",
+              "desc": "子类引用父类static变量不触发子类初始化常量也不触发特殊"
+            }
+          ]
+        },
+        {
+          "id": "类卸载-4-6-2",
+          "tag": "类卸载",
+          "desc": "1.该类所有实例被回收 2.加载该类的 ClassLoader 被回收 3.该类 Class 对象没被引用。Bootstrap 加载的核心类不会被卸载",
+          "details": [
+            {
+              "id": "类卸载-4-6-2-d0",
+              "tag": "三个条件",
+              "desc": "所有实例回收+ClassLoader回收+Class对象无引用满足才卸载"
+            },
+            {
+              "id": "类卸载-4-6-2-d1",
+              "tag": "实例回收",
+              "desc": "Java堆中该类所有实例已被GC回收无存活对象"
+            },
+            {
+              "id": "类卸载-4-6-2-d2",
+              "tag": "ClassLoader回收",
+              "desc": "加载该类的ClassLoader已被GC回收自定义ClassLoader"
+            },
+            {
+              "id": "类卸载-4-6-2-d3",
+              "tag": "Class对象回收",
+              "desc": "Class对象无任何引用且不可通过反射访问难以满足"
+            },
+            {
+              "id": "类卸载-4-6-2-d4",
+              "tag": "极难发生",
+              "desc": "自定义ClassLoader+大量类加载卸载场景才可能如JSP重启热部署"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4-8-类加载器与双亲委派-4-7",
+      "title": "4.8 类加载器与双亲委派",
+      "points": [
+        {
+          "id": "分类-4-7-0",
+          "tag": "分类",
+          "desc": "Bootstrap(C++加载 `<JAVA_HOME>/lib` 核心 rt.jar)/Extension(加载 `<JAVA_HOME>/lib/ext`)/Application(加载 classpath)/自定义(继承 ClassLoader 重写 findClass)",
+          "details": [
+            {
+              "id": "分类-4-7-0-d0",
+              "tag": "Bootstrap",
+              "desc": "C++实现加载rt.jar核心库无Java对象getParent返回null最顶"
+            },
+            {
+              "id": "分类-4-7-0-d1",
+              "tag": "Extension",
+              "desc": "加载ext目录扩展库javax包等系统扩展功能"
+            },
+            {
+              "id": "分类-4-7-0-d2",
+              "tag": "Application",
+              "desc": "加载classpath用户类默认ClassLoader项目代码"
+            },
+            {
+              "id": "分类-4-7-0-d3",
+              "tag": "自定义",
+              "desc": "继承URLClassLoader实现findClass定制加载逻辑热部署"
+            },
+            {
+              "id": "分类-4-7-0-d4",
+              "tag": "加载路径",
+              "desc": "各类加载器有固定搜索范围按层级递增Bootstrap最核心"
+            }
+          ]
+        },
+        {
+          "id": "双亲委派-4-7-1",
+          "tag": "双亲委派",
+          "desc": "loadClass()先委派 parent.loadClass()，父加载不了才自己 findClass()。优点：避免重复加载(同一类只加载一次)、保证核心 API 不被篡改(java.lang.Object 只能 Bootstrap 加载)",
+          "details": [
+            {
+              "id": "双亲委派-4-7-1-d0",
+              "tag": "loadClass() 先委派父",
+              "desc": "loadClass() 先委派父加载器"
+            },
+            {
+              "id": "双亲委派-4-7-1-d1",
+              "tag": "父",
+              "desc": "父加载不了才自己 findClass()"
+            },
+            {
+              "id": "双亲委派-4-7-1-d2",
+              "tag": "优点",
+              "desc": "避免重复加载 + 保证核心 API 不被篡改"
+            },
+            {
+              "id": "双亲委派-4-7-1-d3",
+              "tag": "java.lang.Object 只",
+              "desc": "java.lang.Object 只能 Bootstrap 加载"
+            }
+          ]
+        },
+        {
+          "id": "打破双亲委派-4-7-2",
+          "tag": "打破双亲委派",
+          "desc": "重写 loadClass()而非 findClass()(Tomcat WebAppClassLoader 每个 Web 应用独立类加载器)、OSGi 网状类加载、SPI 机制(线程上下文类加载器 ContextClassLoader 解决父加载器请求子加载器加载)",
+          "details": [
+            {
+              "id": "打破双亲委派-4-7-2-d0",
+              "tag": "SPI加载",
+              "desc": "接口Bootstrap加载实现类线程上下文类加载器加载突破双亲委派"
+            },
+            {
+              "id": "打破双亲委派-4-7-2-d1",
+              "tag": "线程上下文",
+              "desc": "Thread.getContextClassLoader()子类加载器加载SPI实现解耦"
+            },
+            {
+              "id": "打破双亲委派-4-7-2-d2",
+              "tag": "热部署",
+              "desc": "自定义ClassLoader重新加载已修改类实现代码热替换不停机更新"
+            },
+            {
+              "id": "打破双亲委派-4-7-2-d3",
+              "tag": "Tomcat",
+              "desc": "WebappClassLoader每个Web应用独立打破双亲委派隔离类防止冲突"
+            },
+            {
+              "id": "打破双亲委派-4-7-2-d4",
+              "tag": "OSGi",
+              "desc": "模块化网状加载基于包依赖而非树形双亲委派更灵活动态"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "4-9-调优工具-4-8",
+      "title": "4.9 调优工具",
+      "points": [
+        {
+          "id": "命令行-4-8-0",
+          "tag": "命令行",
+          "desc": "jps(列出 Java 进程)/jstat(GC 统计,`-gcutil` 查看各区使用率)/jmap(堆 dump,`-histo` 查看对象统计)/jstack(线程 dump,死锁检测)/jinfo(查看修改 JVM 参数)/jcmd(多功能命令)",
+          "details": [
+            {
+              "id": "命令行-4-8-0-d0",
+              "tag": "jps",
+              "desc": "查看所有Java进程PID类似ps但只显示Java进程快速定位"
+            },
+            {
+              "id": "命令行-4-8-0-d1",
+              "tag": "jstat",
+              "desc": "监控GC统计信息类加载编译等实时查看GC频率和时间间隔"
+            },
+            {
+              "id": "命令行-4-8-0-d2",
+              "tag": "jinfo",
+              "desc": "查看和修改JVM运行参数实时查看SystemProperties和Flags配置"
+            },
+            {
+              "id": "命令行-4-8-0-d3",
+              "tag": "jmap",
+              "desc": "生成堆转储dump文件查看堆内存对象统计直方图分析内存"
+            },
+            {
+              "id": "命令行-4-8-0-d4",
+              "tag": "jstack",
+              "desc": "打印线程堆栈信息排查死锁线程阻塞问题定位线程问题"
+            }
+          ]
+        },
+        {
+          "id": "可视化-4-8-1",
+          "tag": "可视化",
+          "desc": "VisualVM(JDK 自带,堆线程 CPU 监控)/JConsole(JMX 监控)/Mission Control(JFR 鷴行记录器)/JProfiler(商业)/Arthas(阿里开源,在线诊断:watch/trace/dashboard/sc)",
+          "details": [
+            {
+              "id": "可视化-4-8-1-d0",
+              "tag": "JConsole",
+              "desc": "JDK自带轻量级监控面板线程内存GC类加载可视化简单易用"
+            },
+            {
+              "id": "可视化-4-8-1-d1",
+              "tag": "JVisualVM",
+              "desc": "更强大监控分析堆dump线程分析插件扩展功能丰富"
+            },
+            {
+              "id": "可视化-4-8-1-d2",
+              "tag": "JMC",
+              "desc": "Mission Control高级监控JFR事件录制飞行记录分析专业"
+            },
+            {
+              "id": "可视化-4-8-1-d3",
+              "tag": "Arthas",
+              "desc": "阿里开源线上诊断工具热更新监控方法调用排查问题无需重启"
+            },
+            {
+              "id": "可视化-4-8-1-d4",
+              "tag": "MAT",
+              "desc": "Eclipse Memory Analyzer专业堆dump分析内存泄漏定位深度分析"
+            }
+          ]
+        },
+        {
+          "id": "常用参数-4-8-2",
+          "tag": "常用参数",
+          "desc": "`-Xms`/`-Xmx`(堆初始/最大,建议相等避免动态扩容)/`-Xmn`(新生代)/`-Xss`(栈大小)/`-XX:MetaspaceSize`/`-XX:+UseG1GC`/`-XX:MaxGCPauseMillis`/`-XX:+PrintGCDetails`/`-Xloggc:gc.log`",
+          "details": [
+            {
+              "id": "常用参数-4-8-2-d0",
+              "tag": "Xms/Xmx",
+              "desc": "堆初始大小和最大大小生产环境建议设为相同值避免动态扩缩"
+            },
+            {
+              "id": "常用参数-4-8-2-d1",
+              "tag": "Xmn",
+              "desc": "新生代大小影响Minor GC频率和晋升速率调优关键参数"
+            },
+            {
+              "id": "常用参数-4-8-2-d2",
+              "tag": "MetaSpaceSize",
+              "desc": "元空间初始大小JDK8+取代PermGen默认无上限需限制"
+            },
+            {
+              "id": "常用参数-4-8-2-d3",
+              "tag": "NewRatio",
+              "desc": "新生代与老年代比例默认2即新生代1/3老年代2/3调整分代"
+            },
+            {
+              "id": "常用参数-4-8-2-d4",
+              "tag": "SurvivorRatio",
+              "desc": "Eden与Survivor比例默认8即Eden80%两个S各10%优化"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

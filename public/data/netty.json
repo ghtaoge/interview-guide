@@ -1,0 +1,257 @@
+{
+  "id": "netty",
+  "title": "三十一、Netty",
+  "tag": "Netty",
+  "order": 31,
+  "icon": "☁️",
+  "cssIndex": 29,
+  "subs": [
+    {
+      "id": "31-1-netty核心架构-31-0",
+      "title": "31.1 Netty核心架构",
+      "points": [
+        {
+          "id": "nettyreactor模型-31-0-0",
+          "tag": "Netty Reactor模型",
+          "desc": "Netty基于主从Reactor多线程模型：BossGroup（主Reactor默认1线程NioEventLoop）Accept连接建立将连接注册到WorkerGroup；WorkerGroup（从Reactor默认CPU*2线程）负责已建立连接IO读写和业务处理。NioEventLoop核心线程组件包含Executor+Selector+TaskQueue每个EventLoop绑定一个Selector管理多个ChannelIO事件同时执行TaskQueue非IO任务IO和非IO时间比例由ioRatio控制默认50%。Channel是网络连接抽象绑定一个EventLoop实现线程安全。ChannelPipeline是Channel事件处理链——入站事件（数据读取→解码→业务处理）经过InboundHandler出站事件（业务→编码→数据写入）经过OutboundHandler。",
+          "details": [
+            {
+              "id": "nettyreactor模型-31-0-0-d0",
+              "tag": "Reactor模型",
+              "desc": "主从Reactor多线程：BossGroup Accept连接→WorkerGroup IO读写+业务"
+            },
+            {
+              "id": "nettyreactor模型-31-0-0-d1",
+              "tag": "BossGroup",
+              "desc": "主Reactor默认1线程Accept连接建立后将连接注册到WorkerGroup"
+            },
+            {
+              "id": "nettyreactor模型-31-0-0-d2",
+              "tag": "WorkerGroup",
+              "desc": "从Reactor默认CPU*2线程负责已建立连接IO读写和业务处理"
+            },
+            {
+              "id": "nettyreactor模型-31-0-0-d3",
+              "tag": "NioEventLoop",
+              "desc": "核心线程组件含Executor+Selector+TaskQueue，IO和非IO时间由ioRatio控制"
+            },
+            {
+              "id": "nettyreactor模型-31-0-0-d4",
+              "tag": "Channel",
+              "desc": "网络连接抽象绑定一个EventLoop实现线程安全，生命周期回调管理"
+            },
+            {
+              "id": "nettyreactor模型-31-0-0-d5",
+              "tag": "Pipeline",
+              "desc": "Channel事件处理链入站经InboundHandler出站经OutboundHandler"
+            },
+            {
+              "id": "nettyreactor模型-31-0-0-d6",
+              "tag": "InboundHandler",
+              "desc": "处理入站事件如数据读取→解码→业务处理，按注册顺序执行"
+            },
+            {
+              "id": "nettyreactor模型-31-0-0-d7",
+              "tag": "OutboundHandler",
+              "desc": "处理出站事件如业务→编码→数据写入，按注册逆序执行"
+            }
+          ]
+        },
+        {
+          "id": "nettybytebuf与内存管理-31-0-1",
+          "tag": "Netty ByteBuf与内存管理",
+          "desc": "ByteBuf替代JDK ByteBuffer核心优势：读写指针独立不需flip切换、动态扩容、池化缓冲区减少GC、复合缓冲区零拷贝合并。分类：HeapByteBuf堆内存JVM管理vs DirectByteBuf直接内存OS管理无GC开销适合IO减少内核拷贝；PooledByteBuf池化复用推荐vs Unpooled非池化。内存泄漏检测：ByteBuf引用计数refCnt管理release减1归零释放未release的DirectByteBuf造成泄漏。检测级别DISABLED/SIMPLE默认1%采样/ADVANCED/PARANOID100%采样开发调试用。PooledByteBufAllocator基于jemalloc算法Arena分区+Page分配+SubPage细分+ThreadLocal缓存减少锁竞争。",
+          "details": [
+            {
+              "id": "nettybytebuf与内存管理-31-0-1-d0",
+              "tag": "ByteBuf",
+              "desc": "替代JDK ByteBuffer读写指针独立不需flip动态扩容池化减少GC"
+            },
+            {
+              "id": "nettybytebuf与内存管理-31-0-1-d1",
+              "tag": "读写指针独立",
+              "desc": "ByteBuf读写分离不需ByteBuffer的flip切换，读写互不干扰更高效"
+            },
+            {
+              "id": "nettybytebuf与内存管理-31-0-1-d2",
+              "tag": "动态扩容",
+              "desc": "ByteBuf写入超容量自动扩容默认翻倍，不像ByteBuffer需手动分配"
+            },
+            {
+              "id": "nettybytebuf与内存管理-31-0-1-d3",
+              "tag": "池化缓冲区",
+              "desc": "PooledByteBuf池化复用减少GC压力，推荐PooledByteBufAllocator"
+            },
+            {
+              "id": "nettybytebuf与内存管理-31-0-1-d4",
+              "tag": "DirectByteBuf",
+              "desc": "直接内存OS管理无GC开销适合IO减少一次内核拷贝但需手动release"
+            },
+            {
+              "id": "nettybytebuf与内存管理-31-0-1-d5",
+              "tag": "引用计数",
+              "desc": "refCnt管理release减1归零释放，未release的DirectByteBuf造成内存泄漏"
+            },
+            {
+              "id": "nettybytebuf与内存管理-31-0-1-d6",
+              "tag": "内存泄漏",
+              "desc": "未release的DirectByteBuf泄漏，检测级别SIMPLE/ADVANCED/PARANOID开发用"
+            },
+            {
+              "id": "nettybytebuf与内存管理-31-0-1-d7",
+              "tag": "jemalloc",
+              "desc": "PooledByteBufAllocator基于jemalloc算法Arena+Page+SubPage+ThreadLocal缓存"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "31-2-netty进阶-31-1",
+      "title": "31.2 Netty进阶",
+      "points": [
+        {
+          "id": "netty粘包拆包与编解码-31-1-0",
+          "tag": "Netty粘包拆包与编解码",
+          "desc": "TCP流式协议不保证消息边界导致粘包（合并读取）或拆包（拆分读取）。Netty内置解码器：FixedLengthFrameDecoder固定长度帧、DelimiterBasedFrameDecoder分隔符帧、LengthFieldBasedFrameDecoder长度字段帧最通用消息头含长度+消息体、LineBasedFrameDecoder换行符帧。编解码器：StringEncoder/StringDecoder、MessageToMessageCodec自定义转换、ByteToMessageDecoder字节流→消息解码基类、MessageToByteEncoder消息→字节编码基类。Handler生命周期handlerAdded→channelRegistered→channelActive→channelRead→channelReadComplete→channelInactive→handlerRemoved。编解码器顺序：解码器必须在业务Handler前编码器必须在业务Handler后。",
+          "details": [
+            {
+              "id": "netty粘包拆包与编解码-31-1-0-d0",
+              "tag": "粘包拆包",
+              "desc": "TCP流式协议不保证消息边界，需解码器按规则切分消息帧"
+            },
+            {
+              "id": "netty粘包拆包与编解码-31-1-0-d1",
+              "tag": "FixedLength",
+              "desc": "FixedLengthFrameDecoder固定长度帧简单但不够灵活浪费带宽"
+            },
+            {
+              "id": "netty粘包拆包与编解码-31-1-0-d2",
+              "tag": "DelimiterBased",
+              "desc": "DelimiterBasedFrameDecoder按分隔符切分帧适合文本协议如HTTP换行"
+            },
+            {
+              "id": "netty粘包拆包与编解码-31-1-0-d3",
+              "tag": "LengthFieldBased",
+              "desc": "最通用解码器消息头含长度+消息体，支持长度字段偏移和调整"
+            },
+            {
+              "id": "netty粘包拆包与编解码-31-1-0-d4",
+              "tag": "编解码器",
+              "desc": "ByteToMessageDecoder解码+MessageToByteEncoder编码，解码在前编码在后"
+            },
+            {
+              "id": "netty粘包拆包与编解码-31-1-0-d5",
+              "tag": "ByteToMessageDecoder",
+              "desc": "字节流→消息解码基类，累积字节直到足够组成完整消息对象"
+            },
+            {
+              "id": "netty粘包拆包与编解码-31-1-0-d6",
+              "tag": "MessageToByteEncoder",
+              "desc": "消息→字节编码基类，将业务对象序列化为ByteBuf输出"
+            },
+            {
+              "id": "netty粘包拆包与编解码-31-1-0-d7",
+              "tag": "ChannelHandler生命周期",
+              "desc": "handlerAdded→channelRegistered→channelActive→channelRead→channelReadComplete→channelInactive→handlerRemoved"
+            }
+          ]
+        },
+        {
+          "id": "netty心跳与websocket实现-31-1-1",
+          "tag": "Netty心跳与WebSocket实现",
+          "desc": "心跳机制检测连接存活防止半开连接。IdleStateHandler空闲检测——readerIdleTime/writerIdleTime/allIdleTime触发IdleStateEvent在userEventTriggered()处理发送心跳或关闭连接。典型配置服务端30秒读空闲客户端15秒写空闲主动发心跳。WebSocket实现Netty内置支持——HttpServerCodec处理HTTP请求和握手、HttpObjectAggregator聚合消息片段、WebSocketServerProtocolHandler处理握手升级和帧处理、TextWebSocketFrame/BinaryWebSocketFrame/PongWebSocketFrame/CloseWebSocketFrame帧类型。Pipeline配置HttpServerCodec→HttpObjectAggregator→WebSocketServerProtocolHandler(path='/ws')→自定义Handler处理业务帧。",
+          "details": [
+            {
+              "id": "netty心跳与websocket实现-31-1-1-d0",
+              "tag": "IdleStateHandler",
+              "desc": "空闲检测触发IdleStateEvent，配置readerIdleTime/writerIdleTime/allIdleTime"
+            },
+            {
+              "id": "netty心跳与websocket实现-31-1-1-d1",
+              "tag": "心跳机制",
+              "desc": "检测连接存活防止半开连接，服务端30秒读空闲客户端15秒写空闲发心跳"
+            },
+            {
+              "id": "netty心跳与websocket实现-31-1-1-d2",
+              "tag": "读空闲",
+              "desc": "超过readerIdleTime未收到数据触发IdleStateEvent，发送心跳或关闭连接"
+            },
+            {
+              "id": "netty心跳与websocket实现-31-1-1-d3",
+              "tag": "userEventTriggered",
+              "desc": "处理IdleStateEvent回调方法，在此判断空闲类型发送心跳或断开连接"
+            },
+            {
+              "id": "netty心跳与websocket实现-31-1-1-d4",
+              "tag": "WebSocket",
+              "desc": "Netty内置支持HttpServerCodec→Aggregator→ProtocolHandler→自定义Handler"
+            },
+            {
+              "id": "netty心跳与websocket实现-31-1-1-d5",
+              "tag": "WebSocketFrame",
+              "desc": "帧类型TextWebSocketFrame/Binary/Pong/Close对应不同WebSocket消息"
+            },
+            {
+              "id": "netty心跳与websocket实现-31-1-1-d6",
+              "tag": "HttpServerCodec",
+              "desc": "处理HTTP请求和WebSocket握手升级的编解码器组合"
+            },
+            {
+              "id": "netty心跳与websocket实现-31-1-1-d7",
+              "tag": "握手升级",
+              "desc": "WebSocketServerProtocolHandler处理HTTP→WS协议升级和帧处理"
+            }
+          ]
+        },
+        {
+          "id": "netty零拷贝与性能优化-31-1-2",
+          "tag": "Netty零拷贝与性能优化",
+          "desc": "零拷贝减少数据在内核和用户空间拷贝次数。Netty零拷贝实现：CompositeByteBuf逻辑组合多个ByteBuf无需物理拷贝、Unpooled.wrappedBuffer包装byte数组零拷贝、ByteBuf.slice()切片共享底层数组零拷贝、FileRegion文件直接从磁盘通过Channel传输到网络使用transferTo零拷贝、配合Linux sendfile系统调用JDK NIO transferTo映射到sendfile。性能优化综合：PooledByteBufAllocator池化缓冲区减少GC、DirectByteBuf直接内存减少一次拷贝、合理EventLoop线程数CPU*2、调整ioRatio比例IO密集70-80、开启Epoll Linux用EpollEventLoop更高效NativeEpoll、WriteBufferWaterMark控制写缓冲水位高低水位避免OOM、关闭autoRead手动控制读取节奏防止读取过快处理跟不上。",
+          "details": [
+            {
+              "id": "netty零拷贝与性能优化-31-1-2-d0",
+              "tag": "零拷贝",
+              "desc": "减少内核和用户空间拷贝次数CompositeByteBuf/wrappedBuffer/slice/FileRegion"
+            },
+            {
+              "id": "netty零拷贝与性能优化-31-1-2-d1",
+              "tag": "CompositeByteBuf",
+              "desc": "逻辑组合多个ByteBuf无需物理拷贝合并，减少内存分配和数据复制"
+            },
+            {
+              "id": "netty零拷贝与性能优化-31-1-2-d2",
+              "tag": "FileRegion",
+              "desc": "文件直接从磁盘通过Channel传输到网络使用transferTo零拷贝"
+            },
+            {
+              "id": "netty零拷贝与性能优化-31-1-2-d3",
+              "tag": "sendfile",
+              "desc": "Linux系统调用数据从文件直接到网卡绕过用户空间，Netty FileRegion映射"
+            },
+            {
+              "id": "netty零拷贝与性能优化-31-1-2-d4",
+              "tag": "PooledByteBufAllocator",
+              "desc": "池化缓冲区分配器基于jemalloc减少GC压力，推荐生产使用"
+            },
+            {
+              "id": "netty零拷贝与性能优化-31-1-2-d5",
+              "tag": "DirectByteBuf",
+              "desc": "直接内存减少一次内核拷贝适合IO密集场景，但需手动release防泄漏"
+            },
+            {
+              "id": "netty零拷贝与性能优化-31-1-2-d6",
+              "tag": "Epoll优化",
+              "desc": "Linux用EpollEventLoop比NIO更高效NativeEpoll减少系统调用开销"
+            },
+            {
+              "id": "netty零拷贝与性能优化-31-1-2-d7",
+              "tag": "WriteBufferWaterMark",
+              "desc": "控制写缓冲高低水位避免OOM，超高水位禁写低于低水位恢复写入"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

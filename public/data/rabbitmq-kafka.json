@@ -1,0 +1,304 @@
+{
+  "id": "rabbitmq-kafka",
+  "title": "三十四、RabbitMQ与Kafka消息队列",
+  "tag": "消息队列",
+  "order": 34,
+  "icon": "🤖",
+  "cssIndex": 31,
+  "subs": [
+    {
+      "id": "34-1-rabbitmq核心-34-0",
+      "title": "34.1 RabbitMQ核心",
+      "points": [
+        {
+          "id": "rabbitmq架构与核心概念-34-0-0",
+          "tag": "RabbitMQ架构与核心概念",
+          "desc": "RabbitMQ是Erlang开发的消息队列基于AMQP协议核心概念：Producer生产者→Exchange交换机→Queue队列→Consumer消费者。Exchange四种类型：Direct精确路由匹配routing key、Topic模糊匹配支持*和#通配符、Fanout广播到所有绑定队列不分发、Headers基于消息头属性匹配不依赖routing key。队列属性：durable持久化防止重启丢失、exclusive独占仅一个连接、auto-delete无消费者自动删除、TTL消息过期时间死信路由。连接Channel复用单TCP连接多逻辑通道减少开销。面试重点：Exchange路由机制、消息持久化策略、队列属性组合。",
+          "details": [
+            {
+              "id": "rabbitmq架构与核心概念-34-0-0-d0",
+              "tag": "AMQP协议",
+              "desc": "Advanced Message Queuing Protocol应用层消息队列协议定义了消息路由交换机队列绑定等核心概念RabbitMQ基于此协议实现"
+            },
+            {
+              "id": "rabbitmq架构与核心概念-34-0-0-d1",
+              "tag": "Exchange交换机",
+              "desc": "消息路由核心组件接收生产者消息按类型分发到绑定队列Direct精确路由Topic模糊匹配Fanout广播Headers头匹配"
+            },
+            {
+              "id": "rabbitmq架构与核心概念-34-0-0-d2",
+              "tag": "Direct交换机",
+              "desc": "精确匹配routing key只有完全一致才路由适合点对点场景如订单指定队列"
+            },
+            {
+              "id": "rabbitmq架构与核心概念-34-0-0-d3",
+              "tag": "Topic交换机",
+              "desc": "模糊匹配routing key支持*匹配一个词#匹配零或多个词适合多维度分发如log.*.error"
+            },
+            {
+              "id": "rabbitmq架构与核心概念-34-0-0-d4",
+              "tag": "Fanout交换机",
+              "desc": "广播模式忽略routing key消息分发到所有绑定队列适合通知公告场景"
+            },
+            {
+              "id": "rabbitmq架构与核心概念-34-0-0-d5",
+              "tag": "Queue队列",
+              "desc": "消息存储缓冲区消费者从队列取消息属性durable持久化exclusive独占auto-delete自动删除TTL过期"
+            },
+            {
+              "id": "rabbitmq架构与核心概念-34-0-0-d6",
+              "tag": "Channel通道",
+              "desc": "TCP连接上的虚拟通道复用连接减少开销每个操作在独立Channel上执行避免锁竞争"
+            },
+            {
+              "id": "rabbitmq架构与核心概念-34-0-0-d7",
+              "tag": "消息持久化",
+              "desc": "消息+队列+交换机三个都设置durable才真正持久化否则重启丢失仅队列durable消息可能丢失"
+            }
+          ]
+        },
+        {
+          "id": "rabbitmq消息确认与可靠性-34-0-1",
+          "tag": "RabbitMQ消息确认与可靠性",
+          "desc": "消息可靠性三环节保障：生产者确认Publisher Confirm确保消息到达Broker、Broker持久化durable+消息持久化、消费者确认Consumer Ack手动确认处理完成。生产者Confirm模式：同步waitForConfirms确认单条、异步addConfirmListener批量确认效率高。消费者Ack模式：自动确认auto-ack消息立即删除风险大丢失无法重试、手动确认manual-ack处理完成后basicAck安全可靠。消费失败策略：nack+requeue重新入队可能无限循环、nack不requeue进死信队列DLX人工处理。消息重复消费：幂等设计唯一ID去重/数据库唯一约束/Redis SETNX。面试重点：Confirm机制、手动Ack、死信队列、幂等方案。",
+          "details": [
+            {
+              "id": "rabbitmq消息确认与可靠性-34-0-1-d0",
+              "tag": "Publisher Confirm",
+              "desc": "生产者确认机制确保消息成功到达Broker同步单条确认效率低异步批量确认效率高推荐异步"
+            },
+            {
+              "id": "rabbitmq消息确认与可靠性-34-0-1-d1",
+              "tag": "消息持久化策略",
+              "desc": "队列durable+消息deliveryMode=2+Exchange durable三者都持久化才确保重启不丢失"
+            },
+            {
+              "id": "rabbitmq消息确认与可靠性-34-0-1-d2",
+              "tag": "Consumer Ack",
+              "desc": "消费者确认模式auto-ack自动确认消息立即删除风险大manual-ack手动确认处理完才删除安全可靠"
+            },
+            {
+              "id": "rabbitmq消息确认与可靠性-34-0-1-d3",
+              "tag": "basicAck",
+              "desc": "手动确认消息处理成功从队列删除支持批量确认multiple=true减少网络开销"
+            },
+            {
+              "id": "rabbitmq消息确认与可靠性-34-0-1-d4",
+              "tag": "basicNack",
+              "desc": "否定确认消息处理失败可选择requeue重新入队或不requeue进死信队列"
+            },
+            {
+              "id": "rabbitmq消息确认与可靠性-34-0-1-d5",
+              "tag": "死信队列DLX",
+              "desc": "Dead Letter Exchange消息过期/队列满/消费者nack不requeue时进入死信队列适合异常处理和人工干预"
+            },
+            {
+              "id": "rabbitmq消息确认与可靠性-34-0-1-d6",
+              "tag": "幂等设计",
+              "desc": "消费端幂等保障唯一ID去重数据库唯一约束Redis SETNX状态机防重复处理"
+            },
+            {
+              "id": "rabbitmq消息确认与可靠性-34-0-1-d7",
+              "tag": "消息顺序性",
+              "desc": "单Queue单Consumer保证顺序多Consumer无法保证顺序消费可用一致性Hash分配同Key同Consumer"
+            }
+          ]
+        },
+        {
+          "id": "rabbitmq集群与高可用-34-0-2",
+          "tag": "RabbitMQ集群与高可用",
+          "desc": "RabbitMQ集群模式：普通集群Queue数据只在创建节点其他节点只有元数据转发消费性能差、镜像队列Mirrored Queue消息在所有节点同步主节点故障自动切换、仲裁队列Quorum Queue基于Raft共识新推荐替代镜像队列数据一致性更强。镜像队列策略ha-mode:all/exactly/nodes配置同步节点数和策略。仲裁队列Quorum Queue基于Raft协议多数节点写入成功才算完成强一致性推荐生产使用。Federation联邦跨数据中心消息同步Shovel铲子跨集群消息搬运。脑裂问题网络分区时两个节点都认为自己是主需要pause_minority策略自动暂停少数派节点。面试重点：普通集群vs镜像vs仲裁队列对比、脑裂处理策略。",
+          "details": [
+            {
+              "id": "rabbitmq集群与高可用-34-0-2-d0",
+              "tag": "普通集群",
+              "desc": "Queue数据只在创建节点其他节点仅存元数据消费时转发性能差不适合高可用"
+            },
+            {
+              "id": "rabbitmq集群与高可用-34-0-2-d1",
+              "tag": "镜像队列",
+              "desc": "Mirrored Queue消息在所有节点同步主节点故障自动切换但同步开销大影响性能"
+            },
+            {
+              "id": "rabbitmq集群与高可用-34-0-2-d2",
+              "tag": "仲裁队列",
+              "desc": "Quorum Queue基于Raft共识多数节点确认才算完成强一致性推荐生产替代镜像队列"
+            },
+            {
+              "id": "rabbitmq集群与高可用-34-0-2-d3",
+              "tag": "ha-mode策略",
+              "desc": "镜像队列策略all同步所有节点exactly精确N个nodes指定节点名称"
+            },
+            {
+              "id": "rabbitmq集群与高可用-34-0-2-d4",
+              "tag": "Raft共识",
+              "desc": "仲裁队列底层协议多数节点确认写入保证强一致性Leader选举自动容灾"
+            },
+            {
+              "id": "rabbitmq集群与高可用-34-0-2-d5",
+              "tag": "Federation联邦",
+              "desc": "跨数据中心消息同步上游Exchange下游Queue单向复制适合跨地域场景"
+            },
+            {
+              "id": "rabbitmq集群与高可用-34-0-2-d6",
+              "tag": "脑裂处理",
+              "desc": "网络分区时两节点都自认为主pause_minority策略暂停少数派节点防止数据不一致"
+            },
+            {
+              "id": "rabbitmq集群与高可用-34-0-2-d7",
+              "tag": "集群扩容",
+              "desc": "动态添加节点磁盘节点存元数据RAM节点纯内存扩容后需重新同步队列"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "34-2-kafka核心-34-1",
+      "title": "34.2 Kafka核心",
+      "points": [
+        {
+          "id": "kafka架构与核心概念-34-1-0",
+          "tag": "Kafka架构与核心概念",
+          "desc": "Kafka是分布式流处理平台以高吞吐低延迟著称。核心概念：Producer生产者→Topic主题→Partition分区→Consumer消费者→Consumer Group消费组。Topic逻辑分类Partition物理分片每个Partition是一个有序不可变的消息追加日志offset标识位置。Consumer Group组内消费者各自消费不同分区实现负载均衡组间各自独立消费实现发布订阅。Broker节点存储分区数据Leader处理读写Follower同步副本。ISR(In-Sync Replicas)与Leader同步的副本集合落后太多踢出ISR。ZooKeeper/KRaft管理集群元数据Broker注册Topic配置Controller选举Kafka 3.x后KRaft模式取代ZK。面试重点：分区机制、消费组模型、ISR概念、KRaft演进。",
+          "details": [
+            {
+              "id": "kafka架构与核心概念-34-1-0-d0",
+              "tag": "Topic主题",
+              "desc": "消息逻辑分类生产者发送到Topic消费者从Topic订阅类似于数据库的表"
+            },
+            {
+              "id": "kafka架构与核心概念-34-1-0-d1",
+              "tag": "Partition分区",
+              "desc": "Topic物理分片每个分区是有序不可变的追加日志offset标识每条消息位置分区数影响并行度"
+            },
+            {
+              "id": "kafka架构与核心概念-34-1-0-d2",
+              "tag": "Consumer Group",
+              "desc": "消费组组内消费者各自消费不同分区负载均衡组间独立消费实现发布订阅模式"
+            },
+            {
+              "id": "kafka架构与核心概念-34-1-0-d3",
+              "tag": "offset偏移量",
+              "desc": "每条消息在分区中的唯一编号消费者通过offset定位消费位置支持手动和自动提交"
+            },
+            {
+              "id": "kafka架构与核心概念-34-1-0-d4",
+              "tag": "Broker节点",
+              "desc": "Kafka服务节点存储分区数据每个分区有一个Leader和多个Follower"
+            },
+            {
+              "id": "kafka架构与核心概念-34-1-0-d5",
+              "tag": "ISR副本",
+              "desc": "In-Sync Replicas与Leader同步的副本集合落后超阈值踢出ISR保障数据可靠性"
+            },
+            {
+              "id": "kafka架构与核心概念-34-1-0-d6",
+              "tag": "Leader/Follower",
+              "desc": "Leader处理分区读写请求Follower同步数据Leader故障ISR中Follower选举为新Leader"
+            },
+            {
+              "id": "kafka架构与核心概念-34-1-0-d7",
+              "tag": "KRaft模式",
+              "desc": "Kafka 3.x引入的元数据管理模式取代ZooKeeper内置Raft共识简化部署降低依赖"
+            }
+          ]
+        },
+        {
+          "id": "kafka消息可靠性与实践-34-1-1",
+          "tag": "Kafka消息可靠性与实践",
+          "desc": "Kafka消息可靠性三维度保障：生产者acks=all等待所有ISR副本确认、Broker副本同步min.insync.replicas=2至少2个副本确认、消费者手动提交offset处理完成才确认。acks三种级别：0不等确认最高吞吐可能丢数据、1等Leader确认Leader故障可能丢、all等所有ISR确认最安全吞吐最低。生产者幂等enable.idempotence=true防重复写入单分区。事务transactional.id跨分区原子写入Exactly-Once语义。消费者手动提交enable.auto.commit=false处理完成后commitSync/commitAsync防止消息丢失。消息积压处理：增加消费者/分区数、临时消费者快速消费、调整max.poll.records批量大小。线上常见问题：消费lag过大→扩容消费者、分区Leader迁移→重平衡、生产超时→调整request.timeout.ms。面试重点：acks机制、幂等写入、事务语义、积压处理方案。",
+          "details": [
+            {
+              "id": "kafka消息可靠性与实践-34-1-1-d0",
+              "tag": "acks机制",
+              "desc": "生产者确认级别0不等确认最高吞吐可能丢1等Leader确认Leader故障可能丢all等所有ISR最安全"
+            },
+            {
+              "id": "kafka消息可靠性与实践-34-1-1-d1",
+              "tag": "min.insync.replicas",
+              "desc": "最小同步副本数配合acks=all至少N个ISR副本确认否则拒绝写入生产环境推荐2"
+            },
+            {
+              "id": "kafka消息可靠性与实践-34-1-1-d2",
+              "tag": "幂等写入",
+              "desc": "enable.idempotence=true防止生产者重试导致重复写入仅保证单分区幂等"
+            },
+            {
+              "id": "kafka消息可靠性与实践-34-1-1-d3",
+              "tag": "Exactly-Once",
+              "desc": "事务transactional.id跨分区原子写入消费-处理-写入全链路精确一次语义"
+            },
+            {
+              "id": "kafka消息可靠性与实践-34-1-1-d4",
+              "tag": "手动提交offset",
+              "desc": "enable.auto.commit=false处理完成后commitSync同步提交或commitAsync异步提交防丢消息"
+            },
+            {
+              "id": "kafka消息可靠性与实践-34-1-1-d5",
+              "tag": "消息积压处理",
+              "desc": "增加消费者和分区数/临时消费者快速消费/调整max.poll.records批量大小/提升消费速度"
+            },
+            {
+              "id": "kafka消息可靠性与实践-34-1-1-d6",
+              "tag": "消费lag过大",
+              "desc": "消费者落后生产者太多监控ConsumerLag指标扩容消费者增加分区数"
+            },
+            {
+              "id": "kafka消息可靠性与实践-34-1-1-d7",
+              "tag": "分区重平衡",
+              "desc": "消费者加入/退出组时触发Rebalance分区重新分配期间消费暂停StickyAssignor减少重平衡影响"
+            }
+          ]
+        },
+        {
+          "id": "kafka性能优化与线上实践-34-1-2",
+          "tag": "Kafka性能优化与线上实践",
+          "desc": "Kafka高吞吐关键设计：零拷贝sendfile内核直接传输避免用户空间拷贝、页缓存PageCache消息写入OS页缓存异步刷盘、批量压缩produce压缩减少网络IO、分区并行读写横向扩展。生产者优化：batch.size批量发送16KB默认可增大、linger.ms等待凑批5ms默认、compression.type压缩snappy/lz4/zstd平衡压缩率和速度、buffer.memory缓冲区大小32MB默认。消费者优化：fetch.min.bytes最小拉取量凑大batch减少请求、max.poll.records单次拉取条数500默认可调大。Broker优化：num.io.threads IO线程数、num.network.threads网络线程数、log.segment.bytes段大小1GB、log.retention.hours保留时间。线上常见问题：磁盘满→调整保留策略或扩容、Leader切换频繁→检查ISR健康状况、消费者Rebalance风暴→用StickyAssignor+缩短session.timeout。面试重点：零拷贝原理、批量参数调优、线上问题排查。",
+          "details": [
+            {
+              "id": "kafka性能优化与线上实践-34-1-2-d0",
+              "tag": "零拷贝",
+              "desc": "Kafka使用sendfile系统调用数据直接从PageCache传输到网卡绕过用户空间减少2次拷贝"
+            },
+            {
+              "id": "kafka性能优化与线上实践-34-1-2-d1",
+              "tag": "PageCache",
+              "desc": "消息写入OS页缓存异步刷盘利用操作系统内存管理读取时直接命中缓存速度极快"
+            },
+            {
+              "id": "kafka性能优化与线上实践-34-1-2-d2",
+              "tag": "批量发送",
+              "desc": "batch.size批量大小16KB默认linger.ms等待凑批5ms两者配合提升吞吐"
+            },
+            {
+              "id": "kafka性能优化与线上实践-34-1-2-d3",
+              "tag": "消息压缩",
+              "desc": "compression.type压缩算法snappy速度快lz4更快zstd压缩率高生产端压缩消费端解压"
+            },
+            {
+              "id": "kafka性能优化与线上实践-34-1-2-d4",
+              "tag": "fetch优化",
+              "desc": "fetch.min.bytes最小拉取字节数fetch.max.wait.ms最大等待时间凑大batch减少请求次数"
+            },
+            {
+              "id": "kafka性能优化与线上实践-34-1-2-d5",
+              "tag": "磁盘满处理",
+              "desc": "调整log.retention.hours保留时间/log.segment.bytes段大小/扩容磁盘/JMX监控磁盘使用率"
+            },
+            {
+              "id": "kafka性能优化与线上实践-34-1-2-d6",
+              "tag": "Leader频繁切换",
+              "desc": "检查ISR健康状况min.insync.replicas配置/网络延迟/磁盘IO瓶颈/Broker负载均衡"
+            },
+            {
+              "id": "kafka性能优化与线上实践-34-1-2-d7",
+              "tag": "Rebalance风暴",
+              "desc": "消费者频繁加入退出导致RebalanceStickyAssignor减少分配变动/缩短session.timeout.ms"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

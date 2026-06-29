@@ -1,0 +1,14 @@
+* { margin: 0; padding: 0; box-sizing: border-box }
+body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg); color: var(--text); line-height: 1.75; -webkit-font-smoothing: antialiased;
+  transition: background .3s, color .3s;
+}
+::-webkit-scrollbar { width: 8px; height: 8px }
+::-webkit-scrollbar-track { background: transparent }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px }
+::-webkit-scrollbar-thumb:hover { background: var(--text3) }
+.hl { background: #fef3c7; color: #b45309; border-radius: 3px; padding: 0 3px; font-weight: 500 }
+
+/* Vant全局样式微调 */
+.van-cell-group { background: transparent }
+.van-cell__value { color: var(--text3) }

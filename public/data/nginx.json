@@ -1,0 +1,775 @@
+{
+  "id": "nginx",
+  "title": "二十一、Nginx 高性能 Web 服务器",
+  "tag": "Nginx",
+  "order": 21,
+  "icon": "🟢",
+  "cssIndex": 20,
+  "subs": [
+    {
+      "id": "21-1-nginx-核心概念-21-0",
+      "title": "21.1 Nginx 核心概念",
+      "points": [
+        {
+          "id": "nginx是什么-21-0-0",
+          "tag": "Nginx 是什么",
+          "desc": "Nginx 是高性能 HTTP/反向代理/IMAP/POP3 服务器，俄罗斯 Igor Sysoev 开发。C 编写，事件驱动异步非阻塞，单机可支撑 5W+ 并发连接",
+          "details": [
+            {
+              "id": "nginx是什么-21-0-0-d0",
+              "tag": "核心特性",
+              "desc": "高并发(epoll/kqueue 事件驱动)、低内存(每连接仅 2-4KB)、热部署(平滑升级不中断服务)"
+            },
+            {
+              "id": "nginx是什么-21-0-0-d1",
+              "tag": "应用场景",
+              "desc": "静态资源服务/反向代理与负载均衡/SSL 终结/HTTP 缓存/WebSocket 代理/流媒体"
+            },
+            {
+              "id": "nginx是什么-21-0-0-d2",
+              "tag": "Nginx vs Apache",
+              "desc": "Nginx 异步事件驱动应对高并发强；Apache 同步多进程/线程模型连接数受限"
+            },
+            {
+              "id": "nginx是什么-21-0-0-d3",
+              "tag": "master+worker 架构",
+              "desc": "master 管理 worker 进程；worker 实际处理请求(数量=CPU 核数)"
+            }
+          ]
+        },
+        {
+          "id": "架构与进程模型-21-0-1",
+          "tag": "架构与进程模型",
+          "desc": "Master-Worker 多进程架构，Master 管理 Worker，Worker 实际处理请求",
+          "details": [
+            {
+              "id": "架构与进程模型-21-0-1-d0",
+              "tag": "Master 进程",
+              "desc": "root 运行，读取配置/绑定端口/管理 Worker 生命周期/热重载( reload)和平滑升级"
+            },
+            {
+              "id": "架构与进程模型-21-0-1-d1",
+              "tag": "Worker 进程",
+              "desc": "nobody/非 root 运行，处理请求(epoll 事件驱动)，CPU 亲和性绑定减少上下文切换"
+            },
+            {
+              "id": "架构与进程模型-21-0-1-d2",
+              "tag": "Worker 数量",
+              "desc": "worker_processes auto(CPU 核数)或设为核数；worker_connections 每 Worker 最大连接数"
+            },
+            {
+              "id": "架构与进程模型-21-0-1-d3",
+              "tag": "最大并发连接数",
+              "desc": "worker_processes × worker_connections，受系统文件描述符限制(worker_rlimit_nofile)"
+            },
+            {
+              "id": "架构与进程模型-21-0-1-d4",
+              "tag": "accept_mutex(默认 off)",
+              "desc": "Worker 间锁争抢新连接；off 时所有 Worker 通过 epoll EPOLLEXCLUSIVE 避免惊群"
+            }
+          ]
+        },
+        {
+          "id": "配置文件结构-21-0-2",
+          "tag": "配置文件结构",
+          "desc": "nginx.conf 配置层级：全局→events→http→server→location，就近覆盖原则",
+          "details": [
+            {
+              "id": "配置文件结构-21-0-2-d0",
+              "tag": "main 全局",
+              "desc": "worker_processes/user/error_log/pid"
+            },
+            {
+              "id": "配置文件结构-21-0-2-d1",
+              "tag": "events 块",
+              "desc": "worker_connections(最大连接数)/use epoll/multi_accept"
+            },
+            {
+              "id": "配置文件结构-21-0-2-d2",
+              "tag": "http 块",
+              "desc": "include mime.types/default_type/access_log/sendfile/keepalive_timeout"
+            },
+            {
+              "id": "配置文件结构-21-0-2-d3",
+              "tag": "server 块(虚拟主机)",
+              "desc": "listen 端口/server_name 域名"
+            },
+            {
+              "id": "配置文件结构-21-0-2-d4",
+              "tag": "location 块",
+              "desc": "URI 匹配规则(前缀/正则/=精确/^~前缀优先)"
+            }
+          ]
+        },
+        {
+          "id": "location匹配规则-21-0-3",
+          "tag": "location 匹配规则",
+          "desc": "location 五种匹配符，优先级：精确= > 前缀^~ > 正则~* > 正则~ > 前缀",
+          "details": [
+            {
+              "id": "location匹配规则-21-0-3-d0",
+              "tag": "= /path",
+              "desc": "精确匹配，命中即停止搜索，优先级最高"
+            },
+            {
+              "id": "location匹配规则-21-0-3-d1",
+              "tag": "^~ /path",
+              "desc": "前缀匹配，命中后不再匹配正则（^~ /path的详细说明：location 匹配规则中关于^~ /path的内容）"
+            },
+            {
+              "id": "location匹配规则-21-0-3-d2",
+              "tag": "~ /regex/",
+              "desc": "区分大小写正则匹配（~ /regex/的详细说明：location 匹配规则中关于~ /regex/的内容）"
+            },
+            {
+              "id": "location匹配规则-21-0-3-d3",
+              "tag": "~* /regex/",
+              "desc": "不区分大小写正则匹配（~* /regex/的详细说明：location 匹配规则中关于~* /regex/的内容）"
+            },
+            {
+              "id": "location匹配规则-21-0-3-d4",
+              "tag": "/path",
+              "desc": "普通前缀匹配，按最长前缀匹配（/path的详细说明：location 匹配规则中关于/path的内容）"
+            },
+            {
+              "id": "location匹配规则-21-0-3-d5",
+              "tag": "无修饰符",
+              "desc": "通用匹配，最低优先级（无修饰符的详细说明：location 匹配规则中关于无修饰符的内容）"
+            },
+            {
+              "id": "location匹配规则-21-0-3-d6",
+              "tag": "匹配流程",
+              "desc": "先精确=→前缀匹配(记最长)→若最长前缀带^~则直接使用→否则按顺序正则→第一个命中正则→无则最长前缀"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "21-2-反向代理与负载均衡-21-1",
+      "title": "21.2 反向代理与负载均衡",
+      "points": [
+        {
+          "id": "反向代理核心配置-21-1-0",
+          "tag": "反向代理核心配置",
+          "desc": "proxy_pass 指令实现反向代理，将请求转发到后端服务器，转发时修改请求头",
+          "details": [
+            {
+              "id": "反向代理核心配置-21-1-0-d0",
+              "tag": "proxy_pass http",
+              "desc": "//backend; 将请求转发到 upstream backend"
+            },
+            {
+              "id": "反向代理核心配置-21-1-0-d1",
+              "tag": "proxy_set_header Host $host; 向后端传递原请求 Host",
+              "desc": "默认proxy_pass转发时Host变为上游地址，$host保留客户端原始域名，使后端虚拟主机路由和URL生成基于原域名正确工作"
+            },
+            {
+              "id": "反向代理核心配置-21-1-0-d2",
+              "tag": "proxy_set_header X-Real-IP $remote_addr; X-Forwarded-For $proxy_add_x_forwarded_for; 传递真实客户端 IP",
+              "desc": "$remote_addr取直连IP为X-Real-IP；$proxy_add_x_forwarded_for追加当前IP到已有链路，后端可追溯完整代理路径获真实客户端IP"
+            },
+            {
+              "id": "反向代理核心配置-21-1-0-d3",
+              "tag": "proxy_connect_timeout/read_timeout/send_timeout：超时配置防止上游雪崩",
+              "desc": "connect_timeout限与上游建连等待时间；read_timeout限读取上游响应时间；send_timeout限向上游发送请求体时间；超时返回502保护整体可用"
+            },
+            {
+              "id": "反向代理核心配置-21-1-0-d4",
+              "tag": "proxy_buffering on/off; 代理缓冲开关(开",
+              "desc": "先缓存上游完整响应再返回/关: 流式实时返回)"
+            },
+            {
+              "id": "反向代理核心配置-21-1-0-d5",
+              "tag": "proxy_redirect",
+              "desc": "修改后端返回的 Location/Refresh 头中的 URL"
+            }
+          ]
+        },
+        {
+          "id": "负载均衡upstream-21-1-1",
+          "tag": "负载均衡 upstream",
+          "desc": "upstream 定义后端服务器组，支持多种分配算法和健康检查",
+          "details": [
+            {
+              "id": "负载均衡upstream-21-1-1-d0",
+              "tag": "upstream backend { server 10.0.0.1:8080 weight",
+              "desc": "3; server 10.0.0.2:8080; }"
+            },
+            {
+              "id": "负载均衡upstream-21-1-1-d1",
+              "tag": "负载算法(默认轮询)",
+              "desc": "weight(加权轮询)/ip_hash(IP 哈希会话保持)/least_conn(最少连接数)/hash $request_uri(URL 哈希)"
+            },
+            {
+              "id": "负载均衡upstream-21-1-1-d2",
+              "tag": "后端参数",
+              "desc": "weight 权重、max_fails 最大失败次数、fail_timeout 失败超时、backup 备用、down 标记下线"
+            },
+            {
+              "id": "负载均衡upstream-21-1-1-d3",
+              "tag": "ip_hash 原理",
+              "desc": "对客户端 IP 哈希固定分发到同一后端，适合有状态应用(需配合 hash)"
+            },
+            {
+              "id": "负载均衡upstream-21-1-1-d4",
+              "tag": "健康检查(被动)",
+              "desc": "上述 max_fails + fail_timeout 实现；主动健康检查需 nginx_upstream_check_module(商业版)"
+            }
+          ]
+        },
+        {
+          "id": "超时与重试-21-1-2",
+          "tag": "超时与重试",
+          "desc": "合理配置超时和重试策略防止故障扩散",
+          "details": [
+            {
+              "id": "超时与重试-21-1-2-d0",
+              "tag": "proxy_connect_timeout",
+              "desc": "连接后端超时(默认 60s)，超时则尝试下一服务器"
+            },
+            {
+              "id": "超时与重试-21-1-2-d1",
+              "tag": "proxy_read_timeout",
+              "desc": "读取后端响应超时(默认 60s)，长连接/慢接口适当增大"
+            },
+            {
+              "id": "超时与重试-21-1-2-d2",
+              "tag": "proxy_next_upstream",
+              "desc": "重试条件 error/timeout/http_500/http_502/http_503；proxy_next_upstream_tries 最大重试次数"
+            },
+            {
+              "id": "超时与重试-21-1-2-d3",
+              "tag": "proxy_next_upstream_timeout",
+              "desc": "重试总超时时间，超出不再重试（proxy_next_upstream_timeout的详细说明：超时与重试中关于proxy_next_upstream_timeout的内容）"
+            },
+            {
+              "id": "超时与重试-21-1-2-d4",
+              "tag": "proxy_send_timeout",
+              "desc": "向上游发送请求超时（proxy_send_timeout的详细说明：超时与重试中关于proxy_send_timeout的内容）"
+            }
+          ]
+        },
+        {
+          "id": "websocket代理-21-1-3",
+          "tag": "WebSocket 代理",
+          "desc": "Nginx 反向代理 WebSocket 需升级协议头",
+          "details": [
+            {
+              "id": "websocket代理-21-1-3-d0",
+              "tag": "关键配置",
+              "desc": "proxy_http_version 1.1; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection 'upgrade';"
+            },
+            {
+              "id": "websocket代理-21-1-3-d1",
+              "tag": "原理",
+              "desc": "WebSocket 握手是 HTTP Upgrade 请求，Nginx 需显式传递 Upgrade/Connection 头"
+            },
+            {
+              "id": "websocket代理-21-1-3-d2",
+              "tag": "proxy_read_timeout 需设较大值(如 3600s)避免 WS 连接空闲被断",
+              "desc": "WebSocket长连接可能长时间无数据交互，默认60s超时会断开；设3600s允许1小时空闲保活；还需配Upgrade和Connection头完成协议升级"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "21-3-静态资源服务与缓存-21-2",
+      "title": "21.3 静态资源服务与缓存",
+      "points": [
+        {
+          "id": "静态文件服务-21-2-0",
+          "tag": "静态文件服务",
+          "desc": "Nginx 作为静态资源服务器性能极高，零拷贝 sendfile 减少内核态/用户态拷贝",
+          "details": [
+            {
+              "id": "静态文件服务-21-2-0-d0",
+              "tag": "root /path/to/files; 设置文件根目录；location / { root /var/www/html; }",
+              "desc": "root指令将URI拼接至目录路径定位文件，如/css/app.css映射为/var/www/html/css/app.css；alias可替换路径用于非根目录映射"
+            },
+            {
+              "id": "静态文件服务-21-2-0-d1",
+              "tag": "sendfile on; 零拷贝技术，在内核态直接传输文件不经过用户态",
+              "desc": "传统read+write经内核缓冲→用户缓冲→socket缓冲两次拷贝；sendfile由内核DMA直接从文件描述符传输至socket，省去用户态拷贝开销"
+            },
+            {
+              "id": "静态文件服务-21-2-0-d2",
+              "tag": "tcp_nopush on; 配合 sendfile，累积足够数据包再发送(减少网络包碎片)",
+              "desc": "tcp_nopush启用TCP Cork算法延迟发送，等待足够数据填充MTU大小再推送；配合sendfile将HTTP头和体一并发送减少小包数量降低延迟"
+            },
+            {
+              "id": "静态文件服务-21-2-0-d3",
+              "tag": "gzip on; gzip_comp_level 6; gzip_types text/plain text/css application/json; 响应压缩减少传输量",
+              "desc": "comp_level 1-9权衡CPU与压缩率，6为常用平衡值；gzip_types必须声明需压缩的MIME类型否则仅压缩text/html；json类型对REST API尤为重要"
+            },
+            {
+              "id": "静态文件服务-21-2-0-d4",
+              "tag": "autoindex on; 目录浏览功",
+              "desc": "autoindex on; 目录浏览功能(下载站场景)"
+            },
+            {
+              "id": "静态文件服务-21-2-0-d5",
+              "tag": "limit_rate 限制下载速度",
+              "desc": "limit_rate按字节/秒限单连接传输速率防带宽被少数大文件下载占满；limit_rate_after设前N字节不限速保障小文件快速响应再限大文件"
+            }
+          ]
+        },
+        {
+          "id": "浏览器缓存控制-21-2-1",
+          "tag": "浏览器缓存控制",
+          "desc": "expires 和 Cache-Control 头控制浏览器缓存策略",
+          "details": [
+            {
+              "id": "浏览器缓存控制-21-2-1-d0",
+              "tag": "expires 30d; 设置强缓存过期时间",
+              "desc": "Expires/Cache-Control:max-age=2592000"
+            },
+            {
+              "id": "浏览器缓存控制-21-2-1-d1",
+              "tag": "Cache-Control",
+              "desc": "no-cache：协商缓存(每次验证)；no-store：不缓存；public/private"
+            },
+            {
+              "id": "浏览器缓存控制-21-2-1-d2",
+              "tag": "add_header Cache-Control 'public, max-age",
+              "desc": "86400'; HTTP/1.1 标准缓存头"
+            },
+            {
+              "id": "浏览器缓存控制-21-2-1-d3",
+              "tag": "静态资源指纹化",
+              "desc": "文件名带 hash 配合 expires max 实现永久缓存"
+            }
+          ]
+        },
+        {
+          "id": "代理缓存proxycache-21-2-2",
+          "tag": "代理缓存 proxy_cache",
+          "desc": "proxy_cache 将上游响应缓存在磁盘，后续请求直接返回缓存，减轻上游压力",
+          "details": [
+            {
+              "id": "代理缓存proxycache-21-2-2-d0",
+              "tag": "proxy_cache_path /data/nginx/cache levels",
+              "desc": "1:2 keys_zone=my_cache:10m max_size=10g inactive=60m;"
+            },
+            {
+              "id": "代理缓存proxycache-21-2-2-d1",
+              "tag": "proxy_cache_key $scheme$host$request_uri; 定义缓存 Key",
+              "desc": "缓存Key区分协议(http/https)、域名和完整URI含查询参数；相同URI不同参数生成不同缓存条目，确保查询参数敏感响应正确缓存隔离"
+            },
+            {
+              "id": "代理缓存proxycache-21-2-2-d2",
+              "tag": "proxy_cache_valid 200 302 60m; 指定响应码缓存时间",
+              "desc": "200成功响应缓存60分钟；302临时重定向同缓存；404可设1m短缓存防误缓存错误页；未指定码默认10m；配合proxy_cache_min_uses设最少请求次数才缓存"
+            },
+            {
+              "id": "代理缓存proxycache-21-2-2-d3",
+              "tag": "proxy_cache_bypass $http_pragma; 特定条件绕过缓存",
+              "desc": "bypass变量非0或非空时跳过缓存直接请求上游；常用条件如$http_cache_control=no-cache；proxy_no_cache阻止响应存入缓存与bypass配合使用"
+            },
+            {
+              "id": "代理缓存proxycache-21-2-2-d4",
+              "tag": "proxy_cache_purge",
+              "desc": "第三方模块 Purge 清除指定缓存"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "21-4-https-与安全配置-21-3",
+      "title": "21.4 HTTPS 与安全配置",
+      "points": [
+        {
+          "id": "ssl-tls配置-21-3-0",
+          "tag": "SSL/TLS 配置",
+          "desc": "Nginx 作为 SSL 终结器，负责 HTTPS 加解密和证书管理",
+          "details": [
+            {
+              "id": "ssl-tls配置-21-3-0-d0",
+              "tag": "listen 443 ssl http2; ssl_certificate /path/cert.pem; ssl_certificate_key /path/key.pem;",
+              "desc": "ssl_certificate指定PEM格式证书文件含完整证书链；ssl_certificate_key指定对应私钥文件；http2启用HTTP/2多路复用减少TLS握手开销"
+            },
+            {
+              "id": "ssl-tls配置-21-3-0-d1",
+              "tag": "ssl_protocols TLSv1.2 TLSv1.3; 禁用 TLSv1.0/1.1(不安全)",
+              "desc": "TLSv1.0/1.1存在POODLE/BEAST等已知漏洞已被主流浏览器弃用；TLSv1.3简化握手为1-RTT更安全更快；TLSv1.2兼容旧客户端仍需保留"
+            },
+            {
+              "id": "ssl-tls配置-21-3-0-d2",
+              "tag": "ssl_ciphers HIGH",
+              "desc": "!aNULL:!MD5; 配置加密套件，最新推荐 ECDHE+AES"
+            },
+            {
+              "id": "ssl-tls配置-21-3-0-d3",
+              "tag": "ssl_session_cache shared",
+              "desc": "SSL:10m; ssl_session_timeout 10m; SSL 会话缓存减少握手开销"
+            },
+            {
+              "id": "ssl-tls配置-21-3-0-d4",
+              "tag": "ssl_prefer_server_ciphers on; 优先使用服务端加密套件",
+              "desc": "开启后服务端按ssl_ciphers列表顺序选择套件而非客户端偏好，防止客户端选择弱套件如RC4；配合ssl_ciphers指定ECDHE+AESGCM强套件优先"
+            },
+            {
+              "id": "ssl-tls配置-21-3-0-d5",
+              "tag": "HTTP 强制 HTTPS",
+              "desc": "return 301 https://$host$request_uri;"
+            }
+          ]
+        },
+        {
+          "id": "安全头配置-21-3-1",
+          "tag": "安全头配置",
+          "desc": "HTTP 安全响应头提升应用安全性",
+          "details": [
+            {
+              "id": "安全头配置-21-3-1-d0",
+              "tag": "add_header Strict-Transport-Security 'max-age",
+              "desc": "63072000; includeSubDomains; preload'; HSTS 强制 HTTPS"
+            },
+            {
+              "id": "安全头配置-21-3-1-d1",
+              "tag": "add_header X-Frame-Options 'SAMEORIGIN'; 防点击劫持",
+              "desc": "SAMEORIGIN仅允许同源页面iframe嵌入；DENY完全禁止嵌入；ALLOW-FROM指定白名单(已弃用)；防止恶意站点iframe覆盖透明按钮诱骗用户点击"
+            },
+            {
+              "id": "安全头配置-21-3-1-d2",
+              "tag": "add_header X-Content-Type-Options 'nosniff'; 防 MIME 类型嗅探",
+              "desc": "nosniff阻止浏览器猜测文件实际类型，强制按Content-Type声明处理；防止将上传的text文件误执行为JS/html，降低XSS和内容注入风险"
+            },
+            {
+              "id": "安全头配置-21-3-1-d3",
+              "tag": "add_header X-XSS-Protection '1; mode",
+              "desc": "block'; XSS 过滤器(旧浏览器)"
+            },
+            {
+              "id": "安全头配置-21-3-1-d4",
+              "tag": "add_header Content-Security-Policy 'default-src self'; CSP 内容安全策略防 XSS",
+              "desc": "default-src self限制所有资源仅加载同源；script-src可进一步限制JS来源禁止inline；report-uri配置违规上报地址；CSP是防XSS注入的核心防线"
+            },
+            {
+              "id": "安全头配置-21-3-1-d5",
+              "tag": "add_header Referrer-Policy 'strict-origin-when-cross-origin'; 控制 Referer 信息",
+              "desc": "同源请求发送完整Referer；跨源仅发送Origin(不含路径)；HTTPS→HTTP不发送；平衡隐私保护与统计需求，比no-referrer保留更多合法分析数据"
+            }
+          ]
+        },
+        {
+          "id": "访问控制与限流-21-3-2",
+          "tag": "访问控制与限流",
+          "desc": "ngx_http_limit_req_module 和 limit_conn_module 实现请求频率和并发连接限制",
+          "details": [
+            {
+              "id": "访问控制与限流-21-3-2-d0",
+              "tag": "limit_req_zone $binary_remote_addr zone",
+              "desc": "req:10m rate=10r/s; 定义限制区域(单 IP 10r/s)"
+            },
+            {
+              "id": "访问控制与限流-21-3-2-d1",
+              "tag": "limit_req zone",
+              "desc": "req burst=20 nodelay; 应用限制，burst 突发容量，nodelay 立即处理"
+            },
+            {
+              "id": "访问控制与限流-21-3-2-d2",
+              "tag": "limit_conn_zone $binary_remote_addr zone",
+              "desc": "conn:10m; limit_conn conn 10; 限制单 IP 并发连接"
+            },
+            {
+              "id": "访问控制与限流-21-3-2-d3",
+              "tag": "allow/deny",
+              "desc": "IP 黑白名单(allow 192.168.0.0/24; deny all;)"
+            },
+            {
+              "id": "访问控制与限流-21-3-2-d4",
+              "tag": "ngx_http_auth_basic_module",
+              "desc": "HTTP Basic 认证(auth_basic 'Restricted'; auth_basic_user_file /path/htpasswd;)"
+            },
+            {
+              "id": "访问控制与限流-21-3-2-d5",
+              "tag": "geo+map 模块",
+              "desc": "根据 IP 归因区域+变量映射实现 GEO 访问控制"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "21-5-nginx-性能优化-21-4",
+      "title": "21.5 Nginx 性能优化",
+      "points": [
+        {
+          "id": "系统层面优化-21-4-0",
+          "tag": "系统层面优化",
+          "desc": "内核参数和系统资源调整提升 Nginx 并发能力",
+          "details": [
+            {
+              "id": "系统层面优化-21-4-0-d0",
+              "tag": "worker_connections 值配合 worker_rlimit_nofile 调大；ulimit -n 65535",
+              "desc": "最大并发=worker_processes×worker_connections；rlimit_nofile需≥worker_connections避免文件描述符耗尽；系统ulimit也需同步调大否则连接被OS拒绝"
+            },
+            {
+              "id": "系统层面优化-21-4-0-d1",
+              "tag": "内核参数调优",
+              "desc": "net.core.somaxconn 增大监听队列/ net.ipv4.tcp_tw_reuse 快速复用 TIME_WAIT"
+            },
+            {
+              "id": "系统层面优化-21-4-0-d2",
+              "tag": "sendfile + tcp_nopush + tcp_nodelay 组合优化文件传输性能",
+              "desc": "sendfile零拷贝内核直传；tcp_nopush延迟发送凑满包减少碎片；tcp_nodelay禁用Nagle算法小包立即发；三者配合大文件高效传输小响应低延迟"
+            },
+            {
+              "id": "系统层面优化-21-4-0-d3",
+              "tag": "Open File Cache",
+              "desc": "open_file_cache max=10000 inactive=60s; open_file_cache_valid 80s; 缓存文件元数据"
+            },
+            {
+              "id": "系统层面优化-21-4-0-d4",
+              "tag": "DNS 解析缓存",
+              "desc": "resolver 8.8.8.8 valid=300s; 配合 proxy_pass 中的动态域名"
+            }
+          ]
+        },
+        {
+          "id": "连接与请求处理优化-21-4-1",
+          "tag": "连接与请求处理优化",
+          "desc": "Worker 处理模型和连接参数调优",
+          "details": [
+            {
+              "id": "连接与请求处理优化-21-4-1-d0",
+              "tag": "multi_accept on; 一次 Accept 所有新连接(高并发小请求开启)",
+              "desc": "开启后worker一次epoll_wait处理全部待Accept连接而非逐个；高并发短连接场景减少Accept队列溢出；事件模型为epoll时效果显著kqueue模式差异不大"
+            },
+            {
+              "id": "连接与请求处理优化-21-4-1-d1",
+              "tag": "keepalive_timeout 65; keepalive_requests 100; 单长连接最大请求数",
+              "desc": "timeout控制长连接空闲保活时长；requests限制单连接最大请求数防连接过久占用资源；上游也需配keepalive使Nginx与后端复用连接减少TCP建连开销"
+            },
+            {
+              "id": "连接与请求处理优化-21-4-1-d2",
+              "tag": "上游连接池 keepalive",
+              "desc": "upstream 内 keepalive 32; proxy_http_version 1.1; proxy_set_header Connection '';"
+            },
+            {
+              "id": "连接与请求处理优化-21-4-1-d3",
+              "tag": "worker_cpu_affinity 绑定 worker 到固定 CPU 核减少上下文切换",
+              "desc": "每个worker绑定专属CPU核避免跨核迁移导致缓存失效和切换开销；auto模式由Nginx自动分配；多核服务器手动绑定提升吞吐稳定性"
+            },
+            {
+              "id": "连接与请求处理优化-21-4-1-d4",
+              "tag": "accept_mutex off; 高版本 Nginx 下避免锁竞争(使用 EPOLLEXCLUSIVE)",
+              "desc": "accept_mutex互斥锁防惊群效应但引入锁开销；Nginx1.11.3+epoll默认用EPOLLEXCLUSIVE内核级排他唤醒替代互斥锁；高并发下关闭mutex减少锁争用"
+            },
+            {
+              "id": "连接与请求处理优化-21-4-1-d5",
+              "tag": "减少日志 IO",
+              "desc": "access_log off; 或 access_log buffer=64k flush=5s; 缓冲写入"
+            }
+          ]
+        },
+        {
+          "id": "压缩与缓存-21-4-2",
+          "tag": "压缩与缓存",
+          "desc": "gzip 压缩和缓存策略减少带宽和延迟",
+          "details": [
+            {
+              "id": "压缩与缓存-21-4-2-d0",
+              "tag": "gzip on; gzip_min_length 1024; 小于 1KB 不压缩",
+              "desc": "小文件压缩后可能反而变大(压缩头+数据)且浪费CPU；min_length设1024字节阈值仅压缩超过1KB的响应；配合gzip_buffers调整压缩缓冲区大小"
+            },
+            {
+              "id": "压缩与缓存-21-4-2-d1",
+              "tag": "gzip_comp_level 5~6 平衡 CPU 和压缩率(默认 1)",
+              "desc": "级别1压缩最快但压缩率低约30%；级别9最慢压缩率约50%；5~6是性价比最优区间压缩率约45%且CPU消耗适中；生产环境不推荐超过6"
+            },
+            {
+              "id": "压缩与缓存-21-4-2-d2",
+              "tag": "gzip_types 按需指定(REST API 常用 application/json)；gzip_vary on 添加 Vary: Accept-Encoding",
+              "desc": "默认仅压缩text/html必须显式添加json/css/js/svg等类型；gzip_vary on插入Vary头告知CDN/缓存按Accept-Encoding分别存储压缩和非压缩版本"
+            },
+            {
+              "id": "压缩与缓存-21-4-2-d3",
+              "tag": "gzip_proxied any; 代理请求也压缩",
+              "desc": "默认代理请求不压缩；any对所有经过代理的请求启用压缩；配合proxy_set_header Accept-Encoding使上游响应经Nginx二次压缩再返客户端"
+            },
+            {
+              "id": "压缩与缓存-21-4-2-d4",
+              "tag": "反向代理缓存策略",
+              "desc": "Cache-Control 头 + proxy_cache 组合；热点 API 持久化缓存"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "21-6-nginx-高级配置-21-5",
+      "title": "21.6 Nginx 高级配置",
+      "points": [
+        {
+          "id": "rewrite重写与重定向-21-5-0",
+          "tag": "rewrite 重写与重定向",
+          "desc": "rewrite 指令实现 URL 重写和重定向",
+          "details": [
+            {
+              "id": "rewrite重写与重定向-21-5-0-d0",
+              "tag": "rewrite regex replacement {flag}; flag: last(重新匹配 location)/break(停止当前)/redirect(302)/permanent(301)",
+              "desc": "last重写后重新location匹配可能循环需控制次数；break重写后继续当前location内规则不重新匹配；redirect临时302浏览器不缓存；permanent永久301浏览器缓存"
+            },
+            {
+              "id": "rewrite重写与重定向-21-5-0-d1",
+              "tag": "return 301 https",
+              "desc": "//$host$request_uri; 相比 rewrite 更高效(无正则开销)"
+            },
+            {
+              "id": "rewrite重写与重定向-21-5-0-d2",
+              "tag": "if 陷阱",
+              "desc": "if($http_user_agent){...} 会造成意外行为，优先用 map/return"
+            },
+            {
+              "id": "rewrite重写与重定向-21-5-0-d3",
+              "tag": "常用场景",
+              "desc": "HTTP→HTTPS 跳转、www→non-www 统一域名、老旧 URL 兼容迁移"
+            }
+          ]
+        },
+        {
+          "id": "跨域cors配置-21-5-1",
+          "tag": "跨域 CORS 配置",
+          "desc": "Nginx 配置 CORS 响应头解决跨域问题",
+          "details": [
+            {
+              "id": "跨域cors配置-21-5-1-d0",
+              "tag": "简单 CORS",
+              "desc": "add_header Access-Control-Allow-Origin *; add_header Access-Control-Allow-Methods GET,POST,OPTIONS;"
+            },
+            {
+              "id": "跨域cors配置-21-5-1-d1",
+              "tag": "预检请求(OPTIONS)处理",
+              "desc": "if($request_method=OPTIONS){return 204;}"
+            },
+            {
+              "id": "跨域cors配置-21-5-1-d2",
+              "tag": "Access-Control-Allow-Headers 声明允许自定义请求头",
+              "desc": "预检OPTIONS请求中浏览器检查此头判断自定义头(如x-token/Authorization)是否被允许；未声明的头触发预检失败导致跨域请求被浏览器拦截"
+            },
+            {
+              "id": "跨域cors配置-21-5-1-d3",
+              "tag": "Access-Control-Allow-Credentials true 配合前端 withCredentials 支持带 Cookie 跨域(此时 Origin 不能*)",
+              "desc": "credentials=true允许跨域携带Cookie和Auth头；安全要求此时Allow-Origin必须为具体域名不能为*；Allow-Headers和Methods也不能为*需逐一列举"
+            },
+            {
+              "id": "跨域cors配置-21-5-1-d4",
+              "tag": "Access-Control-Max-Age 缓存预检结果时间减少 OPTIONS 请求",
+              "desc": "设Max-Age为3600(1小时)使浏览器缓存预检结果，同源跨域请求1小时内免发OPTIONS直接发送实际请求；减轻服务器预检负担提升跨域响应速度"
+            }
+          ]
+        },
+        {
+          "id": "流媒体与长连接-21-5-2",
+          "tag": "流媒体与长连接",
+          "desc": "Nginx 支持 RTMP/HLS/WebSocket/SSE 等流媒体和长连接协议",
+          "details": [
+            {
+              "id": "流媒体与长连接-21-5-2-d0",
+              "tag": "RTMP 模块( nginx-rtmp-module)",
+              "desc": "支持 RTMP 推流/HLS 拉流，视频直播"
+            },
+            {
+              "id": "流媒体与长连接-21-5-2-d1",
+              "tag": "WebSocket 代理",
+              "desc": "proxy_http_version 1.1 + Upgrade/Connection 头"
+            },
+            {
+              "id": "流媒体与长连接-21-5-2-d2",
+              "tag": "SSE(Server-Sent Events)",
+              "desc": "proxy_buffering off; 关闭代理缓存实现流式推送"
+            },
+            {
+              "id": "流媒体与长连接-21-5-2-d3",
+              "tag": "gRPC 代理",
+              "desc": "grpc_pass grpc://backend; HTTP/2 长连接 RPC"
+            },
+            {
+              "id": "流媒体与长连接-21-5-2-d4",
+              "tag": "TCP/UDP 四层代理(stream 模块)",
+              "desc": "stream{server{listen 3306;proxy_pass mysql;}}代理数据库"
+            }
+          ]
+        },
+        {
+          "id": "日志配置与切割-21-5-3",
+          "tag": "日志配置与切割",
+          "desc": "access_log 与 error_log 配置 + logrotate 日志切割",
+          "details": [
+            {
+              "id": "日志配置与切割-21-5-3-d0",
+              "tag": "access_log /var/log/nginx/access.log combined buffer",
+              "desc": "64k flush=5s; 缓冲写入减少 IO"
+            },
+            {
+              "id": "日志配置与切割-21-5-3-d1",
+              "tag": "log_format 自定义格式",
+              "desc": "log_format json escape=json '{...}'; JSON 格式方便日志收集"
+            },
+            {
+              "id": "日志配置与切割-21-5-3-d2",
+              "tag": "error_log 级别",
+              "desc": "debug/info/notice/warn/error/crit；不可设 alert/emerg"
+            },
+            {
+              "id": "日志配置与切割-21-5-3-d3",
+              "tag": "日志切割",
+              "desc": "logrotate 工具 + postrotate 'nginx -s reopen' 定期切割"
+            },
+            {
+              "id": "日志配置与切割-21-5-3-d4",
+              "tag": "access_log off; 极端高并发场景关闭访问日志；error_log 始终保留",
+              "desc": "关闭access_log省去每请求写磁盘I/O在极端流量下提升吞吐；error_log记录启动失败和运行异常必须保留用于故障排查；可用条件写日志如if=$loggable"
+            },
+            {
+              "id": "日志配置与切割-21-5-3-d5",
+              "tag": "分析工具",
+              "desc": "GoAccess 实时分析 Nginx 日志生成 HTML 报告"
+            }
+          ]
+        },
+        {
+          "id": "lua扩展openresty-21-5-4",
+          "tag": "Lua 扩展 OpenResty",
+          "desc": "OpenResty = Nginx + LuaJIT，可在 Nginx 内直接编写业务逻辑",
+          "details": [
+            {
+              "id": "lua扩展openresty-21-5-4-d0",
+              "tag": "核心组件",
+              "desc": "ngx_lua 模块嵌入 LuaJIT，在 Nginx 各阶段(rewrite/access/content/log)执行 Lua 脚本"
+            },
+            {
+              "id": "lua扩展openresty-21-5-4-d1",
+              "tag": "典型应用",
+              "desc": "WAF 防火墙(实时拦截恶意请求)、API 网关(鉴权/限流/协议转换)、AB 测试(分流)"
+            },
+            {
+              "id": "lua扩展openresty-21-5-4-d2",
+              "tag": "access_by_lua_block",
+              "desc": "访问控制(IP 黑名单/JWT 校验)；content_by_lua_block：直接生成响应"
+            },
+            {
+              "id": "lua扩展openresty-21-5-4-d3",
+              "tag": "lua-resty-redis/mysql",
+              "desc": "Lua 协程非阻塞连接 Redis/MySQL"
+            },
+            {
+              "id": "lua扩展openresty-21-5-4-d4",
+              "tag": "性能开销",
+              "desc": "LuaJIT 接近 C 语言性能，单请求开销 <0.1ms"
+            },
+            {
+              "id": "lua扩展openresty-21-5-4-d5",
+              "tag": "与 API 网关方案选型",
+              "desc": "OpenResty 极致性能，Kong/APISIX 功能更完整开发效率更高"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

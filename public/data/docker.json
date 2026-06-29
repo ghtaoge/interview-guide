@@ -1,0 +1,620 @@
+{
+  "id": "docker",
+  "title": "十九、Docker 容器技术",
+  "tag": "Docker",
+  "order": 19,
+  "icon": "🐻",
+  "cssIndex": 18,
+  "subs": [
+    {
+      "id": "19-1-docker-核心概念-19-0",
+      "title": "19.1 Docker 核心概念",
+      "points": [
+        {
+          "id": "docker是什么-19-0-0",
+          "tag": "Docker 是什么",
+          "desc": "Docker 是开源容器引擎，将应用及其依赖打包为轻量级、可移植的容器，实现'一次构建，到处运行'。容器共享宿主机 OS 内核，启动毫秒级，资源开销远小于虚拟机",
+          "details": [
+            {
+              "id": "docker是什么-19-0-0-d0",
+              "tag": "容器 vs 虚拟机",
+              "desc": "容器共享宿主机内核，VM 独立 Guest OS；容器启动秒级/VM 分钟级；容器 MB 级/VM GB 级"
+            },
+            {
+              "id": "docker是什么-19-0-0-d1",
+              "tag": "核心组件",
+              "desc": "Docker Daemon( dockerd 守护进程)、Docker Client( docker CLI)、Registry(镜像仓库 Hub/私有)"
+            },
+            {
+              "id": "docker是什么-19-0-0-d2",
+              "tag": "Docker 用 Go 语言编写，",
+              "desc": "Docker 用 Go 语言编写，基于 Linux namespace(Cgroup)实现资源隔离和限制"
+            },
+            {
+              "id": "docker是什么-19-0-0-d3",
+              "tag": "OCI 标准(Open Container Initiative)",
+              "desc": "定义容器运行时和镜像格式的开放标准"
+            }
+          ]
+        },
+        {
+          "id": "docker架构-19-0-1",
+          "tag": "Docker 架构",
+          "desc": "Client-Server 架构：Client 通过 REST API 与 Daemon 通信；Daemon 负责构建/运行/分发容器；Registry 存储镜像",
+          "details": [
+            {
+              "id": "docker架构-19-0-1-d0",
+              "tag": "Docker Client",
+              "desc": "docker build/run/pull 命令通过 UNIX Socket(/var/run/docker.sock)或 TCP 与 daemon 通信"
+            },
+            {
+              "id": "docker架构-19-0-1-d1",
+              "tag": "Docker Daemon( dockerd)",
+              "desc": "管理镜像/容器/网络/数据卷，监听 API 请求"
+            },
+            {
+              "id": "docker架构-19-0-1-d2",
+              "tag": "containerd",
+              "desc": "管理容器生命周期的工业级核心运行时(启动/停止/暂停/删除)"
+            },
+            {
+              "id": "docker架构-19-0-1-d3",
+              "tag": "runc",
+              "desc": "OCI 标准容器运行时，基于 libcontainer 创建和运行容器(实际创建 namespaces/cgroups)"
+            },
+            {
+              "id": "docker架构-19-0-1-d4",
+              "tag": "Docker Registry",
+              "desc": "镜像仓库，默认 Docker Hub，私有 Harbor/ACR/ECR"
+            }
+          ]
+        },
+        {
+          "id": "核心三要素-19-0-2",
+          "tag": "核心三要素",
+          "desc": "镜像(Image)+容器(Container)+仓库(Registry)是 Docker 三大核心概念，分别对应构建/运行/分发",
+          "details": [
+            {
+              "id": "核心三要素-19-0-2-d0",
+              "tag": "镜像 Image",
+              "desc": "只读模板，分层文件系统(UnionFS)，每层是一个只读文件系统快照"
+            },
+            {
+              "id": "核心三要素-19-0-2-d1",
+              "tag": "容器 Container",
+              "desc": "镜像的可运行实例 = 镜像只读层 + 容器读写层(Copy-on-Write)"
+            },
+            {
+              "id": "核心三要素-19-0-2-d2",
+              "tag": "仓库 Registry",
+              "desc": "镜像集中存储和分发中心，docker push/pull，默认 Docker Hub"
+            },
+            {
+              "id": "核心三要素-19-0-2-d3",
+              "tag": "镜像命名",
+              "desc": "registry/namespace/repository:tag，如 nginx:1.25-alpine"
+            }
+          ]
+        },
+        {
+          "id": "底层技术namespace-cgroups-19-0-3",
+          "tag": "底层技术 Namespace/Cgroups",
+          "desc": "Docker 依赖 Linux 内核两大特性实现资源隔离(Namespace)和资源限制(Cgroups)",
+          "details": [
+            {
+              "id": "底层技术namespace-cgroups-19-0-3-d0",
+              "tag": "Namespace 隔离",
+              "desc": "PID(进程隔离)/NET(网络隔离)/IPC/MNT(挂载点)/UTS(主机名)/USER(用户)/Cgroup 七种"
+            },
+            {
+              "id": "底层技术namespace-cgroups-19-0-3-d1",
+              "tag": "Cgroups 限制",
+              "desc": "限制 CPU/内存/磁盘 IO/网络带宽等资源使用上限防止单容器耗尽宿主机资源"
+            },
+            {
+              "id": "底层技术namespace-cgroups-19-0-3-d2",
+              "tag": "UnionFS 联合文件系统",
+              "desc": "overlay2 主流，将多层镜像叠加为一个统一视图"
+            },
+            {
+              "id": "底层技术namespace-cgroups-19-0-3-d3",
+              "tag": "Copy-on-Write(写时复制)",
+              "desc": "修改容器文件时只在容器读写层复制修改不影咆镜像层"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "19-2-镜像与容器管理-19-1",
+      "title": "19.2 镜像与容器管理",
+      "points": [
+        {
+          "id": "镜像管理命令-19-1-0",
+          "tag": "镜像管理命令",
+          "desc": "docker image 系列命令管理本地镜像，理解镜像分层结构和缓存机制",
+          "details": [
+            {
+              "id": "镜像管理命令-19-1-0-d0",
+              "tag": "docker images/docker image ls",
+              "desc": "列出本地镜像(REPOSITORY/TAG/IMAGE ID/SIZE)"
+            },
+            {
+              "id": "镜像管理命令-19-1-0-d1",
+              "tag": "docker pull/push",
+              "desc": "拉取/推送镜像，docker pull nginx:alpine 指定 tag"
+            },
+            {
+              "id": "镜像管理命令-19-1-0-d2",
+              "tag": "docker rmi/docker image rm",
+              "desc": "删除镜像，-f 强制删除；docker image prune 删除悬空镜像"
+            },
+            {
+              "id": "镜像管理命令-19-1-0-d3",
+              "tag": "docker save/load",
+              "desc": "导出镜像为 tar(docker save -o nginx.tar nginx:latest)/从 tar 导入"
+            },
+            {
+              "id": "镜像管理命令-19-1-0-d4",
+              "tag": "docker tag",
+              "desc": "给镜像打标签，docker tag nginx:latest myrepo/nginx:v1.0"
+            },
+            {
+              "id": "镜像管理命令-19-1-0-d5",
+              "tag": "docker history",
+              "desc": "查看镜像构建历史和各层大小（docker history的详细说明：镜像管理命令中关于docker history的内容）"
+            }
+          ]
+        },
+        {
+          "id": "容器生命周期管理-19-1-1",
+          "tag": "容器生命周期管理",
+          "desc": "docker run/create/start/stop/rm 管理容器全生命周期",
+          "details": [
+            {
+              "id": "容器生命周期管理-19-1-1-d0",
+              "tag": "docker run",
+              "desc": "创建并启动容器，-d 后台运行、-it 交互终端、--name 命名、--rm 退出自动删除"
+            },
+            {
+              "id": "容器生命周期管理-19-1-1-d1",
+              "tag": "docker run 参数",
+              "desc": "-p 端口映射(-p 8080:80)、-v 挂载卷(-v /host:/container)、-e 环境变量、--restart 重启策略"
+            },
+            {
+              "id": "容器生命周期管理-19-1-1-d2",
+              "tag": "docker ps",
+              "desc": "列出容器，-a 显示所有(含已停止)；docker start/stop/restart 启动/停止/重启"
+            },
+            {
+              "id": "容器生命周期管理-19-1-1-d3",
+              "tag": "docker rm",
+              "desc": "删除容器，-f 强制删除运行中容器；docker container prune 清理所有停止容器"
+            },
+            {
+              "id": "容器生命周期管理-19-1-1-d4",
+              "tag": "docker exec -it <容器> /bin/bash",
+              "desc": "进入运行中容器执行命令（docker exec -it <容器> /bin/bash的详细说明：容器生命周期管理中关于docker exec -it <容器> /bin/bash的内容）"
+            },
+            {
+              "id": "容器生命周期管理-19-1-1-d5",
+              "tag": "docker logs -f <容器>",
+              "desc": "查看容器日志，--tail 100 最后 N 行，--since 时间范围"
+            }
+          ]
+        },
+        {
+          "id": "资源限制与监控-19-1-2",
+          "tag": "资源限制与监控",
+          "desc": "docker run 时设置资源限制 + docker stats 实时监控",
+          "details": [
+            {
+              "id": "资源限制与监控-19-1-2-d0",
+              "tag": "-m/--memory",
+              "desc": "内存限制，如 --memory=512m；--memory-swap 交换空间限制"
+            },
+            {
+              "id": "资源限制与监控-19-1-2-d1",
+              "tag": "--cpus",
+              "desc": "CPU 限制，--cpus=1.5 限制 1.5 核；--cpuset-cpus 绑定特定 CPU 核心"
+            },
+            {
+              "id": "资源限制与监控-19-1-2-d2",
+              "tag": "--blkio-weight",
+              "desc": "磁盘 IO 权重(10-1000)；--device-read/write-bps 限制磁盘读写速率"
+            },
+            {
+              "id": "资源限制与监控-19-1-2-d3",
+              "tag": "docker stats",
+              "desc": "实时查看容器 CPU/内存/网络/磁盘 IO 使用情况"
+            },
+            {
+              "id": "资源限制与监控-19-1-2-d4",
+              "tag": "docker top <容器>",
+              "desc": "查看容器内运行的进程（docker top <容器>的详细说明：资源限制与监控中关于docker top <容器>的内容）"
+            },
+            {
+              "id": "资源限制与监控-19-1-2-d5",
+              "tag": "docker inspect <容器>",
+              "desc": "查看容器完整配置信息(JSON格式)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "19-3-dockerfile-最佳实践-19-2",
+      "title": "19.3 Dockerfile 最佳实践",
+      "points": [
+        {
+          "id": "dockerfile核心指令-19-2-0",
+          "tag": "Dockerfile 核心指令",
+          "desc": "Dockerfile 是构建镜像的脚本，每条指令创建一个新的镜像层",
+          "details": [
+            {
+              "id": "dockerfile核心指令-19-2-0-d0",
+              "tag": "FROM",
+              "desc": "指定基础镜像，推荐 alpine/slim 变小；多阶段构建用多个 FROM"
+            },
+            {
+              "id": "dockerfile核心指令-19-2-0-d1",
+              "tag": "RUN",
+              "desc": "执行构建命令(RUN apt-get update && apt-get install -y xxx)，每条 RUN 创建一个新层"
+            },
+            {
+              "id": "dockerfile核心指令-19-2-0-d2",
+              "tag": "COPY vs ADD",
+              "desc": "COPY 简单复制文件；ADD 额外支持自动解压 tar/远程 URL(推荐用 COPY)"
+            },
+            {
+              "id": "dockerfile核心指令-19-2-0-d3",
+              "tag": "CMD vs ENTRYPOINT",
+              "desc": "CMD 默认命令(docker run 可覆盖)；ENTRYPOINT 入口命令(run 参数作为参数追加)"
+            },
+            {
+              "id": "dockerfile核心指令-19-2-0-d4",
+              "tag": "WORKDIR",
+              "desc": "设置工作目录(推荐用绝对路径)，等效 cd 但持久化"
+            },
+            {
+              "id": "dockerfile核心指令-19-2-0-d5",
+              "tag": "ENV/ARG",
+              "desc": "ENV 环境变量(运行时也可用)；ARG 构建参数(仅构建时可用 --build-arg 传入)"
+            },
+            {
+              "id": "dockerfile核心指令-19-2-0-d6",
+              "tag": "EXPOSE",
+              "desc": "声明容器监听端口(文档作用，实际还需 -p 映射)；VOLUME 声明匿名卷"
+            },
+            {
+              "id": "dockerfile核心指令-19-2-0-d7",
+              "tag": "HEALTHCHECK",
+              "desc": "健康检查指令(CMD 命令返回 0=健康 1=不健康)，如 curl -f http://localhost/health"
+            }
+          ]
+        },
+        {
+          "id": "多阶段构建-19-2-1",
+          "tag": "多阶段构建",
+          "desc": "多阶段构建(Multi-stage Build)在一个 Dockerfile 中用多个 FROM，分离编译环境和运行环境",
+          "details": [
+            {
+              "id": "多阶段构建-19-2-1-d0",
+              "tag": "语法",
+              "desc": "多个 FROM 语句，最后一个 FROM 决定最终镜像；COPY --from=0 从阶段 0 复制文件"
+            },
+            {
+              "id": "多阶段构建-19-2-1-d1",
+              "tag": "优势",
+              "desc": "编译依赖(JDK/Node SDK/GCC)不进入最终镜像，体积减小 90%+"
+            },
+            {
+              "id": "多阶段构建-19-2-1-d2",
+              "tag": "COPY --from",
+              "desc": "builder /app/dist /usr/share/nginx/html 从构建阶段复制产物"
+            },
+            {
+              "id": "多阶段构建-19-2-1-d3",
+              "tag": "阶段命名",
+              "desc": "FROM node:18 AS builder，后续 COPY --from=builder"
+            },
+            {
+              "id": "多阶段构建-19-2-1-d4",
+              "tag": "Go/Rust 静态编译镜像可从 scratch 空镜像开始，体积仅几 MB",
+              "desc": "scratch无OS层无shell，静态链接程序直接COPY至镜像；多阶段用AS命名构建阶段，最终阶段仅COPY编译产物，镜像体积极小"
+            }
+          ]
+        },
+        {
+          "id": "优化技巧-19-2-2",
+          "tag": "优化技巧",
+          "desc": "镜像体积和构建速度优化",
+          "details": [
+            {
+              "id": "优化技巧-19-2-2-d0",
+              "tag": "选择最小基础镜像",
+              "desc": "alpine(~5MB) / distroless(仅运行时) / slim(精简 Debian)"
+            },
+            {
+              "id": "优化技巧-19-2-2-d1",
+              "tag": "合并 RUN 指令",
+              "desc": "多个 RUN 合并为一个减少镜像层数，&& 串联，清理缓存(apt-get clean)"
+            },
+            {
+              "id": "优化技巧-19-2-2-d2",
+              "tag": ".dockerignore 文件",
+              "desc": "排除 node_modules/.git/Dockerfile 减少构建上下文"
+            },
+            {
+              "id": "优化技巧-19-2-2-d3",
+              "tag": "利用构建缓存",
+              "desc": "先 COPY package.json 再 RUN npm install 利用 npm 层缓存"
+            },
+            {
+              "id": "优化技巧-19-2-2-d4",
+              "tag": "镜像层扁平化",
+              "desc": "--squash 实验性特性将所有层合并为一层"
+            },
+            {
+              "id": "优化技巧-19-2-2-d5",
+              "tag": "按变更频率排序",
+              "desc": "最稳定的层放前面(OS 更新→依赖安装→代码复制)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "19-4-docker-compose-19-3",
+      "title": "19.4 Docker Compose",
+      "points": [
+        {
+          "id": "compose核心概念-19-3-0",
+          "tag": "Compose 核心概念",
+          "desc": "Docker Compose 通过 YAML 文件(docker-compose.yml)定义和管理多容器应用，一键启动整个应用栈",
+          "details": [
+            {
+              "id": "compose核心概念-19-3-0-d0",
+              "tag": "docker compose up",
+              "desc": "启动所有服务，-d 后台运行，--build 重新构建镜像"
+            },
+            {
+              "id": "compose核心概念-19-3-0-d1",
+              "tag": "docker compose down",
+              "desc": "停止并删除所有容器/网络，-v 同时删除数据卷"
+            },
+            {
+              "id": "compose核心概念-19-3-0-d2",
+              "tag": "docker compose ps",
+              "desc": "查看 Compose 管理的容器状态"
+            },
+            {
+              "id": "compose核心概念-19-3-0-d3",
+              "tag": "docker compose logs -f <service>",
+              "desc": "查看指定服务日志（docker compose logs -f <service>的详细说明：Compose 核心概念中关于docker compose logs -f <service>的内容）"
+            },
+            {
+              "id": "compose核心概念-19-3-0-d4",
+              "tag": "docker compose exec <service> sh：进入服务容器",
+              "desc": "exec在已运行容器内执行命令不新建容器；区别于run新建临时容器；常用exec -it交互式进入调试，service名对应YAML中定义的服务"
+            }
+          ]
+        },
+        {
+          "id": "docker-composeyml常用配置-19-3-1",
+          "tag": "docker-compose.yml 常用配置",
+          "desc": "YAML 文件定义 services/networks/volumes 三大顶层元素",
+          "details": [
+            {
+              "id": "docker-composeyml常用配置-19-3-1-d0",
+              "tag": "services",
+              "desc": "定义各容器，image 或 build 指定镜像源，ports 端口映射，volumes 卷挂载"
+            },
+            {
+              "id": "docker-composeyml常用配置-19-3-1-d1",
+              "tag": "environment 环境变量 或 env_file 从文件加载；depends_on 启动依赖顺序(不等待就绪)",
+              "desc": "environment直接在YAML声明变量；env_file引用.env文件批量加载；depends_on仅控制启动顺序，不保证服务健康就绪需配合healthcheck"
+            },
+            {
+              "id": "docker-composeyml常用配置-19-3-1-d2",
+              "tag": "networks",
+              "desc": "自定义网络驱动 bridge/overlay；services 通过 networks 加入指定网络"
+            },
+            {
+              "id": "docker-composeyml常用配置-19-3-1-d3",
+              "tag": "volumes",
+              "desc": "命名卷 docker volume create 管理，比 bind mount(路径挂载)更推荐"
+            },
+            {
+              "id": "docker-composeyml常用配置-19-3-1-d4",
+              "tag": "deploy.resources",
+              "desc": "限制资源 limits(cpus/memory)和 reservations(预留)"
+            },
+            {
+              "id": "docker-composeyml常用配置-19-3-1-d5",
+              "tag": "restart",
+              "desc": "重启策略 no/always/on-failure/unless-stopped"
+            }
+          ]
+        },
+        {
+          "id": "composevskubernetes-19-3-2",
+          "tag": "Compose vs Kubernetes",
+          "desc": "Compose 适合开发/测试/单机部署，K8s 适合生产集群编排",
+          "details": [
+            {
+              "id": "composevskubernetes-19-3-2-d0",
+              "tag": "Compose 优势",
+              "desc": "配置简单 YAML 一个文件，学习曲线低，本地开发快速"
+            },
+            {
+              "id": "composevskubernetes-19-3-2-d1",
+              "tag": "Compose 局限",
+              "desc": "单机运行不支持跨主机集群，无自动扩缩容/自愈/滚动更新"
+            },
+            {
+              "id": "composevskubernetes-19-3-2-d2",
+              "tag": "Compose 适用",
+              "desc": "本地开发环境、CI/CD 测试环境、单服务器简单应用部署"
+            },
+            {
+              "id": "composevskubernetes-19-3-2-d3",
+              "tag": "K8s 适用",
+              "desc": "生产集群、多服务编排、弹性伸缩、灰度发布、多环境管理"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "19-5-docker-网络与存储-19-4",
+      "title": "19.5 Docker 网络与存储",
+      "points": [
+        {
+          "id": "网络模式-19-4-0",
+          "tag": "网络模式",
+          "desc": "Docker 提供 bridge/host/none/overlay/macvlan 五种网络驱动，默认 bridge",
+          "details": [
+            {
+              "id": "网络模式-19-4-0-d0",
+              "tag": "bridge(默认)",
+              "desc": "docker0 虚拟网桥 NAT 模式，容器间默认通过 IP 通信，--link(已废弃)或用自定义网络"
+            },
+            {
+              "id": "网络模式-19-4-0-d1",
+              "tag": "自定义 bridge",
+              "desc": "docker network create 创建，容器名自动 DNS 解析，推荐替代默认 bridge"
+            },
+            {
+              "id": "网络模式-19-4-0-d2",
+              "tag": "host",
+              "desc": "容器直接使用宿主机网络栈(--network host)，性能最好但端口冲突风险"
+            },
+            {
+              "id": "网络模式-19-4-0-d3",
+              "tag": "none",
+              "desc": "容器无网络(--network none)，完全隔离，仅 lo 回环"
+            },
+            {
+              "id": "网络模式-19-4-0-d4",
+              "tag": "overlay",
+              "desc": "跨宿主机容器通信(Swarm 模式)，VXLAN 隧道封装"
+            },
+            {
+              "id": "网络模式-19-4-0-d5",
+              "tag": "macvlan",
+              "desc": "容器直接分配物理网络 MAC 地址，像物理设备一样接入局域网"
+            }
+          ]
+        },
+        {
+          "id": "数据管理volumevsbindmount-19-4-1",
+          "tag": "数据管理 Volume vs Bind Mount",
+          "desc": "Docker 三种数据持久化方式：Volume(推荐)/Bind Mount/tmpfs",
+          "details": [
+            {
+              "id": "数据管理volumevsbindmount-19-4-1-d0",
+              "tag": "Volume(卷)",
+              "desc": "Docker 管理的存储(docker volume create)，/var/lib/docker/volumes/，推荐用于持久化数据"
+            },
+            {
+              "id": "数据管理volumevsbindmount-19-4-1-d1",
+              "tag": "Bind Mount(绑定挂载)",
+              "desc": "宿主机路径直接映射到容器，开发和配置文件实时同步常用"
+            },
+            {
+              "id": "数据管理volumevsbindmount-19-4-1-d2",
+              "tag": "tmpfs(内存)",
+              "desc": "数据仅存内存容器停止即丢失，适合临时敏感数据"
+            },
+            {
+              "id": "数据管理volumevsbindmount-19-4-1-d3",
+              "tag": "Volume 优势",
+              "desc": "可跨容器共享、卷驱动插件支持 NFS/云存储、Docker 自动管理权限和路径"
+            },
+            {
+              "id": "数据管理volumevsbindmount-19-4-1-d4",
+              "tag": "docker volume ls/inspect/prune 管理卷",
+              "desc": "ls列出所有卷；inspect显示卷详情(挂载点/大小)；prune删除未使用的卷释放磁盘；Volume由Docker管理存储于/var/lib/docker/volumes/"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "19-6-docker-安全与优化-19-5",
+      "title": "19.6 Docker 安全与优化",
+      "points": [
+        {
+          "id": "安全最佳实践-19-5-0",
+          "tag": "安全最佳实践",
+          "desc": "Docker 安全贯穿镜像、容器运行、网络和守护进程多个层面",
+          "details": [
+            {
+              "id": "安全最佳实践-19-5-0-d0",
+              "tag": "最小权限原则",
+              "desc": "容器不以 root 运行，Dockerfile 中 USER 指定非 root 用户"
+            },
+            {
+              "id": "安全最佳实践-19-5-0-d1",
+              "tag": "只读根文件系统",
+              "desc": "docker run --read-only 使容器文件系统只读，tmpfs 挂载需要写入的目录"
+            },
+            {
+              "id": "安全最佳实践-19-5-0-d2",
+              "tag": "限制能力",
+              "desc": "--cap-drop=ALL --cap-add=NET_BIND_SERVICE 去除内核 capabilities"
+            },
+            {
+              "id": "安全最佳实践-19-5-0-d3",
+              "tag": "镜像漏洞扫描",
+              "desc": "docker scan/Trivy/Clair 扫描镜像 CVE 漏洞，持续更新基础镜像"
+            },
+            {
+              "id": "安全最佳实践-19-5-0-d4",
+              "tag": "Docker Daemon 安全",
+              "desc": "不暴露 dockerd 端口(2375/2376)，TLS 加密通信，rootless mode"
+            },
+            {
+              "id": "安全最佳实践-19-5-0-d5",
+              "tag": "Secrets 管理",
+              "desc": "docker secret 管理敏感数据(密码/Token)，不写在 Dockerfile/环境变量中"
+            }
+          ]
+        },
+        {
+          "id": "docker日志与监控-19-5-1",
+          "tag": "Docker 日志与监控",
+          "desc": "容器日志驱动和监控方案",
+          "details": [
+            {
+              "id": "docker日志与监控-19-5-1-d0",
+              "tag": "日志驱动(json-file 默认/local/syslog/journald/gelf/fluentd)：docker run --log-driver",
+              "desc": "json-file默认驱动易膨胀需配--log-opt限大小；local驱动自带压缩与轮转；gelf/fluentd对接ELK等日志平台实现集中采集分析"
+            },
+            {
+              "id": "docker日志与监控-19-5-1-d1",
+              "tag": "docker logs 仅适",
+              "desc": "docker logs 仅适用于 json-file/local 驱动；生产推荐 EFK(ES+Fluentd+Kibana)/Loki"
+            },
+            {
+              "id": "docker日志与监控-19-5-1-d2",
+              "tag": "cAdvisor",
+              "desc": "Google 开源容器监控工具，收集 CPU/内存/网络/磁盘指标给 Prometheus"
+            },
+            {
+              "id": "docker日志与监控-19-5-1-d3",
+              "tag": "Prometheus + Grafana",
+              "desc": "docker 暴露 metrics，Prometheus 采集，Grafana 可视化看板"
+            },
+            {
+              "id": "docker日志与监控-19-5-1-d4",
+              "tag": "容器资源限制防 OOM",
+              "desc": "--memory + --oom-kill-disable 控制 OOM Killer 行为"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,337 @@
+{
+  "id": "java-io",
+  "title": "五、Java IO",
+  "tag": "IO",
+  "order": 5,
+  "icon": "🔄",
+  "cssIndex": 4,
+  "subs": [
+    {
+      "id": "5-1-io-基础-5-0",
+      "title": "5.1 IO 基础",
+      "points": [
+        {
+          "id": "io分类-5-0-0",
+          "tag": "IO 分类",
+          "desc": "按流向：输入流(InputStream/Reader)输出流(OutputStream/Writer)。按操作单元：字节流(8bit)字符流(16bit,Reader/Writer处理文本避免乱码)。按角色：节点流(直接操作数据源)/处理流(装饰器模式包装节点流增强功能)",
+          "details": [
+            {
+              "id": "io分类-5-0-0-d0",
+              "tag": "字节流",
+              "desc": "InputStream/OutputStream (8bit)"
+            },
+            {
+              "id": "io分类-5-0-0-d1",
+              "tag": "字符流",
+              "desc": "Reader/Writer (16bit,处理文本)"
+            },
+            {
+              "id": "io分类-5-0-0-d2",
+              "tag": "节点流",
+              "desc": "直接操作数据源（节点流的详细说明：IO 分类中关于节点流的内容）"
+            },
+            {
+              "id": "io分类-5-0-0-d3",
+              "tag": "处理流",
+              "desc": "装饰器模式包装增强（处理流的详细说明：IO 分类中关于处理流的内容）"
+            }
+          ]
+        },
+        {
+          "id": "bio阻塞io-5-0-1",
+          "tag": "BIO 阻塞IO",
+          "desc": "传统Java IO模型。每个连接一个独立线程处理(ServerSocket.accept()阻塞等待连接,InputStream.read()阻塞等待数据)。线程数=连接数,高并发时线程资源耗尽。适用:连接数少且固定的场景",
+          "details": [
+            {
+              "id": "bio阻塞io-5-0-1-d0",
+              "tag": "每个连接一个线程",
+              "desc": "BIO模型每个客户端连接分配独立线程处理，连接数等于线程数，高并发时线程资源耗尽系统崩溃"
+            },
+            {
+              "id": "bio阻塞io-5-0-1-d1",
+              "tag": "accept()/read()阻塞",
+              "desc": "ServerSocket.accept()阻塞等待新连接，InputStream.read()阻塞等待数据，线程在IO等待期间无法做其他工作"
+            },
+            {
+              "id": "bio阻塞io-5-0-1-d2",
+              "tag": "线程数=连接数,高并发耗尽资源",
+              "desc": "BIO线程数与连接数1:1，高并发场景下数千连接需要数千线程，线程栈内存和调度开销导致系统资源耗尽"
+            }
+          ]
+        },
+        {
+          "id": "nio非阻塞io-5-0-2",
+          "tag": "NIO 非阻塞IO",
+          "desc": "JDK1.4引入。核心组件:Channel(通道,双向传输)+Buffer(缓冲区,数据容器)+Selector(选择器,多路复用)。configureBlocking(false)非阻塞模式,read()立即返回不阻塞。单线程可管理多连接",
+          "details": [
+            {
+              "id": "nio非阻塞io-5-0-2-d0",
+              "tag": "Channel + Buffer + Selector",
+              "desc": "NIO三核心：Channel双向通道读写数据，Buffer数据容器读写缓冲，Selector多路复用器监控多个Channel事件"
+            },
+            {
+              "id": "nio非阻塞io-5-0-2-d1",
+              "tag": "configureBlocking(false)非阻塞",
+              "desc": "设置Channel为非阻塞模式后accept()/read()立即返回无数据返回0不阻塞线程，线程可轮询多个Channel"
+            },
+            {
+              "id": "nio非阻塞io-5-0-2-d2",
+              "tag": "单线程可管理多连接",
+              "desc": "一个Selector线程可注册监控数百个Channel的IO事件，通过事件驱动方式单线程高效管理多连接避免线程膨胀"
+            }
+          ]
+        },
+        {
+          "id": "aio异步io-5-0-3",
+          "tag": "AIO 异步IO",
+          "desc": "JDK7引入(NIO.2)。基于事件和回调。AsynchronousSocketChannel/AsynchronousServerSocketChannel注册CompletionHandler回调。Linux底层用io_uring或AIO系统调用。实际生产用得少(Netty基于NIO模拟)",
+          "details": [
+            {
+              "id": "aio异步io-5-0-3-d0",
+              "tag": "事件驱动+CompletionHandler回调",
+              "desc": "AIO基于事件和回调机制，发起IO操作后立即返回，操作完成时系统通知CompletionHandler回调处理结果"
+            },
+            {
+              "id": "aio异步io-5-0-3-d1",
+              "tag": "生产少用,Netty",
+              "desc": "生产少用,Netty基于NIO"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5-2-nio核心组件-5-1",
+      "title": "5.2 NIO核心组件",
+      "points": [
+        {
+          "id": "buffer缓冲区-5-1-0",
+          "tag": "Buffer缓冲区",
+          "desc": "底层数组(HeapByteBuffer Java堆/DirectByteBuffer堆外内存)。核心属性:capacity容量/position读写位置limit读写界限mark标记。flip()切换读写(position归0,limit置原position)。clear()清空/compact()压缩未读数据",
+          "details": [
+            {
+              "id": "buffer缓冲区-5-1-0-d0",
+              "tag": "capacity/position/limit/mark",
+              "desc": "Buffer四属性：capacity缓冲区总容量，position当前读写位置，limit读写上限界限，mark标记位置供reset回退"
+            },
+            {
+              "id": "buffer缓冲区-5-1-0-d1",
+              "tag": "DirectByteBuffer堆外内存零拷贝",
+              "desc": "DirectByteBuffer分配在堆外本地内存，IO操作无需从堆内拷贝到堆外减少一次CPU拷贝，适合大文件网络传输"
+            }
+          ]
+        },
+        {
+          "id": "channel通道-5-1-1",
+          "tag": "Channel通道",
+          "desc": "FileChannel(文件读写,文件锁,MappedByteBuffer内存映射)/SocketChannel(TCP客户端)/ServerSocketChannel(TCP服务端)/DatagramChannel(UDP)。Channel双向(vs Stream单向)。支持scatter分散读取和gather聚集写入",
+          "details": [
+            {
+              "id": "channel通道-5-1-1-d0",
+              "tag": "FileChannel/SocketChannel/DatagramChannel",
+              "desc": "FileChannel文件读写，SocketChannel TCP客户端，ServerSocketChannel TCP服务端，DatagramChannel UDP通信"
+            },
+            {
+              "id": "channel通道-5-1-1-d1",
+              "tag": "Scatter/Gather分散聚集",
+              "desc": "Scatter从一个Channel读取数据分散写入多个Buffer，Gather从多个Buffer聚集数据写入一个Channel，减少拷贝"
+            },
+            {
+              "id": "channel通道-5-1-1-d2",
+              "tag": "MappedByteBuffer内存映射文件",
+              "desc": "FileChannel.map()将文件区域映射到内存地址，读写直接操作内存无需系统调用read/write，大文件随机访问极快"
+            }
+          ]
+        },
+        {
+          "id": "selector选择器-5-1-2",
+          "tag": "Selector选择器",
+          "desc": "NIO多路复用核心。select()阻塞监控所有已注册Channel的IO事件。SelectionKey就绪事件:OP_ACCEPT新连接/OP_READ可读/OP_WRITE可写/OP_CONNECT连接完成。selectedKeys()获取就绪集合逐一处理。Reactor模式基础",
+          "details": [
+            {
+              "id": "selector选择器-5-1-2-d0",
+              "tag": "select()阻塞监控所有Channel IO事件",
+              "desc": "Selector.select()阻塞等待至少一个Channel有IO事件就绪，返回就绪SelectionKey集合供线程逐一处理"
+            },
+            {
+              "id": "selector选择器-5-1-2-d1",
+              "tag": "4种就绪事件类型",
+              "desc": "OP_ACCEPT新连接到达、OP_READ数据可读、OP_WRITE缓冲区可写、OP_CONNECT连接建立完成四种事件类型"
+            },
+            {
+              "id": "selector选择器-5-1-2-d2",
+              "tag": "Reactor模式基础",
+              "desc": "Selector多路复用是Reactor模式的实现基础，单线程事件循环检测IO事件分发给对应Handler处理，非阻塞高效"
+            }
+          ]
+        },
+        {
+          "id": "reactor模式-5-1-3",
+          "tag": "Reactor模式",
+          "desc": "单Reactor单线程(Selector+Handler简单但无法利用多核)/单Reactor多线程(主React accept+Worker线程池处理IO)/主从Reactor多线程(main Reactor accept+sub Reactor管Connection+Worker处理业务)。Netty基于主从Reactor优化实现",
+          "details": [
+            {
+              "id": "reactor模式-5-1-3-d0",
+              "tag": "三种模式演进：单Reactor单线程→单Reactor多线程→主从Reactor",
+              "desc": "演进：单线程Handler串行瓶颈→多线程Worker池并行IO→主从Reactor分工Accept与IO处理解耦，Netty用主从模式"
+            },
+            {
+              "id": "reactor模式-5-1-3-d1",
+              "tag": "Netty",
+              "desc": "Netty采用主从Reactor"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5-3-netty-5-2",
+      "title": "5.3 Netty",
+      "points": [
+        {
+          "id": "架构-5-2-0",
+          "tag": "架构",
+          "desc": "基于NIO异步事件驱动网络框架。核心:EventLoopGroup(事件循环组)+EventLoop(事件循环绑定Selector)+ChannelPipeline(管道链式Handler)+ByteBuf(字节缓冲池化)。BossGroup接收连接,WorkerGroup处理IO",
+          "details": [
+            {
+              "id": "架构-5-2-0-d0",
+              "tag": "EventLoopGroup->EventLoop->Pipeline->ByteBuf",
+              "desc": "Netty核心架构：EventLoopGroup管理EventLoop组，EventLoop绑定Selector事件循环，Pipeline链式Handler处理，ByteBuf池化缓冲"
+            }
+          ]
+        },
+        {
+          "id": "线程模型-5-2-1",
+          "tag": "线程模型",
+          "desc": "主从Reactor多线程。bossGroup(默认CPUx1)负责Accept事件;workerGroup(默认CPUx2)负责Read/Write事件;业务Handler在WorkerGroup执行(可加DefaultEventExecutorGroup业务线程池)。一个Channel绑定一个EventLoop(线程),保证无锁串行执行",
+          "details": [
+            {
+              "id": "线程模型-5-2-1-d0",
+              "tag": "BossGroup(CPUx1)+WorkerGroup(CPUx2)",
+              "desc": "BossGroup默认1个线程负责Accept连接，WorkerGroup默认CPU核心数×2个线程处理IO读写，分工明确高效"
+            },
+            {
+              "id": "线程模型-5-2-1-d1",
+              "tag": "Channel绑定EventLoop线程安全",
+              "desc": "每个Channel整个生命周期绑定一个EventLoop线程，所有IO操作在同一线程串行执行无需加锁保证线程安全"
+            }
+          ]
+        },
+        {
+          "id": "netty零拷贝-5-2-2",
+          "tag": "Netty零拷贝",
+          "desc": "CompositeByteBuf(逻辑合并多个ByteBuf无需复制)、wrap()包装(共享底层数组)、slice()切片(共享数据)。OS层面:FileRegion.transferTo()使用sendfile系统调用(内核直接发送到网卡)",
+          "details": [
+            {
+              "id": "netty零拷贝-5-2-2-d0",
+              "tag": "CompositeByteBuf/wrap/slice零拷贝",
+              "desc": "CompositeByteBuf逻辑合并多个ByteBuf无需物理复制，wrap共享底层数组，slice切片共享数据区域，应用层零拷贝"
+            },
+            {
+              "id": "netty零拷贝-5-2-2-d1",
+              "tag": "transferTo->sendfile系统调用",
+              "desc": "FileRegion.transferTo()底层调用OS sendfile系统调用，数据从文件内核缓冲区直接发送到网卡缓冲区跳过用户空间"
+            }
+          ]
+        },
+        {
+          "id": "心跳与空闲检测-5-2-3",
+          "tag": "心跳与空闲检测",
+          "desc": "IdleStateHandler:读超时/写超时/全部超时。超时触发IdleStateEvent配合UserEventHandler发送心跳包或关闭连接。防止半包死连接占用资源",
+          "details": []
+        },
+        {
+          "id": "拆包粘包解决-5-2-4",
+          "tag": "拆包粘包解决",
+          "desc": "TCP粘包拆包问题:LineBasedFrameDecoder(换行符分隔)/DelimiterBasedFrameDecoder(自定义分隔符)/FixedLengthFrameDecoder(固定长度)/LengthFieldBasedFrameDecoder(长度字段,最常用生产环境)",
+          "details": [
+            {
+              "id": "拆包粘包解决-5-2-4-d0",
+              "tag": "推荐LengthFieldBasedFrameDecoder",
+              "desc": "LengthFieldBasedFrameDecoder按消息头长度字段解码最灵活生产首选，可配置长度字段偏移、长度和偏移调整"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5-4-零拷贝-5-3",
+      "title": "5.4 零拷贝",
+      "points": [
+        {
+          "id": "传统io数据拷贝-5-3-0",
+          "tag": "传统IO数据拷贝",
+          "desc": "读文件发网络:磁盘->内核Buffer(read)->用户Buffer->socket Buffer(write)->网卡。共4次拷贝(2次DMA+2次CPU复制)+2次系统调用(read+write)+4次上下文切换。CPU复制是性能瓶颈",
+          "details": [
+            {
+              "id": "传统io数据拷贝-5-3-0-d0",
+              "tag": "4次拷贝(2DMA+2CPU)",
+              "desc": "传统IO读文件发网络：磁盘DMA→内核buf→CPU复制→用户buf→CPU复制→socket buf→DMA→网卡，4次数据拷贝"
+            },
+            {
+              "id": "传统io数据拷贝-5-3-0-d1",
+              "tag": "2次系统调用+4次上下文切换",
+              "desc": "read()和write()两次系统调用各触发用户态→内核态切换及返回，共4次上下文切换，每次切换保存恢复寄存器开销大"
+            }
+          ]
+        },
+        {
+          "id": "mmap内存映射-5-3-1",
+          "tag": "mmap内存映射",
+          "desc": "mmap()将文件映射到用户空间虚拟地址。读文件发网络减少1次CPU拷贝(内核到用户无需copy)。仍需经过用户空间,大文件可能OOM导致内存不足",
+          "details": [
+            {
+              "id": "mmap内存映射-5-3-1-d0",
+              "tag": "mmap减少1次CPU拷贝",
+              "desc": "mmap将文件映射到用户空间虚拟地址，read时数据直接在映射区访问无需从内核buf复制到用户buf，减少1次CPU拷贝"
+            },
+            {
+              "id": "mmap内存映射-5-3-1-d1",
+              "tag": "仍过用户空间,大文件OOM风险",
+              "desc": "mmap仍需数据经过用户空间(send时从映射区到socket buf)，且映射大文件占用大量虚拟内存可能导致OOM"
+            }
+          ]
+        },
+        {
+          "id": "sendfile零拷贝-5-3-2",
+          "tag": "sendfile零拷贝",
+          "desc": "Linux 2.1引入。sendfile()直接在内核中将文件数据复制到socket Buffer不经用户空间。2次DMA拷贝+1次系统调用。DMAgather(2.4+)进一步优化:仅1次拷贝!",
+          "details": [
+            {
+              "id": "sendfile零拷贝-5-3-2-d0",
+              "tag": "sendfile",
+              "desc": "2次拷贝+1次系统调用（sendfile的详细说明：sendfile零拷贝中关于sendfile的内容）"
+            },
+            {
+              "id": "sendfile零拷贝-5-3-2-d1",
+              "tag": "DMAgather",
+              "desc": "仅1次拷贝!（DMAgather的详细说明：sendfile零拷贝中关于DMAgather的内容）"
+            }
+          ]
+        },
+        {
+          "id": "java零拷贝实现-5-3-3",
+          "tag": "Java零拷贝实现",
+          "desc": "FileChannel.transferTo()/transferFrom()底层调sendfile。MappedByteBuffer底层调mmap。Netty FileRegion.transferTo()使用sendfile。Kafka高性能原因之一就是使用transferTo零拷贝",
+          "details": [
+            {
+              "id": "java零拷贝实现-5-3-3-d0",
+              "tag": "FileChannel.transferTo()底层调sendfile",
+              "desc": "FileChannel.transferTo()调用OS sendfile，数据从文件直接到网卡不经过用户空间，仅2次DMA拷贝无CPU参与"
+            },
+            {
+              "id": "java零拷贝实现-5-3-3-d1",
+              "tag": "MappedByteBuffer底层调mmap",
+              "desc": "MappedByteBuffer通过FileChannel.map()调用OS mmap系统调用，将文件映射到内存实现减少1次CPU拷贝的零拷贝"
+            },
+            {
+              "id": "java零拷贝实现-5-3-3-d2",
+              "tag": "Netty/Kafka都使用零拷贝技术",
+              "desc": "Netty用FileRegion+sendfile，Kafka用FileChannel.transferTo()零拷贝传输日志文件，两者均避免数据经过用户空间"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

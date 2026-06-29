@@ -1,0 +1,110 @@
+{
+  "id": "coding-standards",
+  "title": "三十九、编程规范与代码质量",
+  "tag": "编程规范",
+  "order": 39,
+  "icon": "📊",
+  "cssIndex": 36,
+  "subs": [
+    {
+      "id": "39-1-编码规范-39-0",
+      "title": "39.1 编码规范",
+      "points": [
+        {
+          "id": "java编码规范核心-39-0-0",
+          "tag": "Java编码规范核心",
+          "desc": "Java编码规范源自阿里巴巴Java开发手册核心要点：命名规范类名UpperCamelCase方法变量lowerCamelCase常量UPPER_SNAKE_CASE包名全小写、代码格式缩进4空格不用Tab单行长度120字符大括号不另起行、注释要求类/接口Javadoc公有方法Javadoc内部实现行注释、异常处理不捕获Exception大范围异常要精确捕获不用return/break/continue退出finally、并发处理线程池创建不用Executors.newFixedThreadPool避免OOM用ThreadPoolExecutor自定义、日志规范SLF4J门面不直接用Log4j/Logback日志占位符{}不字符串拼接。代码质量度量：圈复杂度Cyclomatic Complexity<10方法不超过80行。面试重点：命名规范、线程池创建禁用Executors、日志规范。",
+          "details": [
+            {
+              "id": "java编码规范核心-39-0-0-d0",
+              "tag": "命名规范",
+              "desc": "类名UpperCamelCase方法变量lowerCamelCase常量UPPER_SNAKE_CASE包名全小写统一风格"
+            },
+            {
+              "id": "java编码规范核心-39-0-0-d1",
+              "tag": "代码格式",
+              "desc": "缩进4空格不用Tab单行120字符大括号不另起行IDE格式化统一风格避免争议"
+            },
+            {
+              "id": "java编码规范核心-39-0-0-d2",
+              "tag": "注释要求",
+              "desc": "类接口Javadoc公有方法Javadoc内部实现行注释代码即文档好注释解释为什么不是做什么"
+            },
+            {
+              "id": "java编码规范核心-39-0-0-d3",
+              "tag": "异常处理",
+              "desc": "不捕获大范围Exception精确捕获具体异常不用return退出finally异常不吞catch后必须处理"
+            },
+            {
+              "id": "java编码规范核心-39-0-0-d4",
+              "tag": "线程池创建",
+              "desc": "禁用Executors.newFixedThreadPool避免OOM用ThreadPoolExecutor自定义明确参数控制资源"
+            },
+            {
+              "id": "java编码规范核心-39-0-0-d5",
+              "tag": "日志规范",
+              "desc": "SLF4J门面不直接用Log4j/Logback占位符{}不字符串拼接避免debug级别字符串拼接开销"
+            },
+            {
+              "id": "java编码规范核心-39-0-0-d6",
+              "tag": "圈复杂度",
+              "desc": "Cyclomatic Complexity方法分支复杂度<10超过拆分可读性差难以测试和理解"
+            },
+            {
+              "id": "java编码规范核心-39-0-0-d7",
+              "tag": "方法长度",
+              "desc": "单方法不超过80行超长方法拆分职责单一每个方法只做一件事"
+            }
+          ]
+        },
+        {
+          "id": "代码质量与重构-39-0-1",
+          "tag": "代码质量与重构",
+          "desc": "代码质量核心原则：SOLID原则单一职责开闭接口隔离依赖倒置里氏替换、DRY不重复抽象公共逻辑、KISS保持简单不过度设计、YAGNI不做当前不需要的功能。重构手法：提取方法过长方法拆分职责单一、提取变量魔法数字命名常量、提取类职责过多拆分、内联方法无用包装方法直接调用、移动方法方法放更合适的类、替换条件多if-else用策略模式/枚举/Map查找。代码异味Code Smell：过长方法/过大类/重复代码/过多参数/魔法数字/过深嵌套/ shotgun surgery一改多处。代码评审Code Review关注：逻辑正确性边界条件异常处理性能安全规范一致性。面试重点：SOLID原则理解、重构手法实战、Code Smell识别。",
+          "details": [
+            {
+              "id": "代码质量与重构-39-0-1-d0",
+              "tag": "SOLID原则",
+              "desc": "单一职责SRP开闭OCP接口隔离ISP依赖倒置DIP里氏替换LSP五大设计原则"
+            },
+            {
+              "id": "代码质量与重构-39-0-1-d1",
+              "tag": "DRY原则",
+              "desc": "Don't Repeat Yourself不重复自己相同逻辑抽象公共方法/工具类避免多处维护"
+            },
+            {
+              "id": "代码质量与重构-39-0-1-d2",
+              "tag": "KISS原则",
+              "desc": "Keep It Simple Stupid保持简单不过度设计能用简单方案不用复杂架构"
+            },
+            {
+              "id": "代码质量与重构-39-0-1-d3",
+              "tag": "YAGNI原则",
+              "desc": "You Aren't Gonna Need It不做当前不需要的功能避免过度设计预测需求"
+            },
+            {
+              "id": "代码质量与重构-39-0-1-d4",
+              "tag": "提取方法",
+              "desc": "过长方法拆分职责单一每个方法名清晰表达意图不超过80行"
+            },
+            {
+              "id": "代码质量与重构-39-0-1-d5",
+              "tag": "策略模式",
+              "desc": "多if-else分支用策略模式每种策略独立类可扩展新增策略不改原代码"
+            },
+            {
+              "id": "代码质量与重构-39-0-1-d6",
+              "tag": "Code Smell",
+              "desc": "代码异味过长方法过大类重复代码过多参数魔法数字过深嵌套 shotgun surgery"
+            },
+            {
+              "id": "代码质量与重构-39-0-1-d7",
+              "tag": "Code Review",
+              "desc": "关注逻辑正确性边界条件异常处理性能安全规范一致性重点review高风险代码"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

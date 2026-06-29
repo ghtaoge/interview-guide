@@ -1,0 +1,702 @@
+{
+  "id": "html-css",
+  "title": "十七、HTML与CSS",
+  "tag": "HTML与CSS",
+  "order": 17,
+  "icon": "🎨",
+  "cssIndex": 16,
+  "subs": [
+    {
+      "id": "17-1-html5语义化与新特性-17-0",
+      "title": "17.1 HTML5语义化与新特性",
+      "points": [
+        {
+          "id": "html5语义化标签-17-0-0",
+          "tag": "HTML5语义化标签",
+          "desc": "语义化标签赋予内容结构含义，提升可读性与可访问性，利于SEO和机器解析",
+          "details": [
+            {
+              "id": "html5语义化标签-17-0-0-d0",
+              "tag": "header/nav/main/article/section/aside/footer替代div堆叠，明确页面区域分工",
+              "desc": "语义标签让搜索引擎和屏幕阅读器理解页面结构，如nav标识导航区域、main标识主内容区，提升SEO权重和无障碍访问"
+            },
+            {
+              "id": "html5语义化标签-17-0-0-d1",
+              "tag": "语义标签对屏幕阅读器、搜索引擎爬虫",
+              "desc": "语义标签对屏幕阅读器、搜索引擎爬虫提供明确导航路径"
+            },
+            {
+              "id": "html5语义化标签-17-0-0-d2",
+              "tag": "语义化不",
+              "desc": "语义化不是用新标签替换所有div——仅对具有明确语义的区块使用"
+            }
+          ]
+        },
+        {
+          "id": "html5新input类型与表单增强-17-0-1",
+          "tag": "HTML5新input类型与表单增强",
+          "desc": "新增多种input type和表单属性，减少JavaScript验证负担，提升移动端输入体验",
+          "details": [
+            {
+              "id": "html5新input类型与表单增强-17-0-1-d0",
+              "tag": "type",
+              "desc": "email/url/tel/number/range/date/month/week/time/datetime-local/color/search，移动端自动弹出对应键盘"
+            },
+            {
+              "id": "html5新input类型与表单增强-17-0-1-d1",
+              "tag": "表单属性",
+              "desc": "required/pattern/min/max/step/autofocus/placeholder/multiple/formnovalidate"
+            },
+            {
+              "id": "html5新input类型与表单增强-17-0-1-d2",
+              "tag": "form属性允许input位于form外部仍关联提交，fieldset+legend分组，datalist提供输入建议列表",
+              "desc": "form属性值指向form的id实现跨表单关联；datalist的option列表在input下展示候选值，原生免JS即可实现自动补全"
+            }
+          ]
+        },
+        {
+          "id": "多媒体标签与canvas-svg-17-0-2",
+          "tag": "多媒体标签与Canvas/SVG",
+          "desc": "原生多媒体与图形能力替代Flash，Canvas适合像素级绘制，SVG适合矢量图形",
+          "details": [
+            {
+              "id": "多媒体标签与canvas-svg-17-0-2-d0",
+              "tag": "audio/video标签",
+              "desc": "src/controls/autoplay/loop/preload/muted属性；source多格式fallback；track字幕"
+            },
+            {
+              "id": "多媒体标签与canvas-svg-17-0-2-d1",
+              "tag": "Canvas",
+              "desc": "2D上下文getContext('2d')绘制API，WebGL上下文做3D渲染；逐帧绘制、像素操作、离屏Canvas优化"
+            },
+            {
+              "id": "多媒体标签与canvas-svg-17-0-2-d2",
+              "tag": "SVG",
+              "desc": "XML描述矢量图形，DOM可操作每个元素；path/rect/circle/line/text/linearGradient/filter"
+            }
+          ]
+        },
+        {
+          "id": "webstorage与indexeddb-17-0-3",
+          "tag": "Web Storage与IndexedDB",
+          "desc": "客户端存储方案从Cookie演进到Storage和IndexedDB，容量更大、API更简洁",
+          "details": [
+            {
+              "id": "webstorage与indexeddb-17-0-3-d0",
+              "tag": "localStorage持久",
+              "desc": "localStorage持久存储(约5MB)，sessionStorage会话存储(标签页关闭清除)；同源共享"
+            },
+            {
+              "id": "webstorage与indexeddb-17-0-3-d1",
+              "tag": "IndexedDB",
+              "desc": "异步NoSQL数据库，支持事务、索引、游标查询；容量远超Storage(通常数百MB)"
+            },
+            {
+              "id": "webstorage与indexeddb-17-0-3-d2",
+              "tag": "Cookie仅4KB且随请求携带影响性",
+              "desc": "Cookie仅4KB且随请求携带影响性能；Storage不随请求发送；IndexedDB适合大量结构化离线数据"
+            }
+          ]
+        },
+        {
+          "id": "webworker与serviceworker-17-0-4",
+          "tag": "Web Worker与Service Worker",
+          "desc": "Worker将计算和拦截逻辑移至独立线程/生命周期，不阻塞主线程",
+          "details": [
+            {
+              "id": "webworker与serviceworker-17-0-4-d0",
+              "tag": "Web Worker",
+              "desc": "Dedicated Worker(单页面)、Shared Worker(多标签共享)；postMessage/onmessage通信；不能操作DOM"
+            },
+            {
+              "id": "webworker与serviceworker-17-0-4-d1",
+              "tag": "Service Worker",
+              "desc": "独立生命周期(install→activate→fetch)；拦截网络请求、管理Cache API、推送通知Push API"
+            },
+            {
+              "id": "webworker与serviceworker-17-0-4-d2",
+              "tag": "Service Worker仅HTTPS下可用；scope控制拦截范围；缓存策略：Cache First / Network First / Stale While Revalidate",
+              "desc": "Cache First优先读缓存离线可用；Network First优先网络保新鲜；Stale While Revalidate先返缓存后台更新，兼顾速度与时效"
+            }
+          ]
+        },
+        {
+          "id": "websocket与server-sentevents-17-0-5",
+          "tag": "WebSocket与Server-Sent Events",
+          "desc": "全双工与单向实时通信方案，替代HTTP轮询",
+          "details": [
+            {
+              "id": "websocket与server-sentevents-17-0-5-d0",
+              "tag": "WebSocket",
+              "desc": "ws/wss协议；onopen/onmessage/onclose/onerror；send()双向通信；心跳保活；适合聊天/实时协作/游戏"
+            },
+            {
+              "id": "websocket与server-sentevents-17-0-5-d1",
+              "tag": "Server-Sent Events(SSE)",
+              "desc": "EventSource(url)单向服务器推送；自带重连；适合通知/实时更新"
+            },
+            {
+              "id": "websocket与server-sentevents-17-0-5-d2",
+              "tag": "WebSocket双向",
+              "desc": "WebSocket双向适合高频交互；SSE单向轻量适合通知流；HTTP长轮询是兜底方案"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "17-2-css核心-17-1",
+      "title": "17.2 CSS核心",
+      "points": [
+        {
+          "id": "盒模型content-box与border-box-17-1-0",
+          "tag": "盒模型content-box与border-box",
+          "desc": "CSS盒模型定义元素尺寸计算方式，border-box更符合直觉布局需求",
+          "details": [
+            {
+              "id": "盒模型content-box与border-box-17-1-0-d0",
+              "tag": "content-box(W3C标准盒)",
+              "desc": "width/height仅指content区域，padding和border额外增加元素总尺寸"
+            },
+            {
+              "id": "盒模型content-box与border-box-17-1-0-d1",
+              "tag": "border-box(IE盒/替代盒)",
+              "desc": "width/height包含content+padding+border；设定width即最终可见宽"
+            },
+            {
+              "id": "盒模型content-box与border-box-17-1-0-d2",
+              "tag": "全局推荐 *{box-sizing",
+              "desc": "border-box} 统一切换；Tailwind/Bootstrap默认border-box"
+            }
+          ]
+        },
+        {
+          "id": "选择器与优先级计算-17-1-1",
+          "tag": "选择器与优先级计算",
+          "desc": "CSS选择器决定规则目标，优先级(specificity)决定同源规则冲突时的胜者",
+          "details": [
+            {
+              "id": "选择器与优先级计算-17-1-1-d0",
+              "tag": "选择器分类",
+              "desc": "元素(0,0,1)/类/属性/伪类(0,1,0)/ID(1,0,0)/内联style(1,0,0,0)"
+            },
+            {
+              "id": "选择器与优先级计算-17-1-1-d1",
+              "tag": "优先级4列计算(A,B,C,D)",
+              "desc": "内联>ID>类>元素；同优先级后声明胜；!important覆盖一切"
+            },
+            {
+              "id": "选择器与优先级计算-17-1-1-d2",
+              "tag": "通配符*优先级(0,0,0)不累加；",
+              "desc": "not()本身不计数但内部选择器计入；:where始终为0"
+            }
+          ]
+        },
+        {
+          "id": "继承与层叠-17-1-2",
+          "tag": "继承与层叠",
+          "desc": "继承让部分属性自动传递子代，层叠规则解决多来源声明冲突",
+          "details": [
+            {
+              "id": "继承与层叠-17-1-2-d0",
+              "tag": "可继承属性",
+              "desc": "font系列/color/text-align/line-height/visibility/list-style等；不可继承：盒模型/定位/display/background/border"
+            },
+            {
+              "id": "继承与层叠-17-1-2-d1",
+              "tag": "inherit关键字强制继承父值；initial重置为CSS规范初始值；unset",
+              "desc": "可继承时inherit否则initial"
+            },
+            {
+              "id": "继承与层叠-17-1-2-d2",
+              "tag": "层叠顺序",
+              "desc": "@layer低优先级→用户代理→用户→作者→作者important→用户important→用户代理important"
+            }
+          ]
+        },
+        {
+          "id": "bfc触发条件与作用-17-1-3",
+          "tag": "BFC触发条件与作用",
+          "desc": "块级格式化上下文(BFC)是独立布局区域，内部浮动不影响外部，外部也不影响内部",
+          "details": [
+            {
+              "id": "bfc触发条件与作用-17-1-3-d0",
+              "tag": "触发条件",
+              "desc": "overflow:hidden/auto/scroll(非visible)；display:flex/grid/inline-block/table-cell/flow-root；position:absolute/fixed"
+            },
+            {
+              "id": "bfc触发条件与作用-17-1-3-d1",
+              "tag": "作用1",
+              "desc": "阻止外边距折叠——相邻BFC间margin不合并"
+            },
+            {
+              "id": "bfc触发条件与作用-17-1-3-d2",
+              "tag": "作用2",
+              "desc": "包含浮动——BFC会计算浮动子元素高度，解决父元素高度塌陷"
+            },
+            {
+              "id": "bfc触发条件与作用-17-1-3-d3",
+              "tag": "display",
+              "desc": "flow-root是专为创建BFC设计的显式触发值，无副作用"
+            }
+          ]
+        },
+        {
+          "id": "层叠上下文与z-index-17-1-4",
+          "tag": "层叠上下文与z-index",
+          "desc": "层叠上下文决定元素在Z轴上的渲染顺序，z-index仅在定位元素或flex/grid子项中生效",
+          "details": [
+            {
+              "id": "层叠上下文与z-index-17-1-4-d0",
+              "tag": "创建层叠上下文",
+              "desc": "position+z-index非auto；flex/grid子项+z-index非auto；opacity<1；transform/filter/perspective非none"
+            },
+            {
+              "id": "层叠上下文与z-index-17-1-4-d1",
+              "tag": "层叠顺序(低→高)",
+              "desc": "背景边框→负z-index→block盒→float盒→inline盒→z-index:0/auto→正z-index"
+            },
+            {
+              "id": "层叠上下文与z-index-17-1-4-d2",
+              "tag": "常见陷阱",
+              "desc": "父元素创建层叠上下文后子元素z-index再高也无法穿透父层级"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "17-3-css布局体系-17-2",
+      "title": "17.3 CSS布局体系",
+      "points": [
+        {
+          "id": "flexbox弹性布局-17-2-0",
+          "tag": "Flexbox弹性布局",
+          "desc": "一维布局模型，主轴方向排列子项，通过flex-grow/shrink/basis分配空间与对齐",
+          "details": [
+            {
+              "id": "flexbox弹性布局-17-2-0-d0",
+              "tag": "容器属性",
+              "desc": "display:flex；flex-direction:row/column；flex-wrap:nowrap/wrap"
+            },
+            {
+              "id": "flexbox弹性布局-17-2-0-d1",
+              "tag": "容器对齐",
+              "desc": "justify-content(主轴:start/end/center/space-between/space-around/space-evenly)；align-items(交叉轴)"
+            },
+            {
+              "id": "flexbox弹性布局-17-2-0-d2",
+              "tag": "子项属性",
+              "desc": "order排序；flex-grow放大比例(默认0)；flex-shrink缩小比例(默认1)；flex-basis初始尺寸(默认auto)；flex:1=1 1 0%"
+            },
+            {
+              "id": "flexbox弹性布局-17-2-0-d3",
+              "tag": "gap属性设置子项间距(替代margin)；flex-shrink: 0禁止缩小常用于固定宽度项",
+              "desc": "gap统一控制行与列间距无需逐项设margin；flex-shrink:0使固定宽度元素(如图标栏)不因容器不足被压缩变形"
+            }
+          ]
+        },
+        {
+          "id": "grid网格布局-17-2-1",
+          "tag": "Grid网格布局",
+          "desc": "二维布局模型，行列交叉形成网格区域，适合复杂页面整体布局",
+          "details": [
+            {
+              "id": "grid网格布局-17-2-1-d0",
+              "tag": "容器属性",
+              "desc": "display:grid；grid-template-columns/rows定义轨道(fr/px/auto/minmax())"
+            },
+            {
+              "id": "grid网格布局-17-2-1-d1",
+              "tag": "间隙与对齐",
+              "desc": "gap/row-gap/column-gap；justify-items/align-items对齐单元格内项"
+            },
+            {
+              "id": "grid网格布局-17-2-1-d2",
+              "tag": "子项属性：grid-column/row",
+              "desc": "start end(线号或span N)；grid-area:名称或四值简写"
+            },
+            {
+              "id": "grid网格布局-17-2-1-d3",
+              "tag": "响应式",
+              "desc": "repeat(auto-fill/auto-fit, minmax(200px,1fr))自动填充列；auto-fit折叠空轨道"
+            }
+          ]
+        },
+        {
+          "id": "float浮动与清除方案-17-2-2",
+          "tag": "Float浮动与清除方案",
+          "desc": "Float最初用于图文环绕，需清除浮动防止父塌陷",
+          "details": [
+            {
+              "id": "float浮动与清除方案-17-2-2-d0",
+              "tag": "float",
+              "desc": "left/right/none；浮动元素脱离正常流但仍影响行框文本排列(环绕效果)"
+            },
+            {
+              "id": "float浮动与清除方案-17-2-2-d1",
+              "tag": "父元素高度塌陷",
+              "desc": "浮动子元素不参与父高度计算（父元素高度塌陷的详细说明：Float浮动与清除方案中关于父元素高度塌陷的内容）"
+            },
+            {
+              "id": "float浮动与清除方案-17-2-2-d2",
+              "tag": "清除方案",
+              "desc": "父元素触发BFC——overflow:hidden/display:flow-root；伪元素clearfix::after{content:'';display:block;clear:both}"
+            },
+            {
+              "id": "float浮动与清除方案-17-2-2-d3",
+              "tag": "浮动布局已被Flex/Grid替代，现代仅用于图文环绕场景",
+              "desc": "Float本为图文混排设计，布局用途需BFC清除浮动防塌陷；Flex/Grid原生支持对齐与响应式，是现代布局首选方案"
+            }
+          ]
+        },
+        {
+          "id": "position定位体系-17-2-3",
+          "tag": "Position定位体系",
+          "desc": "position决定元素定位参考框和脱离正常流的程度",
+          "details": [
+            {
+              "id": "position定位体系-17-2-3-d0",
+              "tag": "static(默认)",
+              "desc": "正常流定位，top/right/bottom/left/z-index无效"
+            },
+            {
+              "id": "position定位体系-17-2-3-d1",
+              "tag": "relative",
+              "desc": "正常流中占位+偏移(相对自身原位置)；常为absolute子项创建包含块"
+            },
+            {
+              "id": "position定位体系-17-2-3-d2",
+              "tag": "absolute",
+              "desc": "脱离正常流不占位；相对最近的positioned祖先(非static)padding box定位"
+            },
+            {
+              "id": "position定位体系-17-2-3-d3",
+              "tag": "fixed",
+              "desc": "脱离正常流；相对viewport定位；transform/filter祖先会改变包含块"
+            },
+            {
+              "id": "position定位体系-17-2-3-d4",
+              "tag": "sticky",
+              "desc": "正常流定位+滚动阈值后固定；须在可滚动祖先内工作"
+            }
+          ]
+        },
+        {
+          "id": "css居中方案大全-17-2-4",
+          "tag": "CSS居中方案大全",
+          "desc": "居中是高频布局需求，不同场景选择不同方案",
+          "details": [
+            {
+              "id": "css居中方案大全-17-2-4-d0",
+              "tag": "水平居中",
+              "desc": "inline用text-align:center；block定宽用margin:0 auto；flex用justify-content:center"
+            },
+            {
+              "id": "css居中方案大全-17-2-4-d1",
+              "tag": "垂直居中",
+              "desc": "单行inline用line-height=height；flex用align-items:center；absolute+top:50%+translateY(-50%)"
+            },
+            {
+              "id": "css居中方案大全-17-2-4-d2",
+              "tag": "水平垂直居中",
+              "desc": "flex(justify-content:center+align-items:center)最简；grid(place-items:center)最简"
+            },
+            {
+              "id": "css居中方案大全-17-2-4-d3",
+              "tag": "absolute+top",
+              "desc": "50%+left:50%+translate(-50%,-50%)不定宽高通用方案"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "17-4-css进阶-17-3",
+      "title": "17.4 CSS进阶",
+      "points": [
+        {
+          "id": "响应式设计媒体查询与容器查询-17-3-0",
+          "tag": "响应式设计：媒体查询与容器查询",
+          "desc": "响应式适配不同视口/容器尺寸，媒体查询基于视口，容器查询基于父容器",
+          "details": [
+            {
+              "id": "响应式设计媒体查询与容器查询-17-3-0-d0",
+              "tag": "媒体查询",
+              "desc": "@media(min-width:768px){...}；断点常见320/480/768/1024/1440px"
+            },
+            {
+              "id": "响应式设计媒体查询与容器查询-17-3-0-d1",
+              "tag": "移动优先",
+              "desc": "从小断点开始编写基础样式，@media(min-width)逐步增强"
+            },
+            {
+              "id": "响应式设计媒体查询与容器查询-17-3-0-d2",
+              "tag": "容器查询(@container)",
+              "desc": "需先声明容器container-type:inline-size；@container(min-width:400px)基于父容器宽度触发"
+            },
+            {
+              "id": "响应式设计媒体查询与容器查询-17-3-0-d3",
+              "tag": "媒体查询关注视口(页面级响应式)；容器查询关注父容器(组件级响应式)",
+              "desc": "@media按视口宽断点适配整体布局；@container按父元素尺寸适配组件，实现组件独立响应式，适配复用场景更精确"
+            }
+          ]
+        },
+        {
+          "id": "css变量var与自定义属性-17-3-1",
+          "tag": "CSS变量var()与自定义属性",
+          "desc": "自定义属性(--*)在运行时计算，实现动态主题、减少重复、JavaScript可读写",
+          "details": [
+            {
+              "id": "css变量var与自定义属性-17-3-1-d0",
+              "tag": "声明",
+              "desc": "--main-color:#3498db; 读取：color:var(--main-color)；var()第二参数为fallback"
+            },
+            {
+              "id": "css变量var与自定义属性-17-3-1-d1",
+              "tag": "作用域",
+              "desc": ":root声明全局变量；局部变量在元素及其子代生效"
+            },
+            {
+              "id": "css变量var与自定义属性-17-3-1-d2",
+              "tag": "JavaScript交互",
+              "desc": "element.style.setProperty('--color','blue')；getComputedStyle读取计算值"
+            },
+            {
+              "id": "css变量var与自定义属性-17-3-1-d3",
+              "tag": "动态主题",
+              "desc": ":root切换变量值即可全局变色"
+            }
+          ]
+        },
+        {
+          "id": "css动画transition-keyframes-animation-17-3-2",
+          "tag": "CSS动画：transition/keyframes/animation",
+          "desc": "三种动画机制覆盖不同复杂度",
+          "details": [
+            {
+              "id": "css动画transition-keyframes-animation-17-3-2-d0",
+              "tag": "transition",
+              "desc": "transition-property/duration/timing-function/delay；触发靠状态变化(hover/focus)"
+            },
+            {
+              "id": "css动画transition-keyframes-animation-17-3-2-d1",
+              "tag": "transition局限",
+              "desc": "仅定义始末两帧；需明确触发条件；不能循环"
+            },
+            {
+              "id": "css动画transition-keyframes-animation-17-3-2-d2",
+              "tag": "@keyframes",
+              "desc": "@keyframes name{0%{...}50%{...}100%{...}}多帧定义"
+            },
+            {
+              "id": "css动画transition-keyframes-animation-17-3-2-d3",
+              "tag": "animation",
+              "desc": "animation-name/duration/timing-function/delay/iteration-count/direction/fill-mode/play-state"
+            },
+            {
+              "id": "css动画transition-keyframes-animation-17-3-2-d4",
+              "tag": "animation-fill-mode",
+              "desc": "forwards保留结束帧状态"
+            }
+          ]
+        },
+        {
+          "id": "css预处理器与postcss-17-3-3",
+          "tag": "CSS预处理器与PostCSS",
+          "desc": "预处理器扩展CSS编程能力(变量/嵌套/混入/函数)，PostCSS用插件管道转换CSS",
+          "details": [
+            {
+              "id": "css预处理器与postcss-17-3-3-d0",
+              "tag": "Sass",
+              "desc": "$变量/@mixin定义@include调用/@extend继承；SCSS(.scss)是CSS兼容语法"
+            },
+            {
+              "id": "css预处理器与postcss-17-3-3-d1",
+              "tag": "Less",
+              "desc": "@变量/.mixin定义调用；嵌套&引用；运算符直接计算"
+            },
+            {
+              "id": "css预处理器与postcss-17-3-3-d2",
+              "tag": "PostCSS",
+              "desc": "autoprefixer自动添加浏览器前缀；cssnano压缩；postcss-preset-env使用未来CSS特性"
+            },
+            {
+              "id": "css预处理器与postcss-17-3-3-d3",
+              "tag": "预",
+              "desc": "预处理器编译时生成静态CSS；PostCSS可做预处理也可做后处理"
+            }
+          ]
+        },
+        {
+          "id": "bem命名规范cssmodules与tailwind-17-3-4",
+          "tag": "BEM命名规范、CSS Modules与Tailwind",
+          "desc": "三种CSS组织方法论：BEM语义命名、Modules局部作用域、Tailwind原子化类名",
+          "details": [
+            {
+              "id": "bem命名规范cssmodules与tailwind-17-3-4-d0",
+              "tag": "BEM",
+              "desc": "Block__Element--Modifier；.card__title--large；避免嵌套选择器；单一类名原则"
+            },
+            {
+              "id": "bem命名规范cssmodules与tailwind-17-3-4-d1",
+              "tag": "CSS Modules",
+              "desc": "构建工具自动生成局部类名；:global(.className)声明全局"
+            },
+            {
+              "id": "bem命名规范cssmodules与tailwind-17-3-4-d2",
+              "tag": "Tailwind CSS",
+              "desc": "原子化utility类(w-4/p-2/text-sm/flex/rounded)；配置自定义主题；@apply提取组件类"
+            },
+            {
+              "id": "bem命名规范cssmodules与tailwind-17-3-4-d3",
+              "tag": "BEM",
+              "desc": "BEM适合大型团队语义清晰；CSS Modules适合组件化零冲突；Tailwind适合快速开发"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "17-5-htmlcss性能与工程-17-4",
+      "title": "17.5 HTML/CSS性能与工程",
+      "points": [
+        {
+          "id": "css加载与渲染阻塞-17-4-0",
+          "tag": "CSS加载与渲染阻塞",
+          "desc": "CSS是渲染阻塞资源——浏览器必须构建CSSOM才能渲染",
+          "details": [
+            {
+              "id": "css加载与渲染阻塞-17-4-0-d0",
+              "tag": "CSS阻塞渲染",
+              "desc": "HTML→DOM+CSS→CSSOM→Render Tree→Layout→Paint；CSS未下载完成前页面空白"
+            },
+            {
+              "id": "css加载与渲染阻塞-17-4-0-d1",
+              "tag": "CSS不阻塞DOM解析但阻塞后续JS",
+              "desc": "CSS不阻塞DOM解析但阻塞后续JS执行(因JS可能读样式属性)"
+            },
+            {
+              "id": "css加载与渲染阻塞-17-4-0-d2",
+              "tag": "优化",
+              "desc": "关键CSS(Critical CSS)内联在<head>中首屏立即渲染；非关键CSS异步加载"
+            },
+            {
+              "id": "css加载与渲染阻塞-17-4-0-d3",
+              "tag": "link rel",
+              "desc": "preload提前下载不阻塞渲染；避免@import嵌套串行下载"
+            }
+          ]
+        },
+        {
+          "id": "will-change与gpu合成层-17-4-1",
+          "tag": "will-change与GPU合成层",
+          "desc": "will-change提示浏览器预分配GPU资源，合成层提升动画性能但需谨慎使用",
+          "details": [
+            {
+              "id": "will-change与gpu合成层-17-4-1-d0",
+              "tag": "will-change",
+              "desc": "transform/opacity；浏览器为该元素创建独立合成层(GPU加速)"
+            },
+            {
+              "id": "will-change与gpu合成层-17-4-1-d1",
+              "tag": "transform/opacity动画默认触发合成层——这两属性变更不触发重排重绘仅合成层重绘",
+              "desc": "合成层由GPU单独处理，transform和opacity变更跳过布局与绘制阶段，仅合成层重绘，动画帧率稳定60fps无卡顿"
+            },
+            {
+              "id": "will-change与gpu合成层-17-4-1-d2",
+              "tag": "will-change风险",
+              "desc": "每层消耗额外内存(移动端敏感)；过多合成层导致层爆炸"
+            },
+            {
+              "id": "will-change与gpu合成层-17-4-1-d3",
+              "tag": "正确用法",
+              "desc": "即将动画前设置will-change；动画结束后移除"
+            }
+          ]
+        },
+        {
+          "id": "图片优化与字体加载-17-4-2",
+          "tag": "图片优化与字体加载",
+          "desc": "图片占页面体积最大，字体加载影响文字渲染时机",
+          "details": [
+            {
+              "id": "图片优化与字体加载-17-4-2-d0",
+              "tag": "图片格式选型",
+              "desc": "JPEG照片/WebP(体积减25-35%)/AVIF(再减20%)/PNG透明/SVG矢量"
+            },
+            {
+              "id": "图片优化与字体加载-17-4-2-d1",
+              "tag": "响应式图片",
+              "desc": "<img srcset> + <picture>多格式多分辨率fallback"
+            },
+            {
+              "id": "图片优化与字体加载-17-4-2-d2",
+              "tag": "懒加载",
+              "desc": "loading=lazy属性原生懒加载；font-display:swap先用系统字体保证内容立即可读"
+            },
+            {
+              "id": "图片优化与字体加载-17-4-2-d3",
+              "tag": "预加载关键字体",
+              "desc": "<link rel=preload as=font crossorigin>"
+            }
+          ]
+        },
+        {
+          "id": "重排重绘最小化-17-4-3",
+          "tag": "重排重绘最小化",
+          "desc": "重排代价远高于重绘，批量读写分离是性能核心",
+          "details": [
+            {
+              "id": "重排重绘最小化-17-4-3-d0",
+              "tag": "重排触发",
+              "desc": "几何属性变更(width/height/padding/margin/left/top/display)；重排连锁影响所有祖先和子元素"
+            },
+            {
+              "id": "重排重绘最小化-17-4-3-d1",
+              "tag": "重绘触发",
+              "desc": "视觉属性变更(color/background/visibility/shadow)；不影响几何但需重新绘制像素；重排必定触发重绘"
+            },
+            {
+              "id": "重排重绘最小化-17-4-3-d2",
+              "tag": "批量读写分离",
+              "desc": "先集中读取属性再集中修改样式——避免读写交替迫使逐帧同步布局"
+            },
+            {
+              "id": "重排重绘最小化-17-4-3-d3",
+              "tag": "class批量替换优于逐条",
+              "desc": "class批量替换优于逐条修改style；requestAnimationFrame在帧首修改样式"
+            }
+          ]
+        },
+        {
+          "id": "csscontainment与layer-17-4-4",
+          "tag": "CSS containment与@layer",
+          "desc": "containment限制元素对页面布局计算的影响范围，@layer显式控制样式优先级层级",
+          "details": [
+            {
+              "id": "csscontainment与layer-17-4-4-d0",
+              "tag": "contain",
+              "desc": "layout/style/paint/size/strict/content——独立包含块/独立层叠上下文/独立绘制区域"
+            },
+            {
+              "id": "csscontainment与layer-17-4-4-d1",
+              "tag": "content-visibility",
+              "desc": "auto——浏览器可跳过屏幕外元素的布局渲染(类似懒渲染)"
+            },
+            {
+              "id": "csscontainment与layer-17-4-4-d2",
+              "tag": "@layer声明层叠层优先级",
+              "desc": "@layer base{...} @layer components{...}；未分层规则始终最高优先级"
+            },
+            {
+              "id": "csscontainment与layer-17-4-4-d3",
+              "tag": "@layer用途",
+              "desc": "第三方CSS放入低层防止覆盖自定义样式；组件样式中层；覆盖样式高层"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
