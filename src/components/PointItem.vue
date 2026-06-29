@@ -13,7 +13,6 @@
       </van-tag>
     </template>
   </van-cell>
-  <!-- 展开的详情列表(移动端) -->
   <div v-if="isMobile && pt.open && pt.details && pt.details.length" class="mobile-details">
     <DetailItem v-for="(d, i) in pt.details" :key="d.id" :detail="d" :index="i" :keyword="keyword" :color-index="colorIndex" />
   </div>
@@ -29,16 +28,14 @@
         {{ pt.details.length }} 条
       </span>
     </div>
-    <div class="detail-wrap" v-if="pt.open && pt.details">
-      <div class="detail-list">
-        <DetailItem v-for="(d, i) in pt.details" :key="d.id" :detail="d" :index="i" :keyword="keyword" :color-index="colorIndex" />
-      </div>
+    <div class="detail-wrap" v-if="pt.open && pt.details && pt.details.length">
+      <DetailItem v-for="(d, i) in pt.details" :key="d.id" :detail="d" :index="i" :keyword="keyword" :color-index="colorIndex" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { reactive } from 'vue'
+import { reactive, inject, watch } from 'vue'
 import { useDevice } from '../composables/useDevice.js'
 import { useSearch } from '../composables/useSearch.js'
 import DetailItem from './DetailItem.vue'
@@ -53,6 +50,12 @@ const { isMobile } = useDevice()
 const { highlightHtml } = useSearch()
 
 const pt = reactive({ ...props.point, open: false })
+
+const expandCommand = inject('expandCommand', ref('none'))
+watch(expandCommand, (cmd) => {
+  if (cmd === 'expand') pt.open = true
+  else if (cmd === 'collapse') pt.open = false
+})
 
 function togglePoint() {
   pt.open = !pt.open

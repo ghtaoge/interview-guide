@@ -7,12 +7,16 @@
 
     <!-- 模块列表 -->
     <template v-else>
+      <!-- 全部展开/折叠按钮 -->
+      <div class="expand-bar" v-if="expandedId && moduleData">
+        <button class="expand-btn" @click="expandAll">📂 全部展开</button>
+        <button class="expand-btn" @click="collapseAll">📁 全部折叠</button>
+      </div>
+
       <div class="module-list">
         <div v-for="mod in displayedModules" :key="mod.id" class="module-wrapper">
-          <!-- 模块头部卡片 -->
           <ModuleCard :mod="mod" :expanded="expandedId === mod.id" @toggle="toggleModule(mod.id)" />
 
-          <!-- 展开的模块内容 -->
           <div v-if="expandedId === mod.id" class="module-content">
             <van-skeleton v-if="moduleLoading" title :row="4" />
             <template v-else-if="moduleData">
@@ -36,7 +40,7 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, provide } from 'vue'
 import { useModulesStore } from '../stores/modules.js'
 import { useFilterStore } from '../stores/filter.js'
 import ModuleCard from '../components/ModuleCard.vue'
@@ -49,6 +53,21 @@ const loading = computed(() => modulesStore.moduleIndex.length === 0)
 const expandedId = ref(null)
 const moduleLoading = ref(false)
 const moduleData = ref(null)
+
+// 全部展开/折叠命令：子组件inject后watch
+const expandCommand = ref('none')
+
+function expandAll() {
+  expandCommand.value = 'expand'
+  // 下一tick重置，避免重复触发
+  setTimeout(() => { expandCommand.value = 'none' }, 50)
+}
+function collapseAll() {
+  expandCommand.value = 'collapse'
+  setTimeout(() => { expandCommand.value = 'none' }, 50)
+}
+
+provide('expandCommand', expandCommand)
 
 const displayedModules = computed(() => {
   const index = modulesStore.sortedIndex
@@ -88,6 +107,15 @@ async function toggleModule(id) {
 .module-content {
   padding: 12px 0 4px;
 }
+.expand-bar {
+  display: flex; gap: 8px; margin-bottom: 12px;
+}
+.expand-btn {
+  padding: 6px 14px; border-radius: 20px; font-size: .82em;
+  background: var(--card); color: var(--text2); border: 1px solid var(--border);
+  cursor: pointer; transition: all .2s;
+}
+.expand-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent) }
 .no-result { text-align: center; color: var(--text3); padding: 40px; font-size: 1em }
 .skeleton-card { margin-bottom: 16px; padding: 16px; background: var(--card); border-radius: var(--radius) }
 </style>
