@@ -210,6 +210,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 .edit-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
 .edit-btn.delete-btn:hover{background:#ef4444;color:#fff;border-color:#ef4444}
 .edit-btn.add-btn:hover{background:#10b981;color:#fff;border-color:#10b981}
+body:not(.edit-mode) .edit-btn-group{display:none}
+body:not(.edit-mode) .edit-btn.add-btn{display:none}
+body.edit-mode .edit-mode-tip{display:block}
+.edit-mode-tip{display:none;position:fixed;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--accent),#2563eb,var(--accent2));z-index:9999;animation:editTipPulse 2s infinite}
+@keyframes editTipPulse{0%,100%{opacity:.6}50%{opacity:1}}
+.dark .edit-mode-tip{background:linear-gradient(90deg,#10b981,#6366f1,#f59e0b)}
 .module-head .edit-btn-group{position:absolute;right:50px}
 .sub-head .edit-btn-group{margin-left:auto;margin-right:8px}
 .sub-head .arrow{margin-left:0}
@@ -301,6 +307,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
 </div>
 
 <!-- 主内容区域 (初始隐藏) -->
+<div class="edit-mode-tip"></div>
 <div id="main-content" style="display:none;">
   <div class="header">
     <button class="header-dark-toggle" id="header-dark-btn" onclick="toggleDark()" title="切换暗黑模式 (Ctrl+D)">🌙</button>
@@ -315,6 +322,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei
     <div class="toolbar">
       <button onclick="exAll(true)">📂 全部展开</button>
       <button onclick="exAll(false)">📁 全部折叠</button>
+      <button id="edit-mode-btn" onclick="toggleEditMode()">✏️ 编辑</button>
       <select id="tag-select" onchange="onTagSelect(this.value)" class="tag-select">
         <option value="">✨ 全部模块</option>
         <optgroup label="☕ 后端">
