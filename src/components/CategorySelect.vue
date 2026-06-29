@@ -102,12 +102,15 @@ function onTagChange(val) {
   border-color: #fff; font-weight: 600;
 }
 
-/* PC端: 下拉select */
+/* PC端: 下拉select - 胶囊按钮风格 */
 #tag-select {
-  font-size: 12px; padding: 7px 12px; border-radius: 20px;
-  border: 1px solid rgba(255,255,255,.3); background: rgba(255,255,255,.15);
+  font-size: 12px; padding: 7px 14px; border-radius: 20px;
+  border: 1px solid rgba(255,255,255,.3); background: rgba(255,255,255,.18);
   color: #fff; min-height: 30px; cursor: pointer; outline: none;
-  max-width: 140px; transition: all .2s;
+  max-width: 160px; transition: all .2s;
+  -webkit-appearance: none; appearance: none;
 }
-#tag-select:focus { border-color: rgba(255,255,255,.5) }
+#tag-select:focus { border-color: rgba(255,255,255,.5); background: rgba(255,255,255,.25) }
+#tag-select option { background: var(--card); color: var(--text); padding: 6px }
+#tag-select optgroup { color: var(--accent); font-weight: 600; font-size: 11px }
 </style>

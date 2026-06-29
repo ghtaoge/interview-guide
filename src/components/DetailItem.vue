@@ -9,7 +9,7 @@
 
   <!-- PC端: 自定义编号卡片 -->
   <div v-else class="detail-item" :class="{ 'has-sub': hasSub, open }"
-    @click="hasSub ? toggleSub() : null"
+    @click.stop="hasSub ? toggleSub() : null"
   >
     <span class="detail-number">{{ index + 1 }}</span>
     <span class="detail-tag" v-html="highlightHtml(labelText, keyword)"></span>
