@@ -1,5 +1,5 @@
 // app.js — 主应用逻辑
-// 全栈面试宝典 v2.2 — 数据分离 + IndexedDB 编辑层 + 密码认证
+// 全栈面试宝典 v2.3 — 数据分离 + IndexedDB 编辑层 + 密码认证 + 编辑模式开关
 
 (function() {
 'use strict';
@@ -13,7 +13,6 @@ var db = null;
 var DB_NAME = 'javaguide-editor';
 var DB_VERSION = 1;
 var currentEditContext = null;
-var isEditMode = false;
 
 // ===== 数据加载 =====
 function loadAllModules() {
@@ -131,8 +130,6 @@ function renderFromData(modules, filter, tagFilter) {
   }
 
   app.innerHTML = html;
-  if (isEditMode) document.body.classList.add('edit-mode');
-  else document.body.classList.remove('edit-mode');
   if (fl !== '') {
     var subs = document.querySelectorAll('.sub');
     var mods = document.querySelectorAll('.module');
@@ -277,19 +274,6 @@ window.onTagSelect = function(tag) {
   }, 10);
 };
 
-
-
-// ===== 编辑模式 =====
-window.toggleEditMode = function() {
-  isEditMode = !isEditMode;
-  document.body.classList.toggle('edit-mode', isEditMode);
-  var btn = document.getElementById('edit-mode-btn');
-  if (btn) {
-    btn.textContent = isEditMode ? '✏️ 编辑中' : '✏️ 编辑';
-    btn.classList.toggle('active', isEditMode);
-  }
-};
-
 window.clearTagSelect = function() {
   var sel = document.getElementById('tag-select');
   sel.value = '';
@@ -368,11 +352,6 @@ document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') {
     if (document.getElementById('edit-modal').style.display === 'flex') {
       closeEditModal();
-    } else if (isEditMode) {
-      isEditMode = false;
-      document.body.classList.remove('edit-mode');
-      var btn = document.getElementById('edit-mode-btn');
-      if (btn) { btn.textContent = '✏️ 编辑'; btn.classList.remove('active'); }
     } else if (document.activeElement === searchInput) {
       clearSearch();
       searchInput.blur();
