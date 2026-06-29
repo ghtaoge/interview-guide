@@ -332,6 +332,20 @@ body.edit-mode .edit-mode-tip{display:block}
 .cat-menu.open{transform:translateX(0) scale(1)}
 .edit-btn-group{opacity:.5}
 .edit-modal-box{padding:16px;border-radius:12px}
+
+/* ===== 移动端 Point 胶囊预览模式 ===== */
+.mobile-capsules{display:flex;flex-wrap:wrap;gap:6px;padding:6px 10px 10px}
+.capsule{display:inline-flex;align-items:center;gap:4px;padding:5px 11px;border-radius:16px;font-size:.78em;font-weight:600;cursor:pointer;transition:all .2s ease;border:1.5px solid var(--border);user-select:none;line-height:1.4}
+.capsule .cap-tag{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text);max-width:120px}
+.capsule .cap-arrow{flex-shrink:0;font-size:.65em;opacity:.55;transition:transform .22s ease}
+.capsule.active .cap-arrow{transform:rotate(90deg);opacity:1}
+.mobile-point-expanded{margin:4px 0 8px !important;padding:10px 12px !important;border-radius:10px !important;font-size:.84em !important;animation:slideDown .25s ease}
+.mobile-capsules-container{padding:2px 0 8px}
+.mobile-capsules-container .capsule-card{display:none}
+.dark .capsule{background:rgba(30,41,59,.8);border-color:#475569;color:#94a3b8}
+.dark .capsule.active{background:rgba(13,148,136,.15);border-color:#0d9488;color:#6ee7b8;box-shadow:0 2px 8px rgba(13,148,136,.18)}
+.dark .capsule:hover{border-color:#64748b;background:rgba(30,41,59,1)}
+.dark .mobile-point-expanded{background:#1e293b !important;border-left-color:var(--accent) !important}
 }
 
 </style>

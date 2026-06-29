@@ -37,6 +37,70 @@ function highlight(text, keyword) {
   return safe.replace(re, '<span class="hl">$1</span>');
 }
 
+// ===== 移动端胶囊模式辅助函数 =====
+function isMobileCapsuleMode(filter) {
+  return window.innerWidth <= 600 && (!filter || filter.trim() === '');
+}
+
+var moduleColorMap = {'0':'99,102,241','1':'239,68,68','2':'245,158,11','3':'16,185,129','4':'59,130,246','5':'168,85,247','6':'249,115,22','7':'20,184,166','8':'220,38,38','9':'5,150,105','10':'37,99,235','11':'234,88,12','12':'14,165,233','13':'217,70,239','14':'244,114,182','15':'139,92,246','16':'225,29,72','17':'34,211,238','18':'192,132,252','19':'14,165,233','20':'99,102,241','21':'10,185,129','22':'124,58,237','23':'245,158,11','24':'14,165,233','25':'99,102,241','26':'59,130,246','27':'239,68,68','28':'16,185,129','29':'245,158,11','30':'168,85,247','31':'249,115,22','32':'239,68,68','33':'245,158,11','34':'20,184,166','35':'239,68,68','36':'5,150,105','37':'59,130,246','38':'139,92,246','39':'14,165,233','40':'168,85,247','41':'240,80,50','42':'14,165,233'};
+
+function getModuleColor(ci) {
+  return moduleColorMap[String(ci)] || '99,102,241';
+}
+
+function capsuleLabel(pt) {
+  var t = (pt.tag || '').trim();
+  if (t.length > 10) return t.substring(0, 9) + '…';
+  return t;
+}
+
+function buildPointCard(pt, modId, subId, filter, ci) {
+  var hasDetail = pt.details && pt.details.length > 0;
+  var detailHtml = '';
+  if (hasDetail) {
+    var previewCount = 5;
+    var needsToggle = pt.details.length > previewCount;
+    detailHtml = '<div class="detail-wrap"><div class="detail-list">';
+    for (var di = 0; di < pt.details.length; di++) {
+      var dItem = pt.details[di];
+      var keyword = (dItem.tag || '').trim() || (dItem.desc || '').trim();
+      keyword = keyword.replace(/^第\d+[、.]\s*/, '').replace(/^\d+[.、)]\s*/, '').replace(/^[①②③④⑤⑥⑦⑧⑨⑩]/, '');
+      var subDetail = dItem.desc || '';
+      var hiddenCls = needsToggle && di >= previewCount ? ' detail-hidden' : '';
+      if (dItem.tag && dItem.desc) {
+        detailHtml += '<div class="detail-item has-sub' + hiddenCls + '" onclick="evSubDetail(event,this)">' + highlight(keyword, filter) + '<span class="sub-arrow"></span><div class="sub-detail">' + highlight(subDetail, filter) + '</div></div>';
+      } else {
+        detailHtml += '<div class="detail-item' + hiddenCls + '">' + highlight(keyword, filter) + '</div>';
+      }
+    }
+    if (needsToggle) {
+      detailHtml += '<div class="detail-toggle" onclick="evDetailToggle(event,this)"><span class="toggle-icon">▾</span>展开全部 ' + pt.details.length + ' 条详情</div>';
+    }
+    detailHtml += '</div></div>';
+  }
+  var detailCount = hasDetail ? pt.details.length : 0;
+  var expandIcon = '<span class="expand-hint">' + (detailCount > 0 ? detailCount + ' 条' : '▼') + '</span>';
+  var ptEditBtn = '<span class="edit-btn-group">' +
+    '<button class="edit-btn" onclick="editPoint(event,\'' + modId + '\',\'' + subId + '\',\'' + pt.id + '\')" title="编辑">✏️</button>' +
+    '<button class="edit-btn delete-btn" onclick="deletePoint(event,\'' + modId + '\',\'' + subId + '\',\'' + pt.id + '\')" title="删除">🗑️</button>' +
+    '</span>';
+  return '<div class="point has-detail mobile-point-expanded" style="border-left-color:rgba(' + getModuleColor(ci) + ',.5)" onclick="evPt(event,this)"><div class="point-row"><span class="tag">' + highlight(pt.tag, filter) + '</span><span class="desc">' + highlight(pt.desc, filter) + '</span>' + expandIcon + ptEditBtn + '</div>' + detailHtml + '</div>';
+}
+
+function buildMobileCapsulePoints(sub, modId, ci, filter) {
+  var capsuleHtml = '';
+  var cardHtml = '';
+  for (var pi = 0; pi < sub.points.length; pi++) {
+    var pt = sub.points[pi];
+    var idx = String(pi);
+    capsuleHtml += '<span class="capsule" data-idx="' + idx + '" onclick="evCapsule(event,this,\'' + modId + '\')">' +
+      '<span class="cap-tag">' + highlight(capsuleLabel(pt), filter) + '</span>' +
+      '<span class="cap-arrow">▸</span></span>';
+    cardHtml += '<div class="capsule-card" data-idx="' + idx + '">' + buildPointCard(pt, modId, sub.id, filter, ci) + '</div>';
+  }
+  return '<div class="mobile-capsules">' + capsuleHtml + '</div><div class="mobile-capsules-container">' + cardHtml + '</div>';
+}
+
 // ===== 渲染核心 =====
 function renderModules(filter, tagFilter) {
   var baseModules = loadAllModules();
@@ -72,13 +136,21 @@ function renderFromData(modules, filter, tagFilter) {
       var subMatch = modMatch || matchFilter(sub.title, filter);
       var pointsHtml = '';
       var subCount = 0;
+      var useCapsule = isMobileCapsuleMode(fl);
       var subEditBtn = '<span class="edit-btn-group">' +
         '<button class="edit-btn" onclick="editSubTitle(event,\'' + mod.id + '\',\'' + sub.id + '\')" title="编辑标题">✏️</button>' +
         '<button class="edit-btn delete-btn" onclick="deleteSub(event,\'' + mod.id + '\',\'' + sub.id + '\')" title="删除分类">🗑️</button>' +
         '<button class="edit-btn add-btn" onclick="addPoint(event,\'' + mod.id + '\',\'' + sub.id + '\')" title="新增知识点">➕</button>' +
         '</span>';
 
-      for (var pi = 0; pi < sub.points.length; pi++) {
+      if (useCapsule) {
+        // 移动端胶囊模式：所有 point 都计入
+        subCount = sub.points.length;
+        total += subCount;
+        if (subCount > 0) pointsHtml = buildMobileCapsulePoints(sub, mod.id, ci, fl);
+      } else {
+        // 原始卡片模式
+        for (var pi = 0; pi < sub.points.length; pi++) {
         var pt = sub.points[pi];
         var ptText = pt.tag + ' ' + pt.desc;
         var ptMatch = subMatch || matchFilter(ptText, filter);
@@ -120,10 +192,12 @@ function renderFromData(modules, filter, tagFilter) {
         pointsHtml += '<div class="' + cls + '"' + clickAttr + '><div class="point-row"><span class="tag">' + highlight(pt.tag, filter) + '</span><span class="desc">' + highlight(pt.desc, filter) + '</span>' + expandIcon + ptEditBtn + '</div>' + detailHtml + '</div>';
         subCount++; total++;
       }
+      } // end else (卡片模式)
 
       if (subCount === 0) continue;
       modCount += subCount;
-      modHtml += '<div class="sub" onclick="evSub(event,this)"><div class="sub-head"><span class="dot" style="background:var(--c' + ci + ')"></span><span class="sub-title">' + highlight(sub.title, filter) + '</span><span class="count">' + subCount + '</span>' + subEditBtn + '<span class="arrow">&#9654;</span></div><div class="points">' + pointsHtml + '</div></div>';
+      var ptsCls = useCapsule ? 'points has-capsules' : 'points';
+      modHtml += '<div class="sub" onclick="evSub(event,this)"><div class="sub-head"><span class="dot" style="background:var(--c' + ci + ')"></span><span class="sub-title">' + highlight(sub.title, filter) + '</span><span class="count">' + subCount + '</span>' + subEditBtn + '<span class="arrow">&#9654;</span></div><div class="' + ptsCls + '">' + pointsHtml + '</div></div>';
     }
 
     if (modCount === 0 && filter) continue;
@@ -132,6 +206,7 @@ function renderFromData(modules, filter, tagFilter) {
   }
 
   app.innerHTML = html;
+  document.body.classList.toggle('search-active', fl !== '');
   if (isEditMode) document.body.classList.add('edit-mode');
   else document.body.classList.remove('edit-mode');
   if (fl !== '') {
@@ -162,6 +237,11 @@ window.evMod = function(e, el) {
     for (var j = 0; j < pts.length; j++) pts[j].classList.remove('open');
     var lists = el.querySelectorAll('.detail-list');
     for (var k = 0; k < lists.length; k++) { lists[k].classList.remove('expanded'); var tg = lists[k].querySelector('.detail-toggle'); if (tg) { var tc = lists[k].querySelectorAll('.detail-item').length; tg.innerHTML = '<span class="toggle-icon">▾</span>展开全部 ' + tc + ' 条详情'; } }
+    // 重置胶囊状态
+    var capsules = el.querySelectorAll('.capsule');
+    for (var n = 0; n < capsules.length; n++) capsules[n].classList.remove('active');
+    var cards = el.querySelectorAll('.capsule-card');
+    for (var p = 0; p < cards.length; p++) cards[p].style.display = 'none';
   }
 };
 
@@ -173,6 +253,11 @@ window.evSub = function(e, el) {
     for (var i = 0; i < pts.length; i++) pts[i].classList.remove('open');
     var lists = el.querySelectorAll('.detail-list');
     for (var j = 0; j < lists.length; j++) { lists[j].classList.remove('expanded'); var tg = lists[j].querySelector('.detail-toggle'); if (tg) { var tc = lists[j].querySelectorAll('.detail-item').length; tg.innerHTML = '<span class="toggle-icon">▾</span>展开全部 ' + tc + ' 条详情'; } }
+    // 重置胶囊状态
+    var capsules = el.querySelectorAll('.capsule');
+    for (var k = 0; k < capsules.length; k++) capsules[k].classList.remove('active');
+    var cards = el.querySelectorAll('.capsule-card');
+    for (var m = 0; m < cards.length; m++) cards[m].style.display = 'none';
   }
 };
 
@@ -182,6 +267,26 @@ window.evPt = function(e, el) {
   if (!el.classList.contains('open')) {
     var list = el.querySelector('.detail-list');
     if (list) { list.classList.remove('expanded'); var tg = list.querySelector('.detail-toggle'); if (tg) { var tc = list.querySelectorAll('.detail-item').length; tg.innerHTML = '<span class="toggle-icon">▾</span>展开全部 ' + tc + ' 条详情'; } }
+  }
+};
+
+window.evCapsule = function(e, capsule, modId) {
+  e.stopPropagation();
+  // DOM 结构: .points > (.mobile-capsules > capsule) + (.mobile-capsules-container > .capsule-card)
+  var wrapper = capsule.closest('.points').querySelector('.mobile-capsules-container');
+  if (!wrapper) return;
+  var idx = capsule.getAttribute('data-idx');
+  var wasActive = capsule.classList.contains('active');
+  // 手风琴：关闭同组其他
+  var allCaps = wrapper.parentElement.querySelectorAll('.capsule');
+  for (var i = 0; i < allCaps.length; i++) allCaps[i].classList.remove('active');
+  var cards = wrapper.querySelectorAll('.capsule-card');
+  for (var j = 0; j < cards.length; j++) cards[j].style.display = 'none';
+  // 切换当前
+  if (!wasActive) {
+    capsule.classList.add('active');
+    var target = wrapper.querySelector('.capsule-card[data-idx="' + idx + '"]');
+    if (target) { target.style.display = 'block'; }
   }
 };
 
