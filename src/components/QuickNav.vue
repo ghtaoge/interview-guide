@@ -33,7 +33,10 @@ function onScroll() {
     requestAnimationFrame(() => {
       const mods = document.querySelectorAll('.module-card, .module-header')
       for (let i = 0; i < mods.length; i++) {
-        if (mods[i].getBoundingClientRect().top <= window.innerHeight / 3) activeIdx.value = i
+        // 元素可能因 Vue 重新渲染已脱离文档流，需做空值保护
+        if (mods[i] && mods[i].getBoundingClientRect().top <= window.innerHeight / 3) {
+          activeIdx.value = i
+        }
       }
       ticking = false
     })

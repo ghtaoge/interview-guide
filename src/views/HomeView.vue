@@ -7,8 +7,8 @@
 
     <!-- 模块列表 -->
     <template v-else>
-      <!-- 全部展开/折叠按钮 -->
-      <div class="expand-bar" v-if="expandedId && moduleData">
+      <!-- 全部展开/折叠按钮（始终显示在模块列表前） -->
+      <div class="expand-bar">
         <button class="expand-btn" @click="expandAll">📂 全部展开</button>
         <button class="expand-btn" @click="collapseAll">📁 全部折叠</button>
       </div>

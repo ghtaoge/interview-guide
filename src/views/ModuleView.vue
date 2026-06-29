@@ -11,14 +11,15 @@
 
     <!-- 模块详情 -->
     <template v-else>
-      <!-- 返回按钮 + 模块内搜索 -->
+      <!-- 返回按钮 + 全部展开/折叠 -->
       <div class="module-toolbar">
         <button class="back-btn" @click="$router.push('/')">← 返回</button>
-        <SearchBox />
+        <button class="toolbar-action-btn" @click="expandAll">📂 全部展开</button>
+        <button class="toolbar-action-btn" @click="collapseAll">📁 全部折叠</button>
       </div>
 
       <!-- 模块头部 -->
-      <div class="module-header" :style="{ background: `linear-gradient(135deg, var(--c${module.cssIndex}), ${lighten(module.cssIndex)})` }">
+      <div class="module-header" :style="{ background: `linear-gradient(135deg, var(--c${module.cssIndex}), ${lighten(module.cssIndex}))` }">
         <span class="mod-icon">{{ module.icon }}</span>
         <span class="mod-title">{{ module.title }}</span>
         <span class="mod-badge">{{ totalPoints }} 条知识点</span>
@@ -33,6 +34,7 @@
           :module-id="module.id"
           :color-index="module.cssIndex"
           :keyword="filterStore.keyword"
+          :expand-command="expandCommand"
         />
       </div>
     </template>
@@ -40,16 +42,32 @@
 </template>
 
 <script setup>
-import { computed, watch, onMounted } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { useModulesStore } from '../stores/modules.js'
 import { useFilterStore } from '../stores/filter.js'
 import SubSection from '../components/SubSection.vue'
-import SearchBox from '../components/SearchBox.vue'
 
 const route = useRoute()
 const modulesStore = useModulesStore()
 const filterStore = useFilterStore()
+
+// 展开/折叠命令状态（通过 prop 向下传递）
+const expandCommand = ref('none')
+
+function expandAll() {
+  expandCommand.value = 'expand'
+}
+function collapseAll() {
+  expandCommand.value = 'collapse'
+}
+
+// 命令发出后自动重置，避免重复触发
+watch(expandCommand, (val) => {
+  if (val !== 'none') {
+    setTimeout(() => { expandCommand.value = 'none' }, 100)
+  }
+})
 
 const module = computed(() => modulesStore.moduleData.get(route.params.id))
 const loading = computed(() => modulesStore.loadingModule === route.params.id)
@@ -76,13 +94,11 @@ function lighten(ci) {
 
 onMounted(async () => {
   await modulesStore.loadModule(route.params.id)
-  // 从首页传递的搜索关键词
   if (route.query.keyword) {
     filterStore.setKeyword(route.query.keyword)
   }
 })
 
-// 路由变化时重新加载模块
 watch(() => route.params.id, async (newId) => {
   if (newId) await modulesStore.loadModule(newId)
 })
@@ -93,8 +109,8 @@ watch(() => route.params.id, async (newId) => {
   max-width: 960px; margin: 0 auto; padding: 0 16px 60px;
 }
 .module-toolbar {
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 0; margin-bottom: 12px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 0; margin-bottom: 12px; flex-wrap: wrap;
 }
 .back-btn {
   background: var(--card); color: var(--text2); border: 1px solid var(--border);
@@ -102,6 +118,16 @@ watch(() => route.params.id, async (newId) => {
   transition: all .2s; white-space: nowrap;
 }
 .back-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent) }
+.toolbar-action-btn {
+  padding: 7px 14px; border-radius: 20px;
+  background: rgba(99,102,241,.08); color: var(--accent);
+  border: 1.5px solid rgba(99,102,241,.18);
+  cursor: pointer; font-size: .82em; font-weight: 500;
+  transition: all .18s; white-space: nowrap;
+}
+.toolbar-action-btn:hover {
+  background: var(--accent); color: #fff; border-color: var(--accent);
+}
 .module-header {
   color: #fff; padding: 20px 24px; display: flex; align-items: center; gap: 8px;
   border-radius: var(--radius); margin-bottom: 16px;
@@ -119,5 +145,6 @@ watch(() => route.params.id, async (newId) => {
   .module-view { padding: 0 10px 60px }
   .module-toolbar { padding: 8px 0; margin-bottom: 8px }
   .back-btn { padding: 6px 12px; font-size: .78em }
+  .toolbar-action-btn { padding: 6px 10px; font-size: .75em }
 }
 </style>

@@ -8,11 +8,12 @@
       <van-icon v-if="hasSub" name="arrow" :class="{ rotated: open }" />
     </template>
   </van-cell>
+  <!-- sub-detail展开(移动端) -->
   <div v-if="isMobile && open && hasSub" class="mobile-sub-detail" v-html="highlightHtml(detail.desc, keyword)"></div>
 
   <!-- PC端: 自定义编号卡片 -->
   <div v-else class="detail-item" :class="{ 'has-sub': hasSub, open }"
-    @click="hasSub ? toggleSub() : null"
+    @click.stop="hasSub ? toggleSub() : null"
   >
     <span class="detail-number">{{ index + 1 }}</span>
     <span class="detail-tag" v-html="highlightHtml(labelText, keyword)"></span>
@@ -38,9 +39,12 @@ const { highlightHtml } = useSearch()
 
 const open = ref(false)
 
-const hasSub = computed(() =>
-  (props.detail.tag || '').trim() && (props.detail.desc || '').trim() && props.detail.tag !== props.detail.desc
-)
+// hasSub: 同时有 tag 和 desc 且两者不同时才可展开
+const hasSub = computed(() => {
+  const tag = (props.detail.tag || '').trim()
+  const desc = (props.detail.desc || '').trim()
+  return !!tag && !!desc && tag !== desc
+})
 
 const labelText = computed(() => {
   let t = (props.detail.tag || '').trim() || (props.detail.desc || '').trim()
@@ -48,7 +52,7 @@ const labelText = computed(() => {
   return t
 })
 
-// 全部展开/折叠
+// 通过 inject 接收 HomeView 的展开/折叠命令
 const expandCommand = inject('expandCommand', ref('none'))
 watch(expandCommand, (cmd) => {
   if (cmd === 'expand' && hasSub.value) open.value = true
@@ -80,7 +84,7 @@ function toggleSub() { open.value = !open.value }
   background: rgba(99,102,241,.08); color: var(--text3);
   border: 1.5px solid rgba(99,102,241,.12);
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: all .28s;
+  transition: all .28s;
 }
 .sub-arrow::after { content: '▶'; font-size: .6em }
 .sub-arrow.open { transform: rotate(90deg); background: var(--accent); color: #fff; border-color: var(--accent) }

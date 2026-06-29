@@ -7,7 +7,8 @@ export const useModulesStore = defineStore('modules', () => {
   const loadingModule = ref(null)
 
   async function loadIndex() {
-    const resp = await fetch('/data/index.json')
+    const base = import.meta.env.BASE_URL
+    const resp = await fetch(`${base}data/index.json`)
     moduleIndex.value = await resp.json()
   }
 
@@ -15,7 +16,8 @@ export const useModulesStore = defineStore('modules', () => {
     if (moduleData.value.has(id)) return moduleData.value.get(id)
     loadingModule.value = id
     try {
-      const resp = await fetch(`/data/${id}.json`)
+      const base = import.meta.env.BASE_URL
+      const resp = await fetch(`${base}data/${id}.json`)
       const data = await resp.json()
       moduleData.value.set(id, data)
       return data

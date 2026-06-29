@@ -55,9 +55,9 @@ const { matchText } = useSearch()
 
 const activeNames = ref([])
 const isOpen = ref(false)
-const expandCommand = inject('expandCommand', ref('none'))
 
-// 响应全部展开/折叠命令
+// 通过 inject 接收 HomeView 的展开/折叠命令
+const expandCommand = inject('expandCommand', ref('none'))
 watch(expandCommand, (cmd) => {
   if (cmd === 'expand') {
     isOpen.value = true

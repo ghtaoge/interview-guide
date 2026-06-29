@@ -13,6 +13,7 @@
       </van-tag>
     </template>
   </van-cell>
+  <!-- 展开的详情列表(移动端) -->
   <div v-if="isMobile && pt.open && pt.details && pt.details.length" class="mobile-details">
     <DetailItem v-for="(d, i) in pt.details" :key="d.id" :detail="d" :index="i" :keyword="keyword" :color-index="colorIndex" />
   </div>
@@ -51,6 +52,7 @@ const { highlightHtml } = useSearch()
 
 const pt = reactive({ ...props.point, open: false })
 
+// 通过 inject 接收 HomeView 的展开/折叠命令
 const expandCommand = inject('expandCommand', ref('none'))
 watch(expandCommand, (cmd) => {
   if (cmd === 'expand') pt.open = true
@@ -82,6 +84,5 @@ function togglePoint() {
 }
 .point.open .expand-hint { background: var(--accent); color: #fff; border-color: var(--accent) }
 .detail-wrap { margin-top: 14px }
-.detail-list { padding: 12px }
 .mobile-details { padding: 8px 16px }
 </style>
