@@ -1,5 +1,5 @@
 // app.js — 主应用逻辑
-// 全栈面试宝典 v2.5 — 数据分离 + IndexedDB 编辑层 + 密码认证 + 编辑模式开关 + More Menu + detail展开按钮优化
+// 全栈面试宝典 v2.6 — 移动端 point desc 折叠 + expand-hint 药丸按钮
 
 (function() {
 'use strict';
