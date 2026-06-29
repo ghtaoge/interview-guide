@@ -71,15 +71,16 @@ function onClear() {
   width: 100%; padding: 10px 16px 10px 38px; border: 2px solid transparent;
   border-radius: 24px; font-size: 14px; outline: none;
   background: rgba(255,255,255,.94); box-shadow: 0 2px 12px rgba(0,0,0,.08);
-  min-height: 38px; transition: all .25s ease;
+  min-height: 38px; transition: all .25s ease; color: #1a1a1a;
 }
 .search-box.mobile input {
   border-radius: 20px; padding: 6px 12px 6px 30px; font-size: 14px; min-height: 32px;
   background: rgba(255,255,255,.96); color: #1a1a1a;
 }
 .search-box input:focus {
-  box-shadow: 0 2px 16px rgba(52,112,255,.25); background: #fff; border-color: #3470ff;
+  box-shadow: 0 2px 16px rgba(52,112,255,.25); background: #fff; border-color: #3470ff; color: #1a1a1a;
 }
+.search-box input::placeholder { color: #888 }
 .search-icon { content: '🔍'; position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-size: 14px; z-index: 1 }
 .search-box.mobile .search-icon { font-size: 12px; left: 10px }
 .count { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); font-size: 11px; color: #aaa; background: #f0f0f0; padding: 3px 8px; border-radius: 12px }
