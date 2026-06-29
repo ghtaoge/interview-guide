@@ -1,5 +1,5 @@
 // app.js — 主应用逻辑
-// 全栈面试宝典 v2.6 — 移动端 point desc 折叠 + expand-hint 药丸按钮
+// 全栈面试宝典 v2.7 — 移动端 point desc 折叠 + expand-hint 药丸按钮
 
 (function() {
 'use strict';
