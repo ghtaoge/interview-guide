@@ -1,4 +1,4 @@
-* { margin: 0; padding: 0; box-sizing: border-box }
+*:not(.van-field *):not(.van-button *):not(.van-cell *):not(.van-dialog *):not(.van-overlay *):not(.van-popup *):not(.van-loading *):not(.van-tag *):not(.van-skeleton *):not(.van-back-top *) { margin: 0; padding: 0; box-sizing: border-box }
 body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
   background: var(--bg); color: var(--text); line-height: 1.75; -webkit-font-smoothing: antialiased;
   transition: background .3s, color .3s;
