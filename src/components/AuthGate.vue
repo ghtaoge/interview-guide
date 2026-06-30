@@ -7,29 +7,25 @@
         <p class="auth-subtitle">请输入密码以访问内容</p>
       </div>
       <div class="auth-body">
-        <van-field
-          v-model="password"
-          type="password"
-          placeholder="请输入管理员密码"
-          :error-message="errorMsg"
-          clearable
-          @keydown.enter="submit"
-        >
-          <template #left-icon>
-            <span style="font-size:1em">🔑</span>
-          </template>
-        </van-field>
-        <van-button
-          type="primary"
-          block
-          round
-          :loading="verifying"
-          loading-text="验证中..."
-          @click="submit"
+        <div class="auth-input-wrap" :class="{ error: errorMsg }">
+          <span class="auth-input-icon">🔑</span>
+          <input
+            v-model="password"
+            type="password"
+            placeholder="请输入管理员密码"
+            class="auth-input"
+            @keydown.enter="submit"
+          />
+          <button v-if="password" class="auth-clear" @click="password = ''">✕</button>
+        </div>
+        <p v-if="errorMsg" class="auth-error">{{ errorMsg }}</p>
+        <button
           class="auth-submit-btn"
+          :disabled="verifying"
+          @click="submit"
         >
-          验证并进入
-        </van-button>
+          {{ verifying ? '验证中...' : '验证并进入' }}
+        </button>
       </div>
     </div>
   </div>
@@ -93,25 +89,55 @@ async function submit() {
   font-size: .78em; opacity: .7; font-weight: 300;
 }
 .auth-body {
-  padding: 20px 24px 24px;
+  padding: 24px 24px 28px;
+}
+.auth-input-wrap {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--bg); border-radius: 24px;
+  border: 2px solid var(--border); padding: 4px 14px;
+  transition: border-color .25s, box-shadow .25s;
+}
+.auth-input-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(13,148,136,.2);
+}
+.auth-input-wrap.error {
+  border-color: #ef4444;
+  box-shadow: 0 0 8px rgba(239,68,68,.15);
+}
+.auth-input-icon { font-size: 1em; flex-shrink: 0; opacity: .7 }
+.auth-input {
+  flex: 1; border: none; outline: none; background: transparent;
+  font-size: 15px; color: var(--text); padding: 10px 0;
+  caret-color: var(--accent);
+}
+.auth-input::placeholder { color: var(--text3); opacity: 1 }
+.auth-input:-ms-input-placeholder { color: var(--text3) }
+.auth-clear {
+  width: 24px; height: 24px; border-radius: 50%; border: none;
+  background: var(--border); color: var(--text2); cursor: pointer;
+  font-size: .7em; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: all .2s;
+}
+.auth-clear:hover { background: var(--text3); color: var(--card) }
+.auth-error {
+  font-size: .8em; color: #ef4444; margin-top: 8px; padding-left: 14px;
 }
 .auth-submit-btn {
-  margin-top: 16px; font-weight: 600;
-  background: #0d9488; border-color: #0d9488;
+  margin-top: 20px; width: 100%; padding: 12px 0;
+  border-radius: 24px; border: none; cursor: pointer;
+  font-size: 1em; font-weight: 600; letter-spacing: 1px;
+  background: linear-gradient(135deg, #0d9488, #2563eb);
+  color: #fff; transition: all .3s;
 }
-
-/* 修复全局reset对Vant field的影响 */
-:deep(.van-field .van-cell__title) { padding: 10px 0 }
-:deep(.van-field .van-cell__value) { padding: 10px 0 }
-:deep(.van-field .van-field__control) { padding: 0 }
-:deep(.van-field .van-field__left-icon) { margin-right: 8px }
-:deep(.van-field .van-field__right-icon) { margin-left: 8px }
+.auth-submit-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(13,148,136,.35) }
+.auth-submit-btn:disabled { opacity: .6; cursor: not-allowed; transform: none }
 
 /* 移动端 */
 @media (max-width: 600px) {
   .auth-card { max-width: 340px }
   .auth-header { padding: 22px 20px 14px }
   .auth-header h2 { font-size: 1.05em }
-  .auth-body { padding: 16px 20px 20px }
+  .auth-body { padding: 20px 20px 24px }
 }
 </style>
