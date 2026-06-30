@@ -772,34 +772,180 @@
           ]
         },
         {
-          "id": "java新特性-1-5-4",
-          "tag": "Java 新特性",
-          "desc": "8:Lambda/Stream/Optional/接口默认方法；9:模块化 JPMS/JShell；14:Record；15:密封类 Sealed；16:模式匹配 instanceof；17:LTS；21 LTS:虚拟线程 Virtual Thread/模式匹配 switch",
+          "id": "stream-api深入-1-5-4",
+          "tag": "Stream API深入",
+          "desc": "Stream API流式处理集合数据(filter/map/reduce/collect/flatMap/groupingBy/partitioningBy)。创建:Collection.stream()/Stream.of()/Arrays.stream()。中间操作lazy(filter/map/flatMap/sorted/distinct/peek/limit/skip)无中间结果直到终端操作触发。终端操作terminal(collect/forEach/reduce/count/min/max/findFirst/findAny/toArray)。收集器Collectors:toList/toSet/toMap/groupingBy分类/partitioningBy分区/counting统计/summingInt求和/reducing归约。并行流parallelStream():ForkJoinPool线程池默认CPU核数注意线程安全避免共享可变状态。面试重点:中间vs终端操作/lazy机制/groupingBy用法/并行流线程安全",
           "details": [
             {
-              "id": "java新特性-1-5-4-d0",
-              "tag": "JDK8",
-              "desc": "Lambda表达式+Stream API+Optional+日期API+接口默认方法"
+              "id": "stream-api深入-1-5-4-d0",
+              "tag": "中间操作lazy",
+              "desc": "filter/map/flatMap/sorted/distinct/peek/limit/skip不立即执行只是记录操作,直到终端操作触发整个管道流水线执行"
             },
             {
-              "id": "java新特性-1-5-4-d1",
-              "tag": "JDK9",
-              "desc": "模块化系统jlink定制运行时+接口私有方法+多版本jar"
+              "id": "stream-api深入-1-5-4-d1",
+              "tag": "终端操作terminal",
+              "desc": "collect收集/forEach遍历/reduce归约/count计数/min/max极值/findFirst/findAny/toArray,触发执行后Stream不能再使用"
             },
             {
-              "id": "java新特性-1-5-4-d2",
-              "tag": "JDK11",
-              "desc": "HttpClient标准化+var局部变量+Flight Recorder免费"
+              "id": "stream-api深入-1-5-4-d2",
+              "tag": "Collectors收集器",
+              "desc": "toList/toSet/toMap/groupingBy(classifier,downstream)/partitioningBy(predicate)/counting/summingInt/averagingDouble/reducing/joining拼接字符串"
             },
             {
-              "id": "java新特性-1-5-4-d3",
-              "tag": "JDK17",
-              "desc": "密封类sealed+Record类+模式匹配instanceof正式版"
+              "id": "stream-api深入-1-5-4-d3",
+              "tag": "groupingBy多层分组",
+              "desc": "groupingBy(classifier,groupingBy(subClassifier))多层嵌套分组+downstream下游收集器如counting/summing统计每分组"
             },
             {
-              "id": "java新特性-1-5-4-d4",
-              "tag": "JDK21",
-              "desc": "虚拟线程(Virtual Thread)+模式匹配switch+字符串模板+序列化集合"
+              "id": "stream-api深入-1-5-4-d4",
+              "tag": "reduce归约",
+              "desc": "reduce(identity,accumulator)有初始值/reduce(accumulator)无初始值返回Optional/reduce(identity,accumulator,combiner)并行流合并"
+            },
+            {
+              "id": "stream-api深入-1-5-4-d5",
+              "tag": "flatMap扁平化",
+              "desc": "flatMap将Stream<Stream<T>>展开为Stream<T>,如List<List<String>>→Stream<String>;map是一对一flatMap是一对多"
+            },
+            {
+              "id": "stream-api深入-1-5-4-d6",
+              "tag": "并行流parallelStream",
+              "desc": "ForkJoinPool默认CPU核数线程池,适合大数据量CPU密集计算;注意线程安全避免共享可变状态/避免在parallelStream中使用synchronized"
+            },
+            {
+              "id": "stream-api深入-1-5-4-d7",
+              "tag": "Stream vs for循环",
+              "desc": "Stream表达力强(声明式)/可并行/可链式;for循环性能略好(简单遍历)/调试方便;复杂过滤分组用Stream简单遍历用for"
+            }
+          ]
+        },
+        {
+          "id": "lambda与函数式接口-1-5-5",
+          "tag": "Lambda与函数式接口",
+          "desc": "Lambda表达式简洁表示可传递的匿名函数(parameters)->{body}。函数式接口@FunctionalInterface仅一个抽象方法(Runnable/Callable/Consumer/Supplier/Function/BiFunction/Predicate/Comparator)。方法引用类名::方法名(静态/实例/构造器)。变量捕获:Lambda可捕获外部局部变量但必须是final或effectively final(不可修改)。类型推断:编译器根据上下文推断Lambda参数类型无需显式声明。面试重点:函数式接口分类/Lambda vs匿名类/方法引用形式/变量捕获限制",
+          "details": [
+            {
+              "id": "lambda与函数式接口-1-5-5-d0",
+              "tag": "Lambda语法",
+              "desc": "(a,b)->a+b无参数()->表达式/单参数x->表达式/多参数(a,b)->{多行语句return}/类型推断可省略参数类型"
+            },
+            {
+              "id": "lambda与函数式接口-1-5-5-d1",
+              "tag": "函数式接口",
+              "desc": "@FunctionalInterface仅一个抽象方法:Consumer<T>消费(accept)/Supplier<T>供给(get)/Function<T,R>转换(apply)/Predicate<T>判断(test)/Comparator比较"
+            },
+            {
+              "id": "lambda与函数式接口-1-5-5-d2",
+              "tag": "方法引用",
+              "desc": "静态方法引用(Integer::parseInt)/实例方法引用(str::length)/构造器引用(ArrayList::new)/类型方法引用(String::toUpperCase)"
+            },
+            {
+              "id": "lambda与函数式接口-1-5-5-d3",
+              "tag": "变量捕获限制",
+              "desc": "Lambda捕获外部局部变量必须是final或effectively final(编译后不修改),因为Lambda可能在另一线程执行捕获的是副本而非引用"
+            },
+            {
+              "id": "lambda与函数式接口-1-5-5-d4",
+              "tag": "Lambda vs匿名类",
+              "desc": "Lambda只能实现函数式接口(单方法)/匿名类可实现任意接口抽象类;Lambda不创建新类(invokedynamic)/匿名类生成.class文件;Lambdathis指向外部类匿名类this指向自身"
+            },
+            {
+              "id": "lambda与函数式接口-1-5-5-d5",
+              "tag": "常用函数式接口",
+              "desc": "Consumer消费void/Supplier供给T/Function转换T→R/BiFunction双参T,U→R/Predicate判断boolean/UnaryOperator一元T→T/BinaryOperator二元T,T→T"
+            },
+            {
+              "id": "lambda与函数式接口-1-5-5-d6",
+              "tag": "Optional函数式用法",
+              "desc": "Optional.map(Function)/filter(Predicate)/flatMap(Function)/ifPresent(Consumer)/orElseGet(Supplier)/orElseThrow(Supplier)链式操作避免null检查"
+            }
+          ]
+        },
+        {
+          "id": "optional深入-1-5-6",
+          "tag": "Optional深入",
+          "desc": "Optional<T>容器对象避免null引用导致NPE。创建:Optional.of(value非null)/Optional.ofNullable(value可为null)/Optional.empty()。操作:isPresent()有值/ifPresent(Consumer)有值消费/get()取值(无值抛NoSuchElementException)/orElse(default)无值返回默认/orElseGet(Supplier)无值延迟计算默认/orElseThrow(Supplier)无值抛自定义异常。转换:map(Function)转换值/filter(Predicate)过滤/flatMap(Function)嵌套Optional展开。面试重点:Optional最佳实践/避免get()/orElse vs orElseGet/链式操作",
+          "details": [
+            {
+              "id": "optional深入-1-5-6-d0",
+              "tag": "创建方式",
+              "desc": "Optional.of(value)值不能为null否则NPE/Optional.ofNullable(value)值可为null安全/Optional.empty()空Optional;不要用Optional做字段类型"
+            },
+            {
+              "id": "optional深入-1-5-6-d1",
+              "tag": "检查与获取",
+              "desc": "isPresent()判断有值/ifPresent(Consumer)有值执行消费/get()直接取值无值抛NoSuchElementException(不推荐使用)"
+            },
+            {
+              "id": "optional深入-1-5-6-d2",
+              "tag": "orElse系列",
+              "desc": "orElse(default)无值返回默认值(总是计算default)/orElseGet(Supplier)无值延迟计算默认值(推荐)/orElseThrow(Supplier)无值抛自定义异常"
+            },
+            {
+              "id": "optional深入-1-5-6-d3",
+              "tag": "map/flatMap",
+              "desc": "map(Function)有值则转换返回新Optional/flatMap(Function)返回的Optional自动展开避免Optional<Optional<T>>嵌套"
+            },
+            {
+              "id": "optional深入-1-5-6-d4",
+              "tag": "filter",
+              "desc": "filter(Predicate)有值且满足条件返回原Optional/不满足返回empty(),适合链式过滤如opt.filter(x->x>0).orElse(0)"
+            },
+            {
+              "id": "optional深入-1-5-6-d5",
+              "tag": "最佳实践",
+              "desc": "方法返回值用Optional包装/不要用Optional做字段或构造器参数/不要用Optional.get()直接取值/不要用Optional代替null做集合元素/链式操作优于if-else检查"
+            },
+            {
+              "id": "optional深入-1-5-6-d6",
+              "tag": "避免陷阱",
+              "desc": "orElse()总是计算默认值即使Optional有值(性能浪费)→用orElseGet()延迟计算;直接get()无值时抛异常→用orElse/orElseThrow替代"
+            }
+          ]
+        },
+        {
+          "id": "虚拟线程与java新特性-1-5-7",
+          "tag": "虚拟线程与Java新特性",
+          "desc": "JDK21虚拟线程Virtual Threads轻量级线程(Millions级)由JVM调度而非OS,适合IO密集高并发场景(每个请求一个线程模型回归)。创建:Thread.startVirtualThread(Runnable)/Executors.newVirtualThreadPerTaskExecutor()/Thread.ofVirtual().name(\"vt\").start(r)。关键:虚拟线程遇IO阻塞时自动卸载carrier线程(平台线程),不阻塞OS线程;pinning问题:synchronized/native方法内阻塞不卸载需改ReentrantLock。其他JDK8-21:switch表达式(JDK14)/text blocks(JDK15)/sealed classes(JDK17)/pattern matching switch(JDK21)/record类(JDK16)。面试重点:虚拟线程vs平台线程/pinning问题/适用场景",
+          "details": [
+            {
+              "id": "虚拟线程与java新特性-1-5-7-d0",
+              "tag": "虚拟线程原理",
+              "desc": "JVM管理的轻量级线程,栈帧存储在堆内存而非OS栈,遇IO阻塞自动unmount从carrier线程卸载,不占用OS线程资源,可创建百万级"
+            },
+            {
+              "id": "虚拟线程与java新特性-1-5-7-d1",
+              "tag": "创建方式",
+              "desc": "Thread.startVirtualThread(runnable)/Thread.ofVirtual().name(\"vt\").start(r)/Executors.newVirtualThreadPerTaskExecutor()每任务一个虚拟线程池"
+            },
+            {
+              "id": "虚拟线程与java新特性-1-5-7-d2",
+              "tag": "vs平台线程",
+              "desc": "平台线程:1:1映射OS线程创建销毁开销大数量受限(~数千)/虚拟线程:M:1映射少量carrier线程JVM调度创建开销极小可百万级,适合IO密集"
+            },
+            {
+              "id": "虚拟线程与java新特性-1-5-7-d3",
+              "tag": "Pinning问题",
+              "desc": "synchronized块内IO阻塞时虚拟线程无法unmount(pin到carrier线程)导致carrier线程被占浪费;解决:改用ReentrantLock(j.u.c锁)避免synchronized"
+            },
+            {
+              "id": "虚拟线程与java新特性-1-5-7-d4",
+              "tag": "适用场景",
+              "desc": "IO密集(HTTP请求/数据库查询/文件读写/网络调用)每个请求一个虚拟线程回归简单编程模型;不适合CPU密集计算(虚拟线程无加速效果)"
+            },
+            {
+              "id": "虚拟线程与java新特性-1-5-7-d5",
+              "tag": "switch表达式(JDK14)",
+              "desc": "switch可返回值作为表达式使用,case无需break箭头语法→,yield返回值;支持多值匹配case A,B,C→"
+            },
+            {
+              "id": "虚拟线程与java新特性-1-5-7-d6",
+              "tag": "sealed classes(JDK17)",
+              "desc": "sealed class限定哪些类可以extends/implements,permits列表明确子类范围;配合pattern matching instanceof实现安全类型分层"
+            },
+            {
+              "id": "虚拟线程与java新特性-1-5-7-d7",
+              "tag": "record类(JDK16)",
+              "desc": "不可变数据载体record Point(int x,int y)自动生成equals/hashCode/toString/compact constructor;适合DTO/配置/事件对象,不可变天然线程安全"
             }
           ]
         }

@@ -595,336 +595,6 @@ window.__MODULES__['hr-interview'] = {
   ]
 };
 
-// dubbo.js — 三十六、Dubbo RPC框架 模块数据
-// 此文件由 tools/convert.js 生成，可手动编辑维护
-
-window.__MODULES__ = window.__MODULES__ || {};
-window.__MODULES__['dubbo'] = {
-  "id": "dubbo",
-  "title": "三十六、Dubbo RPC框架",
-  "tag": "Dubbo",
-  "order": 36,
-  "icon": "🛡️",
-  "cssIndex": 33,
-  "subs": [
-    {
-      "id": "36-1-dubbo核心架构-36-0",
-      "title": "36.1 Dubbo核心架构",
-      "points": [
-        {
-          "id": "dubbo架构与核心概念-36-0-0",
-          "tag": "Dubbo架构与核心概念",
-          "desc": "Dubbo是阿里开源的高性能RPC框架核心架构五大角色：Provider服务提供者注册服务到Registry、Consumer服务消费者从Registry发现服务、Registry注册中心Nacos/ZK推荐Nacos、Monitor监控中心统计调用次数时间、Container服务运行容器。调用流程：Consumer→Registry发现Provider列表→Consumer直连Provider(RPC调用)→结果返回Consumer→统计数据上报Monitor。注册中心作用：服务发现动态感知Provider上下线、路由规则标签路由条件路由、动态配置覆盖规则。通信协议默认Dubbo协议单一长连接+NIO非阻塞+Hessian序列化适合小数据高并发。Triple协议基于HTTP/2兼容gRPC支持流式调用跨语言互通。面试重点：五大角色流程、Dubbo vs Triple协议区别、注册中心选型。",
-          "details": [
-            {
-              "id": "dubbo架构与核心概念-36-0-0-d0",
-              "tag": "Dubbo协议",
-              "desc": "默认RPC协议单一长连接+NIO非阻塞+Hessian序列化适合小数据高并发大文件不适合"
-            },
-            {
-              "id": "dubbo架构与核心概念-36-0-0-d1",
-              "tag": "Triple协议",
-              "desc": "基于HTTP/2兼容gRPC支持流式调用跨语言互通推荐新项目使用取代Dubbo协议"
-            },
-            {
-              "id": "dubbo架构与核心概念-36-0-0-d2",
-              "tag": "Provider",
-              "desc": "服务提供者暴露服务接口注册到Registry等待Consumer调用"
-            },
-            {
-              "id": "dubbo架构与核心概念-36-0-0-d3",
-              "tag": "Consumer",
-              "desc": "服务消费者从Registry订阅服务发现Provider列表发起RPC调用"
-            },
-            {
-              "id": "dubbo架构与核心概念-36-0-0-d4",
-              "tag": "Registry注册中心",
-              "desc": "Nacos/ZK服务注册发现动态感知上下线推荐Nacos生产使用"
-            },
-            {
-              "id": "dubbo架构与核心概念-36-0-0-d5",
-              "tag": "Monitor监控",
-              "desc": "统计调用次数响应时间成功失败率运维排查问题依据"
-            },
-            {
-              "id": "dubbo架构与核心概念-36-0-0-d6",
-              "tag": "Container",
-              "desc": "服务运行容器Spring/SpringBoot主流提供Provider启动环境"
-            },
-            {
-              "id": "dubbo架构与核心概念-36-0-0-d7",
-              "tag": "服务发现流程",
-              "desc": "Consumer订阅Registry→获取Provider列表→直连Provider调用→结果返回→统计上报Monitor"
-            }
-          ]
-        },
-        {
-          "id": "dubbo负载均衡与集群容错-36-0-1",
-          "tag": "Dubbo负载均衡与集群容错",
-          "desc": "负载均衡策略四种：Random随机默认权重分配按权重随机调用、RoundRobin轮询权重分配按权重轮询、LeastActive最少活跃调用数相同活跃数随机优先处理能力强的Provider、ConsistentHash一致性Hash相同参数路由到同一Provider适合有状态服务。集群容错策略六种：Failover失败自动重试默认通常用于读操作重试次数可配retries=2、Failfast快速失败立即报错用于非幂等写操作、Failsafe失败安全忽略异常用于日志审计等不关键操作、Failback失败自动恢复定时重发用于消息通知、Forking并行调用多个服务器一个成功即返回用于实时性要求高、Broadcast广播调用所有Provider任一失败报错用于通知更新。面试重点：四种负载均衡适用场景、六种容错策略选择原则。",
-          "details": [
-            {
-              "id": "dubbo负载均衡与集群容错-36-0-1-d0",
-              "tag": "Random随机",
-              "desc": "默认负载均衡按权重随机调用权重越大被调用概率越高适合无状态服务"
-            },
-            {
-              "id": "dubbo负载均衡与集群容错-36-0-1-d1",
-              "tag": "RoundRobin轮询",
-              "desc": "按权重轮询调用权重比例分配请求慢的Provider积累请求不适合性能差异大的集群"
-            },
-            {
-              "id": "dubbo负载均衡与集群容错-36-0-1-d2",
-              "tag": "LeastActive",
-              "desc": "最少活跃数优先调用活跃数少的Provider相同活跃数随机适合处理能力差异大的集群"
-            },
-            {
-              "id": "dubbo负载均衡与集群容错-36-0-1-d3",
-              "tag": "ConsistentHash",
-              "desc": "一致性Hash相同参数路由到同一Provider适合有状态服务如session缓存"
-            },
-            {
-              "id": "dubbo负载均衡与集群容错-36-0-1-d4",
-              "tag": "Failover重试",
-              "desc": "失败自动切换其他Provider重试默认策略适合读操作retries配置重试次数"
-            },
-            {
-              "id": "dubbo负载均衡与集群容错-36-0-1-d5",
-              "tag": "Failfast快速失败",
-              "desc": "立即报错不重试适合非幂等写操作如新增订单重复执行会造成数据重复"
-            },
-            {
-              "id": "dubbo负载均衡与集群容错-36-0-1-d6",
-              "tag": "Failsafe安全失败",
-              "desc": "忽略异常不报错适合不关键操作如日志审计写入失败不影响主流程"
-            },
-            {
-              "id": "dubbo负载均衡与集群容错-36-0-1-d7",
-              "tag": "Forking并行",
-              "desc": "并行调用多个Provider一个成功即返回适合实时性要求高如实时查询"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-};
-
-// diagnostic-tools.js — 三十七、Druid与Arthas诊断工具 模块数据
-// 此文件由 tools/convert.js 生成，可手动编辑维护
-
-window.__MODULES__ = window.__MODULES__ || {};
-window.__MODULES__['diagnostic-tools'] = {
-  "id": "diagnostic-tools",
-  "title": "三十七、Druid与Arthas诊断工具",
-  "tag": "诊断工具",
-  "order": 37,
-  "icon": "🔗",
-  "cssIndex": 34,
-  "subs": [
-    {
-      "id": "37-1-druid连接池与监控-37-0",
-      "title": "37.1 Druid连接池与监控",
-      "points": [
-        {
-          "id": "druid连接池核心配置-37-0-0",
-          "tag": "Druid连接池核心配置",
-          "desc": "Druid是阿里开源的数据库连接池核心优势：监控统计SQL执行性能、防火墙WallFilter防SQL注入、连接池管理高效稳定。关键配置：initialSize初始连接数5、minIdle最小空闲5、maxActive最大活跃20-50按并发量调、maxWait获取连接超时60000ms、timeBetweenEvictionRunsMillis检测间隔60秒、minEvictableIdleTimeMillis最小空闲时间300秒、validationQuery检测SQLSELECT 1、testWhileIdle空闲时检测true、testOnBorrow借用时检测false影响性能、testOnReturn归还时检测false。监控开启StatFilter统计+WallFilter防火墙+LogFilter日志Web监控/druid路径。线上常见问题：连接泄漏close未调用→removeAbandoned=true强制回收、死锁→排查SQL执行顺序、连接耗尽→增大maxActive或排查慢查询。面试重点：核心配置含义、监控功能、连接泄漏处理。",
-          "details": [
-            {
-              "id": "druid连接池核心配置-37-0-0-d0",
-              "tag": "Druid连接池",
-              "desc": "阿里开源数据库连接池核心优势监控统计防SQL注入高效稳定生产推荐"
-            },
-            {
-              "id": "druid连接池核心配置-37-0-0-d1",
-              "tag": "initialSize",
-              "desc": "初始连接数启动时创建默认5按启动并发量设置"
-            },
-            {
-              "id": "druid连接池核心配置-37-0-0-d2",
-              "tag": "maxActive",
-              "desc": "最大活跃连接数20-50按业务并发量调整高峰期不超MySQL max_connections"
-            },
-            {
-              "id": "druid连接池核心配置-37-0-0-d3",
-              "tag": "maxWait",
-              "desc": "获取连接超时毫秒默认60秒超时抛异常避免无限等待"
-            },
-            {
-              "id": "druid连接池核心配置-37-0-0-d4",
-              "tag": "validationQuery",
-              "desc": "连接检测SQL默认SELECT 1验证连接有效性"
-            },
-            {
-              "id": "druid连接池核心配置-37-0-0-d5",
-              "tag": "testWhileIdle",
-              "desc": "空闲时检测连接有效性true推荐不影响性能保持连接健康"
-            },
-            {
-              "id": "druid连接池核心配置-37-0-0-d6",
-              "tag": "WallFilter",
-              "desc": "SQL防火墙防SQL注入拦截危险SQL如Union查询注释绕过等安全必备"
-            },
-            {
-              "id": "druid连接池核心配置-37-0-0-d7",
-              "tag": "StatFilter",
-              "desc": "SQL监控统计记录执行时间次数慢SQL报警性能排查必备"
-            }
-          ]
-        },
-        {
-          "id": "druid监控与线上实践-37-0-1",
-          "tag": "Druid监控与线上实践",
-          "desc": "Druid监控页面/druid路径核心功能：数据源连接池状态活跃空闲等待计数、SQL监控执行次数时间慢SQL排行、SQL防火墙拦截统计攻击SQL、Session监控活跃连接详情、URI监控接口维度统计。慢SQL阈值statFilter.maxSlowSqlMillis默认3000毫秒超阈值标记慢SQL。SQL防火墙WallFilter规则：不允许Union查询防注入、不允许注释绕过、不允许多语句执行、不允许无Where条件UPDATE/DELETE防止误操作。连接泄漏检测removeAbandoned=true超时(300秒)强制回收连接并打印堆栈定位泄漏代码。线上排查：连接耗尽→查看/druid数据源ActiveCount若满→排查慢SQL或增大maxActive→检查连接泄漏removeAbandoned。面试重点：监控面板解读、WallFilter规则、连接泄漏排查步骤。",
-          "details": [
-            {
-              "id": "druid监控与线上实践-37-0-1-d0",
-              "tag": "监控页面",
-              "desc": "/druid路径数据源连接池状态/SQL监控/防火墙/Session监控/URI监控完整运维视图"
-            },
-            {
-              "id": "druid监控与线上实践-37-0-1-d1",
-              "tag": "慢SQL阈值",
-              "desc": "maxSlowSqlMillis默认3000毫秒超阈值标记慢SQL记录到监控页面排行分析"
-            },
-            {
-              "id": "druid监控与线上实践-37-0-1-d2",
-              "tag": "WallFilter规则",
-              "desc": "不允许Union防注入不允许注释绕过不允许多语句不允许无Where的UPDATE/DELETE"
-            },
-            {
-              "id": "druid监控与线上实践-37-0-1-d3",
-              "tag": "连接泄漏",
-              "desc": "removeAbandoned=true超300秒强制回收泄漏连接打印堆栈定位未close的代码"
-            },
-            {
-              "id": "druid监控与线上实践-37-0-1-d4",
-              "tag": "数据源监控",
-              "desc": "ActiveCount活跃IdleCount空闲WaitThreadCount等待连接池使用率一目了然"
-            },
-            {
-              "id": "druid监控与线上实践-37-0-1-d5",
-              "tag": "SQL排行",
-              "desc": "按执行时间次数慢SQL排行快速定位性能瓶颈SQL优化依据"
-            },
-            {
-              "id": "druid监控与线上实践-37-0-1-d6",
-              "tag": "Session详情",
-              "desc": "活跃连接详情关联线程SQL执行状态排查当前执行问题"
-            },
-            {
-              "id": "druid监控与线上实践-37-0-1-d7",
-              "tag": "URI统计",
-              "desc": "接口维度统计调用次数响应时间定位慢接口"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "37-2-arthas线上诊断-37-1",
-      "title": "37.2 Arthas线上诊断",
-      "points": [
-        {
-          "id": "arthas核心命令-37-1-0",
-          "tag": "Arthas核心命令",
-          "desc": "Arthas是阿里开源的Java线上诊断工具无需重启直接附加到Java进程。核心命令：dashboard全局概览线程内存GC环境信息、thread线程详情查看线程状态CPU占用死锁检测、jad反编译class查看线上实际运行代码确认部署版本、watch方法执行观测入参返回值异常实时打印不改代码、trace方法调用链耗时统计定位慢方法瓶颈、stack方法调用路径查看谁调了这个方法、logger动态调整日志级别临时开启DEBUG无需重启、sc/search-class搜索已加载类确认类加载来源、sm/search-method搜索方法确认方法存在。热更新retransform指定class临时替换线上class验证修复效果。面试重点：dashboard解读、watch/trace实战、热更新流程。",
-          "details": [
-            {
-              "id": "arthas核心命令-37-1-0-d0",
-              "tag": "Arthas",
-              "desc": "阿里开源Java线上诊断工具无需重启直接attach到进程排查问题神器"
-            },
-            {
-              "id": "arthas核心命令-37-1-0-d1",
-              "tag": "dashboard",
-              "desc": "全局概览线程内存GC环境信息实时刷新定位CPU内存GC问题起点"
-            },
-            {
-              "id": "arthas核心命令-37-1-0-d2",
-              "tag": "thread",
-              "desc": "线程详情查看状态CPU占用死锁检测thread-n查看最耗CPU线程"
-            },
-            {
-              "id": "arthas核心命令-37-1-0-d3",
-              "tag": "jad反编译",
-              "desc": "反编译线上class查看实际运行代码确认部署版本排查代码是否生效"
-            },
-            {
-              "id": "arthas核心命令-37-1-0-d4",
-              "tag": "watch观测",
-              "desc": "方法执行观测入参返回值异常条件过滤实时打印不改代码无侵入"
-            },
-            {
-              "id": "arthas核心命令-37-1-0-d5",
-              "tag": "trace耗时",
-              "desc": "方法调用链耗时统计定位慢方法瓶颈逐层展开找性能热点"
-            },
-            {
-              "id": "arthas核心命令-37-1-0-d6",
-              "tag": "stack调用路径",
-              "desc": "查看方法被谁调用调用栈定位调用来源排查意外调用"
-            },
-            {
-              "id": "arthas核心命令-37-1-0-d7",
-              "tag": "logger动态",
-              "desc": "临时调整日志级别开启DEBUG无需重启排查后恢复INFO减少日志量"
-            }
-          ]
-        },
-        {
-          "id": "arthas线上问题排查实战-37-1-1",
-          "tag": "Arthas线上问题排查实战",
-          "desc": "线上CPU爆高排查步骤：1.thread查看最耗CPU线程ID→2.thread 线程ID查看线程栈→3.jad反编译确认代码→4.trace追踪方法耗时定位热点→5.watch观测入参返回值。线上OOM排查：1.dashboard看内存使用→2.heap查看堆详情→3.vmtool查看大对象→4.确认是内存泄漏还是流量高峰。线上问题定位：1.接口突然变慢→trace追踪方法耗时逐层展开找瓶颈→2.返回数据异常→watch观测返回值确认入参→3.类冲突版本不一致→sc -d 类名查看加载来源确认jar版本→4.日志不够详细→logger动态调整DEBUG。面试重点：CPU爆高排查完整步骤、OOM排查方法、接口变慢定位流程。",
-          "details": [
-            {
-              "id": "arthas线上问题排查实战-37-1-1-d0",
-              "tag": "CPU爆高排查",
-              "desc": "thread看最耗CPU线程→thread ID看栈→jad确认代码→trace找热点→watch确认参数"
-            },
-            {
-              "id": "arthas线上问题排查实战-37-1-1-d1",
-              "tag": "OOM排查",
-              "desc": "dashboard看内存→heap看堆→vmtool看大对象→确认泄漏或流量高峰→建议dump分析"
-            },
-            {
-              "id": "arthas线上问题排查实战-37-1-1-d2",
-              "tag": "接口变慢",
-              "desc": "trace追踪方法耗时逐层展开找瓶颈层→watch确认入参返回值→jad确认代码版本"
-            },
-            {
-              "id": "arthas线上问题排查实战-37-1-1-d3",
-              "tag": "数据异常",
-              "desc": "watch观测返回值和入参确认是数据问题还是逻辑问题→定位到具体方法"
-            },
-            {
-              "id": "arthas线上问题排查实战-37-1-1-d4",
-              "tag": "类冲突排查",
-              "desc": "sc -d 类名查看加载来源ClassLoader确认jar版本是否冲突"
-            },
-            {
-              "id": "arthas线上问题排查实战-37-1-1-d5",
-              "tag": "日志不够",
-              "desc": "logger动态调整DEBUG级别临时开启无需重启排查完恢复INFO"
-            },
-            {
-              "id": "arthas线上问题排查实战-37-1-1-d6",
-              "tag": "热更新验证",
-              "desc": "retransform临时替换线上class验证修复效果不影响原文件重启恢复原代码"
-            },
-            {
-              "id": "arthas线上问题排查实战-37-1-1-d7",
-              "tag": "死锁排查",
-              "desc": "thread -b直接检测死锁显示死锁线程和等待关系快速定位解决"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-};
-
 // easyexcel.js — 三十八、EasyExcel与数据处理 模块数据
 // 此文件由 tools/convert.js 生成，可手动编辑维护
 
@@ -1032,289 +702,6 @@ window.__MODULES__['easyexcel'] = {
               "id": "easyexcel实战与线上问题-38-0-1-d7",
               "tag": "并发限制",
               "desc": "限制并发导出数量避免多线程同时写Excel内存叠加OOM用Semaphore控制"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-};
-
-// coding-standards.js — 三十九、编程规范与代码质量 模块数据
-// 此文件由 tools/convert.js 生成，可手动编辑维护
-
-window.__MODULES__ = window.__MODULES__ || {};
-window.__MODULES__['coding-standards'] = {
-  "id": "coding-standards",
-  "title": "三十九、编程规范与代码质量",
-  "tag": "编程规范",
-  "order": 39,
-  "icon": "📊",
-  "cssIndex": 36,
-  "subs": [
-    {
-      "id": "39-1-编码规范-39-0",
-      "title": "39.1 编码规范",
-      "points": [
-        {
-          "id": "java编码规范核心-39-0-0",
-          "tag": "Java编码规范核心",
-          "desc": "Java编码规范源自阿里巴巴Java开发手册核心要点：命名规范类名UpperCamelCase方法变量lowerCamelCase常量UPPER_SNAKE_CASE包名全小写、代码格式缩进4空格不用Tab单行长度120字符大括号不另起行、注释要求类/接口Javadoc公有方法Javadoc内部实现行注释、异常处理不捕获Exception大范围异常要精确捕获不用return/break/continue退出finally、并发处理线程池创建不用Executors.newFixedThreadPool避免OOM用ThreadPoolExecutor自定义、日志规范SLF4J门面不直接用Log4j/Logback日志占位符{}不字符串拼接。代码质量度量：圈复杂度Cyclomatic Complexity<10方法不超过80行。面试重点：命名规范、线程池创建禁用Executors、日志规范。",
-          "details": [
-            {
-              "id": "java编码规范核心-39-0-0-d0",
-              "tag": "命名规范",
-              "desc": "类名UpperCamelCase方法变量lowerCamelCase常量UPPER_SNAKE_CASE包名全小写统一风格"
-            },
-            {
-              "id": "java编码规范核心-39-0-0-d1",
-              "tag": "代码格式",
-              "desc": "缩进4空格不用Tab单行120字符大括号不另起行IDE格式化统一风格避免争议"
-            },
-            {
-              "id": "java编码规范核心-39-0-0-d2",
-              "tag": "注释要求",
-              "desc": "类接口Javadoc公有方法Javadoc内部实现行注释代码即文档好注释解释为什么不是做什么"
-            },
-            {
-              "id": "java编码规范核心-39-0-0-d3",
-              "tag": "异常处理",
-              "desc": "不捕获大范围Exception精确捕获具体异常不用return退出finally异常不吞catch后必须处理"
-            },
-            {
-              "id": "java编码规范核心-39-0-0-d4",
-              "tag": "线程池创建",
-              "desc": "禁用Executors.newFixedThreadPool避免OOM用ThreadPoolExecutor自定义明确参数控制资源"
-            },
-            {
-              "id": "java编码规范核心-39-0-0-d5",
-              "tag": "日志规范",
-              "desc": "SLF4J门面不直接用Log4j/Logback占位符{}不字符串拼接避免debug级别字符串拼接开销"
-            },
-            {
-              "id": "java编码规范核心-39-0-0-d6",
-              "tag": "圈复杂度",
-              "desc": "Cyclomatic Complexity方法分支复杂度<10超过拆分可读性差难以测试和理解"
-            },
-            {
-              "id": "java编码规范核心-39-0-0-d7",
-              "tag": "方法长度",
-              "desc": "单方法不超过80行超长方法拆分职责单一每个方法只做一件事"
-            }
-          ]
-        },
-        {
-          "id": "代码质量与重构-39-0-1",
-          "tag": "代码质量与重构",
-          "desc": "代码质量核心原则：SOLID原则单一职责开闭接口隔离依赖倒置里氏替换、DRY不重复抽象公共逻辑、KISS保持简单不过度设计、YAGNI不做当前不需要的功能。重构手法：提取方法过长方法拆分职责单一、提取变量魔法数字命名常量、提取类职责过多拆分、内联方法无用包装方法直接调用、移动方法方法放更合适的类、替换条件多if-else用策略模式/枚举/Map查找。代码异味Code Smell：过长方法/过大类/重复代码/过多参数/魔法数字/过深嵌套/ shotgun surgery一改多处。代码评审Code Review关注：逻辑正确性边界条件异常处理性能安全规范一致性。面试重点：SOLID原则理解、重构手法实战、Code Smell识别。",
-          "details": [
-            {
-              "id": "代码质量与重构-39-0-1-d0",
-              "tag": "SOLID原则",
-              "desc": "单一职责SRP开闭OCP接口隔离ISP依赖倒置DIP里氏替换LSP五大设计原则"
-            },
-            {
-              "id": "代码质量与重构-39-0-1-d1",
-              "tag": "DRY原则",
-              "desc": "Don't Repeat Yourself不重复自己相同逻辑抽象公共方法/工具类避免多处维护"
-            },
-            {
-              "id": "代码质量与重构-39-0-1-d2",
-              "tag": "KISS原则",
-              "desc": "Keep It Simple Stupid保持简单不过度设计能用简单方案不用复杂架构"
-            },
-            {
-              "id": "代码质量与重构-39-0-1-d3",
-              "tag": "YAGNI原则",
-              "desc": "You Aren't Gonna Need It不做当前不需要的功能避免过度设计预测需求"
-            },
-            {
-              "id": "代码质量与重构-39-0-1-d4",
-              "tag": "提取方法",
-              "desc": "过长方法拆分职责单一每个方法名清晰表达意图不超过80行"
-            },
-            {
-              "id": "代码质量与重构-39-0-1-d5",
-              "tag": "策略模式",
-              "desc": "多if-else分支用策略模式每种策略独立类可扩展新增策略不改原代码"
-            },
-            {
-              "id": "代码质量与重构-39-0-1-d6",
-              "tag": "Code Smell",
-              "desc": "代码异味过长方法过大类重复代码过多参数魔法数字过深嵌套 shotgun surgery"
-            },
-            {
-              "id": "代码质量与重构-39-0-1-d7",
-              "tag": "Code Review",
-              "desc": "关注逻辑正确性边界条件异常处理性能安全规范一致性重点review高风险代码"
-            }
-          ]
-        }
-      ]
-    }
-  ]
-};
-
-// performance-optimization.js — 四十、性能优化与线上问题排查 模块数据
-// 此文件由 tools/convert.js 生成，可手动编辑维护
-
-window.__MODULES__ = window.__MODULES__ || {};
-window.__MODULES__['performance-optimization'] = {
-  "id": "performance-optimization",
-  "title": "四十、性能优化与线上问题排查",
-  "tag": "性能优化",
-  "order": 40,
-  "icon": "📐",
-  "cssIndex": 37,
-  "subs": [
-    {
-      "id": "40-1-jvm性能调优-40-0",
-      "title": "40.1 JVM性能调优",
-      "points": [
-        {
-          "id": "jvm性能调优实战-40-0-0",
-          "tag": "JVM性能调优实战",
-          "desc": "JVM调优核心参数：堆内存-Xms初始-Xmx最大生产设置相同避免动态扩缩、新生代-Xmn或-XX:NewRatio控制比例、Metaspace-XX:MetaspaceSize元空间大小、GC选择-XX:+UseG1GC(推荐8G+堆)或ZGC(推荐16G+堆)。GC调优目标：低延迟GC停顿<200ms、高吞吐GC时间占比<1%、不OOM。G1调优：-XX:MaxGCPauseMillis=200目标停顿、-XX:InitiatingHeapOccupancyPercent=45触发并发标记阈值、-XX:G1HeapRegionSize根据堆大小选1/2/4/8/16/32MB。ZGC调优：-XX:SoftMaxHeapSize软上限避免OOM、-XX:ZCollectionInterval最小间隔。监控工具jstat看GC统计jmap看堆详情jstack看线程栈GC日志+VisualVM/GCEasy分析。面试重点：G1/ZGC参数含义、GC日志分析、OOM排查流程。",
-          "details": [
-            {
-              "id": "jvm性能调优实战-40-0-0-d0",
-              "tag": "Xms/Xmx",
-              "desc": "初始和最大堆内存生产设相同避免动态扩缩引起GC抖动推荐物理内存60-70%"
-            },
-            {
-              "id": "jvm性能调优实战-40-0-0-d1",
-              "tag": "NewRatio",
-              "desc": "新生代与老年代比例默认2即新生代1/3老年代2/3高吞吐调大新生代"
-            },
-            {
-              "id": "jvm性能调优实战-40-0-0-d2",
-              "tag": "G1GC",
-              "desc": "推荐8G+堆使用Region分区混合收集可预测停顿MaxGCPauseMillis控制目标"
-            },
-            {
-              "id": "jvm性能调优实战-40-0-0-d3",
-              "tag": "ZGC",
-              "desc": "推荐16G+堆使用亚毫秒级停顿染色指针读屏障几乎全程并发适合低延迟场景"
-            },
-            {
-              "id": "jvm性能调优实战-40-0-0-d4",
-              "tag": "MaxGCPauseMillis",
-              "desc": "G1目标最大停顿时间默认200ms根据业务SLA调整不是越低越好"
-            },
-            {
-              "id": "jvm性能调优实战-40-0-0-d5",
-              "tag": "IHOP阈值",
-              "desc": "InitiatingHeapOccupancyPercent触发并发标记的堆占用百分比默认45可动态调整"
-            },
-            {
-              "id": "jvm性能调优实战-40-0-0-d6",
-              "tag": "jstat监控",
-              "desc": "查看GC统计各代容量GC次数时间YGC/FGC/FGCT定位GC频率和耗时"
-            },
-            {
-              "id": "jvm性能调优实战-40-0-0-d7",
-              "tag": "GC日志分析",
-              "desc": "-Xlog:gc*打印详细GC日志GCEasy/JConsole/VisualVM可视化分析GC趋势"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "40-2-线上oom与cpu爆高排查-40-1",
-      "title": "40.2 线上OOM与CPU爆高排查",
-      "points": [
-        {
-          "id": "线上oom排查全流程-40-1-0",
-          "tag": "线上OOM排查全流程",
-          "desc": "OOM类型与排查：1.Java heap space堆内存不足→dump分析大对象泄漏→jmap -histo看对象排行→MAT分析引用链定位泄漏源→确认是流量高峰(临时扩容)还是内存泄漏(修复代码)。2.Metaspace元空间不足→类加载过多动态代理CGLIB→-XX:MaxMetaspaceSize调大→排查是否有大量动态类生成。3.GC overhead limit exceededGC耗时超过98%回收不到2%→堆确实满了或GC策略不对→增大堆或换GC算法。4.Direct buffer memory直接内存不足→Netty/NIO堆外内存泄漏→-XX:MaxDirectMemorySize调大→排查ByteBuf未release。5.unable to create new native thread线程数超限→线程池泄漏或创建过多→ulimit -u增大→排查线程池配置。排查步骤：1.确认OOM类型→2.jmap dump堆→3.MAT/VisualVM分析→4.定位大对象/泄漏链→5.修复验证。面试重点：5种OOM类型区别、MAT分析流程、直接内存泄漏排查。",
-          "details": [
-            {
-              "id": "线上oom排查全流程-40-1-0-d0",
-              "tag": "Heap OOM",
-              "desc": "Java heap space堆内存不足最常见dump分析大对象MAT定位泄漏引用链"
-            },
-            {
-              "id": "线上oom排查全流程-40-1-0-d1",
-              "tag": "Metaspace OOM",
-              "desc": "元空间不足类加载过多动态代理CGLIB频繁生成调整MaxMetaspaceSize排查动态类"
-            },
-            {
-              "id": "线上oom排查全流程-40-1-0-d2",
-              "tag": "GC overhead",
-              "desc": "GC耗时超98%回收不足2%堆确实满或GC策略不对增大堆换G1/ZGC"
-            },
-            {
-              "id": "线上oom排查全流程-40-1-0-d3",
-              "tag": "Direct内存",
-              "desc": "堆外直接内存不足Netty/NIO ByteBuf未release泄漏MaxDirectMemorySize调大排查"
-            },
-            {
-              "id": "线上oom排查全流程-40-1-0-d4",
-              "tag": "Native thread",
-              "desc": "线程数超限线程池泄漏创建过多ulimit -u增大排查线程池配置和泄漏代码"
-            },
-            {
-              "id": "线上oom排查全流程-40-1-0-d5",
-              "tag": "jmap dump",
-              "desc": "jmap -dump:format=b,file=heap.hprof PID生成堆dump文件MAT/VisualVM分析"
-            },
-            {
-              "id": "线上oom排查全流程-40-1-0-d6",
-              "tag": "MAT分析",
-              "desc": "Eclipse MAT分析dumpLeak Suspects自动找泄漏嫌疑对象引用链定位根源"
-            },
-            {
-              "id": "线上oom排查全流程-40-1-0-d7",
-              "tag": "排查步骤",
-              "desc": "确认OOM类型→jmap dump→MAT分析→定位大对象/泄漏链→修复→验证回归"
-            }
-          ]
-        },
-        {
-          "id": "线上cpu爆高排查全流程-40-1-1",
-          "tag": "线上CPU爆高排查全流程",
-          "desc": "CPU爆高排查分两种场景：1.业务线程CPU高→thread看最耗CPU线程→jad反编译确认代码→trace追踪调用链→定位死循环/复杂计算/正则回溯/频繁GC。2.GC线程CPU高→jstat看GC频率和耗时→确认是Full GC频繁导致→dump分析堆确认大对象→调整堆大小或GC策略。高频死循环场景：while(true)无退出条件、正则表达式回溯攻击如(a+)+匹配长字符串、HashMap高并发扩容死链JDK7、大List排序O(n^2)。GC导致CPU高：堆不足频繁Full GC、内存泄漏GC回收不了、大对象直接进老年代。排查步骤：1.top确认Java进程CPU高→2.top -H看线程→3.jstack或Arthas thread定位→4.确认是业务线程还是GC线程→5.针对性处理。面试重点：两种场景区别、正则回溯攻击、HashMap死链。",
-          "details": [
-            {
-              "id": "线上cpu爆高排查全流程-40-1-1-d0",
-              "tag": "业务线程CPU高",
-              "desc": "thread看最耗CPU线程jad确认代码trace追踪调用链定位死循环/复杂计算"
-            },
-            {
-              "id": "线上cpu爆高排查全流程-40-1-1-d1",
-              "tag": "GC线程CPU高",
-              "desc": "jstat看GC频率Full GC频繁导致dump分析堆调整大小或GC策略"
-            },
-            {
-              "id": "线上cpu爆高排查全流程-40-1-1-d2",
-              "tag": "正则回溯攻击",
-              "desc": "恶意正则(a+)+匹配长字符串导致回溯指数级CPU飙升预编译+长度限制防攻击"
-            },
-            {
-              "id": "线上cpu爆高排查全流程-40-1-1-d3",
-              "tag": "HashMap死链",
-              "desc": "JDK7并发扩容可能形成环形链表死循环get()无限循环JDK8修复但仍不安全"
-            },
-            {
-              "id": "线上cpu爆高排查全流程-40-1-1-d4",
-              "tag": "死循环排查",
-              "desc": "thread看栈→jad确认代码→trace追踪→定位while(true)无退出/递归无终止"
-            },
-            {
-              "id": "线上cpu爆高排查全流程-40-1-1-d5",
-              "tag": "Full GC频繁",
-              "desc": "堆不足/内存泄漏/大对象进老年代→调整堆大小→换G1/ZGC→修复泄漏代码"
-            },
-            {
-              "id": "线上cpu爆高排查全流程-40-1-1-d6",
-              "tag": "排查步骤",
-              "desc": "top确认Java进程→top -H看线程→jstack/Arthas thread→区分业务/GC→针对性处理"
-            },
-            {
-              "id": "线上cpu爆高排查全流程-40-1-1-d7",
-              "tag": "预防措施",
-              "desc": "线程池限制线程数/正则预编译+长度限制/HashMap用ConcurrentHashMap/监控告警"
             }
           ]
         }
@@ -1859,6 +1246,376 @@ window.__MODULES__['design-patterns'] = {
             {"id": "迭代器与命令模式-44-2-1-d3", "tag": "命令模式核心", "desc": "Command接口execute()/undo()+ConcreteCommand封装Receiver操作+Invoker调用Command解耦发送者与接收者"},
             {"id": "迭代器与命令模式-44-2-1-d4", "tag": "撤销机制", "desc": "Command.execute()执行+undo()反向操作恢复状态;维护命令历史栈支持多步撤销;如文本编辑器撤销重做"},
             {"id": "迭代器与命令模式-44-2-1-d5", "tag": "典型应用", "desc": "迭代器:Java Collection遍历;命令:Runnable线程任务/Spring JMS消息/游戏操作撤销/宏命令批量执行"}
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+// diagnostic-perf.js — 线上诊断与性能优化 模块数据
+// 此文件由 tools/convert.js 生成，可手动编辑维护
+
+window.__MODULES__ = window.__MODULES__ || {};
+window.__MODULES__['diagnostic-perf'] = {
+  "id": "diagnostic-perf",
+  "title": "线上诊断与性能优化",
+  "tag": "诊断与优化",
+  "order": 37,
+  "icon": "🔧",
+  "cssIndex": 36,
+  "subs": [
+
+    {
+      "id": "37-1-druid连接池与监控-37-0",
+      "title": "37.1 Druid连接池与监控",
+      "points": [
+        {
+          "id": "druid连接池核心配置-37-0-0",
+          "tag": "Druid连接池核心配置",
+          "desc": "Druid是阿里开源的数据库连接池核心优势：监控统计SQL执行性能、防火墙WallFilter防SQL注入、连接池管理高效稳定。关键配置：initialSize初始连接数5、minIdle最小空闲5、maxActive最大活跃20-50按并发量调、maxWait获取连接超时60000ms、timeBetweenEvictionRunsMillis检测间隔60秒、minEvictableIdleTimeMillis最小空闲时间300秒、validationQuery检测SQLSELECT 1、testWhileIdle空闲时检测true、testOnBorrow借用时检测false影响性能、testOnReturn归还时检测false。监控开启StatFilter统计+WallFilter防火墙+LogFilter日志Web监控/druid路径。线上常见问题：连接泄漏close未调用→removeAbandoned=true强制回收、死锁→排查SQL执行顺序、连接耗尽→增大maxActive或排查慢查询。面试重点：核心配置含义、监控功能、连接泄漏处理。",
+          "details": [
+            {
+              "id": "druid连接池核心配置-37-0-0-d0",
+              "tag": "Druid连接池",
+              "desc": "阿里开源数据库连接池核心优势监控统计防SQL注入高效稳定生产推荐"
+            },
+            {
+              "id": "druid连接池核心配置-37-0-0-d1",
+              "tag": "initialSize",
+              "desc": "初始连接数启动时创建默认5按启动并发量设置"
+            },
+            {
+              "id": "druid连接池核心配置-37-0-0-d2",
+              "tag": "maxActive",
+              "desc": "最大活跃连接数20-50按业务并发量调整高峰期不超MySQL max_connections"
+            },
+            {
+              "id": "druid连接池核心配置-37-0-0-d3",
+              "tag": "maxWait",
+              "desc": "获取连接超时毫秒默认60秒超时抛异常避免无限等待"
+            },
+            {
+              "id": "druid连接池核心配置-37-0-0-d4",
+              "tag": "validationQuery",
+              "desc": "连接检测SQL默认SELECT 1验证连接有效性"
+            },
+            {
+              "id": "druid连接池核心配置-37-0-0-d5",
+              "tag": "testWhileIdle",
+              "desc": "空闲时检测连接有效性true推荐不影响性能保持连接健康"
+            },
+            {
+              "id": "druid连接池核心配置-37-0-0-d6",
+              "tag": "WallFilter",
+              "desc": "SQL防火墙防SQL注入拦截危险SQL如Union查询注释绕过等安全必备"
+            },
+            {
+              "id": "druid连接池核心配置-37-0-0-d7",
+              "tag": "StatFilter",
+              "desc": "SQL监控统计记录执行时间次数慢SQL报警性能排查必备"
+            }
+          ]
+        },
+        {
+          "id": "druid监控与线上实践-37-0-1",
+          "tag": "Druid监控与线上实践",
+          "desc": "Druid监控页面/druid路径核心功能：数据源连接池状态活跃空闲等待计数、SQL监控执行次数时间慢SQL排行、SQL防火墙拦截统计攻击SQL、Session监控活跃连接详情、URI监控接口维度统计。慢SQL阈值statFilter.maxSlowSqlMillis默认3000毫秒超阈值标记慢SQL。SQL防火墙WallFilter规则：不允许Union查询防注入、不允许注释绕过、不允许多语句执行、不允许无Where条件UPDATE/DELETE防止误操作。连接泄漏检测removeAbandoned=true超时(300秒)强制回收连接并打印堆栈定位泄漏代码。线上排查：连接耗尽→查看/druid数据源ActiveCount若满→排查慢SQL或增大maxActive→检查连接泄漏removeAbandoned。面试重点：监控面板解读、WallFilter规则、连接泄漏排查步骤。",
+          "details": [
+            {
+              "id": "druid监控与线上实践-37-0-1-d0",
+              "tag": "监控页面",
+              "desc": "/druid路径数据源连接池状态/SQL监控/防火墙/Session监控/URI监控完整运维视图"
+            },
+            {
+              "id": "druid监控与线上实践-37-0-1-d1",
+              "tag": "慢SQL阈值",
+              "desc": "maxSlowSqlMillis默认3000毫秒超阈值标记慢SQL记录到监控页面排行分析"
+            },
+            {
+              "id": "druid监控与线上实践-37-0-1-d2",
+              "tag": "WallFilter规则",
+              "desc": "不允许Union防注入不允许注释绕过不允许多语句不允许无Where的UPDATE/DELETE"
+            },
+            {
+              "id": "druid监控与线上实践-37-0-1-d3",
+              "tag": "连接泄漏",
+              "desc": "removeAbandoned=true超300秒强制回收泄漏连接打印堆栈定位未close的代码"
+            },
+            {
+              "id": "druid监控与线上实践-37-0-1-d4",
+              "tag": "数据源监控",
+              "desc": "ActiveCount活跃IdleCount空闲WaitThreadCount等待连接池使用率一目了然"
+            },
+            {
+              "id": "druid监控与线上实践-37-0-1-d5",
+              "tag": "SQL排行",
+              "desc": "按执行时间次数慢SQL排行快速定位性能瓶颈SQL优化依据"
+            },
+            {
+              "id": "druid监控与线上实践-37-0-1-d6",
+              "tag": "Session详情",
+              "desc": "活跃连接详情关联线程SQL执行状态排查当前执行问题"
+            },
+            {
+              "id": "druid监控与线上实践-37-0-1-d7",
+              "tag": "URI统计",
+              "desc": "接口维度统计调用次数响应时间定位慢接口"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "37-2-arthas线上诊断-37-1",
+      "title": "37.2 Arthas线上诊断",
+      "points": [
+        {
+          "id": "arthas核心命令-37-1-0",
+          "tag": "Arthas核心命令",
+          "desc": "Arthas是阿里开源的Java线上诊断工具无需重启直接附加到Java进程。核心命令：dashboard全局概览线程内存GC环境信息、thread线程详情查看线程状态CPU占用死锁检测、jad反编译class查看线上实际运行代码确认部署版本、watch方法执行观测入参返回值异常实时打印不改代码、trace方法调用链耗时统计定位慢方法瓶颈、stack方法调用路径查看谁调了这个方法、logger动态调整日志级别临时开启DEBUG无需重启、sc/search-class搜索已加载类确认类加载来源、sm/search-method搜索方法确认方法存在。热更新retransform指定class临时替换线上class验证修复效果。面试重点：dashboard解读、watch/trace实战、热更新流程。",
+          "details": [
+            {
+              "id": "arthas核心命令-37-1-0-d0",
+              "tag": "Arthas",
+              "desc": "阿里开源Java线上诊断工具无需重启直接attach到进程排查问题神器"
+            },
+            {
+              "id": "arthas核心命令-37-1-0-d1",
+              "tag": "dashboard",
+              "desc": "全局概览线程内存GC环境信息实时刷新定位CPU内存GC问题起点"
+            },
+            {
+              "id": "arthas核心命令-37-1-0-d2",
+              "tag": "thread",
+              "desc": "线程详情查看状态CPU占用死锁检测thread-n查看最耗CPU线程"
+            },
+            {
+              "id": "arthas核心命令-37-1-0-d3",
+              "tag": "jad反编译",
+              "desc": "反编译线上class查看实际运行代码确认部署版本排查代码是否生效"
+            },
+            {
+              "id": "arthas核心命令-37-1-0-d4",
+              "tag": "watch观测",
+              "desc": "方法执行观测入参返回值异常条件过滤实时打印不改代码无侵入"
+            },
+            {
+              "id": "arthas核心命令-37-1-0-d5",
+              "tag": "trace耗时",
+              "desc": "方法调用链耗时统计定位慢方法瓶颈逐层展开找性能热点"
+            },
+            {
+              "id": "arthas核心命令-37-1-0-d6",
+              "tag": "stack调用路径",
+              "desc": "查看方法被谁调用调用栈定位调用来源排查意外调用"
+            },
+            {
+              "id": "arthas核心命令-37-1-0-d7",
+              "tag": "logger动态",
+              "desc": "临时调整日志级别开启DEBUG无需重启排查后恢复INFO减少日志量"
+            }
+          ]
+        },
+        {
+          "id": "arthas线上问题排查实战-37-1-1",
+          "tag": "Arthas线上问题排查实战",
+          "desc": "线上CPU爆高排查步骤：1.thread查看最耗CPU线程ID→2.thread 线程ID查看线程栈→3.jad反编译确认代码→4.trace追踪方法耗时定位热点→5.watch观测入参返回值。线上OOM排查：1.dashboard看内存使用→2.heap查看堆详情→3.vmtool查看大对象→4.确认是内存泄漏还是流量高峰。线上问题定位：1.接口突然变慢→trace追踪方法耗时逐层展开找瓶颈→2.返回数据异常→watch观测返回值确认入参→3.类冲突版本不一致→sc -d 类名查看加载来源确认jar版本→4.日志不够详细→logger动态调整DEBUG。面试重点：CPU爆高排查完整步骤、OOM排查方法、接口变慢定位流程。",
+          "details": [
+            {
+              "id": "arthas线上问题排查实战-37-1-1-d0",
+              "tag": "CPU爆高排查",
+              "desc": "thread看最耗CPU线程→thread ID看栈→jad确认代码→trace找热点→watch确认参数"
+            },
+            {
+              "id": "arthas线上问题排查实战-37-1-1-d1",
+              "tag": "OOM排查",
+              "desc": "dashboard看内存→heap看堆→vmtool看大对象→确认泄漏或流量高峰→建议dump分析"
+            },
+            {
+              "id": "arthas线上问题排查实战-37-1-1-d2",
+              "tag": "接口变慢",
+              "desc": "trace追踪方法耗时逐层展开找瓶颈层→watch确认入参返回值→jad确认代码版本"
+            },
+            {
+              "id": "arthas线上问题排查实战-37-1-1-d3",
+              "tag": "数据异常",
+              "desc": "watch观测返回值和入参确认是数据问题还是逻辑问题→定位到具体方法"
+            },
+            {
+              "id": "arthas线上问题排查实战-37-1-1-d4",
+              "tag": "类冲突排查",
+              "desc": "sc -d 类名查看加载来源ClassLoader确认jar版本是否冲突"
+            },
+            {
+              "id": "arthas线上问题排查实战-37-1-1-d5",
+              "tag": "日志不够",
+              "desc": "logger动态调整DEBUG级别临时开启无需重启排查完恢复INFO"
+            },
+            {
+              "id": "arthas线上问题排查实战-37-1-1-d6",
+              "tag": "热更新验证",
+              "desc": "retransform临时替换线上class验证修复效果不影响原文件重启恢复原代码"
+            },
+            {
+              "id": "arthas线上问题排查实战-37-1-1-d7",
+              "tag": "死锁排查",
+              "desc": "thread -b直接检测死锁显示死锁线程和等待关系快速定位解决"
+            }
+          ]
+        }
+      ]
+    },
+
+    {
+      "id": "40-1-jvm性能调优-40-0",
+      "title": "40.1 JVM性能调优",
+      "points": [
+        {
+          "id": "jvm性能调优实战-40-0-0",
+          "tag": "JVM性能调优实战",
+          "desc": "JVM调优核心参数：堆内存-Xms初始-Xmx最大生产设置相同避免动态扩缩、新生代-Xmn或-XX:NewRatio控制比例、Metaspace-XX:MetaspaceSize元空间大小、GC选择-XX:+UseG1GC(推荐8G+堆)或ZGC(推荐16G+堆)。GC调优目标：低延迟GC停顿<200ms、高吞吐GC时间占比<1%、不OOM。G1调优：-XX:MaxGCPauseMillis=200目标停顿、-XX:InitiatingHeapOccupancyPercent=45触发并发标记阈值、-XX:G1HeapRegionSize根据堆大小选1/2/4/8/16/32MB。ZGC调优：-XX:SoftMaxHeapSize软上限避免OOM、-XX:ZCollectionInterval最小间隔。监控工具jstat看GC统计jmap看堆详情jstack看线程栈GC日志+VisualVM/GCEasy分析。面试重点：G1/ZGC参数含义、GC日志分析、OOM排查流程。",
+          "details": [
+            {
+              "id": "jvm性能调优实战-40-0-0-d0",
+              "tag": "Xms/Xmx",
+              "desc": "初始和最大堆内存生产设相同避免动态扩缩引起GC抖动推荐物理内存60-70%"
+            },
+            {
+              "id": "jvm性能调优实战-40-0-0-d1",
+              "tag": "NewRatio",
+              "desc": "新生代与老年代比例默认2即新生代1/3老年代2/3高吞吐调大新生代"
+            },
+            {
+              "id": "jvm性能调优实战-40-0-0-d2",
+              "tag": "G1GC",
+              "desc": "推荐8G+堆使用Region分区混合收集可预测停顿MaxGCPauseMillis控制目标"
+            },
+            {
+              "id": "jvm性能调优实战-40-0-0-d3",
+              "tag": "ZGC",
+              "desc": "推荐16G+堆使用亚毫秒级停顿染色指针读屏障几乎全程并发适合低延迟场景"
+            },
+            {
+              "id": "jvm性能调优实战-40-0-0-d4",
+              "tag": "MaxGCPauseMillis",
+              "desc": "G1目标最大停顿时间默认200ms根据业务SLA调整不是越低越好"
+            },
+            {
+              "id": "jvm性能调优实战-40-0-0-d5",
+              "tag": "IHOP阈值",
+              "desc": "InitiatingHeapOccupancyPercent触发并发标记的堆占用百分比默认45可动态调整"
+            },
+            {
+              "id": "jvm性能调优实战-40-0-0-d6",
+              "tag": "jstat监控",
+              "desc": "查看GC统计各代容量GC次数时间YGC/FGC/FGCT定位GC频率和耗时"
+            },
+            {
+              "id": "jvm性能调优实战-40-0-0-d7",
+              "tag": "GC日志分析",
+              "desc": "-Xlog:gc*打印详细GC日志GCEasy/JConsole/VisualVM可视化分析GC趋势"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "40-2-线上oom与cpu爆高排查-40-1",
+      "title": "40.2 线上OOM与CPU爆高排查",
+      "points": [
+        {
+          "id": "线上oom排查全流程-40-1-0",
+          "tag": "线上OOM排查全流程",
+          "desc": "OOM类型与排查：1.Java heap space堆内存不足→dump分析大对象泄漏→jmap -histo看对象排行→MAT分析引用链定位泄漏源→确认是流量高峰(临时扩容)还是内存泄漏(修复代码)。2.Metaspace元空间不足→类加载过多动态代理CGLIB→-XX:MaxMetaspaceSize调大→排查是否有大量动态类生成。3.GC overhead limit exceededGC耗时超过98%回收不到2%→堆确实满了或GC策略不对→增大堆或换GC算法。4.Direct buffer memory直接内存不足→Netty/NIO堆外内存泄漏→-XX:MaxDirectMemorySize调大→排查ByteBuf未release。5.unable to create new native thread线程数超限→线程池泄漏或创建过多→ulimit -u增大→排查线程池配置。排查步骤：1.确认OOM类型→2.jmap dump堆→3.MAT/VisualVM分析→4.定位大对象/泄漏链→5.修复验证。面试重点：5种OOM类型区别、MAT分析流程、直接内存泄漏排查。",
+          "details": [
+            {
+              "id": "线上oom排查全流程-40-1-0-d0",
+              "tag": "Heap OOM",
+              "desc": "Java heap space堆内存不足最常见dump分析大对象MAT定位泄漏引用链"
+            },
+            {
+              "id": "线上oom排查全流程-40-1-0-d1",
+              "tag": "Metaspace OOM",
+              "desc": "元空间不足类加载过多动态代理CGLIB频繁生成调整MaxMetaspaceSize排查动态类"
+            },
+            {
+              "id": "线上oom排查全流程-40-1-0-d2",
+              "tag": "GC overhead",
+              "desc": "GC耗时超98%回收不足2%堆确实满或GC策略不对增大堆换G1/ZGC"
+            },
+            {
+              "id": "线上oom排查全流程-40-1-0-d3",
+              "tag": "Direct内存",
+              "desc": "堆外直接内存不足Netty/NIO ByteBuf未release泄漏MaxDirectMemorySize调大排查"
+            },
+            {
+              "id": "线上oom排查全流程-40-1-0-d4",
+              "tag": "Native thread",
+              "desc": "线程数超限线程池泄漏创建过多ulimit -u增大排查线程池配置和泄漏代码"
+            },
+            {
+              "id": "线上oom排查全流程-40-1-0-d5",
+              "tag": "jmap dump",
+              "desc": "jmap -dump:format=b,file=heap.hprof PID生成堆dump文件MAT/VisualVM分析"
+            },
+            {
+              "id": "线上oom排查全流程-40-1-0-d6",
+              "tag": "MAT分析",
+              "desc": "Eclipse MAT分析dumpLeak Suspects自动找泄漏嫌疑对象引用链定位根源"
+            },
+            {
+              "id": "线上oom排查全流程-40-1-0-d7",
+              "tag": "排查步骤",
+              "desc": "确认OOM类型→jmap dump→MAT分析→定位大对象/泄漏链→修复→验证回归"
+            }
+          ]
+        },
+        {
+          "id": "线上cpu爆高排查全流程-40-1-1",
+          "tag": "线上CPU爆高排查全流程",
+          "desc": "CPU爆高排查分两种场景：1.业务线程CPU高→thread看最耗CPU线程→jad反编译确认代码→trace追踪调用链→定位死循环/复杂计算/正则回溯/频繁GC。2.GC线程CPU高→jstat看GC频率和耗时→确认是Full GC频繁导致→dump分析堆确认大对象→调整堆大小或GC策略。高频死循环场景：while(true)无退出条件、正则表达式回溯攻击如(a+)+匹配长字符串、HashMap高并发扩容死链JDK7、大List排序O(n^2)。GC导致CPU高：堆不足频繁Full GC、内存泄漏GC回收不了、大对象直接进老年代。排查步骤：1.top确认Java进程CPU高→2.top -H看线程→3.jstack或Arthas thread定位→4.确认是业务线程还是GC线程→5.针对性处理。面试重点：两种场景区别、正则回溯攻击、HashMap死链。",
+          "details": [
+            {
+              "id": "线上cpu爆高排查全流程-40-1-1-d0",
+              "tag": "业务线程CPU高",
+              "desc": "thread看最耗CPU线程jad确认代码trace追踪调用链定位死循环/复杂计算"
+            },
+            {
+              "id": "线上cpu爆高排查全流程-40-1-1-d1",
+              "tag": "GC线程CPU高",
+              "desc": "jstat看GC频率Full GC频繁导致dump分析堆调整大小或GC策略"
+            },
+            {
+              "id": "线上cpu爆高排查全流程-40-1-1-d2",
+              "tag": "正则回溯攻击",
+              "desc": "恶意正则(a+)+匹配长字符串导致回溯指数级CPU飙升预编译+长度限制防攻击"
+            },
+            {
+              "id": "线上cpu爆高排查全流程-40-1-1-d3",
+              "tag": "HashMap死链",
+              "desc": "JDK7并发扩容可能形成环形链表死循环get()无限循环JDK8修复但仍不安全"
+            },
+            {
+              "id": "线上cpu爆高排查全流程-40-1-1-d4",
+              "tag": "死循环排查",
+              "desc": "thread看栈→jad确认代码→trace追踪→定位while(true)无退出/递归无终止"
+            },
+            {
+              "id": "线上cpu爆高排查全流程-40-1-1-d5",
+              "tag": "Full GC频繁",
+              "desc": "堆不足/内存泄漏/大对象进老年代→调整堆大小→换G1/ZGC→修复泄漏代码"
+            },
+            {
+              "id": "线上cpu爆高排查全流程-40-1-1-d6",
+              "tag": "排查步骤",
+              "desc": "top确认Java进程→top -H看线程→jstack/Arthas thread→区分业务/GC→针对性处理"
+            },
+            {
+              "id": "线上cpu爆高排查全流程-40-1-1-d7",
+              "tag": "预防措施",
+              "desc": "线程池限制线程数/正则预编译+长度限制/HashMap用ConcurrentHashMap/监控告警"
+            }
           ]
         }
       ]

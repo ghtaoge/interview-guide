@@ -7,7 +7,7 @@
     "icon": "☕",
     "cssIndex": 0,
     "subCount": 8,
-    "pointCount": 32
+    "pointCount": 35
   },
   {
     "id": "java-collection",
@@ -46,8 +46,8 @@
     "order": 5,
     "icon": "🔄",
     "cssIndex": 4,
-    "subCount": 4,
-    "pointCount": 17
+    "subCount": 3,
+    "pointCount": 12
   },
   {
     "id": "computer-basic",
@@ -56,8 +56,8 @@
     "order": 6,
     "icon": "💻",
     "cssIndex": 5,
-    "subCount": 3,
-    "pointCount": 14
+    "subCount": 2,
+    "pointCount": 9
   },
   {
     "id": "mysql",
@@ -88,16 +88,6 @@
     "cssIndex": 8,
     "subCount": 21,
     "pointCount": 93
-  },
-  {
-    "id": "system-design",
-    "title": "十、系统设计",
-    "tag": "分布式",
-    "order": 10,
-    "icon": "🚀",
-    "cssIndex": 9,
-    "subCount": 3,
-    "pointCount": 11
   },
   {
     "id": "computer-network",
@@ -217,7 +207,7 @@
     "icon": "🚀",
     "cssIndex": 21,
     "subCount": 5,
-    "pointCount": 18
+    "pointCount": 16
   },
   {
     "id": "high-performance",
@@ -226,8 +216,8 @@
     "order": 23,
     "icon": "💠",
     "cssIndex": 22,
-    "subCount": 2,
-    "pointCount": 8
+    "subCount": 1,
+    "pointCount": 2
   },
   {
     "id": "high-availability",
@@ -270,16 +260,6 @@
     "pointCount": 6
   },
   {
-    "id": "postgresql",
-    "title": "二十八、PostgreSQL",
-    "tag": "PostgreSQL",
-    "order": 28,
-    "icon": "🍃",
-    "cssIndex": 26,
-    "subCount": 3,
-    "pointCount": 5
-  },
-  {
     "id": "maven",
     "title": "二十九、Maven",
     "tag": "Maven",
@@ -288,16 +268,6 @@
     "cssIndex": 27,
     "subCount": 2,
     "pointCount": 8
-  },
-  {
-    "id": "minio",
-    "title": "三十、Minio",
-    "tag": "Minio",
-    "order": 30,
-    "icon": "🔨",
-    "cssIndex": 28,
-    "subCount": 2,
-    "pointCount": 5
   },
   {
     "id": "netty",
@@ -340,34 +310,14 @@
     "pointCount": 6
   },
   {
-    "id": "nacos-sentinel",
-    "title": "三十五、Nacos与Sentinel微服务组件",
-    "tag": "Nacos/Sentinel",
-    "order": 35,
-    "icon": "📨",
-    "cssIndex": 32,
-    "subCount": 2,
-    "pointCount": 4
-  },
-  {
-    "id": "dubbo",
-    "title": "三十六、Dubbo RPC框架",
-    "tag": "Dubbo",
-    "order": 36,
-    "icon": "🛡️",
-    "cssIndex": 33,
-    "subCount": 1,
-    "pointCount": 2
-  },
-  {
-    "id": "diagnostic-tools",
-    "title": "三十七、Druid与Arthas诊断工具",
-    "tag": "诊断工具",
+    "id": "diagnostic-perf",
+    "title": "线上诊断与性能优化",
+    "tag": "诊断与优化",
     "order": 37,
-    "icon": "🔗",
-    "cssIndex": 34,
-    "subCount": 2,
-    "pointCount": 4
+    "icon": "🔧",
+    "cssIndex": 36,
+    "subCount": 4,
+    "pointCount": 7
   },
   {
     "id": "easyexcel",
@@ -378,26 +328,6 @@
     "cssIndex": 35,
     "subCount": 1,
     "pointCount": 2
-  },
-  {
-    "id": "coding-standards",
-    "title": "三十九、编程规范与代码质量",
-    "tag": "编程规范",
-    "order": 39,
-    "icon": "📊",
-    "cssIndex": 36,
-    "subCount": 1,
-    "pointCount": 2
-  },
-  {
-    "id": "performance-optimization",
-    "title": "四十、性能优化与线上问题排查",
-    "tag": "性能优化",
-    "order": 40,
-    "icon": "📐",
-    "cssIndex": 37,
-    "subCount": 2,
-    "pointCount": 3
   },
   {
     "id": "data-structures",

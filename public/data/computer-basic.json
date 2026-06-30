@@ -7,380 +7,189 @@
   "cssIndex": 5,
   "subs": [
     {
-      "id": "6-1-计算机网络-6-0",
-      "title": "6.1 计算机网络",
+      "id": "6-1-操作系统-6-0",
+      "title": "6.1 操作系统",
       "points": [
         {
-          "id": "osi七层模型-6-0-0",
-          "tag": "OSI七层模型",
-          "desc": "物理层(传输比特/网线集线器)→数据链路层(帧/MAC地址/交换机/ARP)→网络层(IP/路由器/ICMP)→传输层(TCP/UDP/端口)→会话层(建立管理会话)→表示层(数据加密解密格式转换)→应用层(HTTP/DNS/SMTP)。TCP/IP四层:网络接口+网际+传输→应用(合并上三层)",
-          "details": [
-            {
-              "id": "osi七层模型-6-0-0-d0",
-              "tag": "7层",
-              "desc": "物理/数据链路/网络/传输/会话/表示/应用"
-            },
-            {
-              "id": "osi七层模型-6-0-0-d1",
-              "tag": "4层",
-              "desc": "链路+网络+传输+应用(实际TCP/IP模型)"
-            },
-            {
-              "id": "osi七层模型-6-0-0-d2",
-              "tag": "OSI七层记忆口诀:应表会传网数物",
-              "desc": "Application/Presentation/Session/Transport/Network/DataLink/Physical"
-            },
-            {
-              "id": "osi七层模型-6-0-0-d3",
-              "tag": "TCP/IP四层简化",
-              "desc": "应用(HTTP/FTP)→传输(TCP/UDP)→网络(IP)→物理(以太网)"
-            },
-            {
-              "id": "osi七层模型-6-0-0-d4",
-              "tag": "数据链路层",
-              "desc": "MAC地址+帧封装+差错检测(CRC)+流量控制"
-            },
-            {
-              "id": "osi七层模型-6-0-0-d5",
-              "tag": "会话层",
-              "desc": "Session管理+同步+断点恢复建立维护终止会话"
-            }
-          ]
-        },
-        {
-          "id": "tcpvsudp-6-0-1",
-          "tag": "TCPvsUDP",
-          "desc": "TCP面向连接可靠传输(三次握手四次挥手/流量控制滑动窗口/拥塞控制慢启动快重传)、有序、点对点、全双工。UDP无连接不可靠但快(首部8字节)、支持一对多广播组播。适用:TCP(文件传输/邮件/HTTP), UDP(DNS/视频通话/游戏)",
-          "details": [
-            {
-              "id": "tcpvsudp-6-0-1-d0",
-              "tag": "TCP",
-              "desc": "可靠/面向连接/有序/流量控制/拥塞控制"
-            },
-            {
-              "id": "tcpvsudp-6-0-1-d1",
-              "tag": "UDP",
-              "desc": "不可靠/无连接/快8B首部/广播组播"
-            },
-            {
-              "id": "tcpvsudp-6-0-1-d2",
-              "tag": "常见端口",
-              "desc": "HTTP80/HTTPS443/SSH22/FTP21/DNS53/MySQL3306/Redis6379"
-            },
-            {
-              "id": "tcpvsudp-6-0-1-d3",
-              "tag": "DNS解析流程",
-              "desc": "浏览器缓存→OS缓存→路由器→ISP DNS→根→顶级→权威递归查询"
-            },
-            {
-              "id": "tcpvsudp-6-0-1-d4",
-              "tag": "ARP协议",
-              "desc": "IP→MAC地址映射局域网通信必备同一网段直接跨网段需路由"
-            },
-            {
-              "id": "tcpvsudp-6-0-1-d5",
-              "tag": "ICMP",
-              "desc": "ping命令基于ICMP Echo Request/Reply测试网络连通性诊断工具"
-            }
-          ]
-        },
-        {
-          "id": "http协议-6-0-2",
-          "tag": "HTTP协议",
-          "desc": "HTTP1.0短连接(每次请求新建TCP)/HTTP1.1长连接(Keep-Alive管线化)/HTTP2多路复用(一个TCP并行请求帧)/HTTP3 QUIC(基于UDP,解决队头阻塞)。状态码:200成功/301永久重定向/302临时/304未修改/400参数错误/403禁止/404不存在/500服务器错误/502网关错误/503不可用",
-          "details": [
-            {
-              "id": "http协议-6-0-2-d0",
-              "tag": "HTTP1.1 KeepAlive / HTTP2 多路复用帧 / HTTP3 QUIC-UDP",
-              "desc": "HTTP1.1长连接复用TCP减少握手开销,HTTP2帧级多路复用消除队头阻塞,HTTP3用QUIC基于UDP解决TCP层队头阻塞"
-            },
-            {
-              "id": "http协议-6-0-2-d1",
-              "tag": "常见状态码",
-              "desc": "200/301/302/304/400/403/404/500/502/503"
-            },
-            {
-              "id": "http协议-6-0-2-d2",
-              "tag": "TCP特性",
-              "desc": "面向连接+可靠传输+流量控制(滑动窗口)+拥塞控制(慢启动+快重传+快恢复)"
-            },
-            {
-              "id": "http协议-6-0-2-d3",
-              "tag": "流量控制",
-              "desc": "接收端通告窗口rwnd防止发送方淹没接收方缓冲区"
-            },
-            {
-              "id": "http协议-6-0-2-d4",
-              "tag": "拥塞控制",
-              "desc": "cwnd从1指数增长→ssthresh阈值→线性增长→丢包减半AIMD"
-            },
-            {
-              "id": "http协议-6-0-2-d5",
-              "tag": "三次握手防攻击",
-              "desc": "SYN Flood→SYN Cookie防御+缩短超时+增加半连接队列"
-            }
-          ]
-        },
-        {
-          "id": "https与tls-6-0-3",
-          "tag": "HTTPS与TLS",
-          "desc": "HTTP+TLS/SSL加密。TLS握手:客户端ClientHello(支持的算法套件)→服务端ServerHello(选定的证书和公钥+ServerHelloDone)→客户端验证证书生成随机Pre-MasterSecret用公钥加密发送→双方用PreMaster+两个random生成对称会话密钥(非对称交换对称密钥)。对称加密传输数据性能好。证书链:终端证书→中间CA→根CA(预埋浏览器)",
-          "details": [
-            {
-              "id": "https与tls-6-0-3-d0",
-              "tag": "TLS握手流程",
-              "desc": "ClientHello→ServerHello+证书→PreMasterSecret(公钥加密)→生成对称会话密钥"
-            },
-            {
-              "id": "https与tls-6-0-3-d1",
-              "tag": "证书链",
-              "desc": "终端→中间CA→根CA(预埋浏览器)"
-            },
-            {
-              "id": "https与tls-6-0-3-d2",
-              "tag": "UDP适用",
-              "desc": "实时音视频(容忍丢包)/DNS查询(简单快速)/游戏同步(低延迟优先)"
-            },
-            {
-              "id": "https与tls-6-0-3-d3",
-              "tag": "可靠性补充:应用层自行ACK+重传+序号",
-              "desc": "如QUIC在UDP上实现可靠传输"
-            },
-            {
-              "id": "https与tls-6-0-3-d4",
-              "tag": "QUIC协议",
-              "desc": "Google基于UDP0-RTT连接+多路复用+前向纠错替代TCP+TLS"
-            },
-            {
-              "id": "https与tls-6-0-3-d5",
-              "tag": "直播协议",
-              "desc": "RTMP(TCP)/HLS(HTTP分片)/WebRTC(UDP/SRTP)按场景选择"
-            }
-          ]
-        },
-        {
-          "id": "cookiesession-6-0-4",
-          "tag": "CookieSession",
-          "desc": "Cookie:服务端通过Set-Cookie头设置,客户端后续请求自动携带(同源策略Domain/Path/HttpOnly防XSS/Secure只HTTPS/SameSite防CSRF)。Session:服务端存储用户状态,客户端存SessionID到Cookie。Token(JWT):服务端签发含用户信息的令牌,无状态可扩展。LocalStorage:持久化存储5MB同源,用于前端缓存",
-          "details": [
-            {
-              "id": "cookiesession-6-0-4-d0",
-              "tag": "Cookie",
-              "desc": "Set-Cookie携带/HttpOnly/Secure/SameSite属性"
-            },
-            {
-              "id": "cookiesession-6-0-4-d1",
-              "tag": "Session",
-              "desc": "服务端状态+SessionID Cookie / JWT: 无状态令牌"
-            },
-            {
-              "id": "cookiesession-6-0-4-d2",
-              "tag": "HTTPS握手",
-              "desc": "Client Hello→Server Hello+证书→验证→生成预主密钥→主密钥→加密通信"
-            },
-            {
-              "id": "cookiesession-6-0-4-d3",
-              "tag": "证书链",
-              "desc": "根CA→中间CA→终端证书浏览器逐级验证签名信任链"
-            },
-            {
-              "id": "cookiesession-6-0-4-d4",
-              "tag": "TLS1.3优化",
-              "desc": "0-RTT恢复连接+1-RTT新连接+移除RSA强制ECDHE前向安全"
-            },
-            {
-              "id": "cookiesession-6-0-4-d5",
-              "tag": "性能",
-              "desc": "HSTS+session resumption减少握手开销证书缓存复用连接"
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "id": "6-2-操作系统-6-1",
-      "title": "6.2 操作系统",
-      "points": [
-        {
-          "id": "进程线程区别-6-1-0",
+          "id": "进程线程区别-6-0-0",
           "tag": "进程线程区别",
           "desc": "进程是资源分配最小单位(独立内存空间/文件描述符),线程是CPU调度最小单位(共享进程内存/栈独立)。进程切换开销大(需刷新TLB/缓存),线程切换轻量。多进程更稳定(一个崩溃不影响其他),多线程通信简单(共享内存)。Python中GIL限制多核利用,多线程适合IO密集型,多进程适合CPU密集型",
           "details": [
             {
-              "id": "进程线程区别-6-1-0-d0",
+              "id": "进程线程区别-6-0-0-d0",
               "tag": "进程",
               "desc": "资源分配最小单位,拥有独立内存空间和文件描述符,进程间需IPC通信"
             },
             {
-              "id": "进程线程区别-6-1-0-d1",
+              "id": "进程线程区别-6-0-0-d1",
               "tag": "线程",
               "desc": "CPU调度单位(共享进程内存/独立栈)"
             },
             {
-              "id": "进程线程区别-6-1-0-d2",
+              "id": "进程线程区别-6-0-0-d2",
               "tag": "进程状态",
               "desc": "创建→就绪→运行→阻塞→终止5种状态转换调度器管理"
             },
             {
-              "id": "进程线程区别-6-1-0-d3",
+              "id": "进程线程区别-6-0-0-d3",
               "tag": "进程通信IPC",
               "desc": "管道(pipe)/消息队列/共享内存+信号量/信号/socket6种方式"
             },
             {
-              "id": "进程线程区别-6-1-0-d4",
+              "id": "进程线程区别-6-0-0-d4",
               "tag": "进程调度",
               "desc": "FCFS先来先服务/SJF短作业优先/RR时间片轮转/优先级调度"
             },
             {
-              "id": "进程线程区别-6-1-0-d5",
+              "id": "进程线程区别-6-0-0-d5",
               "tag": "僵尸进程",
               "desc": "子进程终止父进程未wait回收→占用PID→kill父进程清理"
             }
           ]
         },
         {
-          "id": "进程间ipc-6-1-1",
+          "id": "进程间ipc-6-0-1",
           "tag": "进程间IPC",
           "desc": "管道Pipe(半双工父子进程)/命名FIFO(无关进程)/消息队列(内核缓冲区内核维护)/共享内存+信号量(最快需同步机制)/信号Signal(异步通知)/Socket(跨网络)。生产者消费者模型:共享缓冲区+互斥锁(保护缓冲区)+条件变量(满/空等待唤醒)",
           "details": [
             {
-              "id": "进程间ipc-6-1-1-d0",
+              "id": "进程间ipc-6-0-1-d0",
               "tag": "管道/FIFO/消息队列/共享内存+信号量/信号/Socket",
               "desc": "管道半双工限父子进程,FIFO跨进程,消息队列内核维护,共享内存最快需信号量同步,Socket跨网络"
             },
             {
-              "id": "进程间ipc-6-1-1-d1",
+              "id": "进程间ipc-6-0-1-d1",
               "tag": "生产者消费者",
               "desc": "共享缓冲区+互斥锁+条件变量（生产者消费者的详细说明：进程间IPC中关于生产者消费者的内容）"
             },
             {
-              "id": "进程间ipc-6-1-1-d2",
+              "id": "进程间ipc-6-0-1-d2",
               "tag": "死锁预防:破坏4条件之一",
               "desc": "互斥→共享/请求保持→一次性/不可抢占→超时/循环→有序"
             },
             {
-              "id": "进程间ipc-6-1-1-d3",
+              "id": "进程间ipc-6-0-1-d3",
               "tag": "死锁避免",
               "desc": "银行家算法每次分配前检查系统是否安全状态不进入不安全"
             },
             {
-              "id": "进程间ipc-6-1-1-d4",
+              "id": "进程间ipc-6-0-1-d4",
               "tag": "死锁检测",
               "desc": "资源分配图+恢复(终止进程/资源抢占)允许死锁发生再处理"
             },
             {
-              "id": "进程间ipc-6-1-1-d5",
+              "id": "进程间ipc-6-0-1-d5",
               "tag": "哲学家就餐",
               "desc": "编号奇偶不同顺序拿筷子避免循环等待经典同步问题"
             }
           ]
         },
         {
-          "id": "死锁四条件-6-1-2",
+          "id": "死锁四条件-6-0-2",
           "tag": "死锁四条件",
           "desc": "互斥(资源一次只能被一个占用)→持有并等待(持有资源同时等待其他)→非抢占(不能强行夺取)→循环等待(形成闭环)。预防:破坏任一条件(按序申请破坏环路/超时释放/全部一次性申请)。检测:银行家算法(安全序列判断)。避免:尽量减少锁定范围/按固定顺序加锁",
           "details": [
             {
-              "id": "死锁四条件-6-1-2-d0",
+              "id": "死锁四条件-6-0-2-d0",
               "tag": "互斥+持有并等待+非抢占+循环等待",
               "desc": "互斥+持有并等待+非抢占+循环等待→死锁"
             },
             {
-              "id": "死锁四条件-6-1-2-d1",
+              "id": "死锁四条件-6-0-2-d1",
               "tag": "预防",
               "desc": "破坏一条件 / 检测: 银行家算法"
             },
             {
-              "id": "死锁四条件-6-1-2-d2",
+              "id": "死锁四条件-6-0-2-d2",
               "tag": "虚拟内存",
               "desc": "MMU+页表虚拟地址→物理地址映射+缺页中断从磁盘加载按需分配"
             },
             {
-              "id": "死锁四条件-6-1-2-d3",
+              "id": "死锁四条件-6-0-2-d3",
               "tag": "页面置换",
               "desc": "FIFO先进先出/LRU最近最少使用/LFU最不常用/Clock算法"
             },
             {
-              "id": "死锁四条件-6-1-2-d4",
+              "id": "死锁四条件-6-0-2-d4",
               "tag": "页面大小",
               "desc": "x86默认4KB大页2MB/1GB减少页表项提高TLB命中率"
             },
             {
-              "id": "死锁四条件-6-1-2-d5",
+              "id": "死锁四条件-6-0-2-d5",
               "tag": "内存分配",
               "desc": "伙伴系统2^n页块分配+slab分配器小对象缓存内核管理"
             }
           ]
         },
         {
-          "id": "内存管理-6-1-3",
+          "id": "内存管理-6-0-3",
           "tag": "内存管理",
           "desc": "虚拟内存:每个进程有独立连续虚拟地址空间(32位4G/64位128T),MMU页表映射到物理页框。分页:固定大小4KB页,页表记录虚→实映射,TLB加速页表查找。分段:按逻辑(代码段/数据段/栈段)变长。段页式结合两者优点。页面置换:LRU最近最少使用/LFU最少频率/CLOCK时钟算法",
           "details": [
             {
-              "id": "内存管理-6-1-3-d0",
+              "id": "内存管理-6-0-3-d0",
               "tag": "虚拟内存+MMU页表+TLB加速",
               "desc": "每进程独立虚拟地址空间,MMU页表映射虚地址到物理页框,TLB缓存页表加速查找避免每次访内存"
             },
             {
-              "id": "内存管理-6-1-3-d1",
+              "id": "内存管理-6-0-3-d1",
               "tag": "分页4KB固定 / 段分逻辑变长 / LRU-LFU-CLOCK置换",
               "desc": "分页4KB固定便于管理,分段按代码/数据/栈逻辑划分变长,LRU/LFU/CLOCK三种页面置换算法选择"
             },
             {
-              "id": "内存管理-6-1-3-d2",
+              "id": "内存管理-6-0-3-d2",
               "tag": "select",
               "desc": "1024连接上限+遍历全部fd O(n)内核→用户两次拷贝开销大"
             },
             {
-              "id": "内存管理-6-1-3-d3",
+              "id": "内存管理-6-0-3-d3",
               "tag": "poll",
               "desc": "无连接上限+仍遍历全部fd O(n)改进select但本质相同"
             },
             {
-              "id": "内存管理-6-1-3-d4",
+              "id": "内存管理-6-0-3-d4",
               "tag": "epoll",
               "desc": "事件驱动+红黑树注册fd+只返回活跃fd O(活跃数)+ET/LT两种模式"
             },
             {
-              "id": "内存管理-6-1-3-d5",
+              "id": "内存管理-6-0-3-d5",
               "tag": "epoll ET",
               "desc": "边缘触发只通知一次需非阻塞读至EAGAIN避免遗漏高效"
             }
           ]
         },
         {
-          "id": "i-o模型-6-1-4",
+          "id": "i-o模型-6-0-4",
           "tag": "I/O模型",
           "desc": "阻塞IO(调用等待完成)/非阻塞IO(立即返回轮询)/IO多路复用(select/poll/epoll,单线程监听多个fd)/信号驱动(IO完成后发SIGIO信号)/异步IO(AIO内核完成后回调通知)。epoll高效原因:红黑树管理fd+就绪链表+事件触发(ET边缘触发减少系统调用)/mmap零拷贝",
           "details": [
             {
-              "id": "i-o模型-6-1-4-d0",
+              "id": "i-o模型-6-0-4-d0",
               "tag": "五种IO模型对比",
               "desc": "阻塞IO等待完成,非阻塞轮询,IO多路复用epoll监听多fd,信号驱动SIGIO通知,异步AIO内核回调"
             },
             {
-              "id": "i-o模型-6-1-4-d1",
+              "id": "i-o模型-6-0-4-d1",
               "tag": "epoll红黑树+就绪链表+ET边缘",
               "desc": "epoll红黑树+就绪链表+ET边缘触发"
             },
             {
-              "id": "i-o模型-6-1-4-d2",
+              "id": "i-o模型-6-0-4-d2",
               "tag": "find",
               "desc": "按名称/大小/时间/权限查找 -name -size -mtime -type f/d灵活过滤"
             },
             {
-              "id": "i-o模型-6-1-4-d3",
+              "id": "i-o模型-6-0-4-d3",
               "tag": "grep",
               "desc": "文本搜索 -i忽略大小写 -r递归 -n显示行号 -E正则扩展"
             },
             {
-              "id": "i-o模型-6-1-4-d4",
+              "id": "i-o模型-6-0-4-d4",
               "tag": "awk",
               "desc": "列处理 awk '{print $1,$3}' 按列提取+条件+统计计算文本分析"
             },
             {
-              "id": "i-o模型-6-1-4-d5",
+              "id": "i-o模型-6-0-4-d5",
               "tag": "top/htop",
               "desc": "实时监控CPU/内存/进程 ps aux查看所有进程 kill终止"
             }
@@ -389,29 +198,29 @@
       ]
     },
     {
-      "id": "6-3-linux命令-6-2",
-      "title": "6.3 Linux命令",
+      "id": "6-2-linux命令-6-1",
+      "title": "6.2 Linux命令",
       "points": [
         {
-          "id": "文件操作-6-2-0",
+          "id": "文件操作-6-1-0",
           "tag": "文件操作",
           "desc": "ls(-la详细列表/-h人类可读/-R递归)/cp(-r目录/-f强制)/mv移动重名/rm(-rf强制递归删!慎用)/find路径-name '*.log' -mtime +7(7天前)/grep -r 'keyword' 目录(递归搜索内容)/chmod 755 file(权限rwxr-xr-x)/chown user:group file(所有者组)/ln -s target linkname(软链接)/df -h(磁盘用量)/du -sh dir(目录大小)",
           "details": []
         },
         {
-          "id": "文本处理-6-2-1",
+          "id": "文本处理-6-1-1",
           "tag": "文本处理",
           "desc": "cat查看/tac倒序/more分页/less交互式(head前N行/tail后N行/-f跟踪更新)/wc -l统计行数/sort排序(-n数字-r逆序-u去重)/uniq去重(-c计数)/cut -d',' -f2(截取字段)/awk '{print $1,$3}'(列处理)/sed 's/old/new/g'(流编辑器)/tee(输出同时写文件)/tr a-z A-Z(字符替换)/xxd查看二进制",
           "details": []
         },
         {
-          "id": "网络调试-6-2-2",
+          "id": "网络调试-6-1-2",
           "tag": "网络调试",
           "desc": "ping(连通性ICMP)/telnet(端口通断测试)/curl(POST请求测试: -X POST -H Content-Type头 -d data参数体) -v详细输出 -w '%{http_code}' 只看状态码)/wget下载/netstat -tunlp(端口监听)/ss -tunlp(netstat替代更快)/nslookup/dig DNS解析/traceroute路由追踪/tcpdump -i eth0 port 80抓包(需root)",
           "details": []
         },
         {
-          "id": "进程管理-6-2-3",
+          "id": "进程管理-6-1-3",
           "tag": "进程管理",
           "desc": "ps aux(USER/PID/%CPU/%MEM/COMMAND)/ps -ef(PPID父进程)/top实时(按P排序CPU/M内存/q退出)/kill -9 PID(强制终止)/kill -0 PID(检查存在)/jobs后台任务/fg/bg前后台切换/nohup command & (断开终端不退出)/crontab -e定时任务(systemctl管理服务)/free -h内存/uptime负载/top -bn1一次快照",
           "details": []
