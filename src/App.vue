@@ -25,7 +25,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, nextTick, onMounted, onUnmounted } from 'vue'
 import { useAuthStore } from './stores/auth.js'
 import { useModulesStore } from './stores/modules.js'
 import { useTheme } from './composables/useTheme.js'
@@ -52,6 +52,7 @@ onMounted(async () => {
 
 async function onAuthSuccess() {
   try { await modulesStore.loadIndex() } catch (e) { console.error('loadIndex失败:', e) }
+  authStore.markAuthenticated()
 }
 
 // Ctrl+D 切换深色模式

@@ -33,15 +33,15 @@ export const useAuthStore = defineStore('auth', () => {
     const hashBuffer = await crypto.subtle.digest('SHA-256', buffer)
     const hashHex = Array.from(new Uint8Array(hashBuffer))
       .map(b => b.toString(16).padStart(2, '0')).join('')
-    if (hashHex === expectedHash) {
-      isAuthenticated.value = true
-      localStorage.setItem('javaguide_auth', JSON.stringify({
-        authenticated: true, authTime: Date.now()
-      }))
-      return true
-    }
-    return false
+    return hashHex === expectedHash
   }
 
-  return { isAuthenticated, checkSession, verifyPassword }
+  function markAuthenticated() {
+    isAuthenticated.value = true
+    localStorage.setItem('javaguide_auth', JSON.stringify({
+      authenticated: true, authTime: Date.now()
+    }))
+  }
+
+  return { isAuthenticated, checkSession, verifyPassword, markAuthenticated }
 })
