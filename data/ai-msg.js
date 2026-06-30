@@ -4,11 +4,11 @@
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['ai-framework'] = {
   "id": "ai-framework",
-  "title": "三十二、AI与AI框架",
+  "title": "三十三、AI与Agent",
   "tag": "AI与Agent",
-  "order": 32,
+  "order": 33,
   "icon": "💠",
-  "cssIndex": 30,
+  "cssIndex": 32,
   "subs": [
     {
       "id": "32-1-llm与prompt工程-32-0",
@@ -889,11 +889,11 @@ window.__MODULES__['ai-framework'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['rabbitmq-kafka'] = {
   "id": "rabbitmq-kafka",
-  "title": "三十四、RabbitMQ与Kafka消息队列",
+  "title": "十五、消息队列(RabbitMQ/Kafka)",
   "tag": "消息队列",
-  "order": 34,
+  "order": 15,
   "icon": "🤖",
-  "cssIndex": 31,
+  "cssIndex": 14,
   "subs": [
     {
       "id": "34-1-rabbitmq核心-34-0",

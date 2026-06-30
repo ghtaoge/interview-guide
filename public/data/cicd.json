@@ -1,10 +1,10 @@
 {
   "id": "cicd",
-  "title": "四十三、CI/CD 持续集成与交付",
+  "title": "二十二、CI/CD 持续集成与交付",
   "tag": "CI/CD",
-  "order": 43,
+  "order": 22,
   "icon": "🔄",
-  "cssIndex": 42,
+  "cssIndex": 21,
   "subs": [
     {
       "id": "43-1-cicd核心概念-43-0",

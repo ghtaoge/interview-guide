@@ -1,10 +1,10 @@
 {
   "id": "elasticsearch",
-  "title": "二十六、ElasticSearch",
+  "title": "十四、ElasticSearch 搜索引擎",
   "tag": "ElasticSearch",
-  "order": 26,
+  "order": 14,
   "icon": "📋",
-  "cssIndex": 24,
+  "cssIndex": 13,
   "subs": [
     {
       "id": "26-1-es核心概念-26-0",

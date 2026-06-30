@@ -1,10 +1,10 @@
 {
   "id": "vue3",
-  "title": "十四、Vue3 生态体系",
+  "title": "三十、Vue3 生态体系",
   "tag": "Vue3",
-  "order": 14,
+  "order": 30,
   "icon": "💚",
-  "cssIndex": 13,
+  "cssIndex": 29,
   "subs": [
     {
       "id": "14-1-vue3-核心-14-0",

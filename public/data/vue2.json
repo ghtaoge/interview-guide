@@ -1,10 +1,10 @@
 {
   "id": "vue2",
-  "title": "十三、Vue2 生态体系",
+  "title": "二十九、Vue2 生态体系",
   "tag": "Vue2",
-  "order": 13,
+  "order": 29,
   "icon": "💚",
-  "cssIndex": 12,
+  "cssIndex": 28,
   "subs": [
     {
       "id": "13-1-vue2-核心-13-0",

@@ -1,10 +1,10 @@
 {
   "id": "ai-framework",
-  "title": "三十二、AI与AI框架",
+  "title": "三十三、AI与Agent",
   "tag": "AI与Agent",
-  "order": 32,
+  "order": 33,
   "icon": "💠",
-  "cssIndex": 30,
+  "cssIndex": 32,
   "subs": [
     {
       "id": "32-1-llm与prompt工程-32-0",

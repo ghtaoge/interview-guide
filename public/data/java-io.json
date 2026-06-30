@@ -1,10 +1,10 @@
 {
   "id": "java-io",
-  "title": "五、Java IO",
+  "title": "四、Java IO/NIO",
   "tag": "IO",
-  "order": 5,
+  "order": 4,
   "icon": "🔄",
-  "cssIndex": 4,
+  "cssIndex": 3,
   "subs": [
     {
       "id": "5-1-io-基础-5-0",

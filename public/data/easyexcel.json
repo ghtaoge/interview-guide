@@ -1,10 +1,10 @@
 {
   "id": "easyexcel",
-  "title": "三十八、EasyExcel与数据处理",
+  "title": "三十四、EasyExcel与数据处理",
   "tag": "EasyExcel",
-  "order": 38,
+  "order": 34,
   "icon": "🔧",
-  "cssIndex": 35,
+  "cssIndex": 33,
   "subs": [
     {
       "id": "38-1-easyexcel核心-38-0",

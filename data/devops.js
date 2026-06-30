@@ -4,11 +4,11 @@
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['docker'] = {
   "id": "docker",
-  "title": "十九、Docker 容器技术",
+  "title": "二十三、Docker 容器技术",
   "tag": "Docker",
-  "order": 19,
+  "order": 23,
   "icon": "🐻",
-  "cssIndex": 18,
+  "cssIndex": 22,
   "subs": [
     {
       "id": "19-1-docker-核心概念-19-0",
@@ -629,11 +629,11 @@ window.__MODULES__['docker'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['kubernetes'] = {
   "id": "kubernetes",
-  "title": "二十、Kubernetes 容器编排",
+  "title": "二十四、Kubernetes 容器编排",
   "tag": "Kubernetes",
-  "order": 20,
+  "order": 24,
   "icon": "🔥",
-  "cssIndex": 19,
+  "cssIndex": 23,
   "subs": [
     {
       "id": "20-1-k8s-核心概念与架构-20-0",
@@ -1377,11 +1377,11 @@ window.__MODULES__['kubernetes'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['nginx'] = {
   "id": "nginx",
-  "title": "二十一、Nginx 高性能 Web 服务器",
+  "title": "二十五、Nginx Web 服务器",
   "tag": "Nginx",
-  "order": 21,
+  "order": 25,
   "icon": "🟢",
-  "cssIndex": 20,
+  "cssIndex": 24,
   "subs": [
     {
       "id": "21-1-nginx-核心概念-21-0",
@@ -2153,11 +2153,11 @@ window.__MODULES__['nginx'] = {
 
 window.__MODULES__['git'] = {
   "id": "git",
-  "title": "四十二、Git 版本控制",
+  "title": "二十一、Git 版本控制",
   "tag": "Git",
-  "order": 42,
+  "order": 21,
   "icon": "🔧",
-  "cssIndex": 41,
+  "cssIndex": 20,
   "subs": [
     {
       "id": "42-1-git基础概念与命令-42-0",
@@ -2295,11 +2295,11 @@ window.__MODULES__['git'] = {
 
 window.__MODULES__['cicd'] = {
   "id": "cicd",
-  "title": "四十三、CI/CD 持续集成与交付",
+  "title": "二十二、CI/CD 持续集成与交付",
   "tag": "CI/CD",
-  "order": 43,
+  "order": 22,
   "icon": "🔄",
-  "cssIndex": 42,
+  "cssIndex": 21,
   "subs": [
     {
       "id": "43-1-cicd核心概念-43-0",

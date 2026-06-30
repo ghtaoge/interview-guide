@@ -1,10 +1,10 @@
 {
   "id": "maven",
-  "title": "二十九、Maven",
+  "title": "九、Maven 项目构建",
   "tag": "Maven",
-  "order": 29,
+  "order": 9,
   "icon": "🐘",
-  "cssIndex": 27,
+  "cssIndex": 8,
   "subs": [
     {
       "id": "29-1-maven核心-29-0",

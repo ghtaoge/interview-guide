@@ -1,10 +1,10 @@
 {
   "id": "data-structures",
-  "title": "四十一、常见数据结构与算法",
+  "title": "二、数据结构与算法",
   "tag": "数据结构",
-  "order": 41,
+  "order": 2,
   "icon": "⚡",
-  "cssIndex": 38,
+  "cssIndex": 1,
   "subs": [
     {
       "id": "41-1-数据结构-41-0",

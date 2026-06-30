@@ -7,11 +7,11 @@ window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['computer-network'] = {
   "id": "computer-network",
-  "title": "十一、计算机网络",
+  "title": "二十、计算机网络",
   "tag": "计算机网络",
-  "order": 11,
+  "order": 20,
   "icon": "🛡️",
-  "cssIndex": 10,
+  "cssIndex": 19,
   "subs": [
     {
       "id": "11-1-http与websocket-11-0",

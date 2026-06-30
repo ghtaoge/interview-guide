@@ -1,10 +1,10 @@
 {
   "id": "webpack",
-  "title": "十八、Webpack与前端工程化",
+  "title": "三十二、Webpack与前端工程化",
   "tag": "Webpack",
-  "order": 18,
+  "order": 32,
   "icon": "📦",
-  "cssIndex": 17,
+  "cssIndex": 31,
   "subs": [
     {
       "id": "18-1-webpack核心概念-18-0",

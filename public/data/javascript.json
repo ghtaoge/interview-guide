@@ -1,10 +1,10 @@
 {
   "id": "javascript",
-  "title": "十二、JavaScript 前端基础",
+  "title": "二十七、JavaScript",
   "tag": "JavaScript",
-  "order": 12,
+  "order": 27,
   "icon": "🟨",
-  "cssIndex": 11,
+  "cssIndex": 26,
   "subs": [
     {
       "id": "12-1-js核心概念-12-0",

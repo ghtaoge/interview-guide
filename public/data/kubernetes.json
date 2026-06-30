@@ -1,10 +1,10 @@
 {
   "id": "kubernetes",
-  "title": "二十、Kubernetes 容器编排",
+  "title": "二十四、Kubernetes 容器编排",
   "tag": "Kubernetes",
-  "order": 20,
+  "order": 24,
   "icon": "🔥",
-  "cssIndex": 19,
+  "cssIndex": 23,
   "subs": [
     {
       "id": "20-1-k8s-核心概念与架构-20-0",

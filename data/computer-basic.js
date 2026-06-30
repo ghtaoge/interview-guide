@@ -4,11 +4,11 @@
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['computer-basic'] = {
   "id": "computer-basic",
-  "title": "六、计算机基础",
+  "title": "十九、计算机基础",
   "tag": "计算机基础",
-  "order": 6,
+  "order": 19,
   "icon": "💻",
-  "cssIndex": 5,
+  "cssIndex": 18,
   "subs": [
     {
       "id": "6-1-操作系统-6-0",

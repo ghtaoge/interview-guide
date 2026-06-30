@@ -1,10 +1,10 @@
 {
   "id": "html-css",
-  "title": "十七、HTML与CSS",
+  "title": "二十八、HTML与CSS",
   "tag": "HTML与CSS",
-  "order": 17,
+  "order": 28,
   "icon": "🎨",
-  "cssIndex": 16,
+  "cssIndex": 27,
   "subs": [
     {
       "id": "17-1-html5语义化与新特性-17-0",

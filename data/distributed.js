@@ -4,11 +4,11 @@
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['distributed-system'] = {
   "id": "distributed-system",
-  "title": "二十二、分布式系统",
+  "title": "十六、分布式系统",
   "tag": "分布式系统",
-  "order": 22,
+  "order": 16,
   "icon": "🚀",
-  "cssIndex": 21,
+  "cssIndex": 15,
   "subs": [
     {
       "id": "22-1-一致性协议-22-0",
@@ -566,11 +566,11 @@ window.__MODULES__['distributed-system'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['high-performance'] = {
   "id": "high-performance",
-  "title": "二十三、高性能",
+  "title": "十七、高性能架构",
   "tag": "高性能",
-  "order": 23,
+  "order": 17,
   "icon": "💠",
-  "cssIndex": 22,
+  "cssIndex": 16,
   "subs": [
     {
       "id": "23-1-数据库优化-23-0",
@@ -651,11 +651,11 @@ window.__MODULES__['high-performance'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['high-availability'] = {
   "id": "high-availability",
-  "title": "二十四、高可用",
+  "title": "十八、高可用架构",
   "tag": "高可用",
-  "order": 24,
+  "order": 18,
   "icon": "🛡️",
-  "cssIndex": 23,
+  "cssIndex": 17,
   "subs": [
     {
       "id": "24-1-限流-24-0",
@@ -882,11 +882,11 @@ window.__MODULES__['high-availability'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['interview-prep'] = {
   "id": "interview-prep",
-  "title": "二十五、面试准备",
+  "title": "三十六、面试准备",
   "tag": "面试准备",
-  "order": 25,
+  "order": 36,
   "icon": "💼",
-  "cssIndex": 40,
+  "cssIndex": 35,
   "subs": [
     {
       "id": "25-1-简历与项目-25-0",

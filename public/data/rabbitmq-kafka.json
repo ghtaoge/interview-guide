@@ -1,10 +1,10 @@
 {
   "id": "rabbitmq-kafka",
-  "title": "三十四、RabbitMQ与Kafka消息队列",
+  "title": "十五、消息队列(RabbitMQ/Kafka)",
   "tag": "消息队列",
-  "order": 34,
+  "order": 15,
   "icon": "🤖",
-  "cssIndex": 31,
+  "cssIndex": 14,
   "subs": [
     {
       "id": "34-1-rabbitmq核心-34-0",

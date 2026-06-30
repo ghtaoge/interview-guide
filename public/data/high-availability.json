@@ -1,10 +1,10 @@
 {
   "id": "high-availability",
-  "title": "二十四、高可用",
+  "title": "十八、高可用架构",
   "tag": "高可用",
-  "order": 24,
+  "order": 18,
   "icon": "🛡️",
-  "cssIndex": 23,
+  "cssIndex": 17,
   "subs": [
     {
       "id": "24-1-限流-24-0",

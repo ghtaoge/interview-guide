@@ -4,11 +4,11 @@
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['hr-interview'] = {
   "id": "hr-interview",
-  "title": "三十三、HR常见问题与回答",
+  "title": "三十七、HR常见问题与回答",
   "tag": "HR面试",
-  "order": 33,
+  "order": 37,
   "icon": "🧮",
-  "cssIndex": 39,
+  "cssIndex": 36,
   "subs": [
     {
       "id": "33-1-自我介绍与背景-33-0",
@@ -601,11 +601,11 @@ window.__MODULES__['hr-interview'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['easyexcel'] = {
   "id": "easyexcel",
-  "title": "三十八、EasyExcel与数据处理",
+  "title": "三十四、EasyExcel与数据处理",
   "tag": "EasyExcel",
-  "order": 38,
+  "order": 34,
   "icon": "🔧",
-  "cssIndex": 35,
+  "cssIndex": 33,
   "subs": [
     {
       "id": "38-1-easyexcel核心-38-0",
@@ -716,11 +716,11 @@ window.__MODULES__['easyexcel'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['data-structures'] = {
   "id": "data-structures",
-  "title": "四十一、常见数据结构与算法",
+  "title": "二、数据结构与算法",
   "tag": "数据结构",
-  "order": 41,
+  "order": 2,
   "icon": "⚡",
-  "cssIndex": 38,
+  "cssIndex": 1,
   "subs": [
     {
       "id": "41-1-数据结构-41-0",
@@ -1106,11 +1106,11 @@ window.__MODULES__['data-structures'] = {
 
 window.__MODULES__['design-patterns'] = {
   "id": "design-patterns",
-  "title": "四十四、常用设计模式",
+  "title": "三、设计模式",
   "tag": "设计模式",
-  "order": 44,
+  "order": 3,
   "icon": "🧩",
-  "cssIndex": 43,
+  "cssIndex": 2,
   "subs": [
     {
       "id": "44-1-创建型模式-44-0",
@@ -1259,11 +1259,11 @@ window.__MODULES__['design-patterns'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['diagnostic-perf'] = {
   "id": "diagnostic-perf",
-  "title": "线上诊断与性能优化",
+  "title": "二十六、线上诊断与性能优化",
   "tag": "诊断与优化",
-  "order": 37,
+  "order": 26,
   "icon": "🔧",
-  "cssIndex": 36,
+  "cssIndex": 25,
   "subs": [
 
     {
