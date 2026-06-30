@@ -18,9 +18,12 @@
         <div v-for="mod in displayedModules" :key="mod.id" class="module-wrapper">
           <ModuleCard :mod="mod" :expanded="isModuleExpanded(mod.id)" @toggle="toggleModule(mod.id)" />
 
+          <!-- 展开内容区：数据未加载时显示loading，已加载时直接显示内容(带渐入动画) -->
           <div v-if="isModuleExpanded(mod.id)" class="module-content">
-            <van-skeleton v-if="moduleLoadingMap[mod.id]" title :row="4" />
-            <template v-else-if="getModuleData(mod.id)">
+            <div v-if="!getModuleData(mod.id)" class="content-loader">
+              <van-loading type="spinner" color="#0d9488" vertical>加载中...</van-loading>
+            </div>
+            <div v-else class="content-inner">
               <SubSection
                 v-for="sub in getModuleData(mod.id).subs"
                 :key="sub.id"
@@ -29,7 +32,7 @@
                 :color-index="mod.cssIndex"
                 :keyword="filterStore.keyword"
               />
-            </template>
+            </div>
           </div>
         </div>
       </div>
@@ -41,7 +44,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, ref, watch, nextTick } from 'vue'
 import { useModulesStore } from '../stores/modules.js'
 import { useFilterStore } from '../stores/filter.js'
 import ModuleCard from '../components/ModuleCard.vue'
@@ -52,7 +55,6 @@ const filterStore = useFilterStore()
 
 const modulesLoading = computed(() => modulesStore.moduleIndex.length === 0)
 const expandedId = ref(null)
-const moduleLoadingMap = ref({})
 const searchExpandedIds = ref([]) // 搜索模式下展开的模块ID列表
 
 const isSearchMode = computed(() => !!filterStore.keyword && !filterStore.tagFilter)
@@ -87,7 +89,9 @@ async function toggleModule(id) {
       searchExpandedIds.value = searchExpandedIds.value.filter(x => x !== id)
     } else {
       searchExpandedIds.value = [...searchExpandedIds.value, id]
-      await modulesStore.loadModule(id)
+      if (!modulesStore.moduleData.has(id)) {
+        await modulesStore.loadModule(id)
+      }
     }
     return
   }
@@ -97,9 +101,11 @@ async function toggleModule(id) {
     return
   }
   expandedId.value = id
-  moduleLoadingMap.value[id] = true
-  await modulesStore.loadModule(id)
-  moduleLoadingMap.value[id] = false
+  // 如果数据未缓存，加载模块数据
+  if (!modulesStore.moduleData.has(id)) {
+    await modulesStore.loadModule(id)
+    await nextTick() // 确保DOM更新完毕再结束，避免白屏闪烁
+  }
 }
 
 const displayedModules = computed(() => {
@@ -134,6 +140,16 @@ const displayedModules = computed(() => {
 }
 .module-content {
   padding: 12px 0 4px;
+}
+.content-loader {
+  padding: 32px 0; text-align: center;
+}
+.content-inner {
+  animation: contentFadeIn .3s ease-out;
+}
+@keyframes contentFadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .no-result { text-align: center; color: var(--text3); padding: 40px; font-size: 1em }
 .skeleton-card { margin-bottom: 16px; padding: 16px; background: var(--card); border-radius: var(--radius) }

@@ -330,6 +330,16 @@
     "pointCount": 18
   },
   {
+    "id": "coding-security",
+    "title": "三十四、编码安全与渗透防护",
+    "tag": "编码安全",
+    "order": 34,
+    "icon": "🛡️",
+    "cssIndex": 33,
+    "subCount": 4,
+    "pointCount": 20
+  },
+  {
     "id": "scene",
     "title": "三十五、全栈场景题",
     "tag": "场景题",

@@ -41,7 +41,7 @@ export const moduleConfig = {
     { id: "data-structures", order: 31, tag: "数据结构" },
     { id: "design-patterns", order: 32, tag: "设计模式" },
     { id: "ai-framework", order: 33, tag: "AI与Agent" },
-    { id: "easyexcel", order: 34, tag: "EasyExcel" },
+    { id: "coding-security", order: 34, tag: "编码安全" },
     { id: "scene", order: 35, tag: "场景题" },
     { id: "interview-prep", order: 36, tag: "面试准备" },
     { id: "hr-interview", order: 37, tag: "HR面试" }
