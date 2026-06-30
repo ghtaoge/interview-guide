@@ -1,10 +1,10 @@
 {
   "id": "java-concurrent",
-  "title": "六、Java 并发编程",
+  "title": "四、Java 并发编程",
   "tag": "并发",
-  "order": 6,
+  "order": 4,
   "icon": "💠",
-  "cssIndex": 5,
+  "cssIndex": 3,
   "subs": [
     {
       "id": "3-1-线程基础-3-0",

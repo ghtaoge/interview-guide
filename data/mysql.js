@@ -4,11 +4,11 @@
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['mysql'] = {
   "id": "mysql",
-  "title": "十一、MySQL 数据库",
+  "title": "八、MySQL 数据库",
   "tag": "MySQL",
-  "order": 11,
+  "order": 8,
   "icon": "🗄️",
-  "cssIndex": 10,
+  "cssIndex": 7,
   "subs": [
     {
       "id": "7-1-存储引擎与架构-7-0",

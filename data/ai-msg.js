@@ -889,11 +889,11 @@ window.__MODULES__['ai-framework'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['rabbitmq-kafka'] = {
   "id": "rabbitmq-kafka",
-  "title": "十五、消息队列(RabbitMQ/Kafka)",
+  "title": "十二、消息队列(RabbitMQ/Kafka)",
   "tag": "消息队列",
-  "order": 15,
+  "order": 12,
   "icon": "🤖",
-  "cssIndex": 14,
+  "cssIndex": 11,
   "subs": [
     {
       "id": "34-1-rabbitmq核心-34-0",

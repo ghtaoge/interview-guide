@@ -1,10 +1,10 @@
 {
   "id": "diagnostic-perf",
-  "title": "二十六、线上诊断与性能优化",
+  "title": "二十四、线上诊断与性能优化",
   "tag": "诊断与优化",
-  "order": 26,
+  "order": 24,
   "icon": "🔧",
-  "cssIndex": 25,
+  "cssIndex": 23,
   "subs": [
     {
       "id": "37-1-druid连接池与监控-37-0",

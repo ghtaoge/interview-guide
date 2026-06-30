@@ -4,11 +4,11 @@
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['spring'] = {
   "id": "spring",
-  "title": "八、Spring 生态体系",
+  "title": "六、Spring 生态体系",
   "tag": "Spring",
-  "order": 8,
+  "order": 6,
   "icon": "🌐",
-  "cssIndex": 7,
+  "cssIndex": 5,
   "subs": [
     {
       "id": "9-1-ioc容器-9-0",

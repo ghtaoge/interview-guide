@@ -1272,11 +1272,11 @@ window.__MODULES__['java-basic'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['java-collection'] = {
   "id": "java-collection",
-  "title": "五、Java 集合框架",
+  "title": "三、Java 集合框架",
   "tag": "集合",
-  "order": 5,
+  "order": 3,
   "icon": "📋",
-  "cssIndex": 4,
+  "cssIndex": 2,
   "subs": [
     {
       "id": "2-1-list-2-0",
@@ -2004,11 +2004,11 @@ window.__MODULES__['java-collection'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['java-concurrent'] = {
   "id": "java-concurrent",
-  "title": "六、Java 并发编程",
+  "title": "四、Java 并发编程",
   "tag": "并发",
-  "order": 6,
+  "order": 4,
   "icon": "💠",
-  "cssIndex": 5,
+  "cssIndex": 3,
   "subs": [
     {
       "id": "3-1-线程基础-3-0",
@@ -3217,11 +3217,11 @@ window.__MODULES__['java-concurrent'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['jvm'] = {
   "id": "jvm",
-  "title": "七、JVM 虚拟机",
+  "title": "五、JVM 虚拟机",
   "tag": "JVM",
-  "order": 7,
+  "order": 5,
   "icon": "🧩",
-  "cssIndex": 6,
+  "cssIndex": 4,
   "subs": [
     {
       "id": "4-1-内存区域-4-0",
@@ -4492,11 +4492,11 @@ window.__MODULES__['jvm'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['java-io'] = {
   "id": "java-io",
-  "title": "四、Java IO/NIO",
+  "title": "二、Java IO/NIO",
   "tag": "IO",
-  "order": 4,
+  "order": 2,
   "icon": "🔄",
-  "cssIndex": 3,
+  "cssIndex": 1,
   "subs": [
     {
       "id": "5-1-io-基础-5-0",

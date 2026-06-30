@@ -4,11 +4,11 @@
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['redis'] = {
   "id": "redis",
-  "title": "十二、Redis 缓存",
+  "title": "九、Redis 缓存",
   "tag": "Redis",
-  "order": 12,
+  "order": 9,
   "icon": "📠",
-  "cssIndex": 11,
+  "cssIndex": 8,
   "subs": [
     {
       "id": "8-1-数据结构-8-0",

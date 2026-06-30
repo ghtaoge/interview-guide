@@ -1,10 +1,10 @@
 {
   "id": "distributed-system",
-  "title": "十六、分布式系统",
+  "title": "十三、分布式系统",
   "tag": "分布式系统",
-  "order": 16,
+  "order": 13,
   "icon": "🚀",
-  "cssIndex": 15,
+  "cssIndex": 12,
   "subs": [
     {
       "id": "22-1-一致性协议-22-0",

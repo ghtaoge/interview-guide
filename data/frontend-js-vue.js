@@ -4,11 +4,11 @@
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['javascript'] = {
   "id": "javascript",
-  "title": "二十七、JavaScript",
+  "title": "二十五、JavaScript",
   "tag": "JavaScript",
-  "order": 27,
+  "order": 25,
   "icon": "🟨",
-  "cssIndex": 26,
+  "cssIndex": 24,
   "subs": [
     {
       "id": "12-1-js核心概念-12-0",
@@ -1059,11 +1059,11 @@ window.__MODULES__['javascript'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['vue2'] = {
   "id": "vue2",
-  "title": "二十九、Vue2 生态体系",
+  "title": "二十七、Vue2 生态体系",
   "tag": "Vue2",
-  "order": 29,
+  "order": 27,
   "icon": "💚",
-  "cssIndex": 28,
+  "cssIndex": 26,
   "subs": [
     {
       "id": "13-1-vue2-核心-13-0",
@@ -1774,11 +1774,11 @@ window.__MODULES__['vue2'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['vue3'] = {
   "id": "vue3",
-  "title": "三十、Vue3 生态体系",
+  "title": "二十八、Vue3 生态体系",
   "tag": "Vue3",
-  "order": 30,
+  "order": 28,
   "icon": "💚",
-  "cssIndex": 29,
+  "cssIndex": 27,
   "subs": [
     {
       "id": "14-1-vue3-核心-14-0",
@@ -2960,11 +2960,11 @@ window.__MODULES__['vue3'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['typescript'] = {
   "id": "typescript",
-  "title": "三十一、TypeScript",
+  "title": "二十九、TypeScript",
   "tag": "TypeScript",
-  "order": 31,
+  "order": 29,
   "icon": "🟧",
-  "cssIndex": 30,
+  "cssIndex": 28,
   "subs": [
     {
       "id": "15-1-ts核心概念-15-0",

@@ -1,10 +1,10 @@
 {
   "id": "java-collection",
-  "title": "五、Java 集合框架",
+  "title": "三、Java 集合框架",
   "tag": "集合",
-  "order": 5,
+  "order": 3,
   "icon": "📋",
-  "cssIndex": 4,
+  "cssIndex": 2,
   "subs": [
     {
       "id": "2-1-list-2-0",

@@ -1,10 +1,10 @@
 {
   "id": "design-patterns",
-  "title": "三、设计模式",
+  "title": "三十二、设计模式",
   "tag": "设计模式",
-  "order": 3,
+  "order": 32,
   "icon": "🧩",
-  "cssIndex": 2,
+  "cssIndex": 31,
   "subs": [
     {
       "id": "44-1-创建型模式-44-0",

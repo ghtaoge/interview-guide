@@ -1,10 +1,10 @@
 {
   "id": "jvm",
-  "title": "七、JVM 虚拟机",
+  "title": "五、JVM 虚拟机",
   "tag": "JVM",
-  "order": 7,
+  "order": 5,
   "icon": "🧩",
-  "cssIndex": 6,
+  "cssIndex": 4,
   "subs": [
     {
       "id": "4-1-内存区域-4-0",

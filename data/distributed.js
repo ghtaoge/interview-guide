@@ -4,11 +4,11 @@
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['distributed-system'] = {
   "id": "distributed-system",
-  "title": "十六、分布式系统",
+  "title": "十三、分布式系统",
   "tag": "分布式系统",
-  "order": 16,
+  "order": 13,
   "icon": "🚀",
-  "cssIndex": 15,
+  "cssIndex": 12,
   "subs": [
     {
       "id": "22-1-一致性协议-22-0",
@@ -566,11 +566,11 @@ window.__MODULES__['distributed-system'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['high-performance'] = {
   "id": "high-performance",
-  "title": "十七、高性能架构",
+  "title": "十四、高性能架构",
   "tag": "高性能",
-  "order": 17,
+  "order": 14,
   "icon": "💠",
-  "cssIndex": 16,
+  "cssIndex": 13,
   "subs": [
     {
       "id": "23-1-数据库优化-23-0",
@@ -651,11 +651,11 @@ window.__MODULES__['high-performance'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['high-availability'] = {
   "id": "high-availability",
-  "title": "十八、高可用架构",
+  "title": "十五、高可用架构",
   "tag": "高可用",
-  "order": 18,
+  "order": 15,
   "icon": "🛡️",
-  "cssIndex": 17,
+  "cssIndex": 14,
   "subs": [
     {
       "id": "24-1-限流-24-0",

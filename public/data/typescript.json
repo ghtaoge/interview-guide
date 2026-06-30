@@ -1,10 +1,10 @@
 {
   "id": "typescript",
-  "title": "三十一、TypeScript",
+  "title": "二十九、TypeScript",
   "tag": "TypeScript",
-  "order": 31,
+  "order": 29,
   "icon": "🟧",
-  "cssIndex": 30,
+  "cssIndex": 28,
   "subs": [
     {
       "id": "15-1-ts核心概念-15-0",

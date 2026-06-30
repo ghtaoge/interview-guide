@@ -1,10 +1,10 @@
 {
   "id": "netty",
-  "title": "十、Netty 网络框架",
+  "title": "七、Netty 网络框架",
   "tag": "Netty",
-  "order": 10,
+  "order": 7,
   "icon": "☁️",
-  "cssIndex": 9,
+  "cssIndex": 6,
   "subs": [
     {
       "id": "31-1-netty核心架构-31-0",

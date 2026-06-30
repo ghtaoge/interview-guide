@@ -716,11 +716,11 @@ window.__MODULES__['easyexcel'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['data-structures'] = {
   "id": "data-structures",
-  "title": "二、数据结构与算法",
+  "title": "三十一、数据结构与算法",
   "tag": "数据结构",
-  "order": 2,
+  "order": 31,
   "icon": "⚡",
-  "cssIndex": 1,
+  "cssIndex": 30,
   "subs": [
     {
       "id": "41-1-数据结构-41-0",
@@ -1106,11 +1106,11 @@ window.__MODULES__['data-structures'] = {
 
 window.__MODULES__['design-patterns'] = {
   "id": "design-patterns",
-  "title": "三、设计模式",
+  "title": "三十二、设计模式",
   "tag": "设计模式",
-  "order": 3,
+  "order": 32,
   "icon": "🧩",
-  "cssIndex": 2,
+  "cssIndex": 31,
   "subs": [
     {
       "id": "44-1-创建型模式-44-0",
@@ -1259,11 +1259,11 @@ window.__MODULES__['design-patterns'] = {
 window.__MODULES__ = window.__MODULES__ || {};
 window.__MODULES__['diagnostic-perf'] = {
   "id": "diagnostic-perf",
-  "title": "二十六、线上诊断与性能优化",
+  "title": "二十四、线上诊断与性能优化",
   "tag": "诊断与优化",
-  "order": 26,
+  "order": 24,
   "icon": "🔧",
-  "cssIndex": 25,
+  "cssIndex": 23,
   "subs": [
 
     {

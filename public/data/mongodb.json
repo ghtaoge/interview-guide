@@ -1,10 +1,10 @@
 {
   "id": "mongodb",
-  "title": "十三、MongoDB 文档数据库",
+  "title": "十、MongoDB 文档数据库",
   "tag": "MongoDB",
-  "order": 13,
+  "order": 10,
   "icon": "🔍",
-  "cssIndex": 12,
+  "cssIndex": 9,
   "subs": [
     {
       "id": "27-1-mongodb核心概念-27-0",

@@ -1,10 +1,10 @@
 {
   "id": "git",
-  "title": "二十一、Git 版本控制",
+  "title": "十八、Git 版本控制",
   "tag": "Git",
-  "order": 21,
+  "order": 18,
   "icon": "🔧",
-  "cssIndex": 20,
+  "cssIndex": 17,
   "subs": [
     {
       "id": "42-1-git基础概念与命令-42-0",
