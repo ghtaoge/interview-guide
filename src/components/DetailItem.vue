@@ -51,17 +51,17 @@ function toggleSub() { open.value = !open.value }
 <style scoped>
 /* 移动端详情 */
 .mobile-detail {
-  padding: 10px 14px 10px 34px; margin: 4px 0; font-size: .84em;
-  line-height: 1.7; color: var(--text2); position: relative;
+  padding: 12px 14px 12px 36px; margin: 4px 0; font-size: .92em;
+  line-height: 1.8; color: var(--text2); position: relative;
   background: var(--card); border-radius: 10px;
 }
 .mobile-detail.has-sub { cursor: pointer; font-weight: 600; color: var(--text) }
 .mobile-detail.has-sub.open { background: var(--bg); border-left: 2px solid var(--accent) }
 .mobile-num {
-  position: absolute; left: 10px; top: 10px;
-  width: 18px; height: 18px; border-radius: 50%; color: #fff;
+  position: absolute; left: 10px; top: 12px;
+  width: 20px; height: 20px; border-radius: 50%; color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: .6em; font-weight: 700;
+  font-size: .65em; font-weight: 700;
   background: linear-gradient(135deg, var(--accent), #a78bfa);
 }
 .mobile-label { display: inline }
@@ -71,15 +71,15 @@ function toggleSub() { open.value = !open.value }
 }
 .mobile-sub-arrow.open { transform: rotate(90deg); color: var(--accent) }
 .mobile-sub {
-  margin: 8px 0 2px; padding: 10px 12px;
-  background: var(--bg); border-radius: 8px; font-size: .82em;
-  color: var(--text2); border-left: 2px solid var(--accent); line-height: 1.7;
+  margin: 8px 0 2px; padding: 12px 12px;
+  background: var(--bg); border-radius: 8px; font-size: .9em;
+  color: var(--text2); border-left: 2px solid var(--accent); line-height: 1.8;
   font-weight: 400;
 }
 
 /* PC端 */
 .detail-item {
-  padding: 14px 18px 14px 48px; margin: 10px 0; font-size: .95em;
+  padding: 14px 18px 14px 48px; margin: 10px 0; font-size: 1em;
   line-height: 1.8; color: var(--text2); position: relative; transition: all .2s;
   background: var(--card); border-radius: 12px; border: 1px solid var(--border);
 }
@@ -105,7 +105,7 @@ function toggleSub() { open.value = !open.value }
 .sub-arrow.open { transform: rotate(90deg); background: var(--accent); color: #fff; border-color: var(--accent) }
 .sub-detail {
   margin: 12px 0 4px -10px; padding: 12px 16px;
-  background: var(--card); border-radius: 10px; font-size: .84em;
+  background: var(--card); border-radius: 10px; font-size: .92em;
   color: var(--text2); border-left: 3px solid var(--accent);
   line-height: 1.8;
 }

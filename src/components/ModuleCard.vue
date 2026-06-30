@@ -52,7 +52,7 @@ function lightenColor(ci) {
 }
 .mobile-card.expanded { box-shadow: 0 4px 20px rgba(0,0,0,.15) }
 .mobile-card-head {
-  padding: 14px 16px; color: #fff; font-size: .95em; font-weight: 600;
+  padding: 14px 16px; color: #fff; font-size: 1em; font-weight: 600;
   display: flex; align-items: center; gap: 8px; user-select: none;
 }
 .mobile-icon { font-size: 1em; flex-shrink: 0 }
@@ -72,7 +72,7 @@ function lightenColor(ci) {
 }
 .module-card:hover { box-shadow: 0 8px 30px rgba(0,0,0,.08); transform: translateY(-2px) }
 .module-head {
-  padding: 16px 24px; color: #fff; font-size: 1.05em; font-weight: 600;
+  padding: 16px 24px; color: #fff; font-size: 1.12em; font-weight: 600;
   display: flex; align-items: center; gap: 8px; user-select: none;
 }
 .module-head .icon { font-size: 1em; flex-shrink: 0 }

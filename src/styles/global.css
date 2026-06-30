@@ -11,7 +11,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft
 
 /* 移动端全局优化 */
 @media (max-width: 600px) {
-  body { -webkit-tap-highlight-color: transparent; font-size: 14px }
+  body { -webkit-tap-highlight-color: transparent; font-size: 15px }
   .hl { background: #422006; color: #fbbf24 }
 }
 

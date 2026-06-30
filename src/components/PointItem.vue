@@ -56,7 +56,7 @@ function togglePoint() {
 .mobile-point {
   padding: 10px 14px; margin: 4px 0; background: var(--card);
   border-radius: 10px; border-left: 3px solid var(--border);
-  font-size: .85em; cursor: pointer; transition: all .2s;
+  font-size: .92em; cursor: pointer; transition: all .2s;
 }
 .mobile-point.has-detail { border-left-color: var(--accent); font-weight: 500 }
 .mobile-point.open { border-left-color: var(--accent); background: var(--bg); box-shadow: 0 2px 8px rgba(0,0,0,.06) }
@@ -76,14 +76,14 @@ function togglePoint() {
 .point {
   padding: 11px 14px; margin: 6px 0; background: var(--card);
   border-radius: 10px; border-left: 3px solid transparent;
-  font-size: .87em; position: relative; cursor: pointer; transition: all .22s;
+  font-size: .95em; position: relative; cursor: pointer; transition: all .22s;
 }
 .point:hover { background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.06) }
 .point.open { border-left-color: var(--accent); box-shadow: 0 2px 12px rgba(52,112,255,.12) }
 .point-row { display: flex; gap: 12px; align-items: center }
 .point .tag { flex-shrink: 0; font-weight: 650; color: var(--text); border-right: 2px solid var(--border); padding-right: 6px; margin-right: 2px }
 .point.open .tag { border-right-color: var(--accent) }
-.point .desc { color: var(--text2); flex: 1; line-height: 1.75; font-size: .93em; word-break: break-word }
+.point .desc { color: var(--text2); flex: 1; line-height: 1.75; font-size: .96em; word-break: break-word }
 .expand-hint {
   flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
   padding: 3px 10px; border-radius: 14px; background: rgba(99,102,241,.08);

@@ -70,7 +70,7 @@ const filteredPoints = computed(() => {
 /* PC端 */
 .sub-section { background: var(--card); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow) }
 .sub-head {
-  padding: 12px 22px 12px 28px; font-size: .9em; font-weight: 600;
+  padding: 12px 22px 12px 28px; font-size: .95em; font-weight: 600;
   color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 8px;
   background: var(--bg); transition: background .15s;
 }
@@ -85,7 +85,7 @@ const filteredPoints = computed(() => {
 /* 移动端van-collapse样式增强 */
 :deep(.van-collapse) { border: none }
 :deep(.van-collapse-item) { margin-bottom: 6px; border-radius: 12px; overflow: hidden; border: none }
-:deep(.van-collapse-item__title) { font-weight: 600; font-size: .88em; border: none }
+:deep(.van-collapse-item__title) { font-weight: 600; font-size: .94em; border: none }
 :deep(.van-collapse-item__title .van-cell) { border: none }
 :deep(.van-collapse-item__content) { padding: 8px 12px; border: none }
 </style>
