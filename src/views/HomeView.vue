@@ -78,7 +78,7 @@ async function toggleModule(id) {
 
 <style scoped>
 .home-view {
-  max-width: 960px; margin: 0 auto; padding: 0 16px 60px;
+  max-width: 960px; margin: 0 auto; padding: 20px 16px 60px;
 }
 .module-list {
   display: flex; flex-direction: column; gap: 16px;
