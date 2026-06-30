@@ -205,25 +205,169 @@
           "id": "文件操作-6-1-0",
           "tag": "文件操作",
           "desc": "ls(-la详细列表/-h人类可读/-R递归)/cp(-r目录/-f强制)/mv移动重名/rm(-rf强制递归删!慎用)/find路径-name '*.log' -mtime +7(7天前)/grep -r 'keyword' 目录(递归搜索内容)/chmod 755 file(权限rwxr-xr-x)/chown user:group file(所有者组)/ln -s target linkname(软链接)/df -h(磁盘用量)/du -sh dir(目录大小)",
-          "details": []
+          "details": [
+            {
+              "id": "文件操作-6-1-0-d0",
+              "tag": "ls -la/-h/-R",
+              "desc": "ls -la列出文件详细信息(权限/大小/所有者)/ls -h人类可读大小(K/M/G)/ls -R递归显示子目录内容,生产常用ls -lah查看文件属性"
+            },
+            {
+              "id": "文件操作-6-1-0-d1",
+              "tag": "cp/mv/rm",
+              "desc": "cp -r复制目录/mv移动重命名/rm -rf强制递归删除(慎用!)生产环境建议用mv到临时目录替代rm -rf,避免误删不可恢复"
+            },
+            {
+              "id": "文件操作-6-1-0-d2",
+              "tag": "find",
+              "desc": "find 路径 -name '*.log' -mtime +7 -type f -size +100M 按名称/时间/类型/大小组合查找,find + xargs批量处理,生产查日志/清理过期文件必备"
+            },
+            {
+              "id": "文件操作-6-1-0-d3",
+              "tag": "chmod/chown",
+              "desc": "chmod 755(rwxr-xr-x)/644(rw-r--r--)权限数字表示/chown user:group改所有者,生产环境敏感文件设600(仅owner可读写),配置文件设644"
+            },
+            {
+              "id": "文件操作-6-1-0-d4",
+              "tag": "ln软硬链接",
+              "desc": "ln -s源目软链接(跨文件系统删源失效)/ln源目硬链接(同inode删源仍可用),软链接类似快捷方式硬链接类似副本,生产常用软链接做版本切换"
+            },
+            {
+              "id": "文件操作-6-1-0-d5",
+              "tag": "df/du磁盘",
+              "desc": "df -h查看磁盘分区用量/du -sh *查看每个目录大小,磁盘满时先查du找大目录再查大文件,生产排查磁盘告警必备组合"
+            },
+            {
+              "id": "文件操作-6-1-0-d6",
+              "tag": "常用组合",
+              "desc": "find . -name '*.log' -mtime +7 | xargs rm 批量删除7天前日志/ls -lS按大小排序找最大文件,生产运维高频组合命令"
+            }
+          ]
         },
         {
           "id": "文本处理-6-1-1",
           "tag": "文本处理",
           "desc": "cat查看/tac倒序/more分页/less交互式(head前N行/tail后N行/-f跟踪更新)/wc -l统计行数/sort排序(-n数字-r逆序-u去重)/uniq去重(-c计数)/cut -d',' -f2(截取字段)/awk '{print $1,$3}'(列处理)/sed 's/old/new/g'(流编辑器)/tee(输出同时写文件)/tr a-z A-Z(字符替换)/xxd查看二进制",
-          "details": []
+          "details": [
+            {
+              "id": "文本处理-6-1-1-d0",
+              "tag": "head/tail",
+              "desc": "head -20前20行/tail -20后20行/tail -f实时跟踪日志更新(生产看日志必备)/tail -n +100从第100行开始,生产监控日志最常用tail -f"
+            },
+            {
+              "id": "文本处理-6-1-1-d1",
+              "tag": "grep",
+              "desc": "grep -r递归搜索/-i忽略大小写/-n显示行号/-E正则扩展/-c匹配计数/-l只显示文件名,生产常用grep -rn 'keyword' dir快速定位代码或日志中的关键字"
+            },
+            {
+              "id": "文本处理-6-1-1-d2",
+              "tag": "awk",
+              "desc": "awk '{print $1,$3}'按列提取/awk -F','指定分隔符/awk '{sum+=$1}END{print sum}'求和统计,文本分析利器,生产日志按列提取IP/时间/状态码"
+            },
+            {
+              "id": "文本处理-6-1-1-d3",
+              "tag": "sed",
+              "desc": "sed 's/old/new/g'全局替换/sed -i直接修改文件/sed -n '10,20p'提取行范围,流编辑器修改配置文件,生产批量替换配置参数"
+            },
+            {
+              "id": "文本处理-6-1-1-d4",
+              "tag": "sort/uniq",
+              "desc": "sort -n数字排序/-r逆序/-k2按第2列排序;uniq去重需先sort|-c计数显示重复次数,生产统计日志IP访问频次"
+            },
+            {
+              "id": "文本处理-6-1-1-d5",
+              "tag": "cut/wc/tr",
+              "desc": "cut -d',' -f2按分隔符截取字段/wc -l统计行数/tr a-z A-Z大小写转换,简单文本处理组合,生产截取CSV字段或统计行数"
+            },
+            {
+              "id": "文本处理-6-1-1-d6",
+              "tag": "常用组合",
+              "desc": "cat log | grep ERROR | awk '{print $3}' | sort | uniq -c | sort -rn 提取错误IP统计排序(生产日志分析经典管道),管道组合是Linux文本处理核心能力"
+            }
+          ]
         },
         {
           "id": "网络调试-6-1-2",
           "tag": "网络调试",
           "desc": "ping(连通性ICMP)/telnet(端口通断测试)/curl(POST请求测试: -X POST -H Content-Type头 -d data参数体) -v详细输出 -w '%{http_code}' 只看状态码)/wget下载/netstat -tunlp(端口监听)/ss -tunlp(netstat替代更快)/nslookup/dig DNS解析/traceroute路由追踪/tcpdump -i eth0 port 80抓包(需root)",
-          "details": []
+          "details": [
+            {
+              "id": "网络调试-6-1-2-d0",
+              "tag": "ping/telnet",
+              "desc": "ping测连通性ICMP协议/telnet IP端口测端口是否开放,telnet断开用Ctrl+]再quit,生产先ping测网络再telnet测端口"
+            },
+            {
+              "id": "网络调试-6-1-2-d1",
+              "tag": "curl",
+              "desc": "curl -v详细输出/-X POST请求/-H Content-Type:application/json头/-d JSON数据体/-w %{http_code}只看状态码,生产接口调试必备,调试REST API首选工具"
+            },
+            {
+              "id": "网络调试-6-1-2-d2",
+              "tag": "netstat/ss",
+              "desc": "netstat -tunlp查看所有监听端口TCP/UDP/-p显示进程名/ss -tunlp更快替代netstat,排查端口占用和服务启动验证"
+            },
+            {
+              "id": "网络调试-6-1-2-d3",
+              "tag": "nslookup/dig",
+              "desc": "nslookup域名查IP/dig域名详细DNS记录/dig +short只返回IP,生产排查DNS解析问题,验证域名是否解析正确"
+            },
+            {
+              "id": "网络调试-6-1-2-d4",
+              "tag": "traceroute",
+              "desc": "traceroute追踪路由路径显示每一跳延迟,排查网络不通时定位哪一跳丢包,生产跨机房网络故障定位"
+            },
+            {
+              "id": "网络调试-6-1-2-d5",
+              "tag": "tcpdump",
+              "desc": "tcpdump -i eth0 port 80抓HTTP包/-w file.pcap保存文件用Wireshark分析,需root权限生产抓包排查,深度网络问题分析工具"
+            },
+            {
+              "id": "网络调试-6-1-2-d6",
+              "tag": "wget",
+              "desc": "wget下载文件/-c断点续传/-q静默/-O指定输出文件名,生产批量下载或镜像,大文件下载优先用wget替代curl"
+            }
+          ]
         },
         {
           "id": "进程管理-6-1-3",
           "tag": "进程管理",
           "desc": "ps aux(USER/PID/%CPU/%MEM/COMMAND)/ps -ef(PPID父进程)/top实时(按P排序CPU/M内存/q退出)/kill -9 PID(强制终止)/kill -0 PID(检查存在)/jobs后台任务/fg/bg前后台切换/nohup command & (断开终端不退出)/crontab -e定时任务(systemctl管理服务)/free -h内存/uptime负载/top -bn1一次快照",
-          "details": []
+          "details": [
+            {
+              "id": "进程管理-6-1-3-d0",
+              "tag": "ps",
+              "desc": "ps aux查看所有进程(USER/PID/%CPU/%MEM/STAT/COMMAND)/ps -ef看PPID父进程关系,排查进程时先ps定位PID,生产常用ps aux | grep java查找Java进程"
+            },
+            {
+              "id": "进程管理-6-1-3-d1",
+              "tag": "top/htop",
+              "desc": "top实时监控CPU内存/按P排序CPU/M排序内存/q退出/htop更友好交互式,生产监控服务器资源必备,top -bn1一次快照适合脚本采集"
+            },
+            {
+              "id": "进程管理-6-1-3-d2",
+              "tag": "kill",
+              "desc": "kill -15 PID优雅终止(允许清理)/kill -9 PID强制杀死(不清理)/kill -0 PID检查进程是否存在,生产优先-15允许进程优雅退出释放资源"
+            },
+            {
+              "id": "进程管理-6-1-3-d3",
+              "tag": "nohup/后台",
+              "desc": "nohup command &断开终端不退出输出到nohup.out/jobs查看后台任务/fg %1切前台/bg %1切后台,生产部署常用nohup启动服务"
+            },
+            {
+              "id": "进程管理-6-1-3-d4",
+              "tag": "crontab",
+              "desc": "crontab -e编辑定时任务/格式:分时日月周/0 2 * * *每天2点执行/生产:日志清理/备份/监控脚本,分布式环境建议用XXL-Job替代"
+            },
+            {
+              "id": "进程管理-6-1-3-d5",
+              "tag": "free/uptime",
+              "desc": "free -h内存总量/已用/可用/缓存/uptime系统运行时间+1/5/15分钟平均负载,负载>CPU核数说明过载,生产判断服务器健康度"
+            },
+            {
+              "id": "进程管理-6-1-3-d6",
+              "tag": "systemctl",
+              "desc": "systemctl start/stop/restart/status服务名/systemctl enable开机自启,生产管理服务生命周期,替代旧版service命令"
+            }
+          ]
         }
       ]
     }

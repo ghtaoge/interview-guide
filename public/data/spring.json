@@ -3375,6 +3375,90 @@
               "desc": "①Token/ST一次性使用防重放攻击(CAS ST验证后立即失效);②重定向URI白名单防开放重定向漏洞;③CSRF防护:state参数(OAuth2)/SAML RelayState;④时钟同步:JWT/SAML签名验证需时钟同步(允许±30s偏差);⑤跨域Cookie:SameSite=None+HTTPS+前端代理;⑥Session固定攻击:登录后重新生成sessionId;⑦降级策略:认证中心宕机→子系统本地Token缓存短期可用+告警通知"
             }
           ]
+        },
+        {
+          "id": "owasp-top10-9-20-3",
+          "tag": "OWASP Top 10安全风险",
+          "desc": "OWASP Top 10 2021十大Web安全风险:A01权限控制失效(越权/IDOR/路径遍历)/A02加密失败(敏感数据明文传输存储)/A03注入(SQL/XSS/命令注入)/A04不安全设计(缺少安全架构设计)/A05安全配置错误(默认配置/未关闭调试)/A06过时组件(已知漏洞的依赖)/A07身份认证失败(弱密码/会话管理)/A08软件和数据完整性失败(不安全CI/CD/未验证更新)/A09日志监控不足(缺乏攻击检测)/A10服务端请求伪造SSRF(内网访问/云元数据)",
+          "details": [
+            {
+              "id": "owasp-top10-9-20-3-d0",
+              "tag": "A01权限控制",
+              "desc": "越权访问(IDOR修改userId参数)/路径遍历(../../etc/passwd)/未授权API调用,防护:权限校验+参数绑定+白名单"
+            },
+            {
+              "id": "owasp-top10-9-20-3-d1",
+              "tag": "A02加密失败",
+              "desc": "敏感数据(密码/身份证/银行卡)明文存储传输/使用弱算法MD5/SHA1/未启用TLS,防护:bcrypt/Argon2哈希+TLS强制+数据脱敏"
+            },
+            {
+              "id": "owasp-top10-9-20-3-d2",
+              "tag": "A03注入",
+              "desc": "SQL注入(MyBatis ${}/未校验输入)/XSS存储型反射型/命令注入(|管道绕过),防护:#{}/参数校验/CSRF Token/输出编码"
+            },
+            {
+              "id": "owasp-top10-9-20-3-d3",
+              "tag": "A05安全配置错误",
+              "desc": "默认密码未改/调试模式开启/cors Allow-Origin:*目录列出/未关闭不必要的HTTP方法,防护:安全基线/配置审计/自动化检查"
+            },
+            {
+              "id": "owasp-top10-9-20-3-d4",
+              "tag": "A07身份认证",
+              "desc": "弱密码/会话固定/JWT泄露不刷新/多因素认证缺失,防护:密码强度策略+MFA+会话超时+JWT短期+刷新令牌"
+            },
+            {
+              "id": "owasp-top10-9-20-3-d5",
+              "tag": "A09日志监控",
+              "desc": "缺乏入侵检测/异常登录无告警/攻击日志未集中分析,防护:集中日志ELK/异常检测规则/实时告警/定期审计"
+            },
+            {
+              "id": "owasp-top10-9-20-3-d6",
+              "tag": "A10 SSRF",
+              "desc": "内网服务未授权访问/云元数据AK泄露/本地文件读取,防护:URL白名单+禁内网IP+限制协议+代理校验"
+            }
+          ]
+        },
+        {
+          "id": "jwt深入与安全实践-9-20-4",
+          "tag": "JWT深入与安全实践",
+          "desc": "JWT(JSON Web Token)结构:Header(alg算法typ类型)+Payload(claims声明iss签发者sub主题exp过期aud受众iat签发时间)+Signature(HMACSHA256或RSA签名).Access Token短期(15-30分钟)+Refresh Token长期(7-30天)刷新机制:过期后用Refresh Token换新Access Token无需重新登录.安全陷阱:JWT无法撤销(已签发直到过期才失效)/payload未加密(base64可解码不要存敏感信息)/算法混淆攻击(alg:none绕过签名).防护:短期Token+黑名单(Redis存已注销Token)+HS256固定算法不信任alg头+HTTPS传输+不存密码等敏感claim",
+          "details": [
+            {
+              "id": "jwt深入与安全实践-9-20-4-d0",
+              "tag": "JWT三段结构",
+              "desc": "Header(alg:HS256/RS256,type:JWT)+Payload(claims:iss/sub/exp/iat/aud自定义)+Signature(BASE64URL(Header)+BASE64URL(Payload)+secret签名),用.分隔三段"
+            },
+            {
+              "id": "jwt深入与安全实践-9-20-4-d1",
+              "tag": "Access+Refresh双Token",
+              "desc": "Access短期15-30分钟过期需刷新/Refresh长期7-30天用于换新Access/Refresh存Redis可主动撤销,双Token机制避免频繁重新登录"
+            },
+            {
+              "id": "jwt深入与安全实践-9-20-4-d2",
+              "tag": "JWT安全陷阱",
+              "desc": "alg:none攻击(算法头设none绕过签名验证)/payload未加密base64可解码(不存敏感信息)/无法撤销已签发Token直到过期/密钥泄露所有Token失效"
+            },
+            {
+              "id": "jwt深入与安全实践-9-20-4-d3",
+              "tag": "JWT防护措施",
+              "desc": "短期Token减少暴露窗口/注销时Redis黑名单+白名单/固定算法不信任alg头/HTTPS传输/不存密码身份证等敏感claim/密钥定期轮换"
+            },
+            {
+              "id": "jwt深入与安全实践-9-20-4-d4",
+              "tag": "HS256 vs RS256",
+              "desc": "HS256对称密钥签名验证同密钥(简单但密钥分发问题)/RS256非对称私钥签公钥验(微服务间安全签发方持私钥验证方持公钥),生产推荐RS256"
+            },
+            {
+              "id": "jwt深入与安全实践-9-20-4-d5",
+              "tag": "JWT vs Session",
+              "desc": "JWT无状态服务端不存(微服务友好可水平扩展)/Session有状态服务端存(集中管理易撤销/踢人),JWT适合分布式/Session适合单体+强安全需求"
+            },
+            {
+              "id": "jwt深入与安全实践-9-20-4-d6",
+              "tag": "Spring Security JWT集成",
+              "desc": "jjwt库签发验证/自定义JwtAuthenticationFilter拦截提取Token/SecurityContext存认证信息/Token过期返回401触发Refresh流程"
+            }
+          ]
         }
       ]
     }
