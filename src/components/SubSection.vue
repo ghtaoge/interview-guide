@@ -9,6 +9,7 @@
         v-for="pt in filteredPoints"
         :key="pt.id"
         :point="pt"
+        :auto-open="filterStore.isDetailOnlyMatch(pt)"
         :color-index="colorIndex"
         :keyword="keyword"
       />
@@ -28,6 +29,7 @@
         v-for="pt in filteredPoints"
         :key="pt.id"
         :point="pt"
+        :auto-open="filterStore.isDetailOnlyMatch(pt)"
         :color-index="colorIndex"
         :keyword="keyword"
       />
@@ -36,10 +38,9 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useDevice } from '../composables/useDevice.js'
 import { useFilterStore } from '../stores/filter.js'
-import { useSearch } from '../composables/useSearch.js'
 import PointItem from './PointItem.vue'
 
 const props = defineProps({
@@ -51,18 +52,26 @@ const props = defineProps({
 
 const { isMobile } = useDevice()
 const filterStore = useFilterStore()
-const { matchText } = useSearch()
 
 const activeNames = ref([])
 const isOpen = ref(false)
 
 function toggle() { isOpen.value = !isOpen.value }
 
+// 搜索关键词时自动展开
+watch(() => filterStore.keyword, (kw) => {
+  if (kw && filteredPoints.value.length > 0) {
+    isOpen.value = true
+    activeNames.value = [props.sub.id]
+  } else if (!kw) {
+    isOpen.value = false
+    activeNames.value = []
+  }
+}, { immediate: true })
+
 const filteredPoints = computed(() => {
   if (!filterStore.keyword) return props.sub.points
-  return props.sub.points.filter(pt =>
-    matchText(pt.tag, filterStore.keyword) || matchText(pt.desc, filterStore.keyword)
-  )
+  return props.sub.points.filter(pt => filterStore.matchPointContent(pt))
 })
 </script>
 

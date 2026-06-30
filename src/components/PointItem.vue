@@ -38,13 +38,14 @@ import DetailItem from './DetailItem.vue'
 const props = defineProps({
   point: Object,
   colorIndex: Number,
-  keyword: String
+  keyword: String,
+  autoOpen: Boolean
 })
 
 const { isMobile } = useDevice()
 const { highlightHtml } = useSearch()
 
-const pt = reactive({ ...props.point, open: false })
+const pt = reactive({ ...props.point, open: props.autoOpen || false })
 
 function togglePoint() {
   pt.open = !pt.open

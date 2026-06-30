@@ -1,21 +1,28 @@
 <template>
   <div class="home-view">
     <!-- 加载骨架屏 -->
-    <template v-if="loading">
+    <template v-if="modulesLoading">
       <van-skeleton v-for="i in 6" :key="i" title :row="2" row-width="60%" class="skeleton-card" />
+    </template>
+
+    <!-- 搜索加载 -->
+    <template v-else-if="filterStore.searchLoading">
+      <div class="search-loading-hint">
+        <van-loading size="24px">搜索内容中...</van-loading>
+      </div>
     </template>
 
     <!-- 模块列表 -->
     <template v-else>
       <div class="module-list">
         <div v-for="mod in displayedModules" :key="mod.id" class="module-wrapper">
-          <ModuleCard :mod="mod" :expanded="expandedId === mod.id" @toggle="toggleModule(mod.id)" />
+          <ModuleCard :mod="mod" :expanded="isModuleExpanded(mod.id)" @toggle="toggleModule(mod.id)" />
 
-          <div v-if="expandedId === mod.id" class="module-content">
-            <van-skeleton v-if="moduleLoading" title :row="4" />
-            <template v-else-if="moduleData">
+          <div v-if="isModuleExpanded(mod.id)" class="module-content">
+            <van-skeleton v-if="moduleLoadingMap[mod.id]" title :row="4" />
+            <template v-else-if="getModuleData(mod.id)">
               <SubSection
-                v-for="sub in moduleData.subs"
+                v-for="sub in getModuleData(mod.id).subs"
                 :key="sub.id"
                 :sub="sub"
                 :module-id="mod.id"
@@ -27,14 +34,14 @@
         </div>
       </div>
       <div v-if="displayedModules.length === 0 && (filterStore.keyword || filterStore.tagFilter)" class="no-result">
-        🔍 未找到匹配 "{{ filterStore.keyword || filterStore.tagFilter }}" 的模块
+        🔍 未找到匹配 "{{ filterStore.keyword || filterStore.tagFilter }}" 的内容
       </div>
     </template>
   </div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useModulesStore } from '../stores/modules.js'
 import { useFilterStore } from '../stores/filter.js'
 import ModuleCard from '../components/ModuleCard.vue'
@@ -43,37 +50,79 @@ import SubSection from '../components/SubSection.vue'
 const modulesStore = useModulesStore()
 const filterStore = useFilterStore()
 
-const loading = computed(() => modulesStore.moduleIndex.length === 0)
+const modulesLoading = computed(() => modulesStore.moduleIndex.length === 0)
 const expandedId = ref(null)
-const moduleLoading = ref(false)
-const moduleData = ref(null)
+const moduleLoadingMap = ref({})
+const searchExpandedIds = ref([]) // 搜索模式下展开的模块ID列表
+
+const isSearchMode = computed(() => !!filterStore.keyword && !filterStore.tagFilter)
+
+function isModuleExpanded(id) {
+  if (isSearchMode.value) return searchExpandedIds.value.includes(id)
+  return expandedId.value === id
+}
+
+function getModuleData(id) {
+  return modulesStore.moduleData.get(id) || null
+}
+
+// 关键词搜索时：加载所有模块数据 + 自动展开匹配模块
+watch(() => filterStore.keyword, async (kw) => {
+  if (kw && !filterStore.tagFilter) {
+    filterStore.searchLoading = true
+    await modulesStore.loadAllForSearch()
+    filterStore.searchLoading = false
+    // 自动展开所有匹配模块
+    searchExpandedIds.value = displayedModules.value.map(m => m.id)
+  } else {
+    searchExpandedIds.value = []
+    expandedId.value = null
+  }
+}, { immediate: false })
+
+async function toggleModule(id) {
+  if (isSearchMode.value) {
+    // 搜索模式：toggle展开/收起
+    if (searchExpandedIds.value.includes(id)) {
+      searchExpandedIds.value = searchExpandedIds.value.filter(x => x !== id)
+    } else {
+      searchExpandedIds.value = [...searchExpandedIds.value, id]
+      await modulesStore.loadModule(id)
+    }
+    return
+  }
+  // 正常模式：手风琴(一次只展开一个)
+  if (expandedId.value === id) {
+    expandedId.value = null
+    return
+  }
+  expandedId.value = id
+  moduleLoadingMap.value[id] = true
+  await modulesStore.loadModule(id)
+  moduleLoadingMap.value[id] = false
+}
 
 const displayedModules = computed(() => {
   const index = modulesStore.sortedIndex
   if (!filterStore.keyword && !filterStore.tagFilter) return index
+
+  if (filterStore.tagFilter) {
+    return index.filter(m => m.tag === filterStore.tagFilter)
+  }
+
+  // 关键词搜索：标题匹配 + 内容匹配(如数据已加载)
+  const kw = filterStore.keyword.toLowerCase()
   return index.filter(m => {
-    if (filterStore.tagFilter) return m.tag === filterStore.tagFilter
-    if (filterStore.keyword) {
-      const kw = filterStore.keyword.toLowerCase()
-      return m.title.toLowerCase().includes(kw) || m.tag.toLowerCase().includes(kw)
+    // 标题/tag匹配
+    if (m.title.toLowerCase().includes(kw) || m.tag.toLowerCase().includes(kw)) return true
+    // 内容匹配(需模块数据已加载)
+    const data = modulesStore.moduleData.get(m.id)
+    if (data && data.subs) {
+      return filterStore.matchModuleContent({ ...m, subs: data.subs })
     }
-    return true
+    return false
   })
 })
-
-async function toggleModule(id) {
-  if (expandedId.value === id) {
-    expandedId.value = null
-    moduleData.value = null
-    return
-  }
-  expandedId.value = id
-  moduleData.value = null
-  moduleLoading.value = true
-  const data = await modulesStore.loadModule(id)
-  moduleData.value = data
-  moduleLoading.value = false
-}
 </script>
 
 <style scoped>
@@ -88,4 +137,8 @@ async function toggleModule(id) {
 }
 .no-result { text-align: center; color: var(--text3); padding: 40px; font-size: 1em }
 .skeleton-card { margin-bottom: 16px; padding: 16px; background: var(--card); border-radius: var(--radius) }
+.search-loading-hint {
+  display: flex; align-items: center; justify-content: center;
+  padding: 40px 0; color: var(--text3);
+}
 </style>
