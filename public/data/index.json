@@ -406,8 +406,8 @@
     "order": 41,
     "icon": "⚡",
     "cssIndex": 38,
-    "subCount": 2,
-    "pointCount": 4
+    "subCount": 3,
+    "pointCount": 8
   },
   {
     "id": "git",
@@ -426,6 +426,16 @@
     "order": 43,
     "icon": "🔄",
     "cssIndex": 42,
+    "subCount": 3,
+    "pointCount": 9
+  },
+  {
+    "id": "design-patterns",
+    "title": "四十四、常用设计模式",
+    "tag": "设计模式",
+    "order": 44,
+    "icon": "🧩",
+    "cssIndex": 43,
     "subCount": 3,
     "pointCount": 9
   }

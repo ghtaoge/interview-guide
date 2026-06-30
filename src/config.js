@@ -50,7 +50,8 @@ export const moduleConfig = {
     { id: "performance-optimization", order: 40, tag: "性能优化" },
     { id: "data-structures", order: 41, tag: "数据结构" },
     { id: "git", order: 42, tag: "Git" },
-    { id: "cicd", order: 43, tag: "CI/CD" }
+    { id: "cicd", order: 43, tag: "CI/CD" },
+    { id: "design-patterns", order: 44, tag: "设计模式" }
   ],
   admin: {
     // 盐值: javaguide2026salt

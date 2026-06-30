@@ -26,7 +26,7 @@ const MODULE_GROUPS = [
   { file: 'distributed.js', ids: ['distributed-system','high-performance','high-availability','interview-prep'] },
   { file: 'db-middleware.js', ids: ['elasticsearch','mongodb','postgresql','maven','minio','netty'] },
   { file: 'ai-msg.js', ids: ['ai-framework','rabbitmq-kafka','nacos-sentinel'] },
-  { file: 'tools-spec.js', ids: ['dubbo','diagnostic-tools','easyexcel','coding-standards','performance-optimization','data-structures','hr-interview'] },
+  { file: 'tools-spec.js', ids: ['dubbo','diagnostic-tools','easyexcel','coding-standards','performance-optimization','data-structures','hr-interview','design-patterns'] },
 ]
 
 // 使用 vm 模块在沙箱中执行 JS 文件，安全提取 window.__MODULES__

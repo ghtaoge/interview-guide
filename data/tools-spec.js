@@ -1534,6 +1534,334 @@ window.__MODULES__['data-structures'] = {
           ]
         }
       ]
+    },
+    {
+      "id": "41-3-算法技巧分类-41-2",
+      "title": "41.3 算法技巧分类",
+      "points": [
+        {
+          "id": "滑动窗口与双指针-41-2-0",
+          "tag": "滑动窗口与双指针",
+          "desc": "滑动窗口:维护一个区间[left,right]右扩满足条件→左缩不满足→记录极值,适合连续子数组/子串问题(最长无重复子串/最小覆盖子串/子数组和≥K)。双指针:对撞指针(左右向中靠拢,有序数组两数之和/回文判断)和快慢指针(链表中点/删除倒数第N/判断环)。核心模板:while右指针扩展→while左指针收缩→更新结果。时间O(n)空间O(1)或O(K)",
+          "details": [
+            {
+              "id": "滑动窗口与双指针-41-2-0-d0",
+              "tag": "滑动窗口模板",
+              "desc": "right扩展→满足条件→left收缩→更新极值;窗口内维护计数/哈希;O(n)扫一遍不回退"
+            },
+            {
+              "id": "滑动窗口与双指针-41-2-0-d1",
+              "tag": "对撞指针",
+              "desc": "有序数组左右向中靠拢:两数之和/三数之和/容器盛水/回文判断;前提有序"
+            },
+            {
+              "id": "滑动窗口与双指针-41-2-0-d2",
+              "tag": "快慢指针",
+              "desc": "链表问题:判断环(相遇)/找中点(快2步慢1步)/删除倒数第N(快先走N步)"
+            },
+            {
+              "id": "滑动窗口与双指针-41-2-0-d3",
+              "tag": "最长无重复子串",
+              "desc": "滑动窗口+HashSet,右扩遇重复→左缩到重复字符后,记录maxLen"
+            },
+            {
+              "id": "滑动窗口与双指针-41-2-0-d4",
+              "tag": "最小覆盖子串",
+              "desc": "滑动窗口+need计数,right扩满足need→left缩→记录最短子串,典型hard题"
+            },
+            {
+              "id": "滑动窗口与双指针-41-2-0-d5",
+              "tag": "合并有序数组/链表",
+              "desc": "双指针分别遍历两数组,比较大小取小者推进,合并O(n+m)时间"
+            },
+            {
+              "id": "滑动窗口与双指针-41-2-0-d6",
+              "tag": "面试策略",
+              "desc": "连续子数组/子串→想滑动窗口;有序+两元素关系→想对撞指针;链表→想快慢指针"
+            }
+          ]
+        },
+        {
+          "id": "动态规划专题-41-2-1",
+          "tag": "动态规划专题",
+          "desc": "DP核心:状态定义dp[i]含义→状态转移方程→初始化→遍历顺序→结果。分类:线性DP(爬楼梯dp[i]=dp[i-1]+dp[i-2]/最长递增子序列LIS dp[i]=max(dp[j]+1)/最长公共子序列LCS dp[i][j])、背包DP(01背包dp[i][j]=max(选/不选)/完全背包物品无限/多重背包数量限制)、区间DP(最长回文子串dp[i][j])、树形DP(最大独立集)。优化:滚动数组降维O(n)→O(1)/前缀和优化/位运算状态压缩。识别DP:最优子结构+无后效性+重叠子问题",
+          "details": [
+            {
+              "id": "动态规划专题-41-2-1-d0",
+              "tag": "DP解题四步",
+              "desc": "1.状态定义dp[i]含义 2.状态转移方程 3.初始化边界 4.遍历顺序+结果返回"
+            },
+            {
+              "id": "动态规划专题-41-2-1-d1",
+              "tag": "01背包",
+              "desc": "dp[i][j]=max(dp[i-1][j],dp[i-1][j-w[i]]+v[i])每物品选或不选,滚动数组降维"
+            },
+            {
+              "id": "动态规划专题-41-2-1-d2",
+              "tag": "完全背包",
+              "desc": "物品无限选,dp[i][j]=max(dp[i-1][j],dp[i][j-w[i]]+v[i])内层正向遍历"
+            },
+            {
+              "id": "动态规划专题-41-2-1-d3",
+              "tag": "LIS最长递增",
+              "desc": "dp[i]=max(dp[j]+1)所有j<i且nums[j]<nums[i];优化:贪心+二分O(nlogn)"
+            },
+            {
+              "id": "动态规划专题-41-2-1-d4",
+              "tag": "LCS最长公共",
+              "desc": "dp[i][j]=nums[i]==nums[j]?dp[i-1][j-1]+1:max(dp[i-1][j],dp[i][j-1])"
+            },
+            {
+              "id": "动态规划专题-41-2-1-d5",
+              "tag": "状态压缩DP",
+              "desc": "布尔状态用位运算压缩,n个状态2^n位表示,适合小规模组合优化问题如TSP"
+            },
+            {
+              "id": "动态规划专题-41-2-1-d6",
+              "tag": "识别DP问题",
+              "desc": "最优子结构(大问题=小问题最优组合)+无后效性(未来决策不影响过去)+重叠子问题"
+            },
+            {
+              "id": "动态规划专题-41-2-1-d7",
+              "tag": "面试策略",
+              "desc": "求最值(最长/最短/最大/最小)/计数(方案数)/可行性(能否到达)→优先想DP"
+            }
+          ]
+        },
+        {
+          "id": "回溯与单调栈-41-2-2",
+          "tag": "回溯与单调栈",
+          "desc": "回溯:DFS+剪枝+撤销选择,模板:选择→递归→撤销。适用:排列/组合/子集/N皇后/数独。剪枝:排序+提前判断无效路径。单调栈:栈中元素单调递增或递减,适合下一个更大/更小元素问题(每日温度/接雨水/柱状图最大矩形)。单调队列:双端队列维护窗口极值(滑动窗口最大值)。并查集Union-Find:合并+查找O(α(n))近似常数,适合连通分量/等价类分组。拓扑排序:DAG有向无环图线性排序(Kahn BFS/DFS后序反转),适合任务依赖/课程安排",
+          "details": [
+            {
+              "id": "回溯与单调栈-41-2-2-d0",
+              "tag": "回溯模板",
+              "desc": "for选择 in 选择列表:做选择→递归(path+选择)→撤销选择;结束条件:path长度满足"
+            },
+            {
+              "id": "回溯与单调栈-41-2-2-d1",
+              "tag": "排列vs组合",
+              "desc": "排列:每次从头选(used数组标记已选);组合:从start选避免重复(排序+start递增)"
+            },
+            {
+              "id": "回溯与单调栈-41-2-2-d2",
+              "tag": "剪枝策略",
+              "desc": "排序+提前判断无效路径(如组合求和超target直接break);减少搜索空间大幅优化"
+            },
+            {
+              "id": "回溯与单调栈-41-2-2-d3",
+              "tag": "单调栈",
+              "desc": "栈中单调递增/递减,出栈时计算:每日温度(找下一个更大)/接雨水(凹槽面积)/最大矩形"
+            },
+            {
+              "id": "回溯与单调栈-41-2-2-d4",
+              "tag": "单调队列",
+              "desc": "双端队列维护窗口极值,队头出窗口删,队尾比当前小删,适合滑动窗口最大值"
+            },
+            {
+              "id": "回溯与单调栈-41-2-2-d5",
+              "tag": "并查集",
+              "desc": "Union合并+Find查找O(α(n))近似常数,路径压缩+按秩合并优化,适合连通分量/岛屿合并"
+            },
+            {
+              "id": "回溯与单调栈-41-2-2-d6",
+              "tag": "拓扑排序",
+              "desc": "DAG线性排序:Kahn(BFS入度0入队)/DFS后序反转;判断有无环:排序完仍有节点=有环"
+            }
+          ]
+        },
+        {
+          "id": "复杂度分析与解题策略-41-2-3",
+          "tag": "复杂度分析与解题策略",
+          "desc": "时间复杂度:看循环嵌套层数和递归深度,O(1)直接返回/O(logn)二分/O(n)单循环/O(nlogn)排序/O(n^2)双层循环/O(2^n)子集枚举/O(n!)排列。空间复杂度:看额外数组/栈深度/递归调用层数。解题策略:暴力→优化思路:排序(无序→有序)/哈希(查找优化O(n)→O(1))/滑动窗口(连续区间)/DP(最优子结构)/分治(大→小)。数据规模暗示:O(n^2)≤10^4/O(nlogn)≤10^5/O(n)≤10^7/O(logn)≤10^9)。面试20分钟框架:理解题意→暴力解→说优化思路→写代码→边界测试",
+          "details": [
+            {
+              "id": "复杂度分析与解题策略-41-2-3-d0",
+              "tag": "时间复杂度速查",
+              "desc": "O(1)直接/O(logn)二分/O(n)单循环/O(nlogn)排序/O(n²)双层/O(2^n)子集/O(n!)排列"
+            },
+            {
+              "id": "复杂度分析与解题策略-41-2-3-d1",
+              "tag": "空间复杂度",
+              "desc": "看额外数组大小/栈最大深度/递归层数;滚动数组优化DP空间O(n)→O(1)"
+            },
+            {
+              "id": "复杂度分析与解题策略-41-2-3-d2",
+              "tag": "数据规模暗示复杂度",
+              "desc": "n≤10^4→O(n²)可;n≤10^5→O(nlogn);n≤10^7→O(n);n≤10^9→O(logn);LeetCode根据n值暗示"
+            },
+            {
+              "id": "复杂度分析与解题策略-41-2-3-d3",
+              "tag": "暴力→优化套路",
+              "desc": "排序(无序→有序可用二分/双指针)/哈希(查找O(n)→O(1))/前缀和(区间求和)/单调栈(下一个更大)"
+            },
+            {
+              "id": "复杂度分析与解题策略-41-2-3-d4",
+              "tag": "面试20分钟框架",
+              "desc": "5m理解题意+确认→5m暴力解→5m说优化思路→5m写代码→最后边界case验证"
+            },
+            {
+              "id": "复杂度分析与解题策略-41-2-3-d5",
+              "tag": "常见边界case",
+              "desc": "空输入/单元素/全相同/极大值/负数/重复元素/已排序/乱序 — 写完代码快速检查这些"
+            },
+            {
+              "id": "复杂度分析与解题策略-41-2-3-d6",
+              "tag": "刷题策略",
+              "desc": "按类型刷(先滑动窗口/DP/回溯每类3-5题掌握套路)→不背代码理解模式→二刷只看思路"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+window.__MODULES__['design-patterns'] = {
+  "id": "design-patterns",
+  "title": "四十四、常用设计模式",
+  "tag": "设计模式",
+  "order": 44,
+  "icon": "🧩",
+  "cssIndex": 43,
+  "subs": [
+    {
+      "id": "44-1-创建型模式-44-0",
+      "title": "44.1 创建型模式",
+      "points": [
+        {
+          "id": "单例模式-44-0-0",
+          "tag": "单例模式",
+          "desc": "确保类只有一个实例并提供全局访问点。实现:懒汉式(延迟创建线程不安全)/饿汉式(类加载创建线程安全)/DCL双检锁volatile+二次检查(推荐)/静态内部类(延迟加载利用类加载机制线程安全)/枚举单例(最安全防反射反序列化攻击Josh Bloch推荐)。Spring中Bean默认singleton但非JVM单例(每个容器一份)。面试重点:5种实现+线程安全+防反射/序列化破坏",
+          "details": [
+            {"id": "单例模式-44-0-0-d0", "tag": "饿汉式", "desc": "类加载时创建线程安全但浪费资源(未使用就创建),实现:private static final Instance=new Singleton()"},
+            {"id": "单例模式-44-0-0-d1", "tag": "DCL双检锁", "desc": "volatile禁止指令重排+二次null检查,第一次检查避免锁开销,第二次检查防止并发创建,推荐懒加载方式"},
+            {"id": "单例模式-44-0-0-d2", "tag": "静态内部类", "desc": "利用类加载机制线程安全+延迟加载,外部类加载不创建内部类实例,调用getInstance才触发内部类加载"},
+            {"id": "单例模式-44-0-0-d3", "tag": "枚举单例", "desc": "最安全实现:防反射newInstance(枚举无此方法)/防反序列化(枚举readResolve自动返回已有实例),Josh Bloch推荐"},
+            {"id": "单例模式-44-0-0-d4", "tag": "防破坏", "desc": "反射攻击:DCL/静态内部类可被反射setAccessible破坏→私有构造器二次检查;反序列化:实现readResolve()返回已有实例"},
+            {"id": "单例模式-44-0-0-d5", "tag": "Spring singleton区别", "desc": "Spring Bean singleton是容器级别(每个ApplicationContext一份),不是JVM级别(多个容器各有一份),且Spring管理生命周期"},
+            {"id": "单例模式-44-0-0-d6", "tag": "适用场景", "desc": "全局配置管理/数据库连接池/日志管理器/缓存管理器/线程池—这些只需一个实例管理共享资源"}
+          ]
+        },
+        {
+          "id": "工厂方法与抽象工厂-44-0-1",
+          "tag": "工厂方法与抽象工厂",
+          "desc": "工厂方法:定义创建对象的接口让子类决定实例化哪个类(一个工厂一个产品)。抽象工厂:创建一系列相关对象的接口(一组工厂一组产品族)。简单工厂:静态方法根据参数创建不同对象(不属于GoF但常用)。Spring中BeanFactory/ApplicationContext是工厂模式的体现。面试重点:三种工厂区别+Spring工厂实现+何时用工厂",
+          "details": [
+            {"id": "工厂方法与抽象工厂-44-0-1-d0", "tag": "简单工厂", "desc": "静态方法根据参数创建不同产品,优点简单;缺点新增产品需修改工厂类违反开闭原则,不属于GoF23种"},
+            {"id": "工厂方法与抽象工厂-44-0-1-d1", "tag": "工厂方法", "desc": "定义create()接口子类实现具体创建,新增产品只需新增工厂子类符合开闭原则,但类数量增多"},
+            {"id": "工厂方法与抽象工厂-44-0-1-d2", "tag": "抽象工厂", "desc": "创建产品族(一组相关产品),如UIFactory同时创建Button+TextField;新增产品族容易新增产品类型困难"},
+            {"id": "工厂方法与抽象工厂-44-0-1-d3", "tag": "Spring BeanFactory", "desc": "ApplicationContext是工厂:根据Bean定义创建实例+管理生命周期+DI注入,getObject()返回具体Bean"},
+            {"id": "工厂方法与抽象工厂-44-0-1-d4", "tag": "FactoryBean", "desc": "Spring特殊工厂接口,getObject()/getObjectType()/isSingleton(),适合创建复杂对象如SqlSessionFactoryBean"},
+            {"id": "工厂方法与抽象工厂-44-0-1-d5", "tag": "何时用工厂", "desc": "创建逻辑复杂(多步骤初始化)/需要根据条件选不同实现/需要隔离创建与使用/需要统一管理对象生命周期"}
+          ]
+        },
+        {
+          "id": "建造者模式-44-0-2",
+          "tag": "建造者模式",
+          "desc": "将复杂对象的构建与表示分离,用逐步构建方式创建对象(链式调用)。适用:对象参数多(>4个)/有些参数可选/需要不同配置组合/构建过程需要多步骤。实现:Builder内部类提供setXxx()返回this链式调用+build()创建最终对象。Lombok @Builder注解自动生成。对比工厂:工厂关注创建什么,建造者关注怎么创建(分步骤)。",
+          "details": [
+            {"id": "建造者模式-44-0-2-d0", "tag": "核心思想", "desc": "逐步构建+链式调用+最后build()返回完整对象,构建过程与最终表示分离"},
+            {"id": "建造者模式-44-0-2-d1", "tag": "何时使用", "desc": "参数>4个且部分可选/需要多种配置组合/构建需多步骤/不可变对象逐步设置如StringBuilder/Request构建"},
+            {"id": "建造者模式-44-0-2-d2", "tag": "链式调用", "desc": "Builder.setA().setB().setC().build();每步返回this;最终build()调用目标类私有构造器传入Builder"},
+            {"id": "建造者模式-44-0-2-d3", "tag": "Lombok @Builder", "desc": "自动生成Builder内部类+build()方法+链式调用;注意事项:全参数构造器需@AllArgs+@NoArgsConstructor"},
+            {"id": "建造者模式-44-0-2-d4", "tag": "vs工厂模式", "desc": "工厂关注创建什么(产品类型),建造者关注怎么创建(分步骤配置);简单对象用工厂,复杂多参数对象用建造者"},
+            {"id": "建造者模式-44-0-2-d5", "tag": "典型应用", "desc": "StringBuilder构建字符串/OkHttp Request.Builder/Lombok @Builder/AlertDialog.Builder/ThreadPoolExecutor参数构建"}
+          ]
+        },
+        {
+          "id": "原型模式-44-0-3",
+          "tag": "原型模式",
+          "desc": "通过克隆已有对象创建新对象而非new,减少创建开销。实现:实现Cloneable接口+重写clone()(浅拷贝直接super.clone()/深拷贝需手动克隆引用对象)。浅拷贝:基本类型复制值+引用类型复制地址(共享引用)。深拷贝:引用对象也克隆或序列化反序列化。适用:创建开销大(DB查询构造)/需要保留原始对象状态/大量相似对象。",
+          "details": [
+            {"id": "原型模式-44-0-3-d0", "tag": "浅拷贝", "desc": "super.clone()复制基本类型值+引用类型地址,引用对象共享同一实例修改互相影响"},
+            {"id": "原型模式-44-0-3-d1", "tag": "深拷贝", "desc": "引用对象也需clone()或序列化反序列化(InputStream/OutputStream)彻底独立互不影响"},
+            {"id": "原型模式-44-0-3-d2", "tag": "Cloneable接口", "desc": "标记接口无方法,重写Object.clone()调用super.clone(),不实现Cloneable调用clone()抛CloneNotSupportedException"},
+            {"id": "原型模式-44-0-3-d3", "tag": "序列化深拷贝", "desc": "对象→字节流→新对象,彻底深拷贝但性能开销大,适合复杂嵌套对象深拷贝"},
+            {"id": "原型模式-44-0-3-d4", "tag": "适用场景", "desc": "创建开销大(DB查询构造对象)/保留历史状态(撤销功能原型保存快照)/大量相似对象批量初始化"},
+            {"id": "原型模式-44-0-3-d5", "tag": "Spring prototype", "desc": "Spring Bean prototype作用域每次getBean创建新实例类似原型模式,但Spring通过BeanDefinition创建而非clone"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "44-2-结构型模式-44-1",
+      "title": "44.2 结构型模式",
+      "points": [
+        {
+          "id": "代理模式-44-1-0",
+          "tag": "代理模式",
+          "desc": "为对象提供代理控制访问。分类:静态代理(手动编写代理类)/动态代理(JDK基于接口/CGLIB基于继承)。虚拟代理延迟加载/保护代理权限控制/远程代理RMI/缓存代理缓存结果。Spring AOP核心:JDK动态代理/CGLIB代理创建代理对象拦截方法调用。面试重点:静态vs动态+JDK vs CGLIB+Spring AOP实现",
+          "details": [
+            {"id": "代理模式-44-1-0-d0", "tag": "静态代理", "desc": "手动编写代理类实现同一接口,冗余每个接口一个代理类,新增方法代理类也需修改"},
+            {"id": "代理模式-44-1-0-d1", "tag": "JDK动态代理", "desc": "Proxy.newProxyInstance生成接口实现类,InvocationHandler.invoke拦截所有方法调用,目标类必须实现接口"},
+            {"id": "代理模式-44-1-0-d2", "tag": "CGLIB动态代理", "desc": "Enhancer创建目标类子类重写非final方法,MethodInterceptor.intercept拦截,不要求接口但不能代理final"},
+            {"id": "代理模式-44-1-0-d3", "tag": "虚拟代理", "desc": "延迟加载昂贵对象直到真正需要时才创建(如大图片懒加载/数据库连接延迟获取),减少初始化开销"},
+            {"id": "代理模式-44-1-0-d4", "tag": "保护代理", "desc": "权限控制根据调用者角色决定是否允许访问目标方法(如管理员可调用delete普通用户不行)"},
+            {"id": "代理模式-44-1-0-d5", "tag": "Spring AOP实现", "desc": "AbstractAutoProxyCreator在BeanPostProcessor后置处理阶段创建代理,根据条件选JDK或CGLIB,代理链可多层嵌套"},
+            {"id": "代理模式-44-1-0-d6", "tag": "典型应用", "desc": "Spring AOP代理/Feign远程调用代理/RMI远程代理/MyBatis MapperProxy接口代理/Hibernate懒加载代理"}
+          ]
+        },
+        {
+          "id": "装饰器与适配器-44-1-1",
+          "tag": "装饰器与适配器",
+          "desc": "装饰器:动态给对象添加职责(透明增强),比继承更灵活可叠加多层装饰。InputStream→BufferedInputStream→DataInputStream经典装饰链。适配器:将一个类的接口转换成客户端期望的接口(接口兼容)。类适配器(继承)/对象适配器(组合推荐)。面试重点:装饰器vs继承/装饰器链/适配器vs装饰器区别",
+          "details": [
+            {"id": "装饰器与适配器-44-1-1-d0", "tag": "装饰器核心", "desc": "实现同一接口+持有一个被装饰对象+在方法中调用被装饰对象并添加额外逻辑,可多层叠加"},
+            {"id": "装饰器与适配器-44-1-1-d1", "tag": "Java IO装饰链", "desc": "InputStream→BufferedInputStream(缓冲)→DataInputStream(读基本类型)经典多层装饰链,每层添加功能"},
+            {"id": "装饰器与适配器-44-1-1-d2", "tag": "vs继承", "desc": "继承静态编译时确定功能扩展,装饰器动态运行时叠加职责更灵活;继承是类层级扩展装饰器是对象层级增强"},
+            {"id": "装饰器与适配器-44-1-1-d3", "tag": "适配器核心", "desc": "类适配器继承Target+Adaptee;对象适配器实现Target接口+持有Adaptee实例组合方式推荐,更灵活"},
+            {"id": "装饰器与适配器-44-1-1-d4", "tag": "适配器典型", "desc": "Arrays.asList()数组→List适配/Spring HandlerAdapter适配不同Handler/InputStreamReader字节→字符适配"},
+            {"id": "装饰器与适配器-44-1-1-d5", "tag": "两者区别", "desc": "装饰器:增强已有功能(同接口多层叠加)/适配器:解决接口不兼容(不同接口转换);装饰器透明使用者无感,适配器有感知需要转换"}
+          ]
+        },
+        {
+          "id": "观察者与策略模式-44-1-2",
+          "tag": "观察者与策略模式",
+          "desc": "观察者:一对多依赖当一个对象状态变化所有依赖者自动通知更新(发布订阅)。Spring ApplicationEvent+@EventListener是观察者实现。策略:定义算法族封装每个算法使可互换,消除if-else条件分支(不同支付方式/折扣策略/排序算法)。Spring ResourceLoader按策略选择Resource实现。面试重点:观察者vs事件驱动/策略消除if-else",
+          "details": [
+            {"id": "观察者与策略模式-44-1-2-d0", "tag": "观察者核心", "desc": "Subject维护Observer列表notifyObservers()通知所有;Observer.update()响应变化;解耦发布者与订阅者"},
+            {"id": "观察者与策略模式-44-1-2-d1", "tag": "Spring ApplicationEvent", "desc": "ApplicationEventPublisher发布事件+@EventListener/@Async异步监听+事件链(返回值作为新事件)是观察者实现"},
+            {"id": "观察者与策略模式-44-1-2-d2", "tag": "策略模式核心", "desc": "Strategy接口定义算法+ConcreteStrategy多种实现+Context持有Strategy引用调用strategy.method()"},
+            {"id": "观察者与策略模式-44-1-2-d3", "tag": "消除if-else", "desc": "不同分支封装为Strategy实现+Map<type,Strategy>路由选择+strategy.execute(),新增分支只需新增Strategy类"},
+            {"id": "观察者与策略模式-44-1-2-d4", "tag": "典型应用", "desc": "观察者:Spring事件/GUI按钮ActionListener/RxJava/Vue响应式;策略:支付方式/排序算法/压缩策略/折扣计算"},
+            {"id": "观察者与策略模式-44-1-2-d5", "tag": "Spring中策略", "desc": "ResourceLoader按URL前缀选Resource策略(File/ClassPath/Url)/InstantiationStrategy选择实例化策略/HandlerAdapter"}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "44-3-行为型模式-44-2",
+      "title": "44.3 行为型模式",
+      "points": [
+        {
+          "id": "模板方法与责任链-44-2-0",
+          "tag": "模板方法与责任链",
+          "desc": "模板方法:父类定义算法骨架步骤,子类重写特定步骤不变整体流程(开闭原则)。Spring AbstractApplicationContext.refresh()模板方法定义容器刷新12步。责任链:请求沿链传递每个Handler决定处理或传递下一个。Spring FilterChain/InterceptorChain是责任链。面试重点:模板方法vs策略/责任链顺序",
+          "details": [
+            {"id": "模板方法与责任链-44-2-0-d0", "tag": "模板方法核心", "desc": "父类final模板方法定义步骤顺序+abstract钩子方法让子类实现;不变流程+可变步骤,反向控制(子类决定细节)"},
+            {"id": "模板方法与责任链-44-2-0-d1", "tag": "Spring refresh()", "desc": "AbstractApplicationContext.refresh()定义容器刷新12步模板方法:prepareRefresh→obtainBeanFactory→registerBeanPostProcessor→...子类可重写onRefresh()"},
+            {"id": "模板方法与责任链-44-2-0-d2", "tag": "JdbcTemplate", "desc": "Spring Template类是模板方法:定义execute骨架→doInStatement/doExecute可由用户自定义回调步骤"},
+            {"id": "模板方法与责任链-44-2-0-d3", "tag": "责任链核心", "desc": "Handler接口handleRequest()+setNext(),请求从链头依次传递;每个Handler决定处理/传递/处理并传递"},
+            {"id": "模板方法与责任链-44-2-0-d4", "tag": "Spring FilterChain", "desc": "javax.servlet.Filter+FilterChain责任链:每个Filter.doFilter(request,response,chain)处理后调用chain.doFilter()传递下一个"},
+            {"id": "模板方法与责任链-44-2-0-d5", "tag": "HandlerInterceptor", "desc": "preHandle→Controller→postHandle→afterCompletion责任链拦截器链,任一preHandle返回false中断链"},
+            {"id": "模板方法与责任链-44-2-0-d6", "tag": "模板vs策略", "desc": "模板方法:控制整体流程不变骨架(继承实现);策略:局部算法可替换(组合实现);模板靠继承策略靠组合"}
+          ]
+        },
+        {
+          "id": "迭代器与命令模式-44-2-1",
+          "tag": "迭代器与命令模式",
+          "desc": "迭代器:顺序访问聚合对象元素不暴露内部结构。Java Collection.iterator()是标准实现。命令:将请求封装为对象(命令对象含接收者+动作+参数),支持撤销/排队/日志/宏命令。适用:需要解耦请求发送者与接收者/需要撤销恢复/需要排队延迟执行。面试重点:迭代器意义/命令模式撤销机制",
+          "details": [
+            {"id": "迭代器与命令模式-44-2-1-d0", "tag": "迭代器核心", "desc": "Iterator接口hasNext()/next()/remove(),遍历与聚合对象解耦;不同的集合结构统一遍历方式"},
+            {"id": "迭代器与命令模式-44-2-1-d1", "tag": "Java迭代器", "desc": "Collection.iterator()返回Iterator;ArrayList.Itr/HashMap.EntryIterator/ConcurrentHashMap迭代器不同内部实现"},
+            {"id": "迭代器与命令模式-44-2-1-d2", "tag": "fail-fast vs fail-safe", "desc": "ArrayList modCount检查→ConcurrentModificationException(fail-fast);ConcurrentHashMap弱一致性迭代不抛异常(fail-safe)"},
+            {"id": "迭代器与命令模式-44-2-1-d3", "tag": "命令模式核心", "desc": "Command接口execute()/undo()+ConcreteCommand封装Receiver操作+Invoker调用Command解耦发送者与接收者"},
+            {"id": "迭代器与命令模式-44-2-1-d4", "tag": "撤销机制", "desc": "Command.execute()执行+undo()反向操作恢复状态;维护命令历史栈支持多步撤销;如文本编辑器撤销重做"},
+            {"id": "迭代器与命令模式-44-2-1-d5", "tag": "典型应用", "desc": "迭代器:Java Collection遍历;命令:Runnable线程任务/Spring JMS消息/游戏操作撤销/宏命令批量执行"}
+          ]
+        }
+      ]
     }
   ]
 };
