@@ -10,15 +10,6 @@
       </div>
     </div>
 
-    <!-- 数据加载过渡 -->
-    <div v-else-if="dataLoading" class="init-screen">
-      <div class="init-content">
-        <div class="init-icon">📖</div>
-        <div class="init-title">{{ config.ui.title }}</div>
-        <van-loading type="spinner" color="#0d9488" vertical>加载内容...</van-loading>
-      </div>
-    </div>
-
     <!-- 未认证: 显示密码验证 -->
     <AuthGate v-else-if="!authStore.isAuthenticated" @success="onAuthSuccess" />
 
@@ -49,23 +40,18 @@ const authStore = useAuthStore()
 const modulesStore = useModulesStore()
 const { isDark, toggle: toggleTheme } = useTheme()
 const initializing = ref(true)
-const dataLoading = ref(false)
 
 // 初始化: 先检查session
 onMounted(async () => {
   const hasSession = authStore.checkSession()
   if (hasSession) {
-    dataLoading.value = true
-    await modulesStore.loadIndex()
-    dataLoading.value = false
+    try { await modulesStore.loadIndex() } catch (e) { console.error('loadIndex失败:', e) }
   }
   initializing.value = false
 })
 
 async function onAuthSuccess() {
-  dataLoading.value = true
-  await modulesStore.loadIndex()
-  dataLoading.value = false
+  try { await modulesStore.loadIndex() } catch (e) { console.error('loadIndex失败:', e) }
 }
 
 // Ctrl+D 切换深色模式
