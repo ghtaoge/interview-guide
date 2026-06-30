@@ -60,25 +60,174 @@ window.__MODULES__['redis'] = {
           "id": "hash哈希-8-0-1",
           "tag": "Hash哈希",
           "desc": "field-value键值对集合(类似Java HashMap)。HSET user:1000 name 'zhangsan' age 25。适用:对象缓存(HMGETALL user:1000一次取出整个对象比String序列化JSON更灵活修改单字段)/购物车(Hash Key=userId field=商品Id value=数量)。编码:ziplist(元素少且value小<64B)/hashtable(超过阈值转hash表)。HGET/HSET/HDEL/HMGET/HINCRBY",
-          "details": []
+          "details": [
+            {
+              "id": "hash哈希-8-0-1-d0",
+              "tag": "field-value键值对",
+              "desc": "Hash=field-value键值对集合,类似Java HashMap,适合存储对象属性"
+            },
+            {
+              "id": "hash哈希-8-0-1-d1",
+              "tag": "常用命令",
+              "desc": "HSET/HGET单字段,HMGET批量取,HINCRBY字段自增,HDEL删字段,HGETALL全取"
+            },
+            {
+              "id": "hash哈希-8-0-1-d2",
+              "tag": "编码转换ziplist→ht",
+              "desc": "ziplist(元素≤512且value≤64B)→hashtable,超过阈值自动转hash表"
+            },
+            {
+              "id": "hash哈希-8-0-1-d3",
+              "tag": "对象缓存优于String",
+              "desc": "HMGETALL一次取整个对象比String序列化JSON更灵活可修改单字段"
+            },
+            {
+              "id": "hash哈希-8-0-1-d4",
+              "tag": "购物车场景",
+              "desc": "Key=userId,field=商品Id,value=数量,HINCRBY加减数量,HLEN商品数"
+            },
+            {
+              "id": "hash哈希-8-0-1-d5",
+              "tag": "内存优化ziplist",
+              "desc": "ziplist连续内存紧凑存储,节省内存但查找O(N),适合小Hash对象"
+            },
+            {
+              "id": "hash哈希-8-0-1-d6",
+              "tag": "BigKey风险",
+              "desc": "HGETALL大Hash阻塞O(N),避免field过多,可HSCAN渐进遍历"
+            }
+          ]
         },
         {
           "id": "list列表-8-0-2",
           "tag": "List列表",
           "desc": "双向链表(两端LPUSH/RPOP/RPOPLPUSH)。用途:最新消息(LPUSH msg:latest *100 LTRIM保留100条)/简易队列(生产者LPUSH消费者RPOP,不支持阻塞消费用Stream代替)/排行榜(按时间倒序)。编码:ziplist(元素少且短)/linkedlist(多元素)。注意:LRANGE 0 -1全量遍历O(N)大列表慎用",
-          "details": []
+          "details": [
+            {
+              "id": "list列表-8-0-2-d0",
+              "tag": "双向链表两端操作",
+              "desc": "LPUSH/RPOP左进右出队列,RPOPLPUSH环形队列,两端操作O(1)"
+            },
+            {
+              "id": "list列表-8-0-2-d1",
+              "tag": "编码ziplist→quicklist",
+              "desc": "ziplist(小)→linkedlist(大),3.2+统一quicklist=ziplist+双向链表分片"
+            },
+            {
+              "id": "list列表-8-0-2-d2",
+              "tag": "最新消息场景",
+              "desc": "LPUSH msg:latest + LTRIM保留N条,实现时间倒序最新N条消息"
+            },
+            {
+              "id": "list列表-8-0-2-d3",
+              "tag": "简易消息队列",
+              "desc": "LPUSH生产+RPOP消费,不支持ACK和阻塞消费,生产用Stream替代"
+            },
+            {
+              "id": "list列表-8-0-2-d4",
+              "tag": "LRANGE慎用O(N)",
+              "desc": "LRANGE 0 -1全量遍历O(N)大列表阻塞,分页用LRANGE start stop"
+            },
+            {
+              "id": "list列表-8-0-2-d5",
+              "tag": "消息队列局限",
+              "desc": "无ACK确认/消费组/持久化,Redis5.0+Stream是专业消息队列方案"
+            },
+            {
+              "id": "list列表-8-0-2-d6",
+              "tag": "阻塞操作BLPOP",
+              "desc": "BLPOP/BRPOP阻塞等待弹出,实现简易阻塞队列,超时自动返回nil"
+            }
+          ]
         },
         {
           "id": "set集合-8-0-3",
           "tag": "Set集合",
           "desc": "无序唯一元素(类似Java HashSet)。SADD tag:article:1 java redis /SINTER求交集(共同关注标签)/SUNION并集/SDIFF差集/SMEMBERS成员/SISMEMBER检查存在/SRANDMEMBER随机(抽奖)。编码:intset(整数元素且少)/hashtable(通用)。用途:标签系统/好友推荐(共同好友=SINTER)/抽奖(SRANDMEMBER POP)/去重",
-          "details": []
+          "details": [
+            {
+              "id": "set集合-8-0-3-d0",
+              "tag": "无序唯一自动去重",
+              "desc": "SADD自动去重,元素唯一无序,类似Java HashSet,底层intset或hashtable"
+            },
+            {
+              "id": "set集合-8-0-3-d1",
+              "tag": "集合运算",
+              "desc": "SINTER交集(共同好友),SUNION并集,SDIFF差集,O(min(N,M))最坏O(N)"
+            },
+            {
+              "id": "set集合-8-0-3-d2",
+              "tag": "编码intset→hashtable",
+              "desc": "intset(整数元素且≤512)→hashtable,整数有序数组连续内存节省空间"
+            },
+            {
+              "id": "set集合-8-0-3-d3",
+              "tag": "抽奖场景",
+              "desc": "SRANDMEMBER随机抽N个不删除,SPOP随机抽并删除,适合抽奖活动"
+            },
+            {
+              "id": "set集合-8-0-3-d4",
+              "tag": "标签/好友推荐",
+              "desc": "标签SADD tag:article java,SINTER求共同关注好友推荐交集"
+            },
+            {
+              "id": "set集合-8-0-3-d5",
+              "tag": "SISMEMBER检查存在",
+              "desc": "SISMEMBER判断元素是否存在O(1),比SMEMBERS遍历高效适合去重校验"
+            },
+            {
+              "id": "set集合-8-0-3-d6",
+              "tag": "SMEMBERS慎用O(N)",
+              "desc": "SMEMBERS返回全部元素O(N)大集合阻塞,推荐SSCAN渐进遍历"
+            }
+          ]
         },
         {
           "id": "zset有序集合-8-0-4",
           "tag": "ZSet有序集合",
           "desc": "Score排序唯一成员(跳表SkipList+Dict哈希表双结构)。ZADD rank:game score1 player1 /ZREVRANGE排名/ZRANK分数排名/ZINCRBY加分。用途:排行榜(实时排名ZREVRANGE 0 9 Top10)/延迟队列(Score=到期时间轮询)/加权随机权重(ZRANGEBYSCORE)。Dict查member→Score,O(1); SkipList按Score范围查询,O(logN)",
-          "details": []
+          "details": [
+            {
+              "id": "zset有序集合-8-0-4-d0",
+              "tag": "SkipList+Dict双结构",
+              "desc": "Dict查member→Score O(1),SkipList按Score范围查询O(logN),双结构互补"
+            },
+            {
+              "id": "zset有序集合-8-0-4-d1",
+              "tag": "常用命令",
+              "desc": "ZADD添加,ZREVRANGE逆序排名,ZRANK查排名,ZINCRBY加分,ZCARD总数"
+            },
+            {
+              "id": "zset有序集合-8-0-4-d2",
+              "tag": "排行榜场景",
+              "desc": "ZINCRBY加分+ZREVRANGE 0 9取Top10,实时排名经典方案"
+            },
+            {
+              "id": "zset有序集合-8-0-4-d3",
+              "tag": "延迟队列",
+              "desc": "Score=到期时间戳,ZRANGEBYSCORE轮询到期任务,Score排序天然适合"
+            },
+            {
+              "id": "zset有序集合-8-0-4-d4",
+              "tag": "编码ziplist→skiplist",
+              "desc": "ziplist(元素≤128且value≤64B)→skiplist+ht,超过阈值自动转换"
+            },
+            {
+              "id": "zset有序集合-8-0-4-d5",
+              "tag": "加权随机权重",
+              "desc": "Score=权重值,ZRANGEBYSCORE按权重范围筛选,适合加权抽奖分配"
+            },
+            {
+              "id": "zset有序集合-8-0-4-d6",
+              "tag": "SkipList原理",
+              "desc": "多层链表索引,平均O(logN)查找,比平衡树简单易实现,空间换时间"
+            },
+            {
+              "id": "zset有序集合-8-0-4-d7",
+              "tag": "ZUNIONSTORE合并",
+              "desc": "ZUNIONSTORE合并多个ZSet,WEIGHTS加权聚合,适合多维度综合排名"
+            }
+          ]
         }
       ]
     },
@@ -127,13 +276,85 @@ window.__MODULES__['redis'] = {
           "id": "aof日志-8-1-1",
           "tag": "AOF日志",
           "desc": "Append Only File:记录每个写命令追加到 .aof 文件(APPENDFSYNC always/everysec/no)。always(每条fsync最安全但最慢影响性能)。everysec(每秒fsync折中,最多丢1秒数据,推荐生产)。no(交OS可能丢较多数据不推荐)。AOF重写:文件过大时BGREWRITEAOF fork子进程根据当前内存数据重写生成新的精简AOF文件(合并重复命令如INCR多次→SET最终值)",
-          "details": []
+          "details": [
+            {
+              "id": "aof日志-8-1-1-d0",
+              "tag": "APPENDFSYNC三策略",
+              "desc": "always每条fsync最安全慢,everysec每秒折中最多丢1秒推荐,no交OS不推荐"
+            },
+            {
+              "id": "aof日志-8-1-1-d1",
+              "tag": "AOF追加写命令日志",
+              "desc": "Append Only追加写命令到.aof文件,可读性强适合审计和数据恢复"
+            },
+            {
+              "id": "aof日志-8-1-1-d2",
+              "tag": "BGREWRITEAOF重写压缩",
+              "desc": "fork子进程根据当前内存重写精简AOF,合并重复命令INCR多次→SET最终值"
+            },
+            {
+              "id": "aof日志-8-1-1-d3",
+              "tag": "AOF重写触发机制",
+              "desc": "auto-aof-rewrite-min-size 64MB+auto-aof-rewrite-percentage 100%自动触发"
+            },
+            {
+              "id": "aof日志-8-1-1-d4",
+              "tag": "always性能影响大",
+              "desc": "always每条命令fsync磁盘,IOPS下降约10倍,仅金融等极高安全要求场景"
+            },
+            {
+              "id": "aof日志-8-1-1-d5",
+              "tag": "everysec生产推荐",
+              "desc": "everysec每秒fsync折中方案,最多丢1秒数据,生产环境默认推荐配置"
+            },
+            {
+              "id": "aof日志-8-1-1-d6",
+              "tag": "AOF文件比RDB大",
+              "desc": "AOF记录所有写命令体积远大于RDB二进制,重写后缩小但仍比RDB大"
+            }
+          ]
         },
         {
           "id": "混合持久化-8-1-2",
           "tag": "混合持久化",
           "desc": "Redis 4.0+: RDB-AOF混合模式。AOF重写时先将内存数据以RDB格式写入AOF文件头,之后增量命令仍以AOF格式追加。兼顾RDB加载快+AOF数据完整性(增量命令不丢)。配置: aof-use-rdb-preamble yes。恢复时:先加载RDF部分(快速恢复基础数据),再回放AOF增量(追加重做丢失期间的命令)。生产环境推荐开启",
-          "details": []
+          "details": [
+            {
+              "id": "混合持久化-8-1-2-d0",
+              "tag": "Redis 4.0+ RDB-AOF混合",
+              "desc": "AOF重写时先RDB格式写文件头再AOF增量追加,兼顾加载快+数据完整"
+            },
+            {
+              "id": "混合持久化-8-1-2-d1",
+              "tag": "aof-use-rdb-preamble",
+              "desc": "aof-use-rdb-preamble yes开启混合,重写后AOF=RDB前缀+AOF增量"
+            },
+            {
+              "id": "混合持久化-8-1-2-d2",
+              "tag": "恢复先RDB再AOF增量",
+              "desc": "加载时先读RDB部分快速恢复基础数据,再回放AOF增量追做近期命令"
+            },
+            {
+              "id": "混合持久化-8-1-2-d3",
+              "tag": "混合持久化优势",
+              "desc": "RDB加载快+AOF数据完整两全,文件体积介于纯RDB和纯AOF之间"
+            },
+            {
+              "id": "混合持久化-8-1-2-d4",
+              "tag": "生产推荐开启",
+              "desc": "Redis4.0+生产环境推荐开启混合持久化,默认aof-use-rdb-preamble yes"
+            },
+            {
+              "id": "混合持久化-8-1-2-d5",
+              "tag": "纯AOF与混合对比",
+              "desc": "纯AOF恢复慢(回放所有命令),混合恢复快(RDB部分直接加载无需回放)"
+            },
+            {
+              "id": "混合持久化-8-1-2-d6",
+              "tag": "重写触发机制不变",
+              "desc": "混合模式重写触发条件与纯AOF相同(大小+百分比阈值),只是重写内容格式变了"
+            }
+          ]
         }
       ]
     },
@@ -182,19 +403,127 @@ window.__MODULES__['redis'] = {
           "id": "缓存击穿-8-2-1",
           "tag": "缓存击穿",
           "desc": "热点Key突然过期(微博热搜/爆款商品),大量并发请求同时打到DB。解决方案:①互斥锁(SETNX分布式锁只有一个线程查DB重建缓存,其他线程等待或降级返回旧数据)②逻辑过期(不设TTL,Value中嵌入过期时间,发现过期时异步重建,牺牲一致性换高性能)③热点Key永不过期+主动刷新(后台任务更新)。推荐方案: 非极高并发用互斥锁,超高并发用逻辑过期",
-          "details": []
+          "details": [
+            {
+              "id": "缓存击穿-8-2-1-d0",
+              "tag": "热点Key过期瞬穿DB",
+              "desc": "微博热搜/爆款商品等热点Key过期瞬间大量并发直击DB压垮数据库"
+            },
+            {
+              "id": "缓存击穿-8-2-1-d1",
+              "tag": "互斥锁SETNX重建",
+              "desc": "SETNX分布式锁只允许一个线程查DB重建缓存,其他线程等待或降级返回旧数据"
+            },
+            {
+              "id": "缓存击穿-8-2-1-d2",
+              "tag": "逻辑过期异步重建",
+              "desc": "不设TTL,Value中嵌入过期时间,发现过期时异步线程重建,牺牲一致性换高性能"
+            },
+            {
+              "id": "缓存击穿-8-2-1-d3",
+              "tag": "永不过期+主动刷新",
+              "desc": "热点Key不设TTL永不过期,后台定时任务主动刷新更新缓存数据"
+            },
+            {
+              "id": "缓存击穿-8-2-1-d4",
+              "tag": "互斥锁vs逻辑过期",
+              "desc": "非极高并发用互斥锁(一致性优先),超高并发用逻辑过期(性能优先)"
+            },
+            {
+              "id": "缓存击穿-8-2-1-d5",
+              "tag": "SETNX防死锁",
+              "desc": "SETNX加锁必须配合EX过期时间,防止持锁线程异常退出导致死锁"
+            },
+            {
+              "id": "缓存击穿-8-2-1-d6",
+              "tag": "击穿与穿透区别",
+              "desc": "击穿=存在的Key过期(热点失效),穿透=不存在的Key被恶意查询(绕过缓存)"
+            }
+          ]
         },
         {
           "id": "缓存雪崩-8-2-2",
           "tag": "缓存雪崩",
           "desc": "大量Key同时过期(同一时刻批量失效)或Redis宕机,DB瞬间压力激增甚至打垮。预防:①TTL随机打散(基础过期时间+随机偏移0~过期时间的10%避免集体失效)②多级缓存(LocalCache L1 + Redis L2 + DB L3,LocalCache扛住部分流量)③熔断降级(Sentinel/Hystrix:DB不可用时返回兜底数据或友好提示)④Redis高可用(主从哨兵Cluster集群避免单点故障)⑤限流(入口限流保护后端)",
-          "details": []
+          "details": [
+            {
+              "id": "缓存雪崩-8-2-2-d0",
+              "tag": "大量Key同时过期/宕机",
+              "desc": "批量设置相同TTL导致集体失效或Redis宕机,DB瞬间压力激增甚至被打垮"
+            },
+            {
+              "id": "缓存雪崩-8-2-2-d1",
+              "tag": "TTL随机打散",
+              "desc": "基础过期时间+随机偏移(0~过期时间10%)分散失效时间避免集体失效"
+            },
+            {
+              "id": "缓存雪崩-8-2-2-d2",
+              "tag": "多级缓存L1+L2",
+              "desc": "LocalCache L1 + Redis L2 + DB L3,LocalCache扛住部分流量减少Redis依赖"
+            },
+            {
+              "id": "缓存雪崩-8-2-2-d3",
+              "tag": "熔断降级Sentinel",
+              "desc": "Sentinel/Hystrix熔断,DB不可用时返回兜底数据或友好提示保护后端"
+            },
+            {
+              "id": "缓存雪崩-8-2-2-d4",
+              "tag": "Redis HA高可用",
+              "desc": "主从+哨兵/Cluster集群避免单点故障,自动故障转移保证服务可用"
+            },
+            {
+              "id": "缓存雪崩-8-2-2-d5",
+              "tag": "限流保护后端",
+              "desc": "入口限流(Guava RateLimiter/信号量)控制并发请求量保护DB不被打垮"
+            },
+            {
+              "id": "缓存雪崩-8-2-2-d6",
+              "tag": "雪崩与击穿区别",
+              "desc": "雪崩=大面积Key失效/宕机(群体灾难),击穿=单个热点Key失效(局部问题)"
+            }
+          ]
         },
         {
           "id": "数据一致性-8-2-3",
           "tag": "数据一致性",
           "desc": "Cache Aside Pattern:更新时先更DB再删Cache(延迟双删策略:删Cache→更新DB→Sleep(如200ms)→再删Cache防止旧数据回填)。Read Through/Wirte Through:由缓存组件统一管理DB读写(屏蔽复杂性)。Write Behind:异步批量写DB(性能好但可能丢数据)。消息队列最终一致性:更新DB后发MQ异步更新Cache(保证最终一致,适合高并发写场景)",
-          "details": []
+          "details": [
+            {
+              "id": "数据一致性-8-2-3-d0",
+              "tag": "Cache Aside延迟双删",
+              "desc": "先删Cache→更新DB→Sleep(200ms)→再删Cache,防止旧数据回填缓存"
+            },
+            {
+              "id": "数据一致性-8-2-3-d1",
+              "tag": "先更DB再删Cache",
+              "desc": "Cache Aside标准模式:更新DB成功后再删Cache,失败则Cache保留旧数据"
+            },
+            {
+              "id": "数据一致性-8-2-3-d2",
+              "tag": "Read/Write Through",
+              "desc": "由缓存组件统一管理DB读写,应用只与缓存交互,屏蔽底层DB复杂性"
+            },
+            {
+              "id": "数据一致性-8-2-3-d3",
+              "tag": "Write Behind异步批量写",
+              "desc": "缓存更新后异步批量写DB,性能好但可能丢数据,适合写密集容忍丢失场景"
+            },
+            {
+              "id": "数据一致性-8-2-3-d4",
+              "tag": "MQ最终一致性",
+              "desc": "更新DB后发MQ异步更新Cache,保证最终一致,适合高并发写场景"
+            },
+            {
+              "id": "数据一致性-8-2-3-d5",
+              "tag": "为什么不先删Cache再更DB",
+              "desc": "删Cache后并发请求读DB旧值写回Cache导致脏数据,延迟双删缓解此问题"
+            },
+            {
+              "id": "数据一致性-8-2-3-d6",
+              "tag": "强一致性方案",
+              "desc": "读DB加分布式锁/事务保证强一致但性能差,大多数场景接受最终一致性"
+            }
+          ]
         }
       ]
     },
@@ -243,13 +572,90 @@ window.__MODULES__['redis'] = {
           "id": "哨兵sentinel-8-3-1",
           "tag": "哨兵Sentinel",
           "desc": "监控(Master/Slave健康检查PING,主观下线SDOWN+客观下线ODOWN quorum投票)。自动故障转移:哨兵Leader选举(Raft共识)→选出新Master(slave-priority优先级/offset复制进度/runId字典序)→SLAVEOF NO ONE提升为新Master→其他 Slave 指向新 Master →客户端感知(发布订阅switch-master通知客户端)。配置:sentinel monitor mymaster host port quorum(如3个哨兵2个同意即故障转移)",
-          "details": []
+          "details": [
+            {
+              "id": "哨兵sentinel-8-3-1-d0",
+              "tag": "PING监控SDOWN/ODOWN",
+              "desc": "PING健康检查,主观下线SDOWN单哨兵判定,客观下线ODOWN需quorum多数投票"
+            },
+            {
+              "id": "哨兵sentinel-8-3-1-d1",
+              "tag": "Raft选举哨兵Leader",
+              "desc": "多个哨兵通过Raft共识协议选举Leader负责执行故障转移,避免多哨兵同时操作"
+            },
+            {
+              "id": "哨兵sentinel-8-3-1-d2",
+              "tag": "slave-priority/offset/runId",
+              "desc": "选新Master三原则:优先级slave-priority→复制偏移offset最大→runId字典序"
+            },
+            {
+              "id": "哨兵sentinel-8-3-1-d3",
+              "tag": "SLAVEOF NO ONE升主",
+              "desc": "选出的最优Slave执行SLAVEOF NO ONE提升为新Master,其他Slave指向新Master"
+            },
+            {
+              "id": "哨兵sentinel-8-3-1-d4",
+              "tag": "switch-master通知客户端",
+              "desc": "哨兵发布订阅switch-master频道通知客户端新Master地址,客户端更新连接"
+            },
+            {
+              "id": "哨兵sentinel-8-3-1-d5",
+              "tag": "sentinel monitor配置",
+              "desc": "sentinel monitor mymaster host port quorum,如3哨兵quorum=2即2/3同意故障转移"
+            },
+            {
+              "id": "哨兵sentinel-8-3-1-d6",
+              "tag": "最少3个哨兵保证多数派",
+              "desc": "3个哨兵保证多数派(2/3)决策,避免单哨兵误判和网络分区问题"
+            }
+          ]
         },
         {
           "id": "cluster集群-8-3-2",
           "tag": "Cluster集群",
           "desc": "数据分片:16384个槽(slot)均匀分布到各Master节点(CRC16(key)%16384→slot→Node)。每个Master有Slave副本(异步复制)。MOVED重定向:访问的slot不在本节点返回MOVED slot IP PORT,客户端更新路由表。ASK重定向:slot正在迁移中返回ASK临时转向。Gossip协议:节点间定期Ping/Pong交换状态信息(去中心化无代理层)。扩容:resharding迁移槽位数据(从源node获取→目标node确认)",
-          "details": []
+          "details": [
+            {
+              "id": "cluster集群-8-3-2-d0",
+              "tag": "16384槽CRC16分片",
+              "desc": "16384个slot均匀分布到各Master,CRC16(key)%16384计算slot确定归属节点"
+            },
+            {
+              "id": "cluster集群-8-3-2-d1",
+              "tag": "MOVED重定向",
+              "desc": "访问slot不在本节点返回MOVED slot IP:PORT,客户端更新本地路由表缓存"
+            },
+            {
+              "id": "cluster集群-8-3-2-d2",
+              "tag": "ASK临时重定向",
+              "desc": "slot正在resharding迁移中返回ASK临时转向,客户端仅本次请求转向不更新路由"
+            },
+            {
+              "id": "cluster集群-8-3-2-d3",
+              "tag": "Gossip协议去中心化",
+              "desc": "节点间Ping/Pong交换状态信息(集群拓扑/故障检测),去中心化无代理层"
+            },
+            {
+              "id": "cluster集群-8-3-2-d4",
+              "tag": "resharding迁移槽位",
+              "desc": "resharding从源节点迁移slot数据到目标节点,ASK临时转向过渡期客户端兼容"
+            },
+            {
+              "id": "cluster集群-8-3-2-d5",
+              "tag": "Master+Slave副本",
+              "desc": "每个Master有Slave副本异步复制,Master故障时Slave自动升主保证高可用"
+            },
+            {
+              "id": "cluster集群-8-3-2-d6",
+              "tag": "MOVED与ASK区别",
+              "desc": "MOVED=slot已永久迁移客户端更新路由,ASK=slot正在迁移仅临时转向不更新"
+            },
+            {
+              "id": "cluster集群-8-3-2-d7",
+              "tag": "16384而非65536槽",
+              "desc": "16384槽数适中:Gossip消息心跳包携带槽位bitmap压缩高效,65536太大浪费带宽"
+            }
+          ]
         }
       ]
     }

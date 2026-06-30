@@ -18,25 +18,164 @@ window.__MODULES__['spring'] = {
           "id": "ioc控制反转-9-0-0",
           "tag": "IoC控制反转",
           "desc": "传统:对象自己创建依赖(new UserServiceImpl())。Spring IoC:将创建和控制权交给容器,通过DI依赖注入(构造器Setter字段三种方式)提供依赖。好处:解耦(对象间松耦合便于替换实现)/集中管理(Bean生命周期统一管控)/便于测试(Mock注入)。ApplicationContext(接口,AnnotationConfigServlet/ClassPathXmlApplicationContext)扩展BeanFactory(懒加载/国际化/事件发布)",
-          "details": []
+          "details": [
+            {
+              "id": "ioc控制反转-9-0-0-d0",
+              "tag": "IoC vs DI 区别",
+              "desc": "IoC是思想(控制反转交给容器),DI是实现(依赖注入容器提供),IoC容器=容器+注入的组合体"
+            },
+            {
+              "id": "ioc控制反转-9-0-0-d1",
+              "tag": "三种注入方式",
+              "desc": "构造器注入(强制依赖不可变推荐)/Setter注入(可选依赖灵活)/字段注入(@Autowired简洁但Spring不推荐无法脱离容器)"
+            },
+            {
+              "id": "ioc控制反转-9-0-0-d2",
+              "tag": "@Autowired注入机制",
+              "desc": "按类型byType优先→同类型多个按名称byField名→@Qualifier指定名称→@Primary标记优先Bean"
+            },
+            {
+              "id": "ioc控制反转-9-0-0-d3",
+              "tag": "ApplicationContext vs BeanFactory",
+              "desc": "ApplicationContext扩展BeanFactory:预加载(非懒加载)+国际化MessageSource+事件发布ApplicationEvent+资源加载Resource+AOP集成"
+            },
+            {
+              "id": "ioc控制反转-9-0-0-d4",
+              "tag": "IoC好处",
+              "desc": "解耦(接口驱动替换实现)/集中管理(生命周期AOP统一)/便于测试(Mock注入)/灵活扩展(配置切换实现)"
+            },
+            {
+              "id": "ioc控制反转-9-0-0-d5",
+              "tag": "常见IoC容器实现",
+              "desc": "Spring(Java生态最主流)/Google Guice(轻量纯DI)/CDI(Java EE标准@Inject)/PicoContainer(极简容器)"
+            },
+            {
+              "id": "ioc控制反转-9-0-0-d6",
+              "tag": "面试陷阱",
+              "desc": "IoC≠DI(IoC是设计原则DI是实现方式)/@Autowired注入null不会NPE而是启动报NoSuchBeanDefinitionException"
+            }
+          ]
         },
         {
           "id": "bean作用域-9-0-1",
           "tag": "Bean作用域",
           "desc": "singleton(单例默认,整个容器只有一个实例,线程安全注意无状态设计)。prototype(原型每次getBean创建新实例)。request(每次HTTP请求一个实例,Web环境)。session(每次HTTP Session一个实例)。application(ServletContext级别单例)。websocket(WebSocket会话)。自定义Scope实现org.springframework.beans.factory.config.Scope接口",
-          "details": []
+          "details": [
+            {
+              "id": "bean作用域-9-0-1-d0",
+              "tag": "singleton单例(默认)",
+              "desc": "整个容器仅一个实例,IoC容器关闭才销毁,注意无状态设计避免线程安全问题(不用成员变量存请求数据)"
+            },
+            {
+              "id": "bean作用域-9-0-1-d1",
+              "tag": "prototype原型",
+              "desc": "每次getBean/注入都创建新实例,容器不管理prototype Bean的完整生命周期(不调用destroy方法)"
+            },
+            {
+              "id": "bean作用域-9-0-1-d2",
+              "tag": "Web作用域",
+              "desc": "request(HTTP请求级别)/session(HTTP会话级别)/application(ServletContext级别)/websocket(WebSocket会话级别)"
+            },
+            {
+              "id": "bean作用域-9-0-1-d3",
+              "tag": "singleton中注入prototype陷阱",
+              "desc": "singleton Bean注入prototype时prototype只创建一次(因为singleton只初始化一次),解决:用ObjectFactory/Provider或@Lookup方法注入"
+            },
+            {
+              "id": "bean作用域-9-0-1-d4",
+              "tag": "自定义Scope",
+              "desc": "实现org.springframework.beans.factory.config.Scope接口+CustomScopeConfigurer注册,如ThreadScope(线程级)"
+            },
+            {
+              "id": "bean作用域-9-0-1-d5",
+              "tag": "面试陷阱",
+              "desc": "Spring singleton≠JVM单例(每个容器一个而非整个JVM一个,不同ApplicationContext各有一份)"
+            }
+          ]
         },
         {
           "id": "bean生命周期-9-0-2",
           "tag": "Bean生命周期",
           "desc": "1.实例化(反射创建) 2.属性赋值(注入依赖) 3.Aware接口(setBeanName/setBeanFactory/setApplicationContext) 4.BeanPostProcessor.postProcessBeforeInitialization(前置处理) 5.初始化(@PostConstruct/InitializingBean.afterPropertiesSet/init-method) 6.BeanPostProcessor.postProcessAfterInitialization(后置处理/AOP代理在此创建) 7.使用 8.销毁(@PreDestroy/DisposableBean.destroy/destroy-method)",
-          "details": []
+          "details": [
+            {
+              "id": "bean生命周期-9-0-2-d0",
+              "tag": "1.实例化",
+              "desc": "反射或工厂方法创建Bean实例,构造器执行"
+            },
+            {
+              "id": "bean生命周期-9-0-2-d1",
+              "tag": "2-3.属性赋值+Aware",
+              "desc": "DI注入依赖属性+Aware回调(setBeanName/setBeanFactory/setApplicationContext让Bean感知容器身份)"
+            },
+            {
+              "id": "bean生命周期-9-0-2-d2",
+              "tag": "4.BPP前置处理",
+              "desc": "BeanPostProcessor.postProcessBeforeInitialization,常用:@Autowired注入在此完成(AutowiredAnnotationBeanPostProcessor)"
+            },
+            {
+              "id": "bean生命周期-9-0-2-d3",
+              "tag": "5.初始化三步",
+              "desc": "@PostConstruct→InitializingBean.afterPropertiesSet()→自定义init-method,三步按顺序执行"
+            },
+            {
+              "id": "bean生命周期-9-0-2-d4",
+              "tag": "6.BPP后置处理(AOP)",
+              "desc": "BeanPostProcessor.postProcessAfterInitialization,核心:AOP代理在此创建(AbstractAutoProxyCreator包装目标对象为代理)"
+            },
+            {
+              "id": "bean生命周期-9-0-2-d5",
+              "tag": "7.使用+8.销毁",
+              "desc": "Bean就绪可供使用;容器关闭时销毁:@PreDestroy→DisposableBean.destroy()→自定义destroy-method"
+            },
+            {
+              "id": "bean生命周期-9-0-2-d6",
+              "tag": "面试要点",
+              "desc": "AOP代理在第6步创建而非第1步(所以构造器中无法获取代理对象);循环依赖时三级缓存提前暴露代理绕过此限制"
+            }
+          ]
         },
         {
           "id": "循环依赖-9-0-3",
           "tag": "循环依赖",
           "desc": "Spring三级缓存解决 singleton 循环依赖:一级singletonObjects(完整Bean成品池)→earlySingletonObjects(早期暴露半成品,刚实例化未填充属性)→singletonFactories(Bean工厂ObjectFactory,可包装AOP代理提前暴露)。流程:A创建→实例化A放入三级工厂→注入B→B需要A→三级工厂给B(AOP代理或原始A)→B完成→A拿到B完成。prototype不支持循环依赖(不缓存)",
-          "details": []
+          "details": [
+            {
+              "id": "循环依赖-9-0-3-d0",
+              "tag": "一级singletonObjects",
+              "desc": "完整Bean成品池,已初始化+已填充属性+已创建代理(如有),Bean完全就绪才能进入"
+            },
+            {
+              "id": "循环依赖-9-0-3-d1",
+              "tag": "二级earlySingletonObjects",
+              "desc": "早期暴露半成品,刚实例化未填充属性的对象,解决A→B→A时B能拿到A的引用(可能被AOP包装为代理)"
+            },
+            {
+              "id": "循环依赖-9-0-3-d2",
+              "tag": "三级singletonFactories",
+              "desc": "ObjectFactory工厂,核心:getEarlyReference()可动态决定返回原始Bean还是AOP代理,提前暴露但延迟代理创建"
+            },
+            {
+              "id": "循环依赖-9-0-3-d3",
+              "tag": "解决流程",
+              "desc": "A实例化→放入三级工厂→A填充属性需B→B实例化→B填充属性需A→三级工厂getEarlyReference返回A(AOP或原始)→B完成放入一级→A拿到B→A完成放入一级"
+            },
+            {
+              "id": "循环依赖-9-0-3-d4",
+              "tag": "为什么三级而非二级",
+              "desc": "二级缓存无法区分AOP场景:若直接在二级放原始Bean,后续AOP代理创建后引用不一致;三级工厂延迟判断,只在被提前引用时才决定返回代理或原始"
+            },
+            {
+              "id": "循环依赖-9-0-3-d5",
+              "tag": "prototype不支持",
+              "desc": "prototype作用域Bean不缓存到三级缓存,无法提前暴露引用,循环依赖直接报BeanCurrentlyInCreationException"
+            },
+            {
+              "id": "循环依赖-9-0-3-d6",
+              "tag": "构造器注入循环依赖",
+              "desc": "构造器循环依赖三级缓存也无法解决(因为实例化阶段就需要对方),只能用@Lazy延迟注入或setter/字段注入替代"
+            }
+          ]
         }
       ]
     },
@@ -276,19 +415,127 @@ window.__MODULES__['spring'] = {
           "id": "aop核心概念-9-2-0",
           "tag": "AOP核心概念",
           "desc": "Aspect(切面:横切关注点模块化如日志/事务/权限,@Aspect)。Join Point(连接点:方法执行点)。Point Cut(切入点:匹配哪些连接点的表达式,execution(* com.service.*.*(..)))。Advice(通知:切面执行的时机,Before/After/AfterReturning/AfterThrowing/Around)。Weaving(织入:将切面应用到目标对象创建代理的过程)。Target(目标对象:被代理的原对象)。Proxy(代理对象)",
-          "details": []
+          "details": [
+            {
+              "id": "aop核心概念-9-2-0-d0",
+              "tag": "Aspect切面",
+              "desc": "横切关注点模块化(@Aspect标注类),包含PointCut+Advice,如日志切面/事务切面/权限切面,一个应用可有多个切面"
+            },
+            {
+              "id": "aop核心概念-9-2-0-d1",
+              "tag": "JoinPoint连接点",
+              "desc": "程序执行的明确点(Spring AOP仅支持方法执行连接点,AspectJ还支持字段访问/构造器等)"
+            },
+            {
+              "id": "aop核心概念-9-2-0-d2",
+              "tag": "PointCut切入点表达式",
+              "desc": "匹配连接点的表达式:execution(* com.service..*.*(..))/within包匹配/@annotation注解匹配/args参数类型匹配"
+            },
+            {
+              "id": "aop核心概念-9-2-0-d3",
+              "tag": "Advice五种通知",
+              "desc": "@Before前置/@After后置(无论异常)/@AfterReturning正常返回/@AfterThrowing异常抛出/@Around环绕(最强大可控制执行)"
+            },
+            {
+              "id": "aop核心概念-9-2-0-d4",
+              "tag": "Weaving织入",
+              "desc": "将切面应用到目标对象创建代理的过程,Spring AOP运行时织入(JDK/CGLIB代理),AspectJ编译时/加载时织入"
+            },
+            {
+              "id": "aop核心概念-9-2-0-d5",
+              "tag": "Introduction引入",
+              "desc": "让目标对象实现额外接口(不修改源码),@DeclareParents(value='target+',defaultImpl=Impl.class)动态混入新行为"
+            },
+            {
+              "id": "aop核心概念-9-2-0-d6",
+              "tag": "Spring AOP vs AspectJ",
+              "desc": "Spring AOP:运行时代理仅方法级别+简单易用+无需额外编译;AspectJ:编译时织入更强大(字段/构造器)+性能更好但需ajc编译器"
+            }
+          ]
         },
         {
           "id": "jdk动态代理vscglib-9-2-1",
           "tag": "JDK动态代理vsCGLIB",
           "desc": "JDK Proxy(基于接口:目标类实现至少一个接口,Proxy.newProxyInstance(loader,interfaces,invocationHandler),invoke方法拦截)。CGLIB(基于继承:目标类无接口或配置proxy-target-class=true,Enhancer创建子类重写方法,MethodInterceptor.intercept拦截)。Spring Boot 2.x默认优先CGLIB(允许proxyTargetClass=true)。选择:有接口用JDK Proxy,无接口或想代理类方法用CGLIB",
-          "details": []
+          "details": [
+            {
+              "id": "jdk动态代理vscglib-9-2-1-d0",
+              "tag": "JDK Proxy原理",
+              "desc": "基于接口,Proxy.newProxyInstance动态生成实现类,$Proxy0调用InvocationHandler.invoke拦截,目标类必须实现接口"
+            },
+            {
+              "id": "jdk动态代理vscglib-9-2-1-d1",
+              "tag": "CGLIB原理",
+              "desc": "基于继承,Enhancer创建目标类子类重写非final方法,MethodInterceptor.intercept拦截,不能代理final类/方法"
+            },
+            {
+              "id": "jdk动态代理vscglib-9-2-1-d2",
+              "tag": "Spring Boot 2.x默认CGLIB",
+              "desc": "spring.aop.proxy-target-class=true默认开启,即使目标类实现了接口也使用CGLIB代理(避免接口变更导致代理失效)"
+            },
+            {
+              "id": "jdk动态代理vscglib-9-2-1-d3",
+              "tag": "JDK Proxy局限",
+              "desc": "只能代理接口方法,目标类新增的非接口方法无法被拦截;需要目标类至少实现一个接口"
+            },
+            {
+              "id": "jdk动态代理vscglib-9-2-1-d4",
+              "tag": "CGLIB局限",
+              "desc": "不能代理final类(无法继承)/final方法(无法重写)/private方法(子类不可见);创建代理比JDK慢但运行性能相近"
+            },
+            {
+              "id": "jdk动态代理vscglib-9-2-1-d5",
+              "tag": "面试陷阱",
+              "desc": "Spring AOP≠AspectJ(Spring是代理-based仅方法级,AspectJ是完整AOP框架);final方法不被AOP代理(事务失效原因之一)"
+            },
+            {
+              "id": "jdk动态代理vscglib-9-2-1-d6",
+              "tag": "选择策略",
+              "desc": "Spring Boot 2.x:默认全CGLIB无需选择;传统Spring:有接口JDK Proxy,无接口CGLIB;proxy-target-class=true强制CGLIB"
+            }
+          ]
         },
         {
           "id": "around环绕通知-9-2-2",
           "tag": "@Around环绕通知",
           "desc": "最强大通知(控制目标方法是否执行+修改参数/返回值)。ProceedingJoinPoint.proceed()执行原方法。用法:@Around('execution(* com.service.*.*(..))') public Object around(ProceedingJoinPoint pjp) throws Throwable { Object[] args=pjp.getArgs(); //修改参数 Object result=pjp.proceed(args); //执行 return result; //修改返回值 }",
-          "details": []
+          "details": [
+            {
+              "id": "around环绕通知-9-2-2-d0",
+              "tag": "ProceedingJoinPoint",
+              "desc": "@Around专用参数,getArgs()获取参数/proceed()执行原方法/proceed(args)传入修改参数/getSignature()方法签名"
+            },
+            {
+              "id": "around环绕通知-9-2-2-d1",
+              "tag": "控制执行",
+              "desc": "proceed()决定是否执行目标方法:不调用=跳过执行(直接返回/抛异常),调用多次=重复执行(重试场景)"
+            },
+            {
+              "id": "around环绕通知-9-2-2-d2",
+              "tag": "修改参数和返回值",
+              "desc": "proceed(modifiedArgs)传入修改后的参数;return modifiedResult包装或替换返回值(如返回缓存结果而非调用DB)"
+            },
+            {
+              "id": "around环绕通知-9-2-2-d3",
+              "tag": "典型应用:缓存",
+              "desc": "先查缓存→有则直接返回(不proceed)→无则proceed查DB→将结果放入缓存→返回,完全由@Around控制"
+            },
+            {
+              "id": "around环绕通知-9-2-2-d4",
+              "tag": "典型应用:限流/重试",
+              "desc": "限流:超过阈值直接拒绝不proceed;重试:catch异常后循环proceed最多N次,适合调用外部不稳定服务"
+            },
+            {
+              "id": "around环绕通知-9-2-2-d5",
+              "tag": "环绕通知优先级",
+              "desc": "@Around最外层包裹其他通知,执行顺序:Around前→Before→目标方法→AfterReturning→Around后;异常时:Around前→Before→目标异常→AfterThrowing→Around catch"
+            },
+            {
+              "id": "around环绕通知-9-2-2-d6",
+              "tag": "注意事项",
+              "desc": "必须调用proceed()否则目标方法不执行;必须return结果否则调用方收到null;必须throws Throwable不能吞异常"
+            }
+          ]
         }
       ]
     },
@@ -602,19 +849,132 @@ window.__MODULES__['spring'] = {
           "id": "自动装配原理-9-4-0",
           "tag": "自动装配原理",
           "desc": "@SpringBootApplication = @SpringBootConfiguration + @EnableAutoConfiguration + @ComponentScan。@EnableAutoConfiguration:导入AutoConfigurationImportSelector,加载META-INF/spring.factories(旧版)或META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports(新版2.7+)中的配置类。@Conditional系列注解条件判断(OnClass/OnProperty/OnBean/OnMissingBean)决定哪些Bean注册。@SpringBootTest启动测试",
-          "details": []
+          "details": [
+            {
+              "id": "自动装配原理-9-4-0-d0",
+              "tag": "@SpringBootApplication三合一",
+              "desc": "@SpringBootConfiguration+@EnableAutoConfiguration+@ComponentScan组合注解启动类唯一入口"
+            },
+            {
+              "id": "自动装配原理-9-4-0-d1",
+              "tag": "@EnableAutoConfiguration触发",
+              "desc": "导入AutoConfigurationImportSelector执行selectImports()扫描自动配置候选列表"
+            },
+            {
+              "id": "自动装配原理-9-4-0-d2",
+              "tag": "spring.factories机制",
+              "desc": "META-INF/spring.factories(旧版)/AutoConfiguration.imports(2.7+)列出全量配置类按key=EnableAutoConfiguration加载"
+            },
+            {
+              "id": "自动装配原理-9-4-0-d3",
+              "tag": "@Conditional条件过滤",
+              "desc": "OnClass有类才注册/OnMissingBean容器无才注册/OnProperty配置满足才注册/OnWebApplication仅Web环境加载最终生效的只是子集"
+            },
+            {
+              "id": "自动装配原理-9-4-0-d4",
+              "tag": "AutoConfigurationImportSelector",
+              "desc": "核心选择器读取候选列表+去重+排除(exclude)+过滤(@Conditional)返回最终要注册的配置类数组"
+            },
+            {
+              "id": "自动装配原理-9-4-0-d5",
+              "tag": "自动配置生效流程",
+              "desc": "启动→spring.factories全量候选→@Conditional过滤→只注册满足条件的Bean→约定优于配置开箱即用"
+            },
+            {
+              "id": "自动装配原理-9-4-0-d6",
+              "tag": "debug查看生效配置",
+              "desc": "启动加--debug或application.yml设debug=true输出auto-configuration-report哪些生效哪些未生效及原因"
+            },
+            {
+              "id": "自动装配原理-9-4-0-d7",
+              "tag": "@ComponentScan扫描范围",
+              "desc": "默认扫描启动类所在包及子包自定义@ComponentScan(basePackages)或basePackageClasses改变扫描路径"
+            }
+          ]
         },
         {
           "id": "starter机制-9-4-1",
           "tag": "starter机制",
           "desc": "spring-boot-starter-web(自动引入tomcat/springmvc/jackson等依赖+自动配置)。starter = 依赖聚合(autoconfigure + 核心依赖)。自定义Starter: ①创建autoconfigure模块写自动配置类+spring.factoriesimports②创建starter模块依赖autoconfigure③使用者引入starter即可。约定优于配置:默认配置合理开箱即用,通过application.yml覆写",
-          "details": []
+          "details": [
+            {
+              "id": "starter机制-9-4-1-d0",
+              "tag": "starter依赖聚合",
+              "desc": "spring-boot-starter-web聚合tomcat+springmvc+jackson+自动配置一键引入Web开发全套依赖"
+            },
+            {
+              "id": "starter机制-9-4-1-d1",
+              "tag": "自定义Starter三步",
+              "desc": "①autoconfigure模块写配置类+spring.factories/imports②starter模块依赖autoconfigure③使用者引入starter即可"
+            },
+            {
+              "id": "starter机制-9-4-1-d2",
+              "tag": "autoconfigure模块",
+              "desc": "核心模块包含自动配置类(@Conditional)+META-INF/spring.factories或AutoConfiguration.imports注册入口"
+            },
+            {
+              "id": "starter机制-9-4-1-d3",
+              "tag": "约定优于配置",
+              "desc": "默认配置合理开箱即用如嵌入式Tomcat端口8080,通过application.yml覆写任何默认值无需XML配置"
+            },
+            {
+              "id": "starter机制-9-4-1-d4",
+              "tag": "@ConditionalOnMissingBean",
+              "desc": "自定义Starter中用@ConditionalOnMissingBean保证用户自定义Bean优先覆盖默认配置不冲突"
+            },
+            {
+              "id": "starter机制-9-4-1-d5",
+              "tag": "官方starter命名",
+              "desc": "官方spring-boot-starter-{name}/第三方{name}-spring-boot-starter命名约定区分来源"
+            },
+            {
+              "id": "starter机制-9-4-1-d6",
+              "tag": "starter与autoconfigure分离",
+              "desc": "starter只做依赖聚合不含代码/autoconfigure写逻辑分离后starter可独立升级依赖版本不影响配置逻辑"
+            }
+          ]
         },
         {
           "id": "配置文件优先级-9-4-2",
           "tag": "配置文件优先级",
           "desc": "命令行参数 > SPRING_APPLICATION_JSON环境变量 > Servlet Config > Servlet Context > application-{profile}.yml > application.yml > @PropertySource > 默认值。多环境: application-dev/test/prod.yml + spring.profiles.active=dev 或 --spring.profiles.active=prod。配置绑定:@ConfigurationProperties(prefix='app')绑定到Bean/YAML任意层级",
-          "details": []
+          "details": [
+            {
+              "id": "配置文件优先级-9-4-2-d0",
+              "tag": "优先级从高到低",
+              "desc": "命令行参数>SPRING_APPLICATION_JSON>ServletConfig>ServletContext>application-{profile}.yml>application.yml>@PropertySource>默认值"
+            },
+            {
+              "id": "配置文件优先级-9-4-2-d1",
+              "tag": "命令行参数最高",
+              "desc": "--server.port=8081最高优先级可在启动时覆盖任何配置常用于运维临时调整如切换profile/端口"
+            },
+            {
+              "id": "配置文件优先级-9-4-2-d2",
+              "tag": "profile多环境",
+              "desc": "application-dev.yml(开发)/application-test.yml(测试)/application-prod.yml(生产)激活:--spring.profiles.active=prod"
+            },
+            {
+              "id": "配置文件优先级-9-4-2-d3",
+              "tag": "@ConfigurationProperties绑定",
+              "desc": "@ConfigurationProperties(prefix=app)批量将YAML属性绑定到Bean字段类型安全支持JSR-303校验需@Component"
+            },
+            {
+              "id": "配置文件优先级-9-4-2-d4",
+              "tag": "@Value与@ConfigurationProperties",
+              "desc": "@Value单属性注入SpEL表达式灵活/@ConfigurationProperties批量绑定类型安全+校验推荐整体配置用后者"
+            },
+            {
+              "id": "配置文件优先级-9-4-2-d5",
+              "tag": "YAML优势",
+              "desc": "层次结构清晰支持多环境同一文件(spring.profiles分段)/列表映射/避免属性名重复比properties更易维护"
+            },
+            {
+              "id": "配置文件优先级-9-4-2-d6",
+              "tag": "@PropertySource局限",
+              "desc": "@PropertySource仅支持properties文件不支持YAML/需配合@Value或@ConfigurationProperties使用优先级低于YAML"
+            }
+          ]
         },
         {
           "id": "springboot启动流程-9-4-3",
@@ -888,19 +1248,127 @@ window.__MODULES__['spring'] = {
           "id": "事务传播行为-9-6-0",
           "tag": "事务传播行为",
           "desc": "REQUIRED(默认,有事务加入当前无事务新建)。REQUIRES_NEW(挂起当前事务创建全新事务,内外事务独立回滚不影响)。NESTED(嵌套事务,Savepoint保存点,外回滚内跟着回滚,内回滚不影响外)。SUPPORTS(有事务加入无事务非事务运行)。NOT_SUPPORTED(挂起当前事务非事务运行)。MANDATORY(必须在已有事务中运行否则异常)。NEVER(绝不在事务中运行否则异常)",
-          "details": []
+          "details": [
+            {
+              "id": "事务传播行为-9-6-0-d0",
+              "tag": "REQUIRED默认",
+              "desc": "有事务加入当前事务无事务新建事务最常用保证同一事务内所有操作一致提交或回滚"
+            },
+            {
+              "id": "事务传播行为-9-6-0-d1",
+              "tag": "REQUIRES_NEW独立",
+              "desc": "挂起当前事务创建全新事务内外独立内回滚不影响外适合日志记录/发通知等需独立提交的场景"
+            },
+            {
+              "id": "事务传播行为-9-6-0-d2",
+              "tag": "NESTED嵌套",
+              "desc": "在当前事务内创建Savepoint保存点外回滚→内跟着回滚/内回滚→外不受影响类似子事务需DataSource支持"
+            },
+            {
+              "id": "事务传播行为-9-6-0-d3",
+              "tag": "SUPPORTS非事务",
+              "desc": "有事务加入无事务以非事务方式执行适合查询方法不强制要求事务但有事务时参与保证一致性"
+            },
+            {
+              "id": "事务传播行为-9-6-0-d4",
+              "tag": "NOT_SUPPORTED挂起",
+              "desc": "挂起当前事务以非事务方式执行适合非关键操作如发邮件/记日志避免事务膨胀超时"
+            },
+            {
+              "id": "事务传播行为-9-6-0-d5",
+              "tag": "MANDATORY强制",
+              "desc": "必须在已有事务中运行否则抛IllegalTransactionStateException适合核心业务方法强制要求事务调用"
+            },
+            {
+              "id": "事务传播行为-9-6-0-d6",
+              "tag": "NEVER禁止",
+              "desc": "绝不允许在事务中运行否则抛异常适合不需要事务的操作如只读查询强制保证不误用事务"
+            }
+          ]
         },
         {
           "id": "事务失效场景-9-6-1",
           "tag": "事务失效场景",
           "desc": "①方法不是public(Spring AOP代理基于CGLIB/JDK proxy,非public无法代理)②方法自调用(this.xxx()绕过代理,AOP不生效,注入自身或AopContext.currentProxy())③异常被吞掉(try-catch没throw,事务管理器不知道异常)④异常类型不对(默认rollbackFor=RuntimeException,checked exception不回滚,指定rollbackFor=Exception.class)⑤数据源未配置事务管理器(DataSourceTransactionManager)⑥@Transactional标注在接口上但Spring Boot JPA有时需在实现类",
-          "details": []
+          "details": [
+            {
+              "id": "事务失效场景-9-6-1-d0",
+              "tag": "非public方法",
+              "desc": "Spring AOP代理仅拦截public方法private/protected/package方法@Transactional无效CGLIB/JDK都无法代理非public"
+            },
+            {
+              "id": "事务失效场景-9-6-1-d1",
+              "tag": "自调用绕过代理",
+              "desc": "同类内this.method()直接调用绕过AOP代理事务不生效解决方案:注入自身/@Lazy延迟注入/AopContext.currentProxy()(需exposeProxy=true)"
+            },
+            {
+              "id": "事务失效场景-9-6-1-d2",
+              "tag": "异常被吞",
+              "desc": "try-catch捕获异常未throw事务管理器不知道异常不触发回滚必须在catch中re-throw或手动setRollbackOnly()"
+            },
+            {
+              "id": "事务失效场景-9-6-1-d3",
+              "tag": "异常类型不对",
+              "desc": "默认rollbackFor=RuntimeExceptionunchecked异常才回滚checked(IOException等)不回滚建议显式指定rollbackFor=Exception.class覆盖所有异常"
+            },
+            {
+              "id": "事务失效场景-9-6-1-d4",
+              "tag": "未配置事务管理器",
+              "desc": "未注册DataSourceTransactionManager导致@Transactional注解无实际事务支撑Spring Boot自动配置但多数据源需手动配置"
+            },
+            {
+              "id": "事务失效场景-9-6-1-d5",
+              "tag": "标注在接口上",
+              "desc": "@Transactional标注在接口上时CGLIB代理基于类无法读到接口注解导致失效建议标注在实现类或方法上而非接口"
+            },
+            {
+              "id": "事务失效场景-9-6-1-d6",
+              "tag": "数据库引擎不支持",
+              "desc": "MySQL MyISAM引擎不支持事务InnoDB才支持若表建在MyISAM上@Transactional完全不生效建表务必选InnoDB引擎"
+            }
+          ]
         },
         {
           "id": "事务隔离级别-9-6-2",
           "tag": "事务隔离级别",
           "desc": "READ_UNCOMMITTED(脏读) READ_COMMITTED(Oracle默认) REPEATABLE_READ(MySQL默认,SERIALIZABLE(串行)。MySQL InnoDB RR级别+MVCC实现可重复读(快照读)避免大部分幻读,当前读(for update/share)配合Next-KeyLock彻底防幻读。选择原则:大多数情况用默认RR即可,对并发要求不高RC也可,Serializable极少数场景",
-          "details": []
+          "details": [
+            {
+              "id": "事务隔离级别-9-6-2-d0",
+              "tag": "READ_UNCOMMITTED",
+              "desc": "最低隔离可读未提交数据存在脏读/不可重复读/幻读问题实际几乎不使用仅做理论参照"
+            },
+            {
+              "id": "事务隔离级别-9-6-2-d1",
+              "tag": "READ_COMMITTED(RC)",
+              "desc": "Oracle/PostgreSQL默认只读已提交数据解决脏读但存在不可重复读(同一查询两次结果不同)和幻读"
+            },
+            {
+              "id": "事务隔离级别-9-6-2-d2",
+              "tag": "REPEATABLE_READ(RR)",
+              "desc": "MySQL InnoDB默认解决脏读+不可重复读MVCC快照读保证同一事务内读一致大部分场景防幻读"
+            },
+            {
+              "id": "事务隔离级别-9-6-2-d3",
+              "tag": "SERIALIZABLE串行",
+              "desc": "最高隔离完全串行执行锁表解决所有并发问题但性能极差仅用于强一致性要求场景如金融对账"
+            },
+            {
+              "id": "事务隔离级别-9-6-2-d4",
+              "tag": "MySQL RR+MVCC",
+              "desc": "InnoDB RR级别通过MVCC(undo log版本链)实现快照读避免脏读/不可重复读当前读(for update)配合Next-KeyLock防幻读"
+            },
+            {
+              "id": "事务隔离级别-9-6-2-d5",
+              "tag": "Next-KeyLock防幻读",
+              "desc": "RecordLock(行锁)+GapLock(间隙锁)组合=Next-KeyLock锁定索引记录及其间隙阻止其他事务在间隙插入新行彻底防幻读"
+            },
+            {
+              "id": "事务隔离级别-9-6-2-d6",
+              "tag": "选择原则",
+              "desc": "大多数场景用MySQL默认RR即可并发高且容忍不可重复读可用RC追求强一致用SERIALIZABLE@Transactional(isolation=)可显式指定"
+            }
+          ]
         }
       ]
     },
