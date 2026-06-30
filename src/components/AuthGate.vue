@@ -100,6 +100,13 @@ async function submit() {
   background: #0d9488; border-color: #0d9488;
 }
 
+/* 修复全局reset对Vant field的影响 */
+:deep(.van-field .van-cell__title) { padding: 10px 0 }
+:deep(.van-field .van-cell__value) { padding: 10px 0 }
+:deep(.van-field .van-field__control) { padding: 0 }
+:deep(.van-field .van-field__left-icon) { margin-right: 8px }
+:deep(.van-field .van-field__right-icon) { margin-left: 8px }
+
 /* 移动端 */
 @media (max-width: 600px) {
   .auth-card { max-width: 340px }
