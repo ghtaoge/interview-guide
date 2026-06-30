@@ -1477,6 +1477,205 @@ window.__MODULES__['netty'] = {
           ]
         }
       ]
+    },
+    {
+      "id": "31-2-netty组件深入-31-0",
+      "title": "31.2 Netty核心组件深入",
+      "points": [
+        {
+          "id": "channelpipeline-31-2-0",
+          "tag": "ChannelPipeline 与 ChannelHandler",
+          "desc": "ChannelPipeline是ChannelHandler链式容器入站从head到tail出站从tail到head;InboundHandler处理入站数据OutboundHandler处理出站数据;HandlerContext上下文触发下一个Handler;addLast/addFirst指定Handler顺序决定数据流向",
+          "details": [
+            {
+              "id": "channelpipeline-31-2-0-d0",
+              "tag": "Pipeline",
+              "desc": "ChannelHandler链式容器入站head→tail传播出站tail→head传播每个Channel有唯一Pipeline"
+            },
+            {
+              "id": "channelpipeline-31-2-0-d1",
+              "tag": "InboundHandler",
+              "desc": "channelRead读取数据channelActive连接建立fireXXX传播到下一个Handler"
+            },
+            {
+              "id": "channelpipeline-31-2-0-d2",
+              "tag": "OutboundHandler",
+              "desc": "write写数据flush刷新close关闭连接出站方向tail→head反向传播"
+            },
+            {
+              "id": "channelpipeline-31-2-0-d3",
+              "tag": "HandlerContext",
+              "desc": "ChannelHandlerContext持有Handler引用ctx.fireChannelRead(msg)传播事件"
+            },
+            {
+              "id": "channelpipeline-31-2-0-d4",
+              "tag": "添加顺序",
+              "desc": "addLast/addFirst/addBefore/addAfter顺序决定编解码先后和数据流向"
+            }
+          ]
+        },
+        {
+          "id": "netty线程模型-31-2-1",
+          "tag": "Netty 线程模型",
+          "desc": "主从Reactor多线程bossGroup(Acceptor)接收连接workGroup(I/O+业务)处理数据;NioEventLoop最小执行单元持有Selector+TaskQueue单线程串行无锁;EventLoopGroup线程池bossGroup默认1线程workGroup默认CPU*2;Handler可指定不同EventLoopGroup实现线程隔离",
+          "details": [
+            {
+              "id": "netty线程模型-31-2-1-d0",
+              "tag": "主从Reactor",
+              "desc": "bossGroup(Acceptor线程组)接收新连接workGroup(I/O线程组)处理已建立连接读写"
+            },
+            {
+              "id": "netty线程模型-31-2-1-d1",
+              "tag": "NioEventLoop",
+              "desc": "最小执行单元持有Selector+TaskQueue单线程串行执行I/O和Task无锁并发安全"
+            },
+            {
+              "id": "netty线程模型-31-2-1-d2",
+              "tag": "EventLoopGroup",
+              "desc": "bossGroup默认1线程只AcceptworkGroup默认CPU*2负责I/O读写和业务"
+            },
+            {
+              "id": "netty线程模型-31-2-1-d3",
+              "tag": "线程绑定",
+              "desc": "Channel注册到某EventLoop后一直由该EventLoop处理不会切换线程无锁"
+            },
+            {
+              "id": "netty线程模型-31-2-1-d4",
+              "tag": "线程隔离",
+              "desc": "Handler指定不同EventLoopGroup耗时业务独立线程不阻塞I/O线程"
+            }
+          ]
+        },
+        {
+          "id": "netty编解码器-31-2-2",
+          "tag": "Netty 编解码器体系",
+          "desc": "ByteToMessageDecoder字节→对象MessageToMessageDecoder对象→对象;MessageToByteEncoder对象→字节MessageToMessageEncoder对象→对象;ByteToMessageCodec组合编解码;内置:FixedLength/DelimiterBased/LengthFieldBased解决粘包拆包",
+          "details": [
+            {
+              "id": "netty编解码器-31-2-2-d0",
+              "tag": "解码器",
+              "desc": "ByteToMessageDecoder字节→对象MessageToMessageDecoder对象→对象转换"
+            },
+            {
+              "id": "netty编解码器-31-2-2-d1",
+              "tag": "编码器",
+              "desc": "MessageToByteEncoder对象→字节MessageToMessageEncoder对象→对象转换"
+            },
+            {
+              "id": "netty编解码器-31-2-2-d2",
+              "tag": "Codec组合",
+              "desc": "ByteToMessageCodec同时实现解码和编码简化配置"
+            },
+            {
+              "id": "netty编解码器-31-2-2-d3",
+              "tag": "粘包解码器",
+              "desc": "FixedLengthFrameDecoder定长/DelimiterBased分隔符/LengthFieldBased长度字段三种常用"
+            },
+            {
+              "id": "netty编解码器-31-2-2-d4",
+              "tag": "ReplayingDecoder",
+              "desc": "扩展ByteToMessageDecoder自动检查字节是否足够不够等待自动重试无需手动检查"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "31-3-netty实战与优化-31-0",
+      "title": "31.3 Netty实战与优化",
+      "points": [
+        {
+          "id": "netty实战场景-31-3-0",
+          "tag": "Netty 实战场景",
+          "desc": "RPC框架:Dubbo/gRPC底层基于Netty;IM即时通讯:长连接+WebSocket双向通信;游戏服务器:高并发低延迟千万级连接;物联网网关:MQTT协议海量设备连接",
+          "details": [
+            {
+              "id": "netty实战场景-31-3-0-d0",
+              "tag": "RPC框架",
+              "desc": "Dubbo/gRPC底层基于Netty实现远程调用负责网络传输和序列化"
+            },
+            {
+              "id": "netty实战场景-31-3-0-d1",
+              "tag": "IM系统",
+              "desc": "长连接+WebSocket双向通信消息推送心跳保活百万级在线"
+            },
+            {
+              "id": "netty实战场景-31-3-0-d2",
+              "tag": "游戏服务器",
+              "desc": "高并发低延迟帧同步/状态同步千万级连接自定义二进制协议"
+            },
+            {
+              "id": "netty实战场景-31-3-0-d3",
+              "tag": "物联网网关",
+              "desc": "MQTT/CoAP协议海量设备连接协议解析数据上报指令下发"
+            }
+          ]
+        },
+        {
+          "id": "netty内存管理-31-3-1",
+          "tag": "Netty 内存管理",
+          "desc": "PooledByteBufAllocator池化分配默认减少GC;基于jemalloc算法Arena+PoolThreadCache;DirectByteBuf堆外内存零拷贝性能高需手动释放;HeapByteBuf堆内存GC管理;泄漏检测ResourceLeakDetector四级;引用计数refCnt/release归零释放",
+          "details": [
+            {
+              "id": "netty内存管理-31-3-1-d0",
+              "tag": "池化分配",
+              "desc": "PooledByteBufAllocator默认池化减少GC基于jemalloc Arena+PoolThreadCache"
+            },
+            {
+              "id": "netty内存管理-31-3-1-d1",
+              "tag": "堆外内存",
+              "desc": "DirectByteBuf零拷贝IO性能高但需手动release否则泄漏"
+            },
+            {
+              "id": "netty内存管理-31-3-1-d2",
+              "tag": "堆内存",
+              "desc": "HeapByteBufJVM堆内GC管理但IO需额外拷贝到堆外性能略低"
+            },
+            {
+              "id": "netty内存管理-31-3-1-d3",
+              "tag": "泄漏检测",
+              "desc": "ResourceLeakDetector四级disable/simple/advanced/paranoid默认simple"
+            },
+            {
+              "id": "netty内存管理-31-3-1-d4",
+              "tag": "引用计数",
+              "desc": "ByteBuf引用计数refCnt()release()减1归零释放池化ByteBuf必须release"
+            }
+          ]
+        },
+        {
+          "id": "nettytcp参数-31-3-2",
+          "tag": "Netty TCP参数优化",
+          "desc": "SO_BACKLOG连接队列长度高并发调1024;TCP_NODELAY禁用Nagle算法减少延迟;SO_KEEPALIVE保活探测;SO_SNDBUF/SO_RCVBUF缓冲区大小;WriteBufferWaterMark写缓冲区水位线防溢出",
+          "details": [
+            {
+              "id": "nettytcp参数-31-3-2-d0",
+              "tag": "SO_BACKLOG",
+              "desc": "连接队列默认128高并发调1024+防队列溢出拒绝连接"
+            },
+            {
+              "id": "nettytcp参数-31-3-2-d1",
+              "tag": "TCP_NODELAY",
+              "desc": "禁用Nagle算法小包立即发送减少延迟实时场景必须关闭"
+            },
+            {
+              "id": "nettytcp参数-31-3-2-d2",
+              "tag": "SO_KEEPALIVE",
+              "desc": "保活探测检测死连接自动关闭避免僵尸连接占用资源"
+            },
+            {
+              "id": "nettytcp参数-31-3-2-d3",
+              "tag": "缓冲区",
+              "desc": "SO_SNDBUF/SO_RCVBUF根据数据量调整减少系统调用次数"
+            },
+            {
+              "id": "nettytcp参数-31-3-2-d4",
+              "tag": "水位线",
+              "desc": "WriteBufferWaterMark低32KB高64KB超出高水位isWritable()=false防溢出"
+            }
+          ]
+        }
+      ]
     }
   ]
 };

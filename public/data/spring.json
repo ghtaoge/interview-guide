@@ -3461,6 +3461,198 @@
           ]
         }
       ]
+    },
+    {
+      "id": "9-22-webflux-9-21",
+      "title": "9.22 Spring WebFlux",
+      "points": [
+        {
+          "id": "响应式编程基础-9-22-0",
+          "tag": "响应式编程基础",
+          "desc": "响应式编程基于数据流和变化传播的异步编程范式数据就绪时自动推送消费者无需阻塞等待;Reactor是Spring WebFlux底层库Mono(0/1个元素)Flux(N个元素)异步数据流;背压(Backpressure)消费者控制订阅速率防止生产者过载",
+          "details": [
+            {
+              "id": "响应式编程基础-9-22-0-d0",
+              "tag": "响应式范式",
+              "desc": "基于数据流和变化传播异步编程数据就绪时推送消费者不阻塞等待不同于传统命令式拉取"
+            },
+            {
+              "id": "响应式编程基础-9-22-0-d1",
+              "tag": "Mono/Flux",
+              "desc": "Mono发布0或1个元素Flux发布N个元素异步数据流map/filter/flatMap链式变换"
+            },
+            {
+              "id": "响应式编程基础-9-22-0-d2",
+              "tag": "背压",
+              "desc": "消费者控制订阅速率request(N)拉取N个元素防止生产者发射过快导致缓冲溢出"
+            },
+            {
+              "id": "响应式编程基础-9-22-0-d3",
+              "tag": "Reactor线程",
+              "desc": "subscribeOn指定数据源线程publishOn指定下游线程Schedulers弹性线程池支持并行调度"
+            }
+          ]
+        },
+        {
+          "id": "webflux核心架构-9-22-1",
+          "tag": "WebFlux 核心架构",
+          "desc": "基于Reactor+Netty的非阻塞Web框架注解式(@Controller)和函数式(RouterFunction)两种模式;默认Netty服务器无需Servlet容器;支持WebSocket/SSE实时通信;WebClient非阻塞HTTP客户端",
+          "details": [
+            {
+              "id": "webflux核心架构-9-22-1-d0",
+              "tag": "两种模式",
+              "desc": "注解式@Controller同MVC风格函数式RouterFunction+HandlerFunction轻量路由适合API"
+            },
+            {
+              "id": "webflux核心架构-9-22-1-d1",
+              "tag": "Netty服务器",
+              "desc": "默认Netty非阻塞I/O多路复用无需Servlet容器适合高并发I/O密集场景"
+            },
+            {
+              "id": "webflux核心架构-9-22-1-d2",
+              "tag": "WebSocket/SSE",
+              "desc": "WebSocket双向实时通信ServerSentEvent单向服务端推送适合股票行情/聊天等实时数据"
+            },
+            {
+              "id": "webflux核心架构-9-22-1-d3",
+              "tag": "WebClient",
+              "desc": "Reactor版RestTemplate非阻塞HTTP客户端支持流式响应适合微服务间调用"
+            },
+            {
+              "id": "webflux核心架构-9-22-1-d4",
+              "tag": "请求处理链",
+              "desc": "HttpHandler→WebHandler→DispatcherHandler路由分发找Handler处理"
+            }
+          ]
+        },
+        {
+          "id": "mvc-vs-webflux选型-9-22-2",
+          "tag": "MVC vs WebFlux 选型",
+          "desc": "SpringMVC同步阻塞Tomcat线程池简单易调试;WebFlux异步非阻塞Netty事件驱动高并发但调试复杂学习陡;选型:CRUD用MVC高并发/流式/网关用WebFlux;可混合使用",
+          "details": [
+            {
+              "id": "mvc-vs-webflux选型-9-22-2-d0",
+              "tag": "MVC适用",
+              "desc": "CRUD业务逻辑复杂阻塞DB调用简单易调试大多数项目首选"
+            },
+            {
+              "id": "mvc-vs-webflux选型-9-22-2-d1",
+              "tag": "WebFlux适用",
+              "desc": "高并发I/O密集流式处理微服务网关聚合后端调用实时推送"
+            },
+            {
+              "id": "mvc-vs-webflux选型-9-22-2-d2",
+              "tag": "性能对比",
+              "desc": "WebFlux少量线程处理大量连接MVC阻塞线程等待并发高时线程池耗尽WebFlux吞吐优势明显"
+            },
+            {
+              "id": "mvc-vs-webflux选型-9-22-2-d3",
+              "tag": "混合模式",
+              "desc": "同一SpringBoot应用可同时部署MVC控制器和WebFlux路由"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "9-23-easyexcel-9-22",
+      "title": "9.23 EasyExcel与数据处理",
+      "points": [
+        {
+          "id": "easyexcel核心-9-23-0",
+          "tag": "EasyExcel架构与核心API",
+          "desc": "EasyExcel是阿里开源的Excel处理框架基于SAX模式解析避免OOM核心优势内存极低仅一行数据在内存API简洁注解驱动;@ExcelProperty定义列映射@DateTimeFormat日期格式;ReadListener逐行解析invoke()方法;大数据量分sheet100万行分文件500万行",
+          "details": [
+            {
+              "id": "easyexcel核心-9-23-0-d0",
+              "tag": "EasyExcel",
+              "desc": "阿里开源SAX模式解析内存极低仅一行数据在内存避免OOM百万数据秒级处理"
+            },
+            {
+              "id": "easyexcel核心-9-23-0-d1",
+              "tag": "SAX模式",
+              "desc": "事件驱动逐行解析不一次性加载全文件内存仅保留当前行数据适合大文件"
+            },
+            {
+              "id": "easyexcel核心-9-23-0-d2",
+              "tag": "写Excel",
+              "desc": "EasyExcel.write(file,ModelClass).sheet().doWrite(dataList)注解驱动简洁"
+            },
+            {
+              "id": "easyexcel核心-9-23-0-d3",
+              "tag": "读Excel",
+              "desc": "EasyExcel.read(file,ModelClass,Listener).sheet().doRead()监听器逐行解析"
+            },
+            {
+              "id": "easyexcel核心-9-23-0-d4",
+              "tag": "@ExcelProperty",
+              "desc": "注解定义列名和序号如@ExcelProperty(\"姓名\")或@ExcelProperty(index=0)"
+            },
+            {
+              "id": "easyexcel核心-9-23-0-d5",
+              "tag": "ReadListener",
+              "desc": "读监听器每行触发invoke()处理当前行不一次性加载全文件防OOM"
+            },
+            {
+              "id": "easyexcel核心-9-23-0-d6",
+              "tag": "大数据量写",
+              "desc": "分sheet每个100万行分文件每个500万行避免单sheet超限和内存溢出"
+            },
+            {
+              "id": "easyexcel核心-9-23-0-d7",
+              "tag": "格式注解",
+              "desc": "@DateTimeFormat日期@NumberFormat数字@ColumnWidth列宽样式灵活"
+            }
+          ]
+        },
+        {
+          "id": "easyexcel实战-9-23-1",
+          "tag": "EasyExcel实战与线上问题",
+          "desc": "数据导入:上传→校验→ReadListener逐行解析→批量入库每500条batch insert→返回统计;数据导出:查询→EasyExcel.write→分sheet分文件→下载链接;常见问题:大文件OOM→确认用ReadListener/导入量太大→分批入库/格式不一致→ignoreUnknown=true/内存泄漏→必须close/并发导出→限制并发数",
+          "details": [
+            {
+              "id": "easyexcel实战-9-23-1-d0",
+              "tag": "数据导入流程",
+              "desc": "上传Excel→校验格式→ReadListener逐行解析→批量入库每500条→返回成功失败统计"
+            },
+            {
+              "id": "easyexcel实战-9-23-1-d1",
+              "tag": "批量入库",
+              "desc": "每500条batch insert减少DB交互ReadListener中batch列表累积到500触发入库"
+            },
+            {
+              "id": "easyexcel实战-9-23-1-d2",
+              "tag": "数据导出",
+              "desc": "查询数据→EasyExcel.write生成→大数据分sheet分文件→返回下载链接"
+            },
+            {
+              "id": "easyexcel实战-9-23-1-d3",
+              "tag": "ignoreUnknown",
+              "desc": "忽略未知列防止Excel多列导致解析错误兼容格式不一致"
+            },
+            {
+              "id": "easyexcel实战-9-23-1-d4",
+              "tag": "必须close",
+              "desc": "ExcelReader/ExcelWriter必须close否则临时文件不清理内存泄漏try-with-resources"
+            },
+            {
+              "id": "easyexcel实战-9-23-1-d5",
+              "tag": "日期解析",
+              "desc": "@DateTimeFormat指定格式如yyyy-MM-dd HH:mm:ss防止默认格式不匹配"
+            },
+            {
+              "id": "easyexcel实战-9-23-1-d6",
+              "tag": "并发限制",
+              "desc": "限制并发导出数量避免多线程同时写Excel内存叠加OOM用Semaphore控制"
+            },
+            {
+              "id": "easyexcel实战-9-23-1-d7",
+              "tag": "行级校验",
+              "desc": "ReadListener.invoke中校验格式业务规则记录错误行号原因最后汇总返回"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

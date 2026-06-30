@@ -262,6 +262,131 @@
           ]
         }
       ]
+    },
+    {
+      "id": "5-4-nio2文件api-5-3",
+      "title": "5.4 NIO.2 文件API",
+      "points": [
+        {
+          "id": "path与files-5-4-0",
+          "tag": "Path 与 Files API",
+          "desc": "Path替代File更现代Paths.get()创建resolve拼接normalize规范化;Files工具类copy/move/delete/createFile/list/walk;Files.readString/writeString一行读写远比File+InputStream简洁",
+          "details": [
+            {
+              "id": "path与files-5-4-0-d0",
+              "tag": "Path",
+              "desc": "替代File更现代Paths.get()创建resolve拼接子路径relativize计算相对路径normalize规范化"
+            },
+            {
+              "id": "path与files-5-4-0-d1",
+              "tag": "Files",
+              "desc": "静态工具类copy/move/delete/createFile/list/walk一行代码完成复杂文件操作"
+            },
+            {
+              "id": "path与files-5-4-0-d2",
+              "tag": "readString",
+              "desc": "Files.readString/writeString一行读写Java11+远比File+InputStream简洁"
+            },
+            {
+              "id": "path与files-5-4-0-d3",
+              "tag": "File vs Path",
+              "desc": "File是旧APIPath是新API推荐PathFile.toPath()/Path.toFile()互转"
+            }
+          ]
+        },
+        {
+          "id": "watchservice目录监控-5-4-1",
+          "tag": "WatchService 目录监控",
+          "desc": "NIO.2文件系统事件监听Path.register(watchService,事件类型)→take()→pollEvents()→reset();底层OS事件通知Linux inotify高效非轮询;用途配置热加载/日志监控/文件同步",
+          "details": [
+            {
+              "id": "watchservice目录监控-5-4-1-d0",
+              "tag": "WatchService",
+              "desc": "NIO.2事件监听ENTRY_CREATE/ENTRY_MODIFY/ENTRY_DELETE三种事件类型"
+            },
+            {
+              "id": "watchservice目录监控-5-4-1-d1",
+              "tag": "工作流程",
+              "desc": "Path.register→take()等待→pollEvents()取出→reset()重置继续监听循环处理"
+            },
+            {
+              "id": "watchservice目录监控-5-4-1-d2",
+              "tag": "底层机制",
+              "desc": "Linux inotify/Windows ReadDirectoryChangesW基于OS事件通知高效非轮询非定时扫描"
+            },
+            {
+              "id": "watchservice目录监控-5-4-1-d3",
+              "tag": "应用场景",
+              "desc": "配置文件热加载/日志目录监控触发处理/文件同步检测变更自动推送"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5-5-网络编程基础-5-4",
+      "title": "5.5 网络编程基础",
+      "points": [
+        {
+          "id": "socket编程-5-5-0",
+          "tag": "Socket 编程",
+          "desc": "Socket是TCP网络通信基础APIServerSocket.accept()服务端监听Socket客户端连接;TCP三次握手四次挥手;短连接vs长连接keep-alive;理解Socket编程才能理解Netty/BIO/NIO异步模型",
+          "details": [
+            {
+              "id": "socket编程-5-5-0-d0",
+              "tag": "ServerSocket",
+              "desc": "服务端new ServerSocket(port)→accept()阻塞等待客户端连接返回Socket"
+            },
+            {
+              "id": "socket编程-5-5-0-d1",
+              "tag": "Socket客户端",
+              "desc": "new Socket(host,port)建立TCP连接getInputStream()/getOutputStream()读写"
+            },
+            {
+              "id": "socket编程-5-5-0-d2",
+              "tag": "TCP连接",
+              "desc": "三次握手(SYN→SYN+ACK→ACK)建立四次挥手(FIN→ACK→FIN→ACK)关闭"
+            },
+            {
+              "id": "socket编程-5-5-0-d3",
+              "tag": "短连接vs长连接",
+              "desc": "短连接每次新建+关闭开销大长连接keep-alive复用减少握手开销"
+            },
+            {
+              "id": "socket编程-5-5-0-d4",
+              "tag": "与Netty关系",
+              "desc": "Socket是基础理解BIO阻塞后才能理解NIO非阻塞和Netty事件驱动异步模型"
+            }
+          ]
+        },
+        {
+          "id": "http客户端-5-5-1",
+          "tag": "Java HTTP 客户端",
+          "desc": "HttpURLConnection旧API功能有限;Java11+HttpClient支持HTTP/2异步;OkHttp最常用第三方HTTP库;SpringRestTemplate/WebClient企业级封装",
+          "details": [
+            {
+              "id": "http客户端-5-5-1-d0",
+              "tag": "HttpClient",
+              "desc": "Java11+现代API支持HTTP/2异步CompletableFuture配置简洁推荐"
+            },
+            {
+              "id": "http客户端-5-5-1-d1",
+              "tag": "OkHttp",
+              "desc": "Square开源最常用HTTP客户端连接池拦截器链GZIP压缩"
+            },
+            {
+              "id": "http客户端-5-5-1-d2",
+              "tag": "RestTemplate",
+              "desc": "Spring封装支持序列化/错误处理/负载均衡WebClient是响应式版本"
+            },
+            {
+              "id": "http客户端-5-5-1-d3",
+              "tag": "HttpURLConnection",
+              "desc": "JDK内置旧API功能有限不支持HTTP/2实际项目很少直接使用"
+            }
+          ]
+        }
+      ]
     }
   ]
 }

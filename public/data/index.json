@@ -6,8 +6,8 @@
     "order": 1,
     "icon": "☕",
     "cssIndex": 0,
-    "subCount": 8,
-    "pointCount": 35
+    "subCount": 9,
+    "pointCount": 44
   },
   {
     "id": "java-io",
@@ -16,8 +16,8 @@
     "order": 2,
     "icon": "🔄",
     "cssIndex": 1,
-    "subCount": 3,
-    "pointCount": 12
+    "subCount": 5,
+    "pointCount": 16
   },
   {
     "id": "java-collection",
@@ -56,8 +56,8 @@
     "order": 6,
     "icon": "🌐",
     "cssIndex": 5,
-    "subCount": 21,
-    "pointCount": 95
+    "subCount": 23,
+    "pointCount": 100
   },
   {
     "id": "netty",
@@ -66,8 +66,8 @@
     "order": 7,
     "icon": "☁️",
     "cssIndex": 6,
-    "subCount": 2,
-    "pointCount": 5
+    "subCount": 4,
+    "pointCount": 11
   },
   {
     "id": "mysql",
@@ -328,16 +328,6 @@
     "cssIndex": 32,
     "subCount": 4,
     "pointCount": 18
-  },
-  {
-    "id": "easyexcel",
-    "title": "三十四、EasyExcel与数据处理",
-    "tag": "EasyExcel",
-    "order": 34,
-    "icon": "🔧",
-    "cssIndex": 33,
-    "subCount": 1,
-    "pointCount": 2
   },
   {
     "id": "scene",

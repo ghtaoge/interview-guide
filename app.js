@@ -29,6 +29,36 @@ function matchFilter(text, filter) {
   return text.toLowerCase().indexOf(filter.toLowerCase()) !== -1;
 }
 
+// 搜索 point 的所有文本(含detail内容)
+function matchPointContent(pt, filter) {
+  if (!filter) return true;
+  var fl = filter.toLowerCase();
+  // point tag + desc
+  if ((pt.tag + ' ' + pt.desc).toLowerCase().indexOf(fl) !== -1) return true;
+  // detail tag + desc
+  if (pt.details) {
+    for (var i = 0; i < pt.details.length; i++) {
+      var d = pt.details[i];
+      if ((d.tag + ' ' + d.desc).toLowerCase().indexOf(fl) !== -1) return true;
+    }
+  }
+  return false;
+}
+
+// 检查point是否仅因detail内容匹配(标题不匹配时自动展开)
+function isDetailOnlyMatch(pt, filter) {
+  if (!filter) return false;
+  var fl = filter.toLowerCase();
+  if ((pt.tag + ' ' + pt.desc).toLowerCase().indexOf(fl) !== -1) return false;
+  if (pt.details) {
+    for (var i = 0; i < pt.details.length; i++) {
+      var d = pt.details[i];
+      if ((d.tag + ' ' + d.desc).toLowerCase().indexOf(fl) !== -1) return true;
+    }
+  }
+  return false;
+}
+
 function highlight(text, keyword) {
   var safe = String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   if (!keyword) return safe;
@@ -149,12 +179,12 @@ function renderFromData(modules, filter, tagFilter) {
         total += subCount;
         if (subCount > 0) pointsHtml = buildMobileCapsulePoints(sub, mod.id, ci, fl);
       } else {
-        // 原始卡片模式
+        // 原始卡片模式（搜索含detail内容）
         for (var pi = 0; pi < sub.points.length; pi++) {
         var pt = sub.points[pi];
-        var ptText = pt.tag + ' ' + pt.desc;
-        var ptMatch = subMatch || matchFilter(ptText, filter);
+        var ptMatch = subMatch || matchPointContent(pt, filter);
         if (!ptMatch) continue;
+        var detailOnlyMatch = !subMatch && isDetailOnlyMatch(pt, filter);
 
         // 构建 detail HTML
         var hasDetail = pt.details && pt.details.length > 0;
@@ -183,7 +213,7 @@ function renderFromData(modules, filter, tagFilter) {
 
         var detailCount = hasDetail ? pt.details.length : 0;
         var expandIcon = '<span class="expand-hint">' + (detailCount > 0 ? detailCount + ' 条' : '▼') + '</span>';
-        var cls = 'point has-detail';
+        var cls = 'point has-detail' + (detailOnlyMatch ? ' open' : '');
         var clickAttr = ' onclick="evPt(event,this)"';
         var ptEditBtn = '<span class="edit-btn-group">' +
           '<button class="edit-btn" onclick="editPoint(event,\'' + mod.id + '\',\'' + sub.id + '\',\'' + pt.id + '\')" title="编辑">✏️</button>' +

@@ -952,6 +952,97 @@ window.__MODULES__['java-basic'] = {
               "desc": "不可变数据载体record Point(int x,int y)自动生成equals/hashCode/toString/compact constructor;适合DTO/配置/事件对象,不可变天然线程安全"
             }
           ]
+        },
+        {
+          "id": "注解深入-1-5-8",
+          "tag": "注解(Annotation)深入",
+          "desc": "注解是代码元数据标记不影响逻辑运行;元注解@Target/@Retention/@Inherited/@Documented;运行时注解通过反射读取AnnotationProcessor编译期处理生成代码;Spring注解基于运行时反射+编译期处理",
+          "details": [
+            {
+              "id": "注解深入-1-5-8-d0",
+              "tag": "元注解",
+              "desc": "@Target(ElementType)指定适用位置@Retention指定生命周期SOURCE→CLASS→RUNTIME"
+            },
+            {
+              "id": "注解深入-1-5-8-d1",
+              "tag": "@Retention",
+              "desc": "SOURCE编译期丢弃(如@Override)CLASS保留在class文件但JVM忽略RUNTIME运行时可反射获取"
+            },
+            {
+              "id": "注解深入-1-5-8-d2",
+              "tag": "自定义注解",
+              "desc": "定义@interface+元注解+属性default值反射getAnnotation()读取运行时处理"
+            },
+            {
+              "id": "注解深入-1-5-8-d3",
+              "tag": "AnnotationProcessor",
+              "desc": "编译期注解处理器继承AbstractProcessorLombok/SpringBoot基于此机制生成代码"
+            },
+            {
+              "id": "注解深入-1-5-8-d4",
+              "tag": "Spring注解体系",
+              "desc": "@Component/@Service注册Bean/@Autowired注入/@Transactional事务运行时反射+编译期APT双重处理"
+            }
+          ]
+        },
+        {
+          "id": "java模块化jpms-1-5-9",
+          "tag": "Java 模块化(JPMS)",
+          "desc": "Java9引入模块系统module-info.java定义exports/requires/provides/uses;强封装非exports包不可访问;模块路径取代类路径;jlink裁剪JRE减小部署体积;--add-opens允许反射访问模块内部",
+          "details": [
+            {
+              "id": "java模块化jpms-1-5-9-d0",
+              "tag": "module-info.java",
+              "desc": "模块声明exports暴露包requires依赖provides/uses服务强封装非exports包外部不可访问"
+            },
+            {
+              "id": "java模块化jpms-1-5-9-d1",
+              "tag": "强封装",
+              "desc": "非exports包不可被外部模块访问即使public也不行解决类路径混乱和JAR地狱"
+            },
+            {
+              "id": "java模块化jpms-1-5-9-d2",
+              "tag": "--add-opens",
+              "desc": "反射访问模块内部需--add-opensSpringBoot/Hibernate等框架常需此参数"
+            },
+            {
+              "id": "java模块化jpms-1-5-9-d3",
+              "tag": "jlink",
+              "desc": "根据模块依赖裁剪JRE生成定制运行时镜像部署体积从数百MB→数十MB"
+            },
+            {
+              "id": "java模块化jpms-1-5-9-d4",
+              "tag": "模块路径",
+              "desc": "取代类路径显式声明依赖关系而非类路径隐式扫描更可靠可预测"
+            }
+          ]
+        },
+        {
+          "id": "record与接口新特性-1-5-10",
+          "tag": "Record类与接口新特性",
+          "desc": "Java14+Record类简洁数据载体自动生成equals/hashCode/toString/getter不可变天然线程安全;Java8接口default方法Java9private方法Java17sealed类限制继承范围",
+          "details": [
+            {
+              "id": "record与接口新特性-1-5-10-d0",
+              "tag": "Record类",
+              "desc": "Java14+record Point(int x, int y){}自动生成equals/hashCode/toString/getter不可变天然线程安全"
+            },
+            {
+              "id": "record与接口新特性-1-5-10-d1",
+              "tag": "default方法",
+              "desc": "Java8+接口default方法提供默认实现用于接口演进不破坏已有子类实现"
+            },
+            {
+              "id": "record与接口新特性-1-5-10-d2",
+              "tag": "private方法",
+              "desc": "Java9+接口private方法内部复用default逻辑减少代码重复不暴露给实现类"
+            },
+            {
+              "id": "record与接口新特性-1-5-10-d3",
+              "tag": "sealed类",
+              "desc": "Java17+sealed class Shape permits Circle,Square{}限制继承范围增强类型安全"
+            }
+          ]
         }
       ]
     },
@@ -1258,6 +1349,209 @@ window.__MODULES__['java-basic'] = {
               "id": "自定义异常最佳实践-1-7-3-d5",
               "tag": "异常vs错误码",
               "desc": "异常用于不可恢复场景错误码用于可恢复业务判断"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "1-9-oop基础-1-8",
+      "title": "1.9 面向对象",
+      "points": [
+        {
+          "id": "面向对象三大特性-1-9-0",
+          "tag": "面向对象三大特性",
+          "desc": "封装隐藏内部实现只暴露必要接口保护数据完整性;继承子类复用父类代码扩展功能Java单继承多实现;多态同一引用调用不同实现运行时动态绑定父类引用调用子类覆写方法",
+          "details": [
+            {
+              "id": "面向对象三大特性-1-9-0-d0",
+              "tag": "封装",
+              "desc": "隐藏内部实现细节只暴露公共接口访问修饰符控制可见性保护数据完整性getter/setter校验"
+            },
+            {
+              "id": "面向对象三大特性-1-9-0-d1",
+              "tag": "继承",
+              "desc": "子类继承父类属性和方法实现代码复用Java单继承一个类只能extends一个父类但可implements多个接口"
+            },
+            {
+              "id": "面向对象三大特性-1-9-0-d2",
+              "tag": "多态",
+              "desc": "同一引用类型调用同一方法产生不同行为父类引用指向子类对象调用覆写方法运行时动态绑定"
+            },
+            {
+              "id": "面向对象三大特性-1-9-0-d3",
+              "tag": "动态绑定",
+              "desc": "JVM在运行时根据对象实际类型而非引用类型决定调用哪个方法实现虚方法表(vtable)查找"
+            },
+            {
+              "id": "面向对象三大特性-1-9-0-d4",
+              "tag": "编译看左运行看右",
+              "desc": "编译期检查引用类型(左)是否有该方法运行期执行对象实际类型(右)的覆写版本成员变量/静态方法看左实例方法看右"
+            },
+            {
+              "id": "面向对象三大特性-1-9-0-d5",
+              "tag": "多态条件",
+              "desc": "继承/实现关系+方法覆写+父类引用指向子类对象三者缺一不可否则多态不成立"
+            }
+          ]
+        },
+        {
+          "id": "抽象类vs接口-1-9-1",
+          "tag": "抽象类 vs 接口",
+          "desc": "抽象类可有构造器/成员变量/具体方法单继承用于is-a关系部分实现;接口无构造器只有常量多实现用于can-do关系定义契约;Java8+接口有default/static方法Java9+有private方法接口逐渐演变为可部分实现",
+          "details": [
+            {
+              "id": "抽象类vs接口-1-9-1-d0",
+              "tag": "抽象类",
+              "desc": "可有构造器/成员变量/抽象方法+具体方法单继承extends用于is-a关系模板方法模式部分实现"
+            },
+            {
+              "id": "抽象类vs接口-1-9-1-d1",
+              "tag": "接口",
+              "desc": "无构造器无实例变量只有常量(public static final)抽象方法多实现implements用于can-do关系定义行为契约"
+            },
+            {
+              "id": "抽象类vs接口-1-9-1-d2",
+              "tag": "default方法",
+              "desc": "Java8+接口可定义default方法提供默认实现不强制子类覆写用于接口演进添加新方法不破坏已有实现"
+            },
+            {
+              "id": "抽象类vs接口-1-9-1-d3",
+              "tag": "选择原则",
+              "desc": "is-a关系用抽象类(Animal→Dog)can-do能力用接口(Serializable/Comparable)接口优先当需要共享状态或构造器时才用抽象类"
+            },
+            {
+              "id": "抽象类vs接口-1-9-1-d4",
+              "tag": "接口演进",
+              "desc": "Java8 default/static方法→Java9 private方法→接口逐渐具备部分实现能力但核心仍是行为契约不是数据容器"
+            },
+            {
+              "id": "抽象类vs接口-1-9-1-d5",
+              "tag": "多实现冲突",
+              "desc": "类实现多个接口有同名default方法时必须显式覆写指定用哪个接口的实现InterfaceName.super.method()"
+            }
+          ]
+        },
+        {
+          "id": "重写与重载-1-9-2",
+          "tag": "重写(Override) vs 重载(Overload)",
+          "desc": "重写是子类重新定义父类方法运行时多态方法签名必须相同访问权限≥父类不能比父类抛更宽异常;重载是同类中方法名相同参数列表不同编译时多态返回类型可不同但不能仅靠返回类型区分",
+          "details": [
+            {
+              "id": "重写与重载-1-9-2-d0",
+              "tag": "重写Override",
+              "desc": "子类重新定义父类方法方法签名(名称+参数)必须相同运行时多态动态绑定"
+            },
+            {
+              "id": "重写与重载-1-9-2-d1",
+              "tag": "重写规则",
+              "desc": "访问权限≥父类(public>protected>default)返回类型≤父类(协变返回)异常≤父类不能final/static/private方法"
+            },
+            {
+              "id": "重写与重载-1-9-2-d2",
+              "tag": "重载Overload",
+              "desc": "同类中方法名相同参数列表不同(类型/数量/顺序)编译时多态静态绑定"
+            },
+            {
+              "id": "重写与重载-1-9-2-d3",
+              "tag": "重载规则",
+              "desc": "参数列表必须不同返回类型可不同但不能仅靠返回类型区分与访问修饰符/异常无关"
+            },
+            {
+              "id": "重写与重载-1-9-2-d4",
+              "tag": "@Override",
+              "desc": "编译器检查是否正确覆写父类方法防止拼写错误或签名不匹配导致变成了新方法而非覆写"
+            }
+          ]
+        },
+        {
+          "id": "组合vs继承-1-9-3",
+          "tag": "组合 vs 继承",
+          "desc": "组合(has-a)将已有类作为成员变量灵活可运行时替换遵循DRY原则低耦合;继承(is-a)直接复用父类高耦合父类改动影响子类不能运行时改变父类;优先组合必要时继承组合+接口委托是最佳实践",
+          "details": [
+            {
+              "id": "组合vs继承-1-9-3-d0",
+              "tag": "组合has-a",
+              "desc": "将已有类作为成员变量注入灵活运行时可替换对象遵循DRY不重复原则低耦合"
+            },
+            {
+              "id": "组合vs继承-1-9-3-d1",
+              "tag": "继承is-a",
+              "desc": "直接继承父类代码紧耦合父类改动直接影响子类不能运行时切换父类破坏封装"
+            },
+            {
+              "id": "组合vs继承-1-9-3-d2",
+              "tag": "优先组合",
+              "desc": "组合更灵活低耦合易于测试(可mock)继承层次深时维护困难组合+接口委托是最佳实践"
+            },
+            {
+              "id": "组合vs继承-1-9-3-d3",
+              "tag": "何时继承",
+              "desc": "当确实是is-a关系且子类需要扩展父类核心行为而非仅复用代码时才用继承否则用组合"
+            }
+          ]
+        },
+        {
+          "id": "内部类-1-9-4",
+          "tag": "内部类",
+          "desc": "成员内部类依附外部类实例可访问外部私有成员;静态内部类不依附实例等同顶级类;局部内部类方法内定义作用域仅该方法;匿名内部类无名字一次性实现接口或继承类Lambda简化匿名内部类;内部类用途:封装辅助类回调迭代器实现",
+          "details": [
+            {
+              "id": "内部类-1-9-4-d0",
+              "tag": "成员内部类",
+              "desc": "依附外部类实例可访问外部类所有成员(含private)创建需先有外部实例outer.new Inner()"
+            },
+            {
+              "id": "内部类-1-9-4-d1",
+              "tag": "静态内部类",
+              "desc": "不依附外部实例等同顶级类仅可访问外部静态成员new Outer.StaticInner()无需外部实例"
+            },
+            {
+              "id": "内部类-1-9-4-d2",
+              "tag": "匿名内部类",
+              "desc": "无名字一次性实现接口或继承抽象类Lambda表达式简化单方法接口的匿名内部类"
+            },
+            {
+              "id": "内部类-1-9-4-d3",
+              "tag": "局部内部类",
+              "desc": "方法内定义作用域仅限该方法可访问方法final/effectively final局部变量"
+            },
+            {
+              "id": "内部类-1-9-4-d4",
+              "tag": "用途场景",
+              "desc": "封装辅助类不暴露外部/回调机制/迭代器实现(Map.Entry)/Builder模式/多继承模拟"
+            }
+          ]
+        },
+        {
+          "id": "访问修饰符-1-9-5",
+          "tag": "访问修饰符与封装",
+          "desc": "public所有类可见、protected同包+子类可见、default(无修饰)同包可见、private仅本类可见;封装原则:字段private方法public最小可见性;getter/setter校验输入保护数据完整性",
+          "details": [
+            {
+              "id": "访问修饰符-1-9-5-d0",
+              "tag": "public",
+              "desc": "所有类可见最宽范围用于对外暴露的核心API和常量"
+            },
+            {
+              "id": "访问修饰符-1-9-5-d1",
+              "tag": "protected",
+              "desc": "同包+子类可见用于继承体系中子类可访问但外部不可的行为"
+            },
+            {
+              "id": "访问修饰符-1-9-5-d2",
+              "tag": "default包级",
+              "desc": "无修饰符同包可见用于包内协作内部实现类间共享"
+            },
+            {
+              "id": "访问修饰符-1-9-5-d3",
+              "tag": "private",
+              "desc": "仅本类可见最窄范围用于内部实现细节字段声明防止外部直接修改"
+            },
+            {
+              "id": "访问修饰符-1-9-5-d4",
+              "tag": "封装原则",
+              "desc": "字段private方法public最小可见性getter/setter校验输入保护数据完整性"
             }
           ]
         }
@@ -3171,6 +3465,31 @@ window.__MODULES__['java-concurrent'] = {
               "id": "completablefuture-3-7-5-d4",
               "tag": "异常处理",
               "desc": "exceptionally捕获等价catchhandle同时处理正常和异常值"
+            },
+            {
+              "id": "completablefuture深入-3-7-5-d5",
+              "tag": "组合操作",
+              "desc": "thenCombine合并两个独立结果thenCompose串联依赖操作whenComplete附加回调不改变结果"
+            },
+            {
+              "id": "completablefuture深入-3-7-5-d6",
+              "tag": "allOf/anyOf",
+              "desc": "allOf等待全部完成anyOf等待任一完成批量并行执行并发调用多个服务聚合结果"
+            },
+            {
+              "id": "completablefuture深入-3-7-5-d7",
+              "tag": "异常处理",
+              "desc": "exceptionally捕获异常返回默认值handle同时处理正常值和异常completeOnTimeout超时返回默认值"
+            },
+            {
+              "id": "completablefuture深入-3-7-5-d8",
+              "tag": "超时控制",
+              "desc": "orTimeout(duration,unit)超时抛TimeoutExceptioncompleteOnTimeout超时返回默认值Java9+新增"
+            },
+            {
+              "id": "completablefuture深入-3-7-5-d9",
+              "tag": "自定义线程池",
+              "desc": "默认ForkJoinPool.commonPool()共享线程池可能竞争重要任务应指定独立Executor避免共享池影响"
             }
           ]
         },
@@ -4750,6 +5069,131 @@ window.__MODULES__['java-io'] = {
               "id": "java零拷贝实现-5-2-3-d2",
               "tag": "Netty/Kafka都使用零拷贝技术",
               "desc": "Netty用FileRegion+sendfile，Kafka用FileChannel.transferTo()零拷贝传输日志文件，两者均避免数据经过用户空间"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5-4-nio2文件api-5-3",
+      "title": "5.4 NIO.2 文件API",
+      "points": [
+        {
+          "id": "path与files-5-4-0",
+          "tag": "Path 与 Files API",
+          "desc": "Path替代File更现代Paths.get()创建resolve拼接normalize规范化;Files工具类copy/move/delete/createFile/list/walk;Files.readString/writeString一行读写远比File+InputStream简洁",
+          "details": [
+            {
+              "id": "path与files-5-4-0-d0",
+              "tag": "Path",
+              "desc": "替代File更现代Paths.get()创建resolve拼接子路径relativize计算相对路径normalize规范化"
+            },
+            {
+              "id": "path与files-5-4-0-d1",
+              "tag": "Files",
+              "desc": "静态工具类copy/move/delete/createFile/list/walk一行代码完成复杂文件操作"
+            },
+            {
+              "id": "path与files-5-4-0-d2",
+              "tag": "readString",
+              "desc": "Files.readString/writeString一行读写Java11+远比File+InputStream简洁"
+            },
+            {
+              "id": "path与files-5-4-0-d3",
+              "tag": "File vs Path",
+              "desc": "File是旧APIPath是新API推荐PathFile.toPath()/Path.toFile()互转"
+            }
+          ]
+        },
+        {
+          "id": "watchservice目录监控-5-4-1",
+          "tag": "WatchService 目录监控",
+          "desc": "NIO.2文件系统事件监听Path.register(watchService,事件类型)→take()→pollEvents()→reset();底层OS事件通知Linux inotify高效非轮询;用途配置热加载/日志监控/文件同步",
+          "details": [
+            {
+              "id": "watchservice目录监控-5-4-1-d0",
+              "tag": "WatchService",
+              "desc": "NIO.2事件监听ENTRY_CREATE/ENTRY_MODIFY/ENTRY_DELETE三种事件类型"
+            },
+            {
+              "id": "watchservice目录监控-5-4-1-d1",
+              "tag": "工作流程",
+              "desc": "Path.register→take()等待→pollEvents()取出→reset()重置继续监听循环处理"
+            },
+            {
+              "id": "watchservice目录监控-5-4-1-d2",
+              "tag": "底层机制",
+              "desc": "Linux inotify/Windows ReadDirectoryChangesW基于OS事件通知高效非轮询非定时扫描"
+            },
+            {
+              "id": "watchservice目录监控-5-4-1-d3",
+              "tag": "应用场景",
+              "desc": "配置文件热加载/日志目录监控触发处理/文件同步检测变更自动推送"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "5-5-网络编程基础-5-4",
+      "title": "5.5 网络编程基础",
+      "points": [
+        {
+          "id": "socket编程-5-5-0",
+          "tag": "Socket 编程",
+          "desc": "Socket是TCP网络通信基础APIServerSocket.accept()服务端监听Socket客户端连接;TCP三次握手四次挥手;短连接vs长连接keep-alive;理解Socket编程才能理解Netty/BIO/NIO异步模型",
+          "details": [
+            {
+              "id": "socket编程-5-5-0-d0",
+              "tag": "ServerSocket",
+              "desc": "服务端new ServerSocket(port)→accept()阻塞等待客户端连接返回Socket"
+            },
+            {
+              "id": "socket编程-5-5-0-d1",
+              "tag": "Socket客户端",
+              "desc": "new Socket(host,port)建立TCP连接getInputStream()/getOutputStream()读写"
+            },
+            {
+              "id": "socket编程-5-5-0-d2",
+              "tag": "TCP连接",
+              "desc": "三次握手(SYN→SYN+ACK→ACK)建立四次挥手(FIN→ACK→FIN→ACK)关闭"
+            },
+            {
+              "id": "socket编程-5-5-0-d3",
+              "tag": "短连接vs长连接",
+              "desc": "短连接每次新建+关闭开销大长连接keep-alive复用减少握手开销"
+            },
+            {
+              "id": "socket编程-5-5-0-d4",
+              "tag": "与Netty关系",
+              "desc": "Socket是基础理解BIO阻塞后才能理解NIO非阻塞和Netty事件驱动异步模型"
+            }
+          ]
+        },
+        {
+          "id": "http客户端-5-5-1",
+          "tag": "Java HTTP 客户端",
+          "desc": "HttpURLConnection旧API功能有限;Java11+HttpClient支持HTTP/2异步;OkHttp最常用第三方HTTP库;SpringRestTemplate/WebClient企业级封装",
+          "details": [
+            {
+              "id": "http客户端-5-5-1-d0",
+              "tag": "HttpClient",
+              "desc": "Java11+现代API支持HTTP/2异步CompletableFuture配置简洁推荐"
+            },
+            {
+              "id": "http客户端-5-5-1-d1",
+              "tag": "OkHttp",
+              "desc": "Square开源最常用HTTP客户端连接池拦截器链GZIP压缩"
+            },
+            {
+              "id": "http客户端-5-5-1-d2",
+              "tag": "RestTemplate",
+              "desc": "Spring封装支持序列化/错误处理/负载均衡WebClient是响应式版本"
+            },
+            {
+              "id": "http客户端-5-5-1-d3",
+              "tag": "HttpURLConnection",
+              "desc": "JDK内置旧API功能有限不支持HTTP/2实际项目很少直接使用"
             }
           ]
         }

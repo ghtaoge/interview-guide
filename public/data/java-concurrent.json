@@ -1167,6 +1167,31 @@
               "id": "completablefuture-3-7-5-d4",
               "tag": "异常处理",
               "desc": "exceptionally捕获等价catchhandle同时处理正常和异常值"
+            },
+            {
+              "id": "completablefuture深入-3-7-5-d5",
+              "tag": "组合操作",
+              "desc": "thenCombine合并两个独立结果thenCompose串联依赖操作whenComplete附加回调不改变结果"
+            },
+            {
+              "id": "completablefuture深入-3-7-5-d6",
+              "tag": "allOf/anyOf",
+              "desc": "allOf等待全部完成anyOf等待任一完成批量并行执行并发调用多个服务聚合结果"
+            },
+            {
+              "id": "completablefuture深入-3-7-5-d7",
+              "tag": "异常处理",
+              "desc": "exceptionally捕获异常返回默认值handle同时处理正常值和异常completeOnTimeout超时返回默认值"
+            },
+            {
+              "id": "completablefuture深入-3-7-5-d8",
+              "tag": "超时控制",
+              "desc": "orTimeout(duration,unit)超时抛TimeoutExceptioncompleteOnTimeout超时返回默认值Java9+新增"
+            },
+            {
+              "id": "completablefuture深入-3-7-5-d9",
+              "tag": "自定义线程池",
+              "desc": "默认ForkJoinPool.commonPool()共享线程池可能竞争重要任务应指定独立Executor避免共享池影响"
             }
           ]
         },
