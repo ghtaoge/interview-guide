@@ -70,16 +70,25 @@ onUnmounted(() => document.removeEventListener('keydown', onKeydown))
 <style scoped>
 .init-screen {
   min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  background: var(--bg);
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #0d9488 100%);
+  position: relative; overflow: hidden;
+}
+.init-screen::before {
+  content: ''; position: absolute; top: -30%; right: -20%;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(13,148,136,.15), transparent 70%);
 }
 .init-content {
-  text-align: center;
+  text-align: center; position: relative; z-index: 1;
 }
-.init-icon {
-  font-size: 3em; margin-bottom: 12px;
-}
+.init-icon { font-size: 3em; margin-bottom: 12px }
 .init-title {
-  font-size: 1.3em; font-weight: 600; color: var(--text);
-  margin-bottom: 16px; letter-spacing: 2px;
+  font-size: 1.3em; font-weight: 700; color: #e2e8f0;
+  margin-bottom: 16px; letter-spacing: 3px;
+}
+
+/* 深色模式 */
+:global(.dark) .init-screen {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0d9488 100%);
 }
 </style>

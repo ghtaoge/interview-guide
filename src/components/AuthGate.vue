@@ -67,30 +67,40 @@ async function submit() {
 <style scoped>
 .auth-overlay {
   min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  background: var(--bg); padding: 16px;
+  background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 40%, #0d9488 100%);
+  padding: 16px; position: relative; overflow: hidden;
+}
+.auth-overlay::before {
+  content: ''; position: absolute; top: -30%; right: -20%;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(13,148,136,.15), transparent 70%);
+}
+.auth-overlay::after {
+  content: ''; position: absolute; bottom: -20%; left: -10%;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(37,99,235,.12), transparent 70%);
 }
 .auth-card {
   width: 100%; max-width: 380px;
-  background: var(--card); border-radius: var(--radius);
-  box-shadow: 0 8px 40px rgba(0,0,0,.12); overflow: hidden;
+  background: var(--card); border-radius: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,.3), 0 0 0 1px rgba(255,255,255,.08);
+  overflow: hidden; position: relative; z-index: 1;
 }
 .auth-header {
-  text-align: center; padding: 28px 24px 16px;
+  text-align: center; padding: 30px 24px 18px;
   background: linear-gradient(135deg, #0d9488 0%, #2563eb 50%, #e8833a 100%);
-  color: #fff;
+  color: #fff; position: relative;
 }
-.auth-icon {
-  font-size: 2.2em; display: block; margin-bottom: 8px;
+.auth-header::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 12px;
+  background: var(--card); border-radius: 12px 12px 0 0;
 }
+.auth-icon { font-size: 2.4em; display: block; margin-bottom: 10px }
 .auth-header h2 {
-  font-size: 1.2em; font-weight: 600; margin-bottom: 4px; letter-spacing: 1px;
+  font-size: 1.25em; font-weight: 700; margin-bottom: 6px; letter-spacing: 2px;
 }
-.auth-subtitle {
-  font-size: .78em; opacity: .7; font-weight: 300;
-}
-.auth-body {
-  padding: 24px 24px 28px;
-}
+.auth-subtitle { font-size: .8em; opacity: .8; font-weight: 300 }
+.auth-body { padding: 28px 24px 32px }
 .auth-input-wrap {
   display: flex; align-items: center; gap: 10px;
   background: var(--bg); border-radius: 24px;
@@ -99,7 +109,7 @@ async function submit() {
 }
 .auth-input-wrap:focus-within {
   border-color: var(--accent);
-  box-shadow: 0 0 12px rgba(13,148,136,.2);
+  box-shadow: 0 0 16px rgba(13,148,136,.25);
 }
 .auth-input-wrap.error {
   border-color: #ef4444;
@@ -120,25 +130,35 @@ async function submit() {
   flex-shrink: 0; transition: all .2s;
 }
 .auth-clear:hover { background: var(--text3); color: var(--card) }
-.auth-error {
-  font-size: .8em; color: #ef4444; margin-top: 8px; padding-left: 14px;
-}
+.auth-error { font-size: .82em; color: #ef4444; margin-top: 10px; padding-left: 14px }
 .auth-submit-btn {
-  margin-top: 20px; width: 100%; padding: 12px 0;
+  margin-top: 22px; width: 100%; padding: 13px 0;
   border-radius: 24px; border: none; cursor: pointer;
-  font-size: 1em; font-weight: 600; letter-spacing: 1px;
+  font-size: 1em; font-weight: 600; letter-spacing: 2px;
   background: linear-gradient(135deg, #0d9488, #2563eb);
   color: #fff; transition: all .3s;
 }
-.auth-submit-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(13,148,136,.35) }
+.auth-submit-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(13,148,136,.4) }
+.auth-submit-btn:active { transform: translateY(0) }
 .auth-submit-btn:disabled { opacity: .6; cursor: not-allowed; transform: none }
+
+/* 深色模式适配 */
+:global(.dark) .auth-overlay {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 40%, #0d9488 100%);
+}
+:global(.dark) .auth-card {
+  background: #1e293b;
+  box-shadow: 0 20px 60px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.06);
+}
 
 /* 移动端 */
 @media (max-width: 600px) {
-  .auth-card { max-width: 360px }
-  .auth-header { padding: 24px 22px 16px }
+  .auth-overlay { padding: 12px; }
+  .auth-card { max-width: 360px; border-radius: 16px }
+  .auth-header { padding: 24px 20px 16px }
   .auth-header h2 { font-size: 1.15em }
-  .auth-body { padding: 22px 22px 26px }
+  .auth-header::after { height: 10px; border-radius: 10px 10px 0 0 }
+  .auth-body { padding: 22px 20px 26px }
   .auth-input-wrap { padding: 6px 16px }
 }
 </style>
