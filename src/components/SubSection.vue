@@ -96,5 +96,7 @@ const filteredPoints = computed(() => {
 :deep(.van-collapse-item) { margin-bottom: 6px; border-radius: 14px; overflow: hidden; border: none }
 :deep(.van-collapse-item__title) { font-weight: 600; font-size: 1em; border: none }
 :deep(.van-collapse-item__title .van-cell) { border: none }
+:deep(.van-cell__title) { flex: 1; min-width: 0; word-break: break-word }
+:deep(.van-cell__value) { flex-shrink: 0 }
 :deep(.van-collapse-item__content) { padding: 10px 14px; border: none }
 </style>

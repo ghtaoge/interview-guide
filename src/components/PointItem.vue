@@ -61,10 +61,10 @@ function togglePoint() {
 }
 .mobile-point.has-detail { border-left-color: var(--accent); font-weight: 500 }
 .mobile-point.open { border-left-color: var(--accent); background: var(--bg); box-shadow: 0 2px 8px rgba(0,0,0,.06) }
-.mobile-point-row { display: flex; gap: 10px; align-items: center }
-.mobile-tag { flex-shrink: 0; font-weight: 600; color: var(--text); border-right: 2px solid var(--border); padding-right: 6px }
+.mobile-point-row { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap }
+.mobile-tag { flex-shrink: 0; max-width: 40%; font-weight: 600; color: var(--text); border-right: 2px solid var(--border); padding-right: 6px }
 .mobile-point.open .mobile-tag { border-right-color: var(--accent) }
-.mobile-desc { color: var(--text2); flex: 1; line-height: 1.7; word-break: break-word }
+.mobile-desc { color: var(--text2); flex: 1; min-width: 0; line-height: 1.7; word-break: break-word }
 .mobile-hint {
   flex-shrink: 0; padding: 3px 10px; border-radius: 12px;
   background: rgba(13,148,136,.1); color: var(--accent);
@@ -81,10 +81,10 @@ function togglePoint() {
 }
 .point:hover { background: #fff; box-shadow: 0 2px 8px rgba(0,0,0,.06) }
 .point.open { border-left-color: var(--accent); box-shadow: 0 2px 12px rgba(52,112,255,.12) }
-.point-row { display: flex; gap: 12px; align-items: center }
-.point .tag { flex-shrink: 0; font-weight: 650; color: var(--text); border-right: 2px solid var(--border); padding-right: 6px; margin-right: 2px }
+.point-row { display: flex; gap: 12px; align-items: flex-start }
+.point .tag { flex-shrink: 0; max-width: 30%; font-weight: 650; color: var(--text); border-right: 2px solid var(--border); padding-right: 6px; margin-right: 2px }
 .point.open .tag { border-right-color: var(--accent) }
-.point .desc { color: var(--text2); flex: 1; line-height: 1.75; font-size: .96em; word-break: break-word }
+.point .desc { color: var(--text2); flex: 1; min-width: 0; line-height: 1.75; font-size: .96em; word-break: break-word }
 .expand-hint {
   flex-shrink: 0; display: inline-flex; align-items: center; justify-content: center;
   padding: 3px 10px; border-radius: 14px; background: rgba(99,102,241,.08);

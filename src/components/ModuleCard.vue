@@ -56,12 +56,12 @@ function lightenColor(ci) {
   display: flex; align-items: center; gap: 10px; user-select: none;
 }
 .mobile-icon { font-size: 1.1em; flex-shrink: 0 }
-.mobile-title { flex: 1; line-height: 1.45 }
+.mobile-title { flex: 1; min-width: 0; line-height: 1.45; word-break: break-word }
 .mobile-badge {
-  font-size: .72em; padding: 3px 10px; border-radius: 12px;
+  flex-shrink: 0; font-size: .72em; padding: 3px 10px; border-radius: 12px;
   background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.22); font-weight: 500;
 }
-.mobile-arrow { font-size: .75em; opacity: .8; transition: transform .25s }
+.mobile-arrow { flex-shrink: 0; font-size: .75em; opacity: .8; transition: transform .25s }
 .mobile-arrow.open { transform: rotate(90deg) }
 
 /* PC端卡片 */
@@ -76,8 +76,8 @@ function lightenColor(ci) {
   display: flex; align-items: center; gap: 8px; user-select: none;
 }
 .module-head .icon { font-size: 1em; flex-shrink: 0 }
-.module-head .title { flex: 1 }
-.module-head .badge { font-size: .7em; padding: 3px 12px; border-radius: 12px; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.25); font-weight: 500 }
-.arrow { margin-left: auto; font-size: .8em; opacity: .8; transition: transform .25s }
+.module-head .title { flex: 1; min-width: 0 }
+.module-head .badge { flex-shrink: 0; font-size: .7em; padding: 3px 12px; border-radius: 12px; background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.25); font-weight: 500 }
+.arrow { margin-left: auto; flex-shrink: 0; font-size: .8em; opacity: .8; transition: transform .25s }
 .arrow.open { transform: rotate(90deg) }
 </style>

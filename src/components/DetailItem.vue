@@ -54,6 +54,7 @@ function toggleSub() { open.value = !open.value }
   padding: 13px 16px 13px 40px; margin: 6px 0; font-size: 1em;
   line-height: 1.8; color: var(--text2); position: relative;
   background: var(--card); border-radius: 12px;
+  display: flex; align-items: flex-start; gap: 4px;
 }
 .mobile-detail.has-sub { cursor: pointer; font-weight: 600; color: var(--text) }
 .mobile-detail.has-sub.open { background: var(--bg); border-left: 3px solid var(--accent) }
@@ -64,10 +65,10 @@ function toggleSub() { open.value = !open.value }
   font-size: .72em; font-weight: 700;
   background: linear-gradient(135deg, var(--accent), #a78bfa);
 }
-.mobile-label { display: inline }
+.mobile-label { flex: 1; min-width: 0; word-break: break-word }
 .mobile-sub-arrow {
-  float: right; font-size: .6em; color: var(--text3);
-  padding: 2px 0; transition: transform .2s;
+  flex-shrink: 0; font-size: .6em; color: var(--text3);
+  padding: 2px 0; transition: transform .2s; align-self: center;
 }
 .mobile-sub-arrow.open { transform: rotate(90deg); color: var(--accent) }
 .mobile-sub {
