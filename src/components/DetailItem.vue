@@ -51,29 +51,29 @@ function toggleSub() { open.value = !open.value }
 <style scoped>
 /* 移动端详情 */
 .mobile-detail {
-  padding: 12px 14px 12px 36px; margin: 4px 0; font-size: .92em;
+  padding: 13px 16px 13px 40px; margin: 6px 0; font-size: 1em;
   line-height: 1.8; color: var(--text2); position: relative;
-  background: var(--card); border-radius: 10px;
+  background: var(--card); border-radius: 12px;
 }
 .mobile-detail.has-sub { cursor: pointer; font-weight: 600; color: var(--text) }
-.mobile-detail.has-sub.open { background: var(--bg); border-left: 2px solid var(--accent) }
+.mobile-detail.has-sub.open { background: var(--bg); border-left: 3px solid var(--accent) }
 .mobile-num {
-  position: absolute; left: 10px; top: 12px;
-  width: 20px; height: 20px; border-radius: 50%; color: #fff;
+  position: absolute; left: 10px; top: 13px;
+  width: 22px; height: 22px; border-radius: 50%; color: #fff;
   display: flex; align-items: center; justify-content: center;
-  font-size: .65em; font-weight: 700;
+  font-size: .72em; font-weight: 700;
   background: linear-gradient(135deg, var(--accent), #a78bfa);
 }
 .mobile-label { display: inline }
 .mobile-sub-arrow {
-  float: right; font-size: .55em; color: var(--text3);
+  float: right; font-size: .6em; color: var(--text3);
   padding: 2px 0; transition: transform .2s;
 }
 .mobile-sub-arrow.open { transform: rotate(90deg); color: var(--accent) }
 .mobile-sub {
-  margin: 8px 0 2px; padding: 12px 12px;
-  background: var(--bg); border-radius: 8px; font-size: .9em;
-  color: var(--text2); border-left: 2px solid var(--accent); line-height: 1.8;
+  margin: 10px 0 4px; padding: 14px 14px;
+  background: var(--bg); border-radius: 10px; font-size: .95em;
+  color: var(--text2); border-left: 3px solid var(--accent); line-height: 1.85;
   font-weight: 400;
 }
 

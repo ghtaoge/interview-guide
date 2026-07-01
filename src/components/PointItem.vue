@@ -55,23 +55,23 @@ function togglePoint() {
 <style scoped>
 /* 移动端知识点 */
 .mobile-point {
-  padding: 10px 14px; margin: 4px 0; background: var(--card);
-  border-radius: 10px; border-left: 3px solid var(--border);
-  font-size: .92em; cursor: pointer; transition: all .2s;
+  padding: 12px 16px; margin: 6px 0; background: var(--card);
+  border-radius: 12px; border-left: 4px solid var(--border);
+  font-size: 1em; cursor: pointer; transition: all .2s;
 }
 .mobile-point.has-detail { border-left-color: var(--accent); font-weight: 500 }
 .mobile-point.open { border-left-color: var(--accent); background: var(--bg); box-shadow: 0 2px 8px rgba(0,0,0,.06) }
-.mobile-point-row { display: flex; gap: 8px; align-items: center }
-.mobile-tag { flex-shrink: 0; font-weight: 600; color: var(--text); border-right: 2px solid var(--border); padding-right: 4px }
+.mobile-point-row { display: flex; gap: 10px; align-items: center }
+.mobile-tag { flex-shrink: 0; font-weight: 600; color: var(--text); border-right: 2px solid var(--border); padding-right: 6px }
 .mobile-point.open .mobile-tag { border-right-color: var(--accent) }
-.mobile-desc { color: var(--text2); flex: 1; line-height: 1.6; word-break: break-word }
+.mobile-desc { color: var(--text2); flex: 1; line-height: 1.7; word-break: break-word }
 .mobile-hint {
-  flex-shrink: 0; padding: 2px 8px; border-radius: 10px;
+  flex-shrink: 0; padding: 3px 10px; border-radius: 12px;
   background: rgba(13,148,136,.1); color: var(--accent);
-  font-size: .7em; font-weight: 600;
+  font-size: .75em; font-weight: 600;
 }
 .mobile-point.open .mobile-hint { background: var(--accent); color: #fff }
-.mobile-details { padding: 4px 0 4px 16px }
+.mobile-details { padding: 6px 0 6px 18px }
 
 /* PC端 */
 .point {

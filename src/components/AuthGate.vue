@@ -108,7 +108,7 @@ async function submit() {
 .auth-input-icon { font-size: 1em; flex-shrink: 0; opacity: .7 }
 .auth-input {
   flex: 1; border: none; outline: none; background: transparent;
-  font-size: 15px; color: var(--text); padding: 10px 0;
+  font-size: 16px; color: var(--text); padding: 12px 0;
   caret-color: var(--accent);
 }
 .auth-input::placeholder { color: var(--text3); opacity: 1 }
@@ -135,9 +135,10 @@ async function submit() {
 
 /* 移动端 */
 @media (max-width: 600px) {
-  .auth-card { max-width: 340px }
-  .auth-header { padding: 22px 20px 14px }
-  .auth-header h2 { font-size: 1.05em }
-  .auth-body { padding: 20px 20px 24px }
+  .auth-card { max-width: 360px }
+  .auth-header { padding: 24px 22px 16px }
+  .auth-header h2 { font-size: 1.15em }
+  .auth-body { padding: 22px 22px 26px }
+  .auth-input-wrap { padding: 6px 16px }
 }
 </style>

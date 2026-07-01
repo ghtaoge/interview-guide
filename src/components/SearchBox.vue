@@ -55,8 +55,12 @@ function onClear() {
   width: 380px; margin: 8px auto 0; position: relative;
 }
 .search-box.mobile {
-  width: 85%; max-width: 360px; margin: 6px auto 0;
+  width: 88%; max-width: 380px; margin: 8px auto 0;
 }
+.search-box.mobile input {
+  font-size: 16px; padding: 10px 30px 10px 34px; min-height: 44px;
+}
+.search-box.mobile .search-icon { font-size: 16px; left: 12px }
 .search-box input {
   width: 100%; padding: 6px 30px 6px 30px; border-radius: 20px; font-size: 14px;
   outline: none; min-height: 32px; color: #fff !important;

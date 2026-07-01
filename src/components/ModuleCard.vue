@@ -47,21 +47,21 @@ function lightenColor(ci) {
 <style scoped>
 /* 移动端卡片 */
 .mobile-card {
-  border-radius: 12px; overflow: hidden; box-shadow: var(--shadow);
+  border-radius: 14px; overflow: hidden; box-shadow: var(--shadow);
   transition: all .2s; cursor: pointer;
 }
 .mobile-card.expanded { box-shadow: 0 4px 20px rgba(0,0,0,.15) }
 .mobile-card-head {
-  padding: 14px 16px; color: #fff; font-size: 1em; font-weight: 600;
-  display: flex; align-items: center; gap: 8px; user-select: none;
+  padding: 16px 18px; color: #fff; font-size: 1.05em; font-weight: 600;
+  display: flex; align-items: center; gap: 10px; user-select: none;
 }
-.mobile-icon { font-size: 1em; flex-shrink: 0 }
-.mobile-title { flex: 1; line-height: 1.4 }
+.mobile-icon { font-size: 1.1em; flex-shrink: 0 }
+.mobile-title { flex: 1; line-height: 1.45 }
 .mobile-badge {
-  font-size: .65em; padding: 2px 8px; border-radius: 10px;
+  font-size: .72em; padding: 3px 10px; border-radius: 12px;
   background: rgba(255,255,255,.18); border: 1px solid rgba(255,255,255,.22); font-weight: 500;
 }
-.mobile-arrow { font-size: .7em; opacity: .8; transition: transform .25s }
+.mobile-arrow { font-size: .75em; opacity: .8; transition: transform .25s }
 .mobile-arrow.open { transform: rotate(90deg) }
 
 /* PC端卡片 */

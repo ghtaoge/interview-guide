@@ -116,9 +116,9 @@ function pickTag(val) {
 <style scoped>
 /* 移动端: 小图标按钮 */
 .filter-btn {
-  width: 32px; height: 32px; border-radius: 50%;
+  width: 36px; height: 36px; border-radius: 50%;
   background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.25);
-  color: #fff; font-size: .9em; cursor: pointer;
+  color: #fff; font-size: 1em; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: all .18s; flex-shrink: 0;
 }
@@ -137,36 +137,36 @@ function pickTag(val) {
 }
 .drawer-header {
   display: flex; align-items: center; justify-content: space-between;
-  padding: 14px 16px; border-bottom: 1px solid var(--border);
-  font-weight: 600; font-size: .9em; color: var(--text);
+  padding: 16px 18px; border-bottom: 1px solid var(--border);
+  font-weight: 600; font-size: .95em; color: var(--text);
   position: sticky; top: 0; background: var(--card); z-index: 1;
 }
 .drawer-close {
-  width: 28px; height: 28px; border-radius: 50%;
+  width: 30px; height: 30px; border-radius: 50%;
   background: rgba(0,0,0,.06); border: none; cursor: pointer;
-  font-size: .8em; color: var(--text3); display: flex;
+  font-size: .85em; color: var(--text3); display: flex;
   align-items: center; justify-content: center;
   transition: all .15s;
 }
 .drawer-close:hover { background: rgba(0,0,0,.12); color: var(--text) }
-.drawer-body { padding: 8px 16px 24px }
+.drawer-body { padding: 10px 18px 28px }
 
-.drawer-group { margin-bottom: 8px }
+.drawer-group { margin-bottom: 10px }
 .group-label {
-  font-size: .78em; font-weight: 600; color: var(--accent);
-  padding: 6px 0 4px; opacity: .85;
+  font-size: .85em; font-weight: 600; color: var(--accent);
+  padding: 8px 0 6px; opacity: .85;
 }
 .group-grid {
   display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  gap: 10px;
 }
 .drawer-item {
-  padding: 8px 6px; border-radius: 10px; font-size: .82em;
+  padding: 10px 8px; border-radius: 12px; font-size: .88em;
   background: var(--bg); color: var(--text2);
   border: 1px solid var(--border); cursor: pointer;
-  transition: all .18s; text-align: center; line-height: 1.35;
+  transition: all .18s; text-align: center; line-height: 1.4;
   display: flex; align-items: center; justify-content: center;
-  gap: 4px;
+  gap: 4px; min-height: 40px;
 }
 .drawer-item.active {
   background: #0d9488; color: #fff; border-color: #0d9488;

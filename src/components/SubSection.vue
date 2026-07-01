@@ -93,8 +93,8 @@ const filteredPoints = computed(() => {
 
 /* 移动端van-collapse样式增强 */
 :deep(.van-collapse) { border: none }
-:deep(.van-collapse-item) { margin-bottom: 6px; border-radius: 12px; overflow: hidden; border: none }
-:deep(.van-collapse-item__title) { font-weight: 600; font-size: .94em; border: none }
+:deep(.van-collapse-item) { margin-bottom: 6px; border-radius: 14px; overflow: hidden; border: none }
+:deep(.van-collapse-item__title) { font-weight: 600; font-size: 1em; border: none }
 :deep(.van-collapse-item__title .van-cell) { border: none }
-:deep(.van-collapse-item__content) { padding: 8px 12px; border: none }
+:deep(.van-collapse-item__content) { padding: 10px 14px; border: none }
 </style>

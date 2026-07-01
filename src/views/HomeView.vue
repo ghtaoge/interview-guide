@@ -157,4 +157,12 @@ const displayedModules = computed(() => {
   display: flex; align-items: center; justify-content: center;
   padding: 40px 0; color: var(--text3);
 }
+
+/* 移动端优化 */
+@media (max-width: 600px) {
+  .home-view { padding: 16px 14px 50px }
+  .module-list { gap: 12px }
+  .module-content { padding: 8px 0 2px }
+  .skeleton-card { margin-bottom: 10px; padding: 14px; background: var(--card); border-radius: 14px }
+}
 </style>

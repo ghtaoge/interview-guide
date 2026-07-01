@@ -46,8 +46,9 @@ onUnmounted(() => window.removeEventListener('scroll', onScroll))
 .header-desc { font-size: .78em; opacity: .7; font-weight: 300 }
 
 @media (max-width: 600px) {
-  .header { padding: 20px 12px 16px }
-  .header h1 { font-size: 1.25em; margin-bottom: 4px }
-  .header-top .theme-toggle { position: absolute; right: 4px }
+  .header { padding: 20px 14px 18px }
+  .header h1 { font-size: 1.3em; margin-bottom: 4px; letter-spacing: 1px }
+  .header-desc { font-size: .82em; opacity: .75 }
+  .header-top .theme-toggle { position: absolute; right: 6px }
 }
 </style>
