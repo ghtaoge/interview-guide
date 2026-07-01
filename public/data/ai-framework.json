@@ -485,6 +485,53 @@
               "desc": "Tracing记录每步决策Thought/Action/Observation和工具调用参数结果全链路可追溯;Metrics追踪任务成功率平均迭代次数延迟分布Token消耗成本便于性能优化和异常调试;Logging结构化日志便于离线分析和问题复现"
             }
           ]
+        },
+        {
+          "id": "claude-code-codex与ai开发概念-32-1-6",
+          "tag": "Claude Code/Codex与AI开发核心概念",
+          "desc": "Claude Code是Anthropic官方CLI编程Agent,通过自然语言对话驱动代码编辑/终端执行/Git操作/搜索,核心命令claude启动交互对话、claude code进入编程模式、/init初始化项目配置生成CLAUDE.md、/review代码审查、/compact压缩上下文节省Token、/plan进入规划模式先分析再执行。Codex是OpenAI CLI编程Agent,核心命令codex启动交互、codex --approval-mode suggest/auto/full控制执行权限(建议模式只展示不执行/自动模式自动执行安全操作/完全模式全权执行)。CLAUDE.MD是项目级Agent配置文件定义项目概述/技术栈/编码规范/常用命令/禁止事项,放在项目根目录Agent每次启动自动加载作为持久上下文避免重复说明。AGENTS.MD(Gemini/MongoDB风格)类似但面向多Agent协作定义各Agent角色/职责/工具权限。Skills是Agent可调用的预定义能力单元如代码审查技能/文件编辑技能/搜索技能,通过Skill工具动态加载扩展Agent能力。MCP(Model Context Protocol)标准协议让Agent接入外部工具GitHub/数据库/API等扩展能力边界。Hooks是Agent生命周期钩子在特定事件(工具调用前/提交后)触发自定义逻辑如自动格式化/安全检查。权限系统分allow(允许无需确认)/deny(禁止执行)两级配置在settings.json中控制Agent行为边界。Plan模式让Agent先规划步骤再逐步执行避免盲目修改。Worktree模式为并行Subagent创建独立Git工作目录避免文件冲突。",
+          "details": [
+            {
+              "id": "claude-code-codex与ai开发概念-32-1-6-d0",
+              "tag": "Claude Code命令",
+              "desc": "Anthropic官方CLI编程Agent核心命令:claude(启动交互对话)、claude code(编程模式自动编辑/执行)、/init(初始化项目生成CLAUDE.md)、/review(代码审查找bug/简化/安全)、/compact(压缩上下文节省Token避免溢出)、/plan(进入规划模式先分析再执行)、/fast(切换快速模式用Opus加速输出)、/config(查看/修改设置如权限模型主题)"
+            },
+            {
+              "id": "claude-code-codex与ai开发概念-32-1-6-d1",
+              "tag": "Claude Code技巧",
+              "desc": "①用CLAUDE.md标注项目结构/重点路径/规范让Agent不遗漏关键文件;②复杂任务拆为多轮对话而非一次性大请求;③描述具体:'将OrderService的getAll改为分页查询'比'修改查询'好;④Plan模式先看步骤再确认执行防盲目修改;⑤/compact在对话过长时压缩节省Token避免上下文溢出;⑥Ctrl+D切换深色模式;⑦Git操作自动commit需确认防误提交"
+            },
+            {
+              "id": "claude-code-codex与ai开发概念-32-1-6-d2",
+              "tag": "Codex命令与模式",
+              "desc": "OpenAI CLI编程Agent核心命令:codex(启动交互对话)、codex --approval-mode suggest(建议模式只展示修改不执行需人工确认)、codex --approval-mode auto(自动模式自动执行安全操作如文件编辑终端命令)、codex --approval-mode full(完全模式全权执行包括删除等高风险操作);基于Codex模型(代码专项优化)擅长多文件协调编辑"
+            },
+            {
+              "id": "claude-code-codex与ai开发概念-32-1-6-d3",
+              "tag": "CLAUDE.MD",
+              "desc": "项目级Agent配置文件放在项目根目录Agent每次启动自动加载作为持久上下文。核心内容:项目概述(技术栈/架构/依赖关系)、编码规范(命名约定/代码风格/禁止事项)、常用命令(构建/测试/部署命令)、文件结构(关键路径/重要模块位置)。避免写代码细节(已在代码中)写非显而易见的约定和约束让Agent快速理解项目。支持多级:~/.claude/CLAUDE.md(全局)→项目根CLAUDE.md(项目)→子目录CLAUDE.md(模块级)"
+            },
+            {
+              "id": "claude-code-codex与ai开发概念-32-1-6-d4",
+              "tag": "AGENTS.MD",
+              "desc": "Gemini/MongoDB风格的多Agent协作配置文件定义各Agent角色/职责/工具权限/交互规则。与CLAUDE.MD区别:CLAUDE.MD面向单Agent定义项目上下文和行为约束;AGENTS.MD面向多Agent系统定义Agent间分工和协作协议如哪个Agent负责代码审查哪个负责测试哪个负责部署"
+            },
+            {
+              "id": "claude-code-codex与ai开发概念-32-1-6-d5",
+              "tag": "Skills技能系统",
+              "desc": "Agent可调用的预定义能力单元通过Skill工具动态加载扩展Agent能力。每个Skill定义:触发条件(何时使用该技能)、执行逻辑(具体步骤和代码)、输出格式(结果如何呈现)。常见Skill:代码审查(找bug/简化/安全)、文件编辑(创建/修改/删除)、搜索(代码/文档/网页)、调试(定位/分析/修复)、部署(构建/发布/监控)。Skill可在.claude/skills/目录自定义也可从插件市场安装"
+            },
+            {
+              "id": "claude-code-codex与ai开发概念-32-1-6-d6",
+              "tag": "MCP与Hooks",
+              "desc": "MCP(Model Context Protocol)标准协议让Agent接入外部工具:GitHub(读PR/创建Issue/搜索代码)、数据库(查询/分析)、浏览器(截图/交互)、文件系统(读写/搜索);MCP Server暴露Tools/Resources/Prompts三类能力Agent通过JSON-RPC调用。Hooks是Agent生命周期钩子在特定事件触发自定义逻辑:PreToolCall(工具调用前拦截/校验)、PostToolCall(调用后记录/格式化)、Notification(消息通知如Slack/邮件);配置在settings.json的hooks字段"
+            },
+            {
+              "id": "claude-code-codex与ai开发概念-32-1-6-d7",
+              "tag": "权限与Worktree",
+              "desc": "权限系统分两级:allow(允许无需确认如git status/read文件)和deny(禁止执行如rm -rf/写敏感文件)配置在.claude/settings.json控制Agent行为边界;Plan模式让Agent先规划步骤展示给用户确认再逐步执行避免盲目修改;Worktree模式为并行Subagent创建独立Git工作目录(git worktree add)避免多Agent同时编辑冲突完成后合并或丢弃"
+            }
+          ]
         }
       ]
     },
