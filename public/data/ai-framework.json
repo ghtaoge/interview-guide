@@ -532,6 +532,53 @@
               "desc": "权限系统分两级:allow(允许无需确认如git status/read文件)和deny(禁止执行如rm -rf/写敏感文件)配置在.claude/settings.json控制Agent行为边界;Plan模式让Agent先规划步骤展示给用户确认再逐步执行避免盲目修改;Worktree模式为并行Subagent创建独立Git工作目录(git worktree add)避免多Agent同时编辑冲突完成后合并或丢弃"
             }
           ]
+        },
+        {
+          "id": "agent工作流python必备知识-32-1-7",
+          "tag": "Agent工作流Python必备知识",
+          "desc": "开发AI Agent工作流需要掌握Python核心知识栈涵盖异步编程/类型系统/装饰器模式/函数式编程/数据序列化等关键领域。异步编程(asyncio)是Agent并发执行的基础使Agent同时调用多个LLM/API/工具而不阻塞。类型系统(typing)为Agent输入输出和工具接口提供静态约束防止运行时类型错误。装饰器模式实现Agent工具注册/权限校验/重试容错/日志记录等横切关注点。函数式编程(map/filter/reduce/闭包/生成器)简化数据流处理和管道式编排。数据序列化(JSON/Pydantic)确保Agent间消息格式规范和Schema验证。HTTP客户端(httpx/aiohttp)是Agent调用外部API和LLM服务的网络层。正则与字符串处理支撑Agent解析LLM输出提取结构化信息。面试需理解每项知识在Agent架构中的具体应用场景而非孤立语法记忆。",
+          "details": [
+            {
+              "id": "agent工作流python必备知识-32-1-7-d0",
+              "tag": "异步编程asyncio",
+              "desc": "Agent工作流核心基础async/await语法使Agent并发调用多个LLM/API工具不阻塞主循环。asyncio.gather并行执行多个异步任务、TaskGroup结构化并发(Python3.11+)、asyncio.create_task提交后台任务、await等待结果。事件循环(EventLoop)驱动异步调度。Agent中典型场景:同时调用3个LLM做多数投票、并行检索多个知识源、流式接收LLM输出(SSE)。注意:async函数必须用await调用否则返回协程对象而非结果;阻塞操作(IO/网络)用async替代同步函数;CPU密集型用asyncio.to_thread包装避免阻塞事件循环"
+            },
+            {
+              "id": "agent工作流python必备知识-32-1-7-d1",
+              "tag": "类型系统typing",
+              "desc": "Agent接口约束与Schema验证。typing模块提供类型注解为Agent输入输出/工具参数/消息格式提供静态约束。常用类型:Optional(可选值)、Union(多类型)、Literal(限定值枚举如'json'|'text')、TypedDict(字典Schema约束键值类型)、Callable(函数类型签名)。Generic泛型使工具注册支持任意输入输出类型。TypeVar类型变量定义通用约束。Pydantic BaseModel结合typing实现运行时验证是Agent数据层标准方案。Agent中典型场景:工具函数签名@tool def search(query:str,limit:int=10)->list[str]、消息类型Message[T]泛型适配不同内容、配置类用TypedDict约束环境变量结构"
+            },
+            {
+              "id": "agent工作流python必备知识-32-1-7-d2",
+              "tag": "装饰器模式",
+              "desc": "Agent横切关注点实现。装饰器是Python函数增强机制在不修改原函数代码的前提下添加额外行为。Agent中核心应用:工具注册(@tool装饰器将普通函数注册为Agent可调用工具提取签名/描述/参数Schema)、重试容错(@retry装饰器封装异常重试逻辑支持指数退避和最大次数)、权限校验(@require_auth检查调用者权限)、日志记录(@trace记录Agent决策过程和工具调用详情)、缓存(@cache缓存LLM响应减少重复调用开销)、计时(@timed统计Agent步骤耗时)。装饰器链式叠加:@tool @retry @trace def search()同时注册+容错+追踪。类装饰器用于Agent类级别配置如注册全局Hooks"
+            },
+            {
+              "id": "agent工作流python必备知识-32-1-7-d3",
+              "tag": "函数式编程",
+              "desc": "Agent数据流管道编排。Python函数式特性简化Agent数据处理:map对列表批量转换(如多个文档→多个embedding)、filter过滤筛选(如检索结果按相关性阈值过滤)、reduce聚合合并(如多Agent投票结果汇总)。闭包(Closure)保存上下文状态创建带配置的函数工厂如make_tool(name,handler)返回定制工具函数。生成器(Generator/yield)实现流式处理逐步产出结果避免一次性加载大数据。lambda简写单行逻辑如排序key=lambda x:x.score。管道模式用函数链式组合pipeline=compose(validate,transform,format)实现Agent数据流分步处理。functools.partial偏函数预设部分参数简化Agent工具配置"
+            },
+            {
+              "id": "agent工作流python必备知识-32-1-7-d4",
+              "tag": "数据序列化Pydantic",
+              "desc": "Agent消息格式与验证。JSON是Agent间通信标准格式json模块处理序列化/反序列化。Pydantic是Agent数据层核心:BaseModel定义消息Schema自动类型转换+验证+JSON序列化;Field添加描述/默认值/约束;model_dump()导出字典、model_dump_json()导出JSON字符串;model_validate()从JSON/字典反序列化并验证。Agent典型场景:ToolMessage定义工具调用格式(name+arguments+result)、AgentConfig定义Agent配置Schema(model+temperature+tools)、StateMessage定义Agent状态流转(action+context+output)。dataclasses简化轻量数据类定义但无自动验证。msgspec高性能序列化库(比Pydantic快10倍)适合Agent高吞吐场景"
+            },
+            {
+              "id": "agent工作流python必备知识-32-1-7-d5",
+              "tag": "HTTP客户端",
+              "desc": "Agent网络调用层。httpx是现代HTTP客户端支持同步+异步(Python3.9+)是Agent调用LLM API首选。关键特性:async with httpx.AsyncClient()异步上下文管理、httpx.stream()流式接收LLM SSE响应、timeout配置超时防止Agent阻塞、retry传输层重试(httpx-retries插件)。aiohttp轻量异步HTTP适合简单Agent场景。requests同步HTTP仅适合脚本/测试不适合生产Agent。SSE(Server-Sent Events)处理:httpx逐行读取流式响应解析event:data:字段。WebSocket(httpx-ws/aiohttp)用于Agent实时通信。Agent典型模式:LLMService封装httpx调用统一超时/重试/错误处理/流式解析为Agent上层提供干净接口"
+            },
+            {
+              "id": "agent工作流python必备知识-32-1-7-d6",
+              "tag": "正则与字符串解析",
+              "desc": "Agent解析LLM输出的关键技能。LLM输出是自然语言文本Agent需从中提取结构化信息:re.search查找模式(如提取JSON块re.search(r'```json\\n(.+?)\\n```',text))、re.findall提取所有匹配(如提取多个URL/工具调用)、re.sub替换清洗(如去除Markdown标记/修正格式)。常见Agent解析场景:从LLM文本提取Tool Call(name+arguments)、解析思维链步骤(Thought/Action/Observation段落)、提取代码块(```语言标记)、解析Markdown表格为结构化数据。json.loads+正则组合解析嵌入JSON。多行模式re.DOTALL使.匹配换行。命名分组(?P<name>...)提高可读性。LLM输出不稳定需正则兜底+格式容错"
+            },
+            {
+              "id": "agent工作流python必备知识-32-1-7-d7",
+              "tag": "文件IO与配置管理",
+              "desc": "Agent持久化与配置加载。pathlib.Path统一路径操作(Python3.4+)比os.path更优雅:Path.cwd()当前目录、Path.home()用户目录、Path.read_text()/write_text()读写文件、Path.glob()模式匹配查找文件。Agent配置管理:YAML(yaml.safe_load)适合层级配置(Prompt模板/Agent角色定义)、TOML(tomllib Python3.11+)适合扁平配置(模型参数/工具列表)、JSON适合Schema交换。环境变量os.environ加载敏感配置(API Key/Endpoint)。Agent持久化:JSON文件保存Agent状态/对话历史、pickle序列化Python对象(仅本地不跨语言)、SQLite(sqlite3)轻量本地存储Agent执行日志。上下文管理器(with open)确保文件安全关闭"
+            }
+          ]
         }
       ]
     },
